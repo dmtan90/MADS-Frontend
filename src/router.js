@@ -8,15 +8,30 @@ const routes = [
   {
     path: '/',
     component: () => import(/* webpackChunkName: "app" */ './views/app'),
-    redirect: '/app/piaf',
+    redirect: '/app/device-configuration',
     beforeEnter: AuthRequired,
     children: [
       {
-        path: 'app/piaf',
-        component: () => import(/* webpackChunkName: "piaf" */ './views/app/piaf'),
-        redirect: '/app/piaf/start',
+        path: 'app/device-configuration',
+        component: () => import(/* webpackChunkName: "device-configuration" */ './views/app/deviceConfiguration'),
+        redirect: '/app/device-configuration/sensor-type',
         children: [
-          { path: 'start', component: () => import(/* webpackChunkName: "piaf" */ './views/app/piaf/Start') }
+          {
+            path: 'sensor-type',
+            component: () => import(/* webpackChunkName: "sensor-type" */ './views/app/deviceConfiguration/SensorType')
+          },
+          {
+            path: 'devices',
+            component: () => import(/* webpackChunkName: "devices" */ './views/app/deviceConfiguration/Devices')
+          },
+          {
+            path: 'devices/:id',
+            component: () => import(/* webpackChunkName: "devices" */ './views/app/deviceConfiguration/Device')
+          },
+          {
+            path: 'sensors/:id',
+            component: () => import(/* webpackChunkName: "sensors" */ './views/app/deviceConfiguration/Sensors')
+          }
         ]
       },
       {
@@ -30,6 +45,10 @@ const routes = [
       {
         path: 'app/single',
         component: () => import(/* webpackChunkName: "single" */ './views/app/single')
+      },
+      {
+        path: 'app/factory-layout',
+        component: () => import(/* webpackChunkName: "single" */ './views/app/factoryDesign')
       }
     ]
   },

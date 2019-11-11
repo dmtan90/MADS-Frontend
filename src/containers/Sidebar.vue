@@ -12,31 +12,31 @@
         :settings="{ suppressScrollX: true, wheelPropagation: false }"
       >
         <ul class="list-unstyled">
-          <li :class="{ active : selectedParentMenu==='piaf' }">
-            <a @click.prevent="openSubMenu($event,'piaf')" href="#piaf">
+          <li :class="{ active : selectedParentMenu==='single'}">
+             <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/single" tag="li">
+                <a><i class="iconsminds-three-arrow-fork"></i>  {{ $t("Dashboard") }}</a>
+              </router-link>
+          </li>
+
+          <li :class="{ active : selectedParentMenu==='device-configuration' }">
+            <a @click.prevent="openSubMenu($event,'device-configuration')" href="#device-configuration">
               <i class="iconsminds-shop"></i>
-              {{ $t("menu.piaf") }}
+              {{ $t("menu.device-configuration") }}
             </a>
           </li>
 
-          <li :class="{ active : selectedParentMenu==='second-menu' }">
-            <a @click.prevent="openSubMenu($event,'second-menu')" href="#second-menu">
-              <i class="iconsminds-chemical"></i>
-              {{ $t("menu.second-menu") }}
-            </a>
+          <li :class="{ active : selectedParentMenu==='single'}">
+             <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/factory-layout" tag="li">
+                <a><i class="iconsminds-three-arrow-fork"></i>  {{ $t("Factory") }}</a>
+              </router-link>
           </li>
 
-          <li :class="{ active : selectedParentMenu==='pages'}">
+          <!-- <li :class="{ active : selectedParentMenu==='pages'}">
             <a @click.prevent="openSubMenu($event,'pages')" href="#pages">
               <i class="iconsminds-digital-drawing"></i>
               {{ $t("menu.pages") }}
             </a>
-          </li>
-          <li :class="{ active : selectedParentMenu==='single'}">
-             <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/single" tag="li">
-                <a><i class="iconsminds-three-arrow-fork"></i>  {{ $t("menu.single") }}</a>
-              </router-link>
-          </li>
+          </li> -->
         </ul>
       </vue-perfect-scrollbar>
     </div>
@@ -48,30 +48,24 @@
       >
         <ul
           class="list-unstyled"
-          data-link="piaf"
-          :class="{'d-block':selectedParentMenu==='piaf' }"
+          data-link="device-configuration"
+          :class="{'d-block':selectedParentMenu==='device-configuration' }"
         >
-          <router-link tag="li" to="/app/piaf/start">
+          <router-link tag="li" to="/app/device-configuration/sensor-type">
             <a>
               <i class="simple-icon-paper-plane"></i>
-              {{ $t("menu.start") }}
+              {{ $t("menu.sensor-type") }}
             </a>
           </router-link>
-        </ul>
-        <ul
-          class="list-unstyled"
-          data-link="second-menu"
-          :class="{'d-block':selectedParentMenu==='second-menu' }"
-        >
-          <router-link tag="li" to="/app/second-menu/second">
+          <router-link tag="li" to="/app/device-configuration/devices">
             <a>
               <i class="simple-icon-paper-plane"></i>
-              {{ $t("menu.second") }}
+              {{ "Devices" }}
             </a>
           </router-link>
         </ul>
 
-        <ul
+        <!-- <ul
           class="list-unstyled"
           data-link="pages"
           :class="{'d-block':selectedParentMenu==='pages' }"
@@ -94,7 +88,7 @@
               {{ $t("menu.forgot-password") }}
             </a>
           </router-link>
-        </ul>
+        </ul> -->
       </vue-perfect-scrollbar>
     </div>
   </div>

@@ -18,6 +18,8 @@
   },
   "menu": {
     "app": "Home",
+    "device-configuration": "Device Configuration",
+    "sensor-type": "Sensor Type",
     "piaf": "Piaf",
     "dashboards": "Dashboards",
     "second-menu": "Second Menu",
@@ -25,23 +27,23 @@
     "start": "Start",
     "single": "Single",
     "pages": "Pages",
-    "charts": "Charts",
-    "search": "Search",
     "login": "Login",
     "register": "Register",
     "forgot-password": "Forgot Password",
     "error": "Error",
-    "applications": "Applications",
-    "todo": "To-do List",
-    "library": "Library",
-    "survey": "Survey",
-    "chat": "Chat",
-    "ui": "UI"
+    "search": "Search"
   },
   "pages": {
     "magic-is-in-the-details": "MAGIC IS IN THE DETAILS",
     "error-title": "Ooops... looks like an error occurred!",
     "error-code": "Error Code",
-    "go-back-home": "GO BACK HOME"
+    "go-back-home": "GO BACK HOME",
+    "add-new": "ADD NEW",
+    "orderby": "Order By",
+    "delete": "Delete",
+    "edit": "Edit",
+    "name": "Name",
+    "identifier": "Identifier",
+    "value-keys": "Value Keys"
   }
 }

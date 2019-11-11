@@ -46,8 +46,8 @@ export default {
   methods: {
     ...mapActions(['login']),
     formSubmit () {
-      this.email = 'demo@gogo.com'
-      this.password = 'gogo123'
+      this.email = 'dummy@emailaddress.com'
+      this.password = 'CLJJGb8Hx9hJDUG'
       this.login({ email: this.email, password: this.password })
     }
   },

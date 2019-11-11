@@ -1,6 +1,4 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import { currentUser } from '@/constants/config'
+import axios from 'axios'
 
 export default {
   state: {
@@ -38,33 +36,26 @@ export default {
     }
   },
   actions: {
-
     login ({ commit }, payload) {
       commit('clearError')
       commit('setProcessing', true)
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(payload.email, payload.password)
-        .then(
-          user => {
-            const item = { uid: user.user.uid, ...currentUser }
-            localStorage.setItem('user', JSON.stringify(item))
-            commit('setUser', { uid: user.user.uid, ...currentUser })
-          },
-          err => {
-            localStorage.removeItem('user')
-            commit('setError', err.message)
-          }
-        )
+      axios
+        .get(`http://5dad77e9c7e88c0014aa2a45.mockapi.io/users/${Math.ceil(Math.random() * Math.floor(10))}`)
+        .then(response => {
+          return response.data
+        })
+        .then(user => {
+          const item = { ...user }
+          localStorage.setItem('user', JSON.stringify(item))
+          commit('setUser', { ...user })
+        }, err => {
+          localStorage.removeItem('user')
+          commit('setError', err.message)
+        })
     },
     signOut ({ commit }) {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          localStorage.removeItem('user')
-          commit('setLogout')
-        }, _error => {})
+      localStorage.removeItem('user')
+      commit('setLogout')
     }
   }
 }

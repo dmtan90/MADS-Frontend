@@ -6,13 +6,13 @@
         <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none" @click.prevent="changeSideMenuForMobile(menuType)">
             <mobile-menu-icon/>
         </a>
-        <div :class="{'search':true, 'mobile-view':isMobileSearch}" ref="searchContainer" @mouseenter="isSearchOver=true" @mouseleave="isSearchOver=false">
+        <div :class="{'search':true, 'mobile-view':isMobileSearch}" ref="searchContainer" @mouseenter="isSearchOver=true" @mouseleave="isSearchOver=false" class="d-none">
             <b-input :placeholder="$t('menu.search')" @keypress.native.enter="search" v-model="searchKeyword"/>
             <span class="search-icon" @click="searchClick">
                 <i class="simple-icon-magnifier"></i>
             </span>
         </div>
-        <div  class="d-inline-block">
+        <div  class="d-none"> <!-- d-inline-block -->
             <b-dropdown id="langddm" class="ml-2" variant="light" size="sm" toggle-class="language-button">
                 <template slot="button-content">
                         <span  class="name">{{$i18n.locale.toUpperCase()}}</span>
@@ -27,10 +27,10 @@
 
           <div class="ml-auto">
           <div class="header-icons d-inline-block align-middle">
-            <div class="position-relative d-none d-none d-lg-inline-block">
+            <div class="position-relative d-none"> <!-- d-none d-none d-lg-inline-block  -->
               <a class="btn btn-outline-primary btn-sm mb-2 mr-3" target="_top" :href="buyUrl">{{$t('user.buy')}}</a>
             </div>
-            <div  class="position-relative d-none d-sm-inline-block">
+            <div  class="position-relative d-none"> <!-- d-sm-inline-block -->
                 <b-dropdown variant="empty" size="sm" right toggle-class="header-icon" menu-class="position-absolute mt-3 iconMenuDropdown" no-caret>
                     <template slot="button-content">
                             <i class="simple-icon-grid" />
@@ -90,9 +90,7 @@
                     <span  class="name mr-1">{{currentUser.title}}</span>
                     <span><img :alt="currentUser.title" :src="currentUser.img" /></span>
                 </template>
-                <b-dropdown-item>Account</b-dropdown-item>
-                <b-dropdown-item>Features</b-dropdown-item>
-                <b-dropdown-item>History</b-dropdown-item>
+                <b-dropdown-item>Account Settings</b-dropdown-item>
                 <b-dropdown-item>Support</b-dropdown-item>
                 <b-dropdown-divider />
                 <b-dropdown-item @click="logout">

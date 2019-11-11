@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     formSubmit () {
-      console.log('forgot-password')
       this.$router.push('/')
     }
   }

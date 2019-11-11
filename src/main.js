@@ -7,7 +7,7 @@ import es from './locales/es.json'
 
 import './assets/css/vendor/dropzone.min.css'
 import './assets/css/vendor/bootstrap.min.css'
-import './assets/css/sass/themes/piaf.light.blue.scss'
+import './assets/css/sass/themes/piaf.light.green.scss'
 
 import { defaultLocale, localeOptions, firebaseConfig } from '@/constants/config'
 import BootstrapVue from 'bootstrap-vue'
@@ -16,6 +16,7 @@ import Breadcrumb from '@/components/Common/Breadcrumb'
 import RefreshButton from '@/components/Common/RefreshButton'
 import Colxx from '@/components/Common/Colxx'
 import vuePerfectScrollbar from 'vue-perfect-scrollbar'
+import VueKonva from 'vue-konva'
 
 /* OPTINAL -begin */
 import contentmenu from 'v-contextmenu'
@@ -26,6 +27,7 @@ import 'firebase/auth'
 /* OPTINAL -end */
 import App from './App'
 
+Vue.use(VueKonva)
 Vue.use(BootstrapVue)
 Vue.use(VueI18n)
 
