@@ -36,26 +36,73 @@ export default {
     }
   },
   actions: {
-    login ({ commit }, payload) {
+    login ({ commit, rootState }, payload) {
       commit('clearError')
       commit('setProcessing', true)
+      axios.defaults.headers.post['Content-Type'] = 'application/json'
       axios
-        .get(`http://5dad77e9c7e88c0014aa2a45.mockapi.io/users/${Math.ceil(Math.random() * Math.floor(10))}`)
+        .post(`${rootState.apiBase}/sign-in/`, payload)
         .then(response => {
           return response.data
         })
-        .then(user => {
-          const item = { ...user }
-          localStorage.setItem('user', JSON.stringify(item))
+        .then(res => {
+          const user = {
+            'uid': res.user_id,
+            'name': 'admin',
+            'email': 'admin@datakrew.com',
+            'img': 'https://via.placeholder.com/150'
+          }
+          const jwt = {
+            'access_token': res.access_token,
+            'refresh_token': res.refresh_token
+          }
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.setItem('jwt', JSON.stringify(jwt))
+          axios.defaults.headers.common.Authorization = res.access_token
           commit('setUser', { ...user })
         }, err => {
           localStorage.removeItem('user')
+          localStorage.removeItem('jwt')
           commit('setError', err.message)
         })
     },
-    signOut ({ commit }) {
-      localStorage.removeItem('user')
-      commit('setLogout')
+    refreshAccess ({ commit, rootState }) {
+      axios.defaults.headers.post['Content-Type'] = 'application/json'
+      axios
+        .post(`${rootState.apiBase}/refresh/`)
+        .then(response => {
+          return response.data
+        })
+        .then(res => {
+          let jwt = JSON.parse(localStorage.getItem('jwt'))
+          jwt.access_token = res.access_token
+          localStorage.setItem('jwt', JSON.stringify(jwt))
+          axios.defaults.headers.common.Authorization = res.access_token
+        }, err => {
+          localStorage.removeItem('user')
+          localStorage.removeItem('jwt')
+          commit('setError', err.message)
+        })
+    },
+    signOut ({ commit, rootState }) {
+      axios
+        .post(`${rootState.apiBase}/sign-out/`)
+        .then(response => {
+          return response.data
+        })
+        .then(res => {
+          if (res.status === 'Signed Out') {
+            localStorage.removeItem('user')
+            localStorage.removeItem('jwt')
+            delete axios.defaults.headers.post['Content-Type']
+            delete axios.defaults.headers.common.Authorization
+            commit('setLogout')
+          } else {
+            commit('setError', res.message)
+          }
+        }, err => {
+          commit('setError', err.message)
+        })
     }
   }
 }

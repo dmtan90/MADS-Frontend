@@ -46,14 +46,15 @@ export default {
   methods: {
     ...mapActions(['login']),
     formSubmit () {
-      this.email = 'dummy@emailaddress.com'
-      this.password = 'CLJJGb8Hx9hJDUG'
+      this.email = 'admin@datakrew.com'
+      this.password = 'datakrew'
       this.login({ email: this.email, password: this.password })
     }
   },
   watch: {
     currentUser (val) {
-      if (val && val.uid && val.uid.length > 0) {
+      //  && val.uid.length > 0
+      if (val && val.uid) {
         setTimeout(() => {
           this.$router.push('/')
         }, 500)

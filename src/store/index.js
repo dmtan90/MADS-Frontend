@@ -9,8 +9,10 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
+    apiBase: 'http://localhost:4000'
   },
   getters: {
+    apiBase: state => state.apiBase
   },
   mutations: {
     changeLang (state, payload) {

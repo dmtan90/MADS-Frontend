@@ -8,7 +8,7 @@
   </b-row>
   <b-row>
     <b-colxx xxs="12">
-        <b-card class="mb-4" :title="$t('Factory Layout')" >
+        <b-card class="mb-4">
             <b-row>
                 <b-colxx sm="3">
                     <div role="tablist">
