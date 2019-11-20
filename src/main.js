@@ -17,6 +17,7 @@ import RefreshButton from '@/components/Common/RefreshButton'
 import Colxx from '@/components/Common/Colxx'
 import vuePerfectScrollbar from 'vue-perfect-scrollbar'
 import VueKonva from 'vue-konva'
+import axios from 'axios'
 
 /* OPTINAL -begin */
 import contentmenu from 'v-contextmenu'
@@ -31,6 +32,10 @@ Vue.use(VueKonva)
 Vue.use(BootstrapVue)
 Vue.use(VueI18n)
 
+const token = JSON.parse(localStorage.getItem('jwt'))
+if (token) {
+  axios.defaults.headers.common.Authorization = `Bearer ${token.access_token}`
+}
 const messages = { en: en, es: es }
 const locale = (localStorage.getItem('currentLanguage') && localeOptions.filter(x => x.id === localStorage.getItem('currentLanguage')).length > 0) ? localStorage.getItem('currentLanguage') : defaultLocale
 const i18n = new VueI18n({

@@ -58,7 +58,7 @@ export default {
           }
           localStorage.setItem('user', JSON.stringify(user))
           localStorage.setItem('jwt', JSON.stringify(jwt))
-          axios.defaults.headers.common.Authorization = res.access_token
+          axios.defaults.headers.common.Authorization = `Baerer ${res.access_token}`
           commit('setUser', { ...user })
         }, err => {
           localStorage.removeItem('user')
@@ -77,7 +77,7 @@ export default {
           let jwt = JSON.parse(localStorage.getItem('jwt'))
           jwt.access_token = res.access_token
           localStorage.setItem('jwt', JSON.stringify(jwt))
-          axios.defaults.headers.common.Authorization = res.access_token
+          axios.defaults.headers.common.Authorization = `Baerer ${res.access_token}`
         }, err => {
           localStorage.removeItem('user')
           localStorage.removeItem('jwt')
@@ -86,7 +86,7 @@ export default {
     },
     signOut ({ commit, rootState }) {
       axios
-        .post(`${rootState.apiBase}/sign-out/`)
+        .post(`${rootState.apiBase}/sign-out/`, JSON.parse(localStorage.getItem('jwt')))
         .then(response => {
           return response.data
         })

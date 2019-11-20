@@ -46,8 +46,8 @@ export default {
   methods: {
     ...mapActions(['login']),
     formSubmit () {
-      this.email = 'admin@datakrew.com'
-      this.password = 'datakrew'
+      // this.email = 'admin@datakrew.com'
+      // this.password = 'datakrew'
       this.login({ email: this.email, password: this.password })
     }
   },
