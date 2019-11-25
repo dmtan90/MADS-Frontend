@@ -10,7 +10,7 @@
           </div>
           <div class="form-side">
             <router-link tag="a" to="/"><span class="logo-single"/></router-link>
-            <h6 class="mb-4">{{ $t('user.login-title')}}</h6>
+            <h6 class="mb-4">{{ $t('user.login')}}</h6>
             <b-form @submit.prevent="formSubmit">
               <label class="form-group has-float-label mb-4">
                 <input type="email" class="form-control" v-model="email">
@@ -22,7 +22,7 @@
               </label>
               <div class="d-flex justify-content-between align-items-center">
                   <router-link tag="a" to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
-                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow" :disabled="processing">{{ $t('user.login-button')}}</b-button>
+                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow" :disabled="processing">{{ $t('buttons.login')}}</b-button>
               </div>
           </b-form>
         </div>
@@ -41,25 +41,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'processing', 'loginError'])
+    ...mapGetters(['currentUser', 'processing', 'loginError', 'loginErrorCode'])
   },
   methods: {
     ...mapActions(['login']),
     formSubmit () {
-      // this.email = 'admin@datakrew.com'
-      // this.password = 'datakrew'
-      this.login({ email: this.email, password: this.password })
+      this.email = 'admin@datakrew.com'
+      this.password = 'datakrew'
+
+      if (this.email !== '' && this.password !== '') {
+        this.login({ email: this.email, password: this.password })
+        this.password = ''
+      }
     }
   },
   watch: {
-    currentUser (val) {
-      //  && val.uid.length > 0
-      if (val && val.uid) {
-        setTimeout(() => {
-          this.$router.push('/')
-        }, 500)
-      }
-    },
     loginError (val) {
       if (val != null) {
         this.$notify('error', 'Login Error', val, { duration: 3000, permanent: false })

@@ -17,7 +17,7 @@
                 <span>{{ $t('user.email') }}</span>
               </label>
               <div class="d-flex justify-content-end align-items-center">
-                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow">{{ $t('user.reset-password-button')}}</b-button>
+                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow">{{ $t('buttons.reset-password')}}</b-button>
               </div>
           </b-form>
         </div>

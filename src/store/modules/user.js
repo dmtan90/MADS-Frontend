@@ -1,10 +1,15 @@
-import axios from 'axios'
+import { UserService, AuthenticationError } from '@/services/user.service'
+import TokenService from '@/services/token.service'
+import router from '@/router'
 
 export default {
   state: {
     currentUser: localStorage.getItem('user') != null ? JSON.parse(localStorage.getItem('user')) : null,
+    accessToken: TokenService.getToken(),
     loginError: null,
-    processing: false
+    loginErrorCode: null,
+    processing: false,
+    refreshTokenPromise: null
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -12,10 +17,13 @@ export default {
     loginError: state => state.loginError
   },
   mutations: {
-    setUser (state, payload) {
-      state.currentUser = payload
+    setToken (state, payload) {
+      state.accessToken = payload
       state.processing = false
       state.loginError = null
+    },
+    setUser (state, payload) {
+      state.currentUser = payload
     },
     setLogout (state) {
       state.currentUser = null
@@ -33,76 +41,75 @@ export default {
     },
     clearError (state) {
       state.loginError = null
+    },
+    refreshTokenPromise (state, promise) {
+      state.refreshTokenPromise = promise
     }
   },
   actions: {
-    login ({ commit, rootState }, payload) {
-      commit('clearError')
+    async login ({ commit }, payload) {
       commit('setProcessing', true)
-      axios.defaults.headers.post['Content-Type'] = 'application/json'
-      axios
-        .post(`${rootState.apiBase}/sign-in/`, payload)
-        .then(response => {
-          return response.data
-        })
-        .then(res => {
-          const user = {
-            'uid': res.user_id,
-            'name': 'admin',
-            'email': 'admin@datakrew.com',
-            'img': 'https://via.placeholder.com/150'
-          }
-          const jwt = {
-            'access_token': res.access_token,
-            'refresh_token': res.refresh_token
-          }
-          localStorage.setItem('user', JSON.stringify(user))
-          localStorage.setItem('jwt', JSON.stringify(jwt))
-          axios.defaults.headers.common.Authorization = `Baerer ${res.access_token}`
-          commit('setUser', { ...user })
-        }, err => {
-          localStorage.removeItem('user')
-          localStorage.removeItem('jwt')
-          commit('setError', err.message)
-        })
+
+      try {
+        const token = await UserService.login(payload.email, payload.password)
+        const user = {
+          'uid': 1,
+          'name': 'admin',
+          'email': 'admin@datakrew.com',
+          'img': 'https://via.placeholder.com/150'
+        }
+        commit('setToken', token)
+        commit('setUser', { ...user })
+
+        localStorage.setItem('user', JSON.stringify(user))
+
+        router.push(router.history.current.query.redirect || '/')
+
+        return true
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
+        }
+      }
     },
-    refreshAccess ({ commit, rootState }) {
-      axios.defaults.headers.post['Content-Type'] = 'application/json'
-      axios
-        .post(`${rootState.apiBase}/refresh/`)
-        .then(response => {
-          return response.data
-        })
-        .then(res => {
-          let jwt = JSON.parse(localStorage.getItem('jwt'))
-          jwt.access_token = res.access_token
-          localStorage.setItem('jwt', JSON.stringify(jwt))
-          axios.defaults.headers.common.Authorization = `Baerer ${res.access_token}`
-        }, err => {
-          localStorage.removeItem('user')
-          localStorage.removeItem('jwt')
-          commit('setError', err.message)
-        })
-    },
-    signOut ({ commit, rootState }) {
-      axios
-        .post(`${rootState.apiBase}/sign-out/`, JSON.parse(localStorage.getItem('jwt')))
-        .then(response => {
-          return response.data
-        })
-        .then(res => {
-          if (res.status === 'Signed Out') {
-            localStorage.removeItem('user')
-            localStorage.removeItem('jwt')
-            delete axios.defaults.headers.post['Content-Type']
-            delete axios.defaults.headers.common.Authorization
-            commit('setLogout')
-          } else {
-            commit('setError', res.message)
+    async refreshAccess ({ commit, state }) {
+      commit('setProcessing', true)
+
+      // If this is the first time the refreshToken has been called, make a request
+      // otherwise return the same promise to the caller
+      if (!state.refreshTokenPromise) {
+        const p = UserService.refreshToken()
+        commit('refreshTokenPromise', p)
+
+        // Wait for the UserService.refreshToken() to resolve. On success set the token and clear promise
+        // Clear the promise on error as well.
+        p.then(
+          response => {
+            commit('refreshTokenPromise', null)
+            commit('setToken', response)
+          },
+          error => {
+            commit('refreshTokenPromise', null)
+            commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
           }
-        }, err => {
-          commit('setError', err.message)
-        })
+        )
+      }
+
+      return state.refreshTokenPromise
+    },
+    async logout ({ commit }) {
+      try {
+        UserService.logout()
+        commit('setLogout')
+
+        localStorage.removeItem('user')
+
+        router.push('/user/login')
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
+        }
+      }
     }
   }
 }
