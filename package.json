@@ -16,6 +16,7 @@
     "core-js": "^2.6.9",
     "firebase": "^5.9.1",
     "konva": "^4.0.17",
+    "lodash": "^4.17.15",
     "v-calendar": "^0.9.7",
     "v-contextmenu": "^2.8.0",
     "video.js": "^7.4.1",
