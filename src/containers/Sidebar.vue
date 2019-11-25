@@ -13,8 +13,8 @@
       >
         <ul class="list-unstyled">
           <li :class="{ active : selectedParentMenu==='single'}">
-             <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/single" tag="li">
-                <a><i class="iconsminds-three-arrow-fork"></i>  {{ $t("Dashboard") }}</a>
+             <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/dashboard" tag="li">
+                <a><i class="iconsminds-three-arrow-fork"></i>  {{ $t("menu.dashboard") }}</a>
               </router-link>
           </li>
 

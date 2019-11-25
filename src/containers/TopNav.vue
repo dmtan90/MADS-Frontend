@@ -57,8 +57,7 @@
                     </div>
                 </b-dropdown>
             </div>
-
-            <div  class="position-relative d-inline-block">
+            <div  class="position-relative d-none"> <!-- d-inline-block -->
                 <b-dropdown variant="empty" size="sm" right toggle-class="header-icon notificationButton" menu-class="position-absolute mt-3 notificationDropdown" no-caret>
                     <template slot="button-content">
                             <i class="simple-icon-bell" />
@@ -129,7 +128,7 @@ export default {
   },
   methods: {
     ...mapMutations(['changeSideMenuStatus', 'changeSideMenuForMobile']),
-    ...mapActions(['setLang', 'signOut']),
+    ...mapActions(['setLang', 'logout']),
     search () {
       this.$router.push(`${this.searchPath}?search=${this.searchKeyword}`)
       this.searchKeyword = ''
@@ -156,9 +155,7 @@ export default {
       this.setLang(locale)
     },
     logout () {
-      this.signOut().then(() => {
-        this.$router.push('/user/login')
-      })
+      this.logout()
     },
 
     toggleFullScreen () {
