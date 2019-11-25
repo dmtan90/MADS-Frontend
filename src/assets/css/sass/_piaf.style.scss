@@ -5392,10 +5392,6 @@ input:-webkit-autofill {
   background: $foreground-color;
 }
 
-.modal-dialog {
-  @include depth(2);
-}
-
 .modal-right {
   padding-right: 0 !important;
 
