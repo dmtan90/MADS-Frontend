@@ -5,45 +5,10 @@
         <h1>{{ $t('menu.sensor-type') }}</h1>
         <div class="float-sm-right">
           <b-button
-            v-b-modal.modalright
+            v-b-modal.addnew
             variant="primary"
             size="lg"
-          >{{ $t('pages.add-new') }}</b-button>
-
-          <b-modal
-            id="modalright"
-            ref="modalright"
-            :title="$t('New Sensor Type')"
-            class="modal-right"
-          >
-            <b-form>
-              <b-form-group :label="$t('Name')">
-                <b-form-input v-model="newItem.name" :placeholder="$t('Name')"/>
-              </b-form-group>
-              <b-form-group :label="$t('Description')">
-                <b-textarea v-model="newItem.description" :rows="2" :max-rows="2" :placeholder="$t('Description')"/>
-              </b-form-group>
-              <b-form-group :label="$t('Identifier')">
-                <b-form-input v-model="newItem.identifies" :placeholder="$t('Identifier')"/>
-                <!-- <v-select :options="categories" v-model="newItem.category"/> -->
-              </b-form-group>
-              <b-form-group :label="$t('Value Keys')">
-                <input-tag v-model="newItem.valueKeys" :placeholder="$t('Value Keys')"></input-tag>
-              </b-form-group>
-            </b-form>
-
-            <template slot="modal-footer">
-              <b-button
-                variant="outline-secondary"
-                @click="hideModal('modalright')"
-              >{{ $t('Cancel') }}</b-button>
-              <b-button
-                variant="primary"
-                @click="addNewItem()"
-                class="mr-1"
-              >{{ $t('Submit') }}</b-button>
-            </template>
-          </b-modal>
+          >{{ $t('buttons.add-new') }}</b-button>
         </div>
         <piaf-breadcrumb/>
         <div class="mb-2 mt-2">
@@ -55,68 +20,33 @@
             {{ $t('More Options') }}
             <i class="simple-icon-arrow-down align-middle"/>
           </b-button>
-          <b-collapse id="displayOptions" class="d-md-block">
-            <!-- <span class="mr-3 mb-2 d-inline-block float-md-left">
-              <a
-                :class="{'mr-2 view-icon':true,'active': displayMode==='list'}"
-                @click="changeDisplayMode('list')"
-              >
-                <data-list-icon/>
-              </a>
-              <a
-                :class="{'mr-2 view-icon':true,'active': displayMode==='thumb'}"
-                @click="changeDisplayMode('thumb')"
-              >
-                <thumb-list-icon/>
-              </a>
-              <a
-                :class="{'mr-2 view-icon':true,'active': displayMode==='image'}"
-                @click="changeDisplayMode('image')"
-              >
-                <image-list-icon/>
-              </a>
-            </span> -->
-            <div class="d-block d-sm-inline-block mb-2">
-              <b-dropdown
-                id="ddown1"
-                :text="`${$t('pages.orderby')} ${sort.label}`"
-                variant="outline-dark"
-                class="mr-1 float-md-left btn-group"
-                size="xs"
-              >
-                <b-dropdown-item
-                  v-for="(order,index) in sortOptions"
-                  :key="index"
-                  @click="changeOrderBy(order)"
-                >{{ order.label }}</b-dropdown-item>
-              </b-dropdown>
-
-              <div class="search-sm d-inline-block float-md-left mr-1 align-top">
-                <b-input :placeholder="$t('menu.search')" v-model="search"/>
-              </div>
-            </div>
-            <div class="float-sm-right">
-              <span class="text-muted text-small mr-1 mb-2">{{from}}-{{to}} of {{ total }}</span>
-              <b-dropdown
-                id="ddown2"
-                right
-                :text="`${perPage}`"
-                variant="outline-dark"
-                class="d-inline-block"
-                size="xs"
-              >
-                <b-dropdown-item
-                  v-for="(size,index) in pageSizes"
-                  :key="index"
-                  @click="changePageSize(size)"
-                >{{ size }}</b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </b-collapse>
         </div>
-        <div class="separator mb-5"/>
+      </b-colxx>
+      <b-colxx xxs="12">
+        <b-collapse id="displayOptions" class="d-md-block">
+          <div class="float-sm-right">
+            <span class="text-muted text-small mr-1 mb-2">{{from}}-{{to}} of {{ total }}</span>
+            <b-dropdown
+              id="ddown2"
+              right
+              :text="`${perPage}`"
+              variant="outline-dark"
+              class="d-inline-block"
+              size="xs"
+            >
+              <b-dropdown-item
+                v-for="(size,index) in pageSizes"
+                :key="index"
+                @click="changePageSize(size)"
+              >{{ size }}</b-dropdown-item>
+            </b-dropdown>
+          </div>
+        </b-collapse>
       </b-colxx>
     </b-row>
+    <div class="separator mt-2 mb-5"/>
+
+    <!-- LISTING -begin -->
     <template v-if="isLoad">
       <b-row v-if="displayMode==='image'" key="image">
         <b-colxx
@@ -150,7 +80,7 @@
       </b-row>
       <b-row v-else-if="displayMode==='list'" key="list">
         <b-colxx xxs="12" class="mb-3" v-for="(item,index) in items" :key="index" :id="item.id">
-          <data-list-item
+          <sensor-type-list-item
             :key="item.id"
             :data="item"
             :selected-items="selectedItems"
@@ -163,7 +93,7 @@
         <b-colxx xxs="12">
           <b-pagination-nav
             :number-of-pages="lastPage"
-            :link-gen="linkGen"
+            :link-gen="changePage"
             v-model="page"
             :per-page="perPage"
             align="center"
@@ -181,59 +111,148 @@
               <i class="simple-icon-control-end"/>
             </template>
           </b-pagination-nav>
+
+          <!-- <b-pagination
+            v-model="page"
+            :total-rows="total"
+            :per-page="lastPage"
+          ></b-pagination> -->
         </b-colxx>
       </b-row>
     </template>
+    <!-- LISTING -end -->
+
+    <!-- LOADING -begin -->
     <template v-else>
       <div class="loading"></div>
     </template>
+    <!-- LOADING -end -->
+
+    <!-- RIGHTCLICK -begin -->
     <v-contextmenu ref="contextmenu" @contextmenu="handleContextmenu">
-      <v-contextmenu-item @click="onContextCopy()">
-        <i class="simple-icon-docs"/>
-        <span>Copy</span>
-      </v-contextmenu-item>
-      <v-contextmenu-item @click="onContextArchive()">
-        <i class="simple-icon-drawer"/>
-        <span>Move to archive</span>
+      <v-contextmenu-item @click="onContextEdit()">
+        <i class="simple-icon-pencil"/>
+        <span>Edit</span>
       </v-contextmenu-item>
       <v-contextmenu-item @click="onContextDelete()">
         <i class="simple-icon-trash"/>
         <span>Delete</span>
       </v-contextmenu-item>
     </v-contextmenu>
+    <!-- RIGHTCLICK -end -->
+
+    <!-- MODAL -begin -->
+    <b-modal id="addnew" ref="addnew" :title="$t('sensor-type.add')" class="add-new" centered>
+      <b-form>
+        <b-form-group :label="$t('sensor-type.name')">
+          <b-form-input v-model="newItem.name" :placeholder="$t('sensor-type.name')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.make')">
+          <b-form-input v-model="newItem.make" :placeholder="$t('sensor-type.make')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.visualizer')">
+          <b-form-input v-model="newItem.visualizer" :placeholder="$t('sensor-type.visualizer')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.identifier')">
+          <b-form-input v-model="newItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
+          <!-- <v-select :options="categories" v-model="newItem.category"/> -->
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.value-keys')" description="Hit enter to input multiple value keys">
+          <input-tag v-model="newItem.value_keys" :placeholder="$t('sensor-type.value-keys')"></input-tag>
+        </b-form-group>
+      </b-form>
+
+      <template slot="modal-footer">
+        <b-button
+          variant="outline-secondary"
+          @click="hideModal('addnew')"
+        >{{ $t('Cancel') }}</b-button>
+        <b-button
+          variant="primary"
+          @click="addNewItem()"
+          class="mr-1"
+        >{{ $t('Submit') }}</b-button>
+      </template>
+    </b-modal>
+
+    <b-modal id="delete" ref="delete" :title="'DELETE'" centered>
+      <p class="my-4">You are about to delete an item. Are you sure?</p>
+      <template slot="modal-footer">
+        <b-button
+          variant="outline-secondary"
+          @click="hideModal('delete')"
+        >{{ $t('Cancel') }}</b-button>
+        <b-button
+          variant="danger"
+          @click="deleteItem()"
+          class="mr-1"
+        >{{ $t('Delete') }}</b-button>
+      </template>
+    </b-modal>
+
+    <b-modal id="edit" ref="edit" :title="$t('EDIT')" centered>
+      <b-form>
+        <b-form-group :label="$t('sensor-type.name')">
+          <b-form-input v-model="editItem.name" :placeholder="$t('sensor-type.name')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.make')">
+          <b-form-input v-model="editItem.make" :placeholder="$t('sensor-type.make')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.visualizer')">
+          <b-form-input v-model="editItem.visualizer" :placeholder="$t('sensor-type.visualizer')"/>
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.identifier')">
+          <b-form-input v-model="editItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
+          <!-- <v-select :options="categories" v-model="editItem.category"/> -->
+        </b-form-group>
+        <b-form-group :label="$t('sensor-type.value-keys')" description="Hit enter to input multiple value keys">
+          <input-tag v-model="editItem.value_keys" :placeholder="$t('sensor-type.value-keys')"></input-tag>
+        </b-form-group>
+      </b-form>
+
+      <template slot="modal-footer">
+        <b-button
+          variant="outline-secondary"
+          @click="hideModal('edit')"
+        >{{ $t('Cancel') }}</b-button>
+        <b-button
+          variant="primary"
+          @click="editAnItem()"
+          class="mr-1"
+        >{{ $t('Submit') }}</b-button>
+      </template>
+    </b-modal>
+    <!-- MODAL -end -->
   </b-colxx>
 </template>
 <script>
 import { DataListIcon, ThumbListIcon, ImageListIcon } from '@/components/Svg'
-import vSelect from 'vue-select'
 import InputTag from '@/components/Form/InputTag'
-import axios from 'axios'
+
+import sensorType from '@/services/sensorType.service'
 
 import ImageListItem from '@/components/Listing/ImageListItem'
 import ThumbListItem from '@/components/Listing/ThumbListItem'
-import DataListItem from '@/components/Listing/DataListItem'
-import { apiUrl } from '@/constants/config'
+import SensorTypeListItem from '@/components/Listing/SensorTypeListItem'
 
 export default {
   components: {
     DataListIcon,
     ThumbListIcon,
     ImageListIcon,
-    vSelect,
     InputTag,
     ImageListItem,
     ThumbListItem,
-    DataListItem
+    SensorTypeListItem
   },
   data () {
     return {
       isLoad: false,
-      apiBase: apiUrl + '/cakes/fordatatable',
       displayMode: 'list',
-      sort: { column: 'title', label: 'Date' },
+      sort: { column: 'name', label: 'Name' },
       sortOptions: [
-        { column: 'title', label: 'Name' },
-        { column: 'category', label: 'Identifier' }
+        { column: 'name', label: 'Name' },
+        { column: 'identifier', label: 'Identifier' }
       ],
       page: 1,
       perPage: 4,
@@ -254,54 +273,70 @@ export default {
         { text: 'ON HOLD', value: 'ON HOLD' },
         { text: 'PROCESSED', value: 'PROCESSED' }
       ],
-      newItem: {
-        title: '',
-        category: '',
-        description: '',
-        status: ''
-      }
+      newItem: {},
+      editItem: {}
     }
   },
   methods: {
-    loadItems () {
+    loadItems (pageNum) {
       this.isLoad = false
+      let params = {
+        page_size: this.perPage,
+        page_num: pageNum
+      }
 
-      axios
-        .get('http://5dad77e9c7e88c0014aa2a45.mockapi.io/sensortype')
-        .then(response => {
-          console.log(response.data[0])
-          return response.data[0]
-        })
-        .then(res => {
-          this.total = res.total
-          this.from = res.from
-          this.to = res.to
-          this.items = res.data
-          this.perPage = res.per_page
-          this.selectedItems = []
-          this.lastPage = res.last_page
-          this.isLoad = true
-        })
+      sensorType.read(params).then(response => {
+        this.total = response.total_entries
+        this.lastPage = response.total_pages
+        this.from = response.page_size * response.page_number - (response.page_size - 1)
+        this.to = response.page_size * response.page_number
+        this.perPage = response.page_size
+        this.items = response.sensor_types
+        this.selectedItems = []
+        this.isLoad = true
+      })
     },
     hideModal (refname) {
       this.$refs[refname].hide()
+      this.selectedItems = []
     },
     changeDisplayMode (displayType) {
       this.displayMode = displayType
     },
     changePageSize (perPage) {
       this.perPage = perPage
+      this.loadItems()
     },
     changeOrderBy (sort) {
       this.sort = sort
     },
     addNewItem () {
-      console.log('adding item : ', this.newItem)
-      axios
-        .post('http://5dad77e9c7e88c0014aa2a45.mockapi.io/users/1/sensors', this.newItem)
-        .then(response => {
-          console.log(response)
-        })
+      sensorType.create(this.newItem).then(response => {
+        this.items.push(response)
+        this.newItem = {}
+        this.$refs['addnew'].hide()
+      })
+    },
+    deleteItem () {
+      let id = this.selectedItems[0]
+      sensorType.delete(id).then(response => {
+        for (var i = 0; i < this.items.length; i++) {
+          if (this.items[i].id === id) {
+            this.items.splice(i, 1)
+            i--
+            this.$refs['delete'].hide()
+            return
+          }
+        }
+      })
+    },
+    editAnItem () {
+      let id = this.selectedItems[0]
+      sensorType.update(id, this.editItem).then(response => {
+        this.loadItems(this.page)
+        this.editItem = {}
+        this.$refs['edit'].hide()
+      })
     },
     selectAll (isToggle) {
       if (this.selectedItems.length >= this.items.length) {
@@ -357,26 +392,26 @@ export default {
         this.selectedItems = [vnode.key]
       }
     },
-    onContextCopy () {
-      console.log(
-        'context menu item clicked - Copy Items: ',
-        this.selectedItems
-      )
-    },
-    onContextArchive () {
-      console.log(
-        'context menu item clicked - Move to Archive Items: ',
-        this.selectedItems
-      )
+    onContextEdit () {
+      this.$refs['edit'].show()
+      let id = this.selectedItems[0]
+      for (var i = 0; i < this.items.length; i++) {
+        if (this.items[i].id === id) {
+          this.editItem = {
+            name: this.items[i].name,
+            make: this.items[i].make,
+            identifier: this.items[i].identifier
+          }
+          i--
+          return
+        }
+      }
     },
     onContextDelete () {
-      console.log(
-        'context menu item clicked - Delete Items: ',
-        this.selectedItems
-      )
+      this.$refs['delete'].show()
     },
-    linkGen (pageNum) {
-      return '#page-' + pageNum
+    changePage (event, pageNum) {
+      // this.loadItems(pageNum)
     }
   },
   computed: {
@@ -388,23 +423,15 @@ export default {
         this.selectedItems.length > 0 &&
         this.selectedItems.length < this.items.length
       )
-    },
-    apiUrl () {
-      return `${this.apiBase}?sort=${this.sort.column}&page=${
-        this.page
-      }&per_page=${this.perPage}&search=${this.search}`
     }
   },
   watch: {
     search () {
       this.page = 1
-    },
-    apiUrl () {
-      this.loadItems()
     }
   },
   mounted () {
-    this.loadItems()
+    this.loadItems(1)
   }
 }
 </script>
