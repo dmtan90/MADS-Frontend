@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import device from '@/services/device.service'
+import devices from '@/services/devices.service'
 
 import ImageListItem from '@/components/Listing/ImageListItem'
 import ThumbListItem from '@/components/Listing/ThumbListItem'
@@ -237,7 +237,7 @@ export default {
         page_number: pageNum
       }
 
-      device.read(params).then(response => {
+      devices.read(params).then(response => {
         this.total = response.total_entries
         this.lastPage = response.total_pages
         this.from = response.page_size * response.page_number - (response.page_size - 1)
@@ -262,7 +262,7 @@ export default {
       this.sort = sort
     },
     addNewItem () {
-      device.create(this.newItem).then(response => {
+      devices.create(this.newItem).then(response => {
         this.items.push(response)
         this.newItem = {}
         this.$refs['addnew'].hide()
@@ -270,7 +270,7 @@ export default {
     },
     deleteItem () {
       let id = this.selectedItems[0]
-      device.delete(id).then(response => {
+      devices.delete(id).then(response => {
         for (var i = 0; i < this.items.length; i++) {
           if (this.items[i].id === id) {
             this.items.splice(i, 1)
@@ -283,7 +283,7 @@ export default {
     },
     editAnItem () {
       let id = this.selectedItems[0]
-      device.update(id, this.editItem).then(response => {
+      devices.update(id, this.editItem).then(response => {
         this.loadItems(this.page)
         this.editItem = {}
         this.$refs['edit'].hide()
