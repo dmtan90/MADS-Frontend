@@ -91,7 +91,7 @@
       </b-row>
       <b-row v-if="lastPage>1">
         <b-colxx xxs="12">
-          <b-pagination-nav
+          <!-- <b-pagination-nav
             :number-of-pages="lastPage"
             :link-gen="changePage"
             v-model="page"
@@ -110,13 +110,14 @@
             <template v-slot:last-text>
               <i class="simple-icon-control-end"/>
             </template>
-          </b-pagination-nav>
+          </b-pagination-nav> -->
 
-          <!-- <b-pagination
+          <b-pagination
             v-model="page"
             :total-rows="total"
-            :per-page="lastPage"
-          ></b-pagination> -->
+            :per-page="perPage"
+            align="center"
+          ></b-pagination>
         </b-colxx>
       </b-row>
     </template>
@@ -282,7 +283,7 @@ export default {
       this.isLoad = false
       let params = {
         page_size: this.perPage,
-        page_num: pageNum
+        page_number: pageNum
       }
 
       sensorType.read(params).then(response => {
@@ -409,9 +410,6 @@ export default {
     },
     onContextDelete () {
       this.$refs['delete'].show()
-    },
-    changePage (event, pageNum) {
-      // this.loadItems(pageNum)
     }
   },
   computed: {
@@ -428,6 +426,9 @@ export default {
   watch: {
     search () {
       this.page = 1
+    },
+    page (value) {
+      this.loadItems(value)
     }
   },
   mounted () {
