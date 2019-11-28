@@ -19,7 +19,14 @@
     "make": "Manufacturer",
     "visualizer": "Visualizer",
     "identifier": "Identifier",
-    "value-keys": "Value Keys"
+    "value_keys": "Value Keys"
+  },
+  "devices": {
+    "add": "Add a new device",
+    "edit": "Edit device details",
+    "name": "Device Name",
+    "access_token": "Access Token",
+    "description": "Description"
   },
   "menu": {
     "app": "Home",
@@ -60,9 +67,12 @@
     "reset-password": "RESET PASSWORD",
     "add-new": "ADD NEW",
     "edit": "EDIT",
-    "delete": "Delete",
+    "delete": "DELETE",
     "save": "SAVE",
     "upload": "UPLOAD",
-    "send-message": "SEND MESSAGE"
+    "send-message": "SEND MESSAGE",
+    "cancel": "CANCEL",
+    "submit": "SUBMIT",
+    "more-options": "MORE OPTIONS"
   }
 }

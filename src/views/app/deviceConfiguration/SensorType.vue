@@ -17,11 +17,12 @@
             class="pt-0 pl-0 d-inline-block d-md-none"
             v-b-toggle.displayOptions
           >
-            {{ $t('More Options') }}
+            {{ $t('buttons.more-options') }}
             <i class="simple-icon-arrow-down align-middle"/>
           </b-button>
         </div>
       </b-colxx>
+
       <b-colxx xxs="12">
         <b-collapse id="displayOptions" class="d-md-block">
           <div class="float-sm-right">
@@ -91,27 +92,6 @@
       </b-row>
       <b-row v-if="lastPage>1">
         <b-colxx xxs="12">
-          <!-- <b-pagination-nav
-            :number-of-pages="lastPage"
-            :link-gen="changePage"
-            v-model="page"
-            :per-page="perPage"
-            align="center"
-          >
-            <template v-slot:next-text>
-              <i class="simple-icon-arrow-right"/>
-            </template>
-            <template v-slot:prev-text>
-              <i class="simple-icon-arrow-left"/>
-            </template>
-            <template v-slot:first-text>
-              <i class="simple-icon-control-start"/>
-            </template>
-            <template v-slot:last-text>
-              <i class="simple-icon-control-end"/>
-            </template>
-          </b-pagination-nav> -->
-
           <b-pagination
             v-model="page"
             :total-rows="total"
@@ -158,8 +138,8 @@
           <b-form-input v-model="newItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
           <!-- <v-select :options="categories" v-model="newItem.category"/> -->
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.value-keys')" description="Hit enter to input multiple value keys">
-          <input-tag v-model="newItem.value_keys" :placeholder="$t('sensor-type.value-keys')"></input-tag>
+        <b-form-group :label="$t('sensor-type.value_keys')" description="Hit enter to input multiple value keys">
+          <input-tag v-model="newItem.value_keys" :placeholder="$t('sensor-type.value_keys')"></input-tag>
         </b-form-group>
       </b-form>
 
@@ -191,7 +171,7 @@
       </template>
     </b-modal>
 
-    <b-modal id="edit" ref="edit" :title="$t('EDIT')" centered>
+    <b-modal id="edit" ref="edit" :title="$t('sensor-type.edit')" centered>
       <b-form>
         <b-form-group :label="$t('sensor-type.name')">
           <b-form-input v-model="editItem.name" :placeholder="$t('sensor-type.name')"/>
@@ -206,8 +186,8 @@
           <b-form-input v-model="editItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
           <!-- <v-select :options="categories" v-model="editItem.category"/> -->
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.value-keys')" description="Hit enter to input multiple value keys">
-          <input-tag v-model="editItem.value_keys" :placeholder="$t('sensor-type.value-keys')"></input-tag>
+        <b-form-group :label="$t('sensor-type.value_keys')" description="Hit enter to input multiple value keys">
+          <input-tag v-model="editItem.value_keys" :placeholder="$t('sensor-type.value_keys')"></input-tag>
         </b-form-group>
       </b-form>
 
@@ -226,21 +206,17 @@
     <!-- MODAL -end -->
   </b-colxx>
 </template>
-<script>
-import { DataListIcon, ThumbListIcon, ImageListIcon } from '@/components/Svg'
-import InputTag from '@/components/Form/InputTag'
 
+<script>
 import sensorType from '@/services/sensorType.service'
 
+import InputTag from '@/components/Form/InputTag'
 import ImageListItem from '@/components/Listing/ImageListItem'
 import ThumbListItem from '@/components/Listing/ThumbListItem'
 import SensorTypeListItem from '@/components/Listing/SensorTypeListItem'
 
 export default {
   components: {
-    DataListIcon,
-    ThumbListIcon,
-    ImageListIcon,
     InputTag,
     ImageListItem,
     ThumbListItem,
@@ -265,15 +241,6 @@ export default {
       items: [],
       pageSizes: [4, 8, 12],
       selectedItems: [],
-      categories: [
-        { label: 'Cakes', value: 'Cakes' },
-        { label: 'Cupcakes', value: 'Cupcakes' },
-        { label: 'Desserts', value: 'Desserts' }
-      ],
-      statuses: [
-        { text: 'ON HOLD', value: 'ON HOLD' },
-        { text: 'PROCESSED', value: 'PROCESSED' }
-      ],
       newItem: {},
       editItem: {}
     }
