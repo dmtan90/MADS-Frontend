@@ -57,10 +57,10 @@
               {{ $t("menu.sensor-type") }}
             </a>
           </router-link>
-          <router-link tag="li" to="/app/device-configuration/devices">
+          <router-link tag="li" to="/app/device-configuration/device">
             <a>
               <i class="simple-icon-paper-plane"></i>
-              {{ "Devices" }}
+              {{ $t("menu.device") }}
             </a>
           </router-link>
         </ul>

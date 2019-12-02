@@ -20,12 +20,12 @@
                 <b-dropdown-item v-for="(l,index) in localeOptions" :key="index" @click="changeLocale(l.id)">{{l.name}}</b-dropdown-item>
             </b-dropdown>
         </div>
-        <router-link class="navbar-logo" tag="a" to="/app">
+        <router-link class="navbar-logo" tag="a" to="/">
             <span class="logo d-none d-xs-block"></span>
             <span class="logo-mobile d-block d-xs-none"></span>
         </router-link>
 
-          <div class="ml-auto">
+        <div class="ml-auto">
           <div class="header-icons d-inline-block align-middle">
             <div class="position-relative d-none"> <!-- d-none d-none d-lg-inline-block  -->
               <a class="btn btn-outline-primary btn-sm mb-2 mr-3" target="_top" :href="buyUrl">{{$t('user.buy')}}</a>
