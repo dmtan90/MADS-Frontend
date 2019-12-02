@@ -1,8 +1,8 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/sensor'
+const resource = '/device'
 
-const sensorService = {
+const deviceService = {
   create: async function (payload) {
     try {
       const response = await ApiService.post(resource, payload)
@@ -44,4 +44,4 @@ const sensorService = {
   }
 }
 
-export default sensorService
+export default deviceService
