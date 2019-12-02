@@ -354,23 +354,23 @@ export default {
         this.selectedItems = [vnode.key]
       }
     },
-    onContextCopy () {
-      console.log(
-        'context menu item clicked - Copy Items: ',
-        this.selectedItems
-      )
-    },
-    onContextArchive () {
-      console.log(
-        'context menu item clicked - Move to Archive Items: ',
-        this.selectedItems
-      )
+    onContextEdit () {
+      this.$refs['edit'].show()
+      let id = this.selectedItems[0]
+      for (var i = 0; i < this.items.length; i++) {
+        if (this.items[i].id === id) {
+          this.editItem = {
+            name: this.items[i].name,
+            access_token: this.items[i].access_token,
+            description: this.items[i].description
+          }
+          i--
+          return
+        }
+      }
     },
     onContextDelete () {
-      console.log(
-        'context menu item clicked - Delete Items: ',
-        this.selectedItems
-      )
+      this.$refs['delete'].show()
     },
     linkGen (pageNum) {
       return '#page-' + pageNum

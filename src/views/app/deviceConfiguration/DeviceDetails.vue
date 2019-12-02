@@ -2,7 +2,7 @@
   <b-colxx class="disable-text-selection">
     <b-row>
       <b-colxx xxs="12">
-        <h1>{{ $t('menu.devices') }}</h1>
+        <h1>{{ $t('menu.device') }} - {{ $route.params.id }}</h1>
         <div class="float-sm-right">
           <b-button
             v-b-modal.addnew
@@ -21,6 +21,16 @@
             <i class="simple-icon-arrow-down align-middle"/>
           </b-button>
         </div>
+      </b-colxx>
+
+      <b-colxx xxs="0" sm="6" lg="2" xl="2">
+          <b-img src="https://acqdat.herokuapp.com/images/device_detail_card.png" thumbnail fluid></b-img>
+      </b-colxx>
+      <b-colxx xxs="12" sm="6" lg="9" xl="9">
+          <p>Name : device_name</p>
+          <p>Description : device_description</p>
+          <p>Token : device_access_token</p>
+          <p>UUID : device_uuid</p>
       </b-colxx>
 
       <b-colxx xxs="12">
@@ -113,26 +123,20 @@
     <v-contextmenu ref="contextmenu" @contextmenu="handleContextmenu">
       <v-contextmenu-item @click="onContextEdit()">
         <i class="simple-icon-pencil"/>
-        <span>Edit</span>
+        <span>{{ $t('sensor.edit') }}</span>
       </v-contextmenu-item>
       <v-contextmenu-item @click="onContextDelete()">
         <i class="simple-icon-trash"/>
-        <span>Delete</span>
+        <span>{{ $t('sensor.delete') }}</span>
       </v-contextmenu-item>
     </v-contextmenu>
     <!-- RIGHTCLICK -end -->
 
     <!-- MODAL -begin -->
-    <b-modal id="addnew" ref="addnew" :title="$t('devices.add')" class="add-new" centered>
+    <b-modal id="addnew" ref="addnew" :title="$t('sensor.add')" class="add-new" centered>
       <b-form>
-        <b-form-group :label="$t('devices.name')">
-          <b-form-input v-model="newItem.name" :placeholder="$t('devices.name')"/>
-        </b-form-group>
-        <b-form-group :label="$t('devices.access_token')">
-          <b-form-input v-model="newItem.access_token" :placeholder="$t('devices.access_token')"/>
-        </b-form-group>
-        <b-form-group :label="$t('devices.description')">
-          <b-form-input v-model="newItem.description" :placeholder="$t('devices.description')"/>
+        <b-form-group :label="$t('sensor.name')">
+          <b-form-input v-model="newItem.name" :placeholder="$t('sensor.name')"/>
         </b-form-group>
       </b-form>
 
@@ -149,7 +153,7 @@
       </template>
     </b-modal>
 
-    <b-modal id="delete" ref="delete" :title="'DELETE'" centered>
+    <b-modal id="delete" ref="delete" :title="$t('sensor.delete')" centered>
       <p class="my-4">You are about to delete an item. Are you sure?</p>
       <template slot="modal-footer">
         <b-button
@@ -164,16 +168,10 @@
       </template>
     </b-modal>
 
-    <b-modal id="edit" ref="edit" :title="$t('devices.edit')" centered>
+    <b-modal id="edit" ref="edit" :title="$t('sensor.edit')" centered>
       <b-form>
-        <b-form-group :label="$t('devices.name')">
-          <b-form-input v-model="editItem.name" :placeholder="$t('devices.name')"/>
-        </b-form-group>
-        <b-form-group :label="$t('devices.access_token')">
-          <b-form-input v-model="editItem.access_token" :placeholder="$t('devices.access_token')"/>
-        </b-form-group>
-        <b-form-group :label="$t('devices.description')">
-          <b-form-input v-model="editItem.description" :placeholder="$t('devices.description')"/>
+        <b-form-group :label="$t('sensor.name')">
+          <b-form-input v-model="editItem.name" :placeholder="$t('sensor.name')"/>
         </b-form-group>
       </b-form>
 
@@ -181,20 +179,20 @@
         <b-button
           variant="outline-secondary"
           @click="hideModal('edit')"
-        >{{ $t('Cancel') }}</b-button>
+        >{{ $t('buttons.cancel') }}</b-button>
         <b-button
           variant="primary"
           @click="editAnItem()"
           class="mr-1"
-        >{{ $t('Submit') }}</b-button>
+        >{{ $t('buttons.submit') }}</b-button>
       </template>
     </b-modal>
     <!-- MODAL -end -->
   </b-colxx>
 </template>
-
 <script>
-import devices from '@/services/devices.service'
+import device from '@/services/device.service'
+import sensor from '@/services/sensor.service'
 
 import ImageListItem from '@/components/Listing/ImageListItem'
 import ThumbListItem from '@/components/Listing/ThumbListItem'
@@ -225,6 +223,7 @@ export default {
       items: [],
       pageSizes: [4, 8, 12],
       selectedItems: [],
+      config: {},
       newItem: {},
       editItem: {}
     }
@@ -236,14 +235,15 @@ export default {
         page_size: this.perPage,
         page_number: pageNum
       }
+      let id = this.$route.params.id
 
-      devices.read(params).then(response => {
+      sensor.read(params).then(response => {
         this.total = response.total_entries
         this.lastPage = response.total_pages
         this.from = response.page_size * response.page_number - (response.page_size - 1)
         this.to = response.page_size * response.page_number
         this.perPage = response.page_size
-        this.items = response.devices
+        this.items = response.sensors
         this.selectedItems = []
         this.isLoad = true
       })
@@ -256,13 +256,16 @@ export default {
     },
     changePageSize (perPage) {
       this.perPage = perPage
-      this.loadItems()
     },
     changeOrderBy (sort) {
       this.sort = sort
     },
     addNewItem () {
-      devices.create(this.newItem).then(response => {
+      this.config = {
+        device_id: this.$route.params.id,
+        sensor_type_id: 8
+      }
+      sensor.create(this.config, this.newItem).then(response => {
         this.items.push(response)
         this.newItem = {}
         this.$refs['addnew'].hide()
@@ -270,7 +273,7 @@ export default {
     },
     deleteItem () {
       let id = this.selectedItems[0]
-      devices.delete(id).then(response => {
+      sensor.delete(id).then(response => {
         for (var i = 0; i < this.items.length; i++) {
           if (this.items[i].id === id) {
             this.items.splice(i, 1)
@@ -283,7 +286,7 @@ export default {
     },
     editAnItem () {
       let id = this.selectedItems[0]
-      devices.update(id, this.editItem).then(response => {
+      sensor.update(id, this.editItem).then(response => {
         this.loadItems(this.page)
         this.editItem = {}
         this.$refs['edit'].hide()
@@ -360,6 +363,9 @@ export default {
     },
     onContextDelete () {
       this.$refs['delete'].show()
+    },
+    linkGen (pageNum) {
+      return '#page-' + pageNum
     }
   },
   computed: {
@@ -371,14 +377,19 @@ export default {
         this.selectedItems.length > 0 &&
         this.selectedItems.length < this.items.length
       )
+    },
+    apiUrl () {
+      return `${this.apiBase}?sort=${this.sort.column}&page=${
+        this.page
+      }&per_page=${this.perPage}&search=${this.search}`
     }
   },
   watch: {
     search () {
       this.page = 1
     },
-    page (value) {
-      this.loadItems(value)
+    apiUrl () {
+      this.loadItems()
     }
   },
   mounted () {

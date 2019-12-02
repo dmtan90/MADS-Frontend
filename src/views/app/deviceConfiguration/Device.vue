@@ -2,7 +2,7 @@
   <b-colxx class="disable-text-selection">
     <b-row>
       <b-colxx xxs="12">
-        <h1>{{ $t('menu.devices') }} {{ $route.params.id }}</h1>
+        <h1>{{ $t('menu.device') }}</h1>
         <div class="float-sm-right">
           <b-button
             v-b-modal.addnew
@@ -21,16 +21,6 @@
             <i class="simple-icon-arrow-down align-middle"/>
           </b-button>
         </div>
-      </b-colxx>
-
-      <b-colxx xxs="0" sm="6" lg="2" xl="2">
-          <b-img src="https://acqdat.herokuapp.com/images/device_detail_card.png" thumbnail fluid></b-img>
-      </b-colxx>
-      <b-colxx xxs="12" sm="6" lg="9" xl="9">
-          <p>Name : Device 1</p>
-          <p>Description : Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-          <p>Token : asdikoiokljkklbnvbnvbnvajshduuyewreiuwrhjksd</p>
-          <p>UUID : 3108061e733a11e9a42fe86a64b144a9</p>
       </b-colxx>
 
       <b-colxx xxs="12">
@@ -133,23 +123,16 @@
     <!-- RIGHTCLICK -end -->
 
     <!-- MODAL -begin -->
-    <b-modal id="addnew" ref="addnew" :title="$t('sensor-type.add')" class="add-new" centered>
+    <b-modal id="addnew" ref="addnew" :title="$t('device.add')" class="add-new" centered>
       <b-form>
-        <b-form-group :label="$t('sensor-type.name')">
-          <b-form-input v-model="newItem.name" :placeholder="$t('sensor-type.name')"/>
+        <b-form-group :label="$t('device.name')">
+          <b-form-input v-model="newItem.name" :placeholder="$t('device.name')"/>
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.make')">
-          <b-form-input v-model="newItem.make" :placeholder="$t('sensor-type.make')"/>
+        <b-form-group :label="$t('device.access_token')">
+          <b-form-input v-model="newItem.access_token" :placeholder="$t('device.access_token')"/>
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.visualizer')">
-          <b-form-input v-model="newItem.visualizer" :placeholder="$t('sensor-type.visualizer')"/>
-        </b-form-group>
-        <b-form-group :label="$t('sensor-type.identifier')">
-          <b-form-input v-model="newItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
-          <!-- <v-select :options="categories" v-model="newItem.category"/> -->
-        </b-form-group>
-        <b-form-group :label="$t('sensor-type.value_keys')" description="Hit enter to input multiple value keys">
-          <input-tag v-model="newItem.value_keys" :placeholder="$t('sensor-type.value_keys')"></input-tag>
+        <b-form-group :label="$t('device.description')">
+          <b-form-input v-model="newItem.description" :placeholder="$t('device.description')"/>
         </b-form-group>
       </b-form>
 
@@ -157,12 +140,12 @@
         <b-button
           variant="outline-secondary"
           @click="hideModal('addnew')"
-        >{{ $t('Cancel') }}</b-button>
+        >{{ $t('buttons.cancel') }}</b-button>
         <b-button
           variant="primary"
           @click="addNewItem()"
           class="mr-1"
-        >{{ $t('Submit') }}</b-button>
+        >{{ $t('buttons.submit') }}</b-button>
       </template>
     </b-modal>
 
@@ -172,32 +155,25 @@
         <b-button
           variant="outline-secondary"
           @click="hideModal('delete')"
-        >{{ $t('Cancel') }}</b-button>
+        >{{ $t('buttons.cancel') }}</b-button>
         <b-button
           variant="danger"
           @click="deleteItem()"
           class="mr-1"
-        >{{ $t('Delete') }}</b-button>
+        >{{ $t('buttons.delete') }}</b-button>
       </template>
     </b-modal>
 
-    <b-modal id="edit" ref="edit" :title="$t('sensor-type.edit')" centered>
+    <b-modal id="edit" ref="edit" :title="$t('device.edit')" centered>
       <b-form>
-        <b-form-group :label="$t('sensor-type.name')">
-          <b-form-input v-model="editItem.name" :placeholder="$t('sensor-type.name')"/>
+        <b-form-group :label="$t('device.name')">
+          <b-form-input v-model="editItem.name" :placeholder="$t('device.name')"/>
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.make')">
-          <b-form-input v-model="editItem.make" :placeholder="$t('sensor-type.make')"/>
+        <b-form-group :label="$t('device.access_token')">
+          <b-form-input v-model="editItem.access_token" :placeholder="$t('device.access_token')"/>
         </b-form-group>
-        <b-form-group :label="$t('sensor-type.visualizer')">
-          <b-form-input v-model="editItem.visualizer" :placeholder="$t('sensor-type.visualizer')"/>
-        </b-form-group>
-        <b-form-group :label="$t('sensor-type.identifier')">
-          <b-form-input v-model="editItem.identifier" :placeholder="$t('sensor-type.identifier')"/>
-          <!-- <v-select :options="categories" v-model="editItem.category"/> -->
-        </b-form-group>
-        <b-form-group :label="$t('sensor-type.value_keys')" description="Hit enter to input multiple value keys">
-          <input-tag v-model="editItem.value_keys" :placeholder="$t('sensor-type.value_keys')"></input-tag>
+        <b-form-group :label="$t('device.description')">
+          <b-form-input v-model="editItem.description" :placeholder="$t('device.description')"/>
         </b-form-group>
       </b-form>
 
@@ -216,18 +192,16 @@
     <!-- MODAL -end -->
   </b-colxx>
 </template>
-<script>
-import devices from '@/services/devices.service'
-import sensors from '@/services/sensors.service'
 
-import InputTag from '@/components/Form/InputTag'
+<script>
+import device from '@/services/device.service'
+
 import ImageListItem from '@/components/Listing/ImageListItem'
 import ThumbListItem from '@/components/Listing/ThumbListItem'
 import DeviceListItem from '@/components/Listing/DeviceListItem'
 
 export default {
   components: {
-    InputTag,
     ImageListItem,
     ThumbListItem,
     DeviceListItem
@@ -263,13 +237,13 @@ export default {
         page_number: pageNum
       }
 
-      sensors.read(params).then(response => {
+      device.read(params).then(response => {
         this.total = response.total_entries
         this.lastPage = response.total_pages
         this.from = response.page_size * response.page_number - (response.page_size - 1)
         this.to = response.page_size * response.page_number
         this.perPage = response.page_size
-        this.items = response.sensor_types
+        this.items = response.devices
         this.selectedItems = []
         this.isLoad = true
       })
@@ -282,17 +256,38 @@ export default {
     },
     changePageSize (perPage) {
       this.perPage = perPage
+      this.loadItems()
     },
     changeOrderBy (sort) {
       this.sort = sort
     },
     addNewItem () {
-      console.log('adding item : ', this.newItem)
-      axios
-        .post('http://5dad77e9c7e88c0014aa2a45.mockapi.io/users/1/sensors', this.newItem)
-        .then(response => {
-          console.log(response)
-        })
+      device.create(this.newItem).then(response => {
+        this.items.push(response)
+        this.newItem = {}
+        this.$refs['addnew'].hide()
+      })
+    },
+    deleteItem () {
+      let id = this.selectedItems[0]
+      device.delete(id).then(response => {
+        for (var i = 0; i < this.items.length; i++) {
+          if (this.items[i].id === id) {
+            this.items.splice(i, 1)
+            i--
+            this.$refs['delete'].hide()
+            return
+          }
+        }
+      })
+    },
+    editAnItem () {
+      let id = this.selectedItems[0]
+      device.update(id, this.editItem).then(response => {
+        this.loadItems(this.page)
+        this.editItem = {}
+        this.$refs['edit'].hide()
+      })
     },
     selectAll (isToggle) {
       if (this.selectedItems.length >= this.items.length) {
@@ -348,26 +343,23 @@ export default {
         this.selectedItems = [vnode.key]
       }
     },
-    onContextCopy () {
-      console.log(
-        'context menu item clicked - Copy Items: ',
-        this.selectedItems
-      )
-    },
-    onContextArchive () {
-      console.log(
-        'context menu item clicked - Move to Archive Items: ',
-        this.selectedItems
-      )
+    onContextEdit () {
+      this.$refs['edit'].show()
+      let id = this.selectedItems[0]
+      for (var i = 0; i < this.items.length; i++) {
+        if (this.items[i].id === id) {
+          this.editItem = {
+            name: this.items[i].name,
+            access_token: this.items[i].access_token,
+            description: this.items[i].description
+          }
+          i--
+          return
+        }
+      }
     },
     onContextDelete () {
-      console.log(
-        'context menu item clicked - Delete Items: ',
-        this.selectedItems
-      )
-    },
-    linkGen (pageNum) {
-      return '#page-' + pageNum
+      this.$refs['delete'].show()
     }
   },
   computed: {
@@ -379,19 +371,14 @@ export default {
         this.selectedItems.length > 0 &&
         this.selectedItems.length < this.items.length
       )
-    },
-    apiUrl () {
-      return `${this.apiBase}?sort=${this.sort.column}&page=${
-        this.page
-      }&per_page=${this.perPage}&search=${this.search}`
     }
   },
   watch: {
     search () {
       this.page = 1
     },
-    apiUrl () {
-      this.loadItems()
+    page (value) {
+      this.loadItems(value)
     }
   },
   mounted () {
