@@ -94,6 +94,7 @@ const mutations = {
   changeSelectedMenuHasSubItems (state, payload) {
     state.selectedMenuHasSubItems = payload
   },
+
   addMenuClassname (state, payload) {
     const { classname, currentClasses } = payload
 
@@ -103,6 +104,7 @@ const mutations = {
         : currentClasses
     state.menuType = nextClasses
   },
+
   changeSideMenuForMobile (state, strCurrentClasses) {
     const currentClasses = strCurrentClasses
       ? strCurrentClasses

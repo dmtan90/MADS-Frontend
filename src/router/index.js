@@ -25,16 +25,16 @@ const routes = [
             component: () => import(/* webpackChunkName: "sensor-type" */ '@/views/app/deviceConfiguration/SensorType')
           },
           {
-            path: 'devices',
-            component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/Devices')
-          },
-          {
-            path: 'devices/:id',
+            path: 'device',
             component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/Device')
           },
           {
-            path: 'sensors/:id',
-            component: () => import(/* webpackChunkName: "sensors" */ '@/views/app/deviceConfiguration/Sensors')
+            path: 'device/:id',
+            component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/DeviceDetails')
+          },
+          {
+            path: 'sensor/:id',
+            component: () => import(/* webpackChunkName: "sensors" */ '@/views/app/deviceConfiguration/Sensor')
           }
         ]
       },
