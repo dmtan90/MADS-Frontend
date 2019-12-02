@@ -14,27 +14,36 @@
   },
   "sensor-type": {
     "add": "Add a new sensor",
-    "edit": "Edit sensor details",
+    "edit": "Edit sensor type details",
+    "delete": "Delete sensor type",
     "name": "Sensor Name",
     "make": "Manufacturer",
     "visualizer": "Visualizer",
     "identifier": "Identifier",
     "value_keys": "Value Keys"
   },
-  "devices": {
+  "device": {
     "add": "Add a new device",
     "edit": "Edit device details",
+    "delete": "Delete device",
     "name": "Device Name",
     "access_token": "Access Token",
     "description": "Description"
+  },
+  "sensor": {
+    "add": "Add a new sensor",
+    "edit": "Edit sensor details",
+    "delete": "Delete sensor",
+    "name": "Sensor Name"
   },
   "menu": {
     "app": "Home",
     "dashboard": "Dashboard",
     "device-configuration": "Device Configuration",
     "sensor-type": "Sensor Type",
-    "devices": "Devices",
-    "sensors": "Sensors",
+    "device": "Device",
+    "sensor": "Sensor",
+    "factory-layout": "Factory Layout",
     "piaf": "Piaf",
     "dashboards": "Dashboards",
     "second-menu": "Second Menu",
