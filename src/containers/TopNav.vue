@@ -6,13 +6,13 @@
         <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none" @click.prevent="changeSideMenuForMobile(menuType)">
             <mobile-menu-icon/>
         </a>
-        <div :class="{'search':true, 'mobile-view':isMobileSearch}" ref="searchContainer" @mouseenter="isSearchOver=true" @mouseleave="isSearchOver=false">
+        <div :class="{'search':true, 'mobile-view':isMobileSearch}" ref="searchContainer" @mouseenter="isSearchOver=true" @mouseleave="isSearchOver=false" class="d-none">
             <b-input :placeholder="$t('menu.search')" @keypress.native.enter="search" v-model="searchKeyword"/>
             <span class="search-icon" @click="searchClick">
                 <i class="simple-icon-magnifier"></i>
             </span>
         </div>
-        <div  class="d-inline-block">
+        <div  class="d-none"> <!-- d-inline-block -->
             <b-dropdown id="langddm" class="ml-2" variant="light" size="sm" toggle-class="language-button">
                 <template slot="button-content">
                         <span  class="name">{{$i18n.locale.toUpperCase()}}</span>
@@ -20,17 +20,17 @@
                 <b-dropdown-item v-for="(l,index) in localeOptions" :key="index" @click="changeLocale(l.id)">{{l.name}}</b-dropdown-item>
             </b-dropdown>
         </div>
-        <router-link class="navbar-logo" tag="a" to="/app">
+        <router-link class="navbar-logo" tag="a" to="/">
             <span class="logo d-none d-xs-block"></span>
             <span class="logo-mobile d-block d-xs-none"></span>
         </router-link>
 
-          <div class="ml-auto">
+        <div class="ml-auto">
           <div class="header-icons d-inline-block align-middle">
-            <div class="position-relative d-none d-none d-lg-inline-block">
+            <div class="position-relative d-none"> <!-- d-none d-none d-lg-inline-block  -->
               <a class="btn btn-outline-primary btn-sm mb-2 mr-3" target="_top" :href="buyUrl">{{$t('user.buy')}}</a>
             </div>
-            <div  class="position-relative d-none d-sm-inline-block">
+            <div  class="position-relative d-none"> <!-- d-sm-inline-block -->
                 <b-dropdown variant="empty" size="sm" right toggle-class="header-icon" menu-class="position-absolute mt-3 iconMenuDropdown" no-caret>
                     <template slot="button-content">
                             <i class="simple-icon-grid" />
@@ -57,8 +57,7 @@
                     </div>
                 </b-dropdown>
             </div>
-
-            <div  class="position-relative d-inline-block">
+            <div  class="position-relative d-none"> <!-- d-inline-block -->
                 <b-dropdown variant="empty" size="sm" right toggle-class="header-icon notificationButton" menu-class="position-absolute mt-3 notificationDropdown" no-caret>
                     <template slot="button-content">
                             <i class="simple-icon-bell" />
@@ -87,12 +86,10 @@
           <div class="user d-inline-block">
             <b-dropdown   class="dropdown-menu-right"  right variant="empty" toggle-class="p-0" menu-class="mt-3" no-caret>
                 <template slot="button-content">
-                    <span  class="name mr-1">{{currentUser.title}}</span>
-                    <span><img :alt="currentUser.title" :src="currentUser.img" /></span>
+                    <span  class="name mr-1">{{currentUser.name}}</span>
+                    <span><img :alt="currentUser.name" :src="currentUser.img" /></span>
                 </template>
-                <b-dropdown-item>Account</b-dropdown-item>
-                <b-dropdown-item>Features</b-dropdown-item>
-                <b-dropdown-item>History</b-dropdown-item>
+                <b-dropdown-item>Account Settings</b-dropdown-item>
                 <b-dropdown-item>Support</b-dropdown-item>
                 <b-dropdown-divider />
                 <b-dropdown-item @click="logout">
@@ -131,7 +128,7 @@ export default {
   },
   methods: {
     ...mapMutations(['changeSideMenuStatus', 'changeSideMenuForMobile']),
-    ...mapActions(['setLang', 'signOut']),
+    ...mapActions(['setLang', 'logout']),
     search () {
       this.$router.push(`${this.searchPath}?search=${this.searchKeyword}`)
       this.searchKeyword = ''
@@ -158,9 +155,7 @@ export default {
       this.setLang(locale)
     },
     logout () {
-      this.signOut().then(() => {
-        this.$router.push('/user/login')
-      })
+      this.logout()
     },
 
     toggleFullScreen () {

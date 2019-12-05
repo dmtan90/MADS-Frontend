@@ -1,19 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import app from '../main'
-import menu from './modules/menu'
-import user from './modules/user'
+import app from '@/main'
+import menu from '@/store/modules/menu'
+import user from '@/store/modules/user'
 
 Vue.use(Vuex)
 
-export const store = new Vuex.Store({
-  state: {
-  },
-  getters: {
-  },
+const store = new Vuex.Store({
+  state: {},
+  getters: {},
   mutations: {
-    changeLang (state, payload) {
+    changeLang (payload) {
       app.$i18n.locale = payload
       localStorage.setItem('currentLanguage', payload)
     }
@@ -28,3 +26,5 @@ export const store = new Vuex.Store({
     user
   }
 })
+
+export default store

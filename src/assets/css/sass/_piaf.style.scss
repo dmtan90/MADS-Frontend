@@ -59,7 +59,7 @@ $sub-menu-width-lg: 220px;
 $sub-menu-width-md: 200px;
 $sub-menu-width-xs: 190px;
 
-$navbar-height: 120px;
+$navbar-height: 70px;
 $navbar-height-xs: 70px;
 $navbar-height-md: 80px;
 $navbar-height-lg: 90px;
@@ -1644,7 +1644,7 @@ button {
 .navbar {
   background: $foreground-color;
   height: $navbar-height;
-  padding: 1.5rem $main-margin 1.5rem 0;
+  padding: 0.25rem $main-margin 0.25rem 0;
   @include depth(1);
 
   .notificationDropdown {
@@ -1731,8 +1731,8 @@ button {
   }
 
   .navbar-logo {
-    width: 110px;
-    height: 35px;
+    width: 160px;
+    height: 45px;
     position: absolute;
     left: 0;
     right: 0;
@@ -1743,6 +1743,7 @@ button {
       height: 100%;
       background: url($logoPath) no-repeat;
       background-position: center center;
+      background-size: contain;
     }
 
     .logo-mobile {
@@ -1750,6 +1751,7 @@ button {
       height: 100%;
       background: url($logoPathMobile) no-repeat;
       background-position: center center;
+      background-size: contain;
     }
 
     @include respond-below(sm) {
@@ -2037,6 +2039,7 @@ button {
         font-size: 13px;
         font-style: normal;
         font-weight: 400;
+        text-align: center;
         border-bottom: 1px solid $separator-color-light;
         color: $primary-color;
         transition: color $menu-collapse-time;
@@ -5389,10 +5392,6 @@ input:-webkit-autofill {
   background: $foreground-color;
 }
 
-.modal-dialog {
-  @include depth(2);
-}
-
 .modal-right {
   padding-right: 0 !important;
 
@@ -6445,4 +6444,8 @@ input:-webkit-autofill {
 .map-item {
   height: 400px;
   width: 100%;
+}
+
+.modal-backdrop {
+  background: rgba(0,0,0,0.5);
 }
