@@ -117,6 +117,17 @@
                   :policies="policies"
                   :isRuleValuesValid="isRuleValuesValid"
                 ></rule-configuration>
+                <b-row v-if="errors.length > 0">
+                  <b-colxx xxs="12">
+                    <div
+                      v-for="(error, index) in errors"
+                      :key="index"
+                      class="mt-2 error-message"
+                    >
+                      {{ error === 'sensor id has already been taken' ? 'Notification has been already created for ' + selectedDevice.name + ' ' + selectedSensor.name + ' Sensor' : error}}
+                    </div>
+                  </b-colxx>
+                </b-row>
                 <div class="mt-5">
                   <b-button
                     size="lg"
@@ -168,7 +179,8 @@ export default {
       visitedChooseSensor: false,
       visitedConfigureRules: false,
       ruleValues: [],
-      isRuleValuesValid: true
+      isRuleValuesValid: true,
+      errors: []
     };
   },
   methods: {
@@ -222,9 +234,15 @@ export default {
       if (!this.isRuleValuesValid) {
         return;
       }
-
       notificationService.create(payload).then(response => {
-        this.$router.push("/app/notifications");
+        this.errors = [];
+        if (response.errors) {
+          _.each(response.errors.message.error, (errors, key) => {
+            this.errors = _.concat(this.errors, _.lowerCase(key) + ' ' + errors);
+          });
+        } else {
+          this.$router.push("/app/notifications");
+        }
       });
     },
     changeCurrentStep(step) {

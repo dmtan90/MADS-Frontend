@@ -80,7 +80,7 @@ const ApiService = {
         }
 
         // If error was not 401 just reject as is
-        throw error
+        throw error.response
       }
     )
   },

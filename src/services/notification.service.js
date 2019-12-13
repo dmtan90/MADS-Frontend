@@ -9,7 +9,7 @@ const notificationService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   read: async function (params) {

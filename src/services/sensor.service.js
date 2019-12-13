@@ -56,7 +56,7 @@ const sensorService = {
   },
   getDeviceSensors: async function (id) {
     try {
-      const response = await ApiService.get(resource + '/' + id)
+      const response = await ApiService.get('/sensor-criteria/' + id)
       return response.data
     } catch (error) {
       console.log(error)
