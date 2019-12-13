@@ -55,7 +55,10 @@
     "register": "Register",
     "forgot-password": "Forgot Password",
     "error": "Error",
-    "search": "Search"
+    "search": "Search",
+    "notifications": "Notifications",
+    "edit": "Edit",
+    "new": "New"
   },
   "pages": {
     "magic-is-in-the-details": "MONITORING, DIAGNOSTICS & AUTOMATION",
