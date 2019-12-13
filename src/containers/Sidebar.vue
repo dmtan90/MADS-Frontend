@@ -31,6 +31,12 @@
               </router-link>
           </li>
 
+          <li :class="{ active : selectedParentMenu==='single'}">
+            <router-link :class="{ active : selectedParentMenu==='single' }" @click.native="changeSelectedParentHasNoSubmenu('pages')" to="/app/notifications" tag="li">
+              <a><i class="iconsminds-bell"></i> Knotify </a>
+            </router-link>
+          </li>
+
           <!-- <li :class="{ active : selectedParentMenu==='pages'}">
             <a @click.prevent="openSubMenu($event,'pages')" href="#pages">
               <i class="iconsminds-digital-drawing"></i>

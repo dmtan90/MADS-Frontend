@@ -39,16 +39,17 @@ const routes = [
         ]
       },
       {
-        path: 'app/second-menu',
-        component: () => import(/* webpackChunkName: "second-menu" */ '@/views/app/secondMenu'),
-        redirect: '/app/second-menu/second',
-        children: [
-          { path: 'second', component: () => import(/* webpackChunkName: "second-menu" */ '@/views/app/secondMenu/Second') }
-        ]
-      },
-      {
         path: 'app/factory-layout',
         component: () => import(/* webpackChunkName: "single" */ '@/views/app/factoryDesign')
+      },
+      {
+        path: 'app/notifications',
+        component: () => import(/* webpackChunkName: "notifications" */ '@/views/app/notifications'),
+        children: [
+          { path: '', component: () => import(/* notifications */ '@/views/app/notifications/list') },
+          { path: 'new', component: () => import(/* notifications */ '@/views/app/notifications/new') },
+          { path: ':id/edit', component: () => import(/* notifications */ '@/views/app/notifications/edit') }
+        ]
       }
     ]
   },

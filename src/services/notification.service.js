@@ -1,11 +1,11 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/sensor'
+const resource = '/sensor_notification'
 
-const sensorService = {
-  create: async function (config, payload) {
+const notificationService = {
+  create: async function (payload) {
     try {
-      const response = await ApiService.post(resource + '?device_id=' + config.device_id + '&sensor_type_id=' + config.sensor_type_id, payload)
+      const response = await ApiService.post(resource, payload)
 
       return response.data
     } catch (error) {
@@ -53,18 +53,7 @@ const sensorService = {
         console.log('unauthorised')
       }
     }
-  },
-  getDeviceSensors: async function (id) {
-    try {
-      const response = await ApiService.get(resource + '/' + id)
-      return response.data
-    } catch (error) {
-      console.log(error)
-      if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
-      }
-    }
   }
 }
 
-export default sensorService
+export default notificationService
