@@ -9,7 +9,7 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   read: async function (params) {
@@ -18,10 +18,7 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
-      if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
-      }
+      return error.response.data
     }
   },
   update: async function (id, payload) {
@@ -30,7 +27,7 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   delete: async function (id) {
@@ -39,7 +36,16 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
+    }
+  },
+  readId: async function (id) {
+    try {
+      const response = await ApiService.get(resource + '/' + id)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
     }
   }
 }

@@ -25,10 +25,6 @@ const UserService = {
         email: email,
         password: password
       }
-    //   auth: {
-    //     username: process.env.VUE_APP_CLIENT_ID,
-    //     password: process.env.VUE_APP_CLIENT_SECRET
-    //   }
     }
 
     try {

@@ -2,9 +2,9 @@
   <div>
     <b-row>
       <b-colxx xxs="12">
-        <piaf-breadcrumb heading="Notifications" />
+        <piaf-breadcrumb heading="Devices" />
         <div class="float-sm-right">
-          <router-link to="notifications/new">
+          <router-link to="devices/new">
             <b-button variant="primary" size="lg">Add New</b-button>
           </router-link>
         </div>
@@ -13,21 +13,24 @@
     </b-row>
     <b-row>
       <b-colxx xxs="12">
-        <b-card class="mb-4" title="Notifications">
+        <b-card class="mb-4" title="Devices">
           <vuetable
             ref="vuetable"
             :api-mode="false"
             :fields="fields"
-            :data="data"
+            :data="devices"
           >
+            <template v-slot:name="slotProps">
+              <router-link :to="'devices/' + slotProps.rowData.id" tag="span" class="cursor-pointer">{{slotProps.rowData.name}}</router-link>
+            </template>
             <template v-slot:actions="slotProps">
               <router-link
-                :to="'notifications/' + slotProps.rowData.id + '/edit'"
+                :to="'devices/' + slotProps.rowData.id + '/edit'"
                 tag="span"
               >
                 <i class="iconsminds-file-edit"></i>
               </router-link>
-              <span @click="deleteNotification(slotProps.rowData.id)">
+              <span @click="deleteDevice(slotProps.rowData.id)">
                 <i class="iconsminds-delete-file"></i>
               </span>
             </template>
@@ -47,7 +50,7 @@
 
 import _ from "lodash";
 import Vuetable from "vuetable-2";
-import notificationService from "@/services/notification.service";
+import deviceService from "@/services/device.service";
 
 export default {
   components: {
@@ -57,60 +60,46 @@ export default {
     return {
       fields: [
         {
-          name: "device_name",
-          title: "<span>Device</span>",
-          sortField: "device_name",
+          name: "__slot:name",
+          title: "<span>Name</span>",
+          sortField: "name",
           dataClass: "list-item-heading"
         },
         {
-          name: "sensor_name",
-          title: "<span>Sensor</span>",
-          sortField: "sensor_name",
+          name: "access_token",
+          title: "<span>Access Token</span>",
+          sortField: "access_token",
           dataClass: "text-muted"
         },
         {
-          name: "alarm_status",
-          title: "<span>Alarm Status</span>",
-          sortField: "alarm_status",
-          dataClass: "text-muted",
-          formatter: value => {
-            return value.toUpperCase();
-          }
+          name: "uuid",
+          title: "<span>UUID</span>",
+          sortField: "uuid",
+          dataClass: "text-muted"
         },
         {
           name: "__slot:actions",
           title: "<span>Actions</span>"
         }
       ],
-      data: [],
+      devices: [],
       perPage: 5
     };
   },
   methods: {
-    loadNotifications() {
-      notificationService.read().then(response => {
-        this.notifications = response.sensor_notification;
-        this.data = this.formatNotifications();
+    loadDevices() {
+      deviceService.read().then(response => {
+        this.devices = response.devices;
       });
     },
-    formatNotifications() {
-      return this.notifications.map(notification => {
-        return {
-          id: notification.id,
-          device_name: notification.device.name,
-          sensor_name: notification.sensor.name,
-          alarm_status: notification.alarm_status
-        };
-      });
-    },
-    deleteNotification(id) {
-      notificationService.delete(id).then(response => {
-        this.loadNotifications();
+    deleteDevice(id) {
+      deviceService.delete(id).then(response => {
+        this.loadDevices();
       });
     }
   },
   mounted() {
-    this.loadNotifications();
+    this.loadDevices();
   }
 };
 </script>

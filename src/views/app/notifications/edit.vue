@@ -89,7 +89,6 @@ export default {
   methods: {
     fetchNotification() {
       let id = this.$route.params.id;
-      let that = this;
       notificationService.readId(id).then(response => {
         this.notification = response;
         this.ruleValues = _.each(response.rule_values, function(rule) {

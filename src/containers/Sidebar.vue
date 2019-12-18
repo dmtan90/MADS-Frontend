@@ -36,13 +36,6 @@
               <a><i class="iconsminds-bell"></i> Knotify </a>
             </router-link>
           </li>
-
-          <!-- <li :class="{ active : selectedParentMenu==='pages'}">
-            <a @click.prevent="openSubMenu($event,'pages')" href="#pages">
-              <i class="iconsminds-digital-drawing"></i>
-              {{ $t("menu.pages") }}
-            </a>
-          </li> -->
         </ul>
       </vue-perfect-scrollbar>
     </div>
@@ -57,44 +50,19 @@
           data-link="device-configuration"
           :class="{'d-block':selectedParentMenu==='device-configuration' }"
         >
-          <router-link tag="li" to="/app/device-configuration/sensor-type">
+          <router-link tag="li" to="/app/device-configuration/devices">
             <a>
               <i class="simple-icon-paper-plane"></i>
-              {{ $t("menu.sensor-type") }}
+              Devices
             </a>
           </router-link>
-          <router-link tag="li" to="/app/device-configuration/device">
+         <router-link tag="li" to="/app/device-configuration/sensor-types">
             <a>
               <i class="simple-icon-paper-plane"></i>
-              {{ $t("menu.device") }}
+              Sensor Types
             </a>
           </router-link>
         </ul>
-
-        <!-- <ul
-          class="list-unstyled"
-          data-link="pages"
-          :class="{'d-block':selectedParentMenu==='pages' }"
-        >
-          <router-link tag="li" to="/user/login">
-            <a target="_blank">
-              <i class="simple-icon-user-following"></i>
-              {{ $t("menu.login") }}
-            </a>
-          </router-link>
-          <router-link tag="li" to="/user/register">
-            <a target="_blank">
-              <i class="simple-icon-user-follow"></i>
-              {{ $t("menu.register") }}
-            </a>
-          </router-link>
-          <router-link tag="li" to="/user/forgot-password">
-            <a target="_blank">
-              <i class="simple-icon-user-unfollow"></i>
-              {{ $t("menu.forgot-password") }}
-            </a>
-          </router-link>
-        </ul> -->
       </vue-perfect-scrollbar>
     </div>
   </div>

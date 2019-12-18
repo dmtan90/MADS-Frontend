@@ -18,23 +18,26 @@ const routes = [
       {
         path: 'app/device-configuration',
         component: () => import(/* webpackChunkName: "device-configuration" */ '@/views/app/deviceConfiguration'),
-        redirect: '/app/device-configuration/sensor-type',
+        redirect: '/app/device-configuration/devices',
         children: [
           {
-            path: 'sensor-type',
-            component: () => import(/* webpackChunkName: "sensor-type" */ '@/views/app/deviceConfiguration/SensorType')
+            path: 'sensor-types',
+            component: () => import(/* webpackChunkName: "sensorTypes" */ '@/views/app/deviceConfiguration/sensorTypes'),
+            children: [
+              { path: '', component: () => import(/* sensorTypes */ '@/views/app/deviceConfiguration/sensorTypes/list') },
+              { path: 'new', component: () => import(/* newSensorType */ '@/views/app/deviceConfiguration/sensorTypes/new') },
+              { path: ':id/edit', component: () => import(/* editSensorType */ '@/views/app/deviceConfiguration/sensorTypes/edit') }
+            ]
           },
           {
-            path: 'device',
-            component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/Device')
-          },
-          {
-            path: 'device/:id',
-            component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/DeviceDetails')
-          },
-          {
-            path: 'sensor/:id',
-            component: () => import(/* webpackChunkName: "sensors" */ '@/views/app/deviceConfiguration/Sensor')
+            path: 'devices',
+            component: () => import(/* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/devices'),
+            children: [
+              { path: '', component: () => import(/* devices */ '@/views/app/deviceConfiguration/devices/list') },
+              { path: 'new', component: () => import(/* newDevice */ '@/views/app/deviceConfiguration/devices/new') },
+              { path: ':id/edit', component: () => import(/* editDevice */ '@/views/app/deviceConfiguration/devices/edit') },
+              { path: ':id', component: () => import(/* deviceDetail */ '@/views/app/deviceConfiguration/devices/detail') }
+            ]
           }
         ]
       },
@@ -47,8 +50,8 @@ const routes = [
         component: () => import(/* webpackChunkName: "notifications" */ '@/views/app/notifications'),
         children: [
           { path: '', component: () => import(/* notifications */ '@/views/app/notifications/list') },
-          { path: 'new', component: () => import(/* notifications */ '@/views/app/notifications/new') },
-          { path: ':id/edit', component: () => import(/* notifications */ '@/views/app/notifications/edit') }
+          { path: 'new', component: () => import(/* newNotification */ '@/views/app/notifications/new') },
+          { path: ':id/edit', component: () => import(/* editNotification */ '@/views/app/notifications/edit') }
         ]
       }
     ]

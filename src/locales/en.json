@@ -12,7 +12,7 @@
     "fullname": "Full Name",
     "forgot-password-question": "Forget password?"
   },
-  "sensor-type": {
+  "sensor-types": {
     "add": "Add a new sensor",
     "edit": "Edit sensor type details",
     "delete": "Delete sensor type",
@@ -22,7 +22,7 @@
     "identifier": "Identifier",
     "value_keys": "Value Keys"
   },
-  "device": {
+  "devices": {
     "add": "Add a new device",
     "edit": "Edit device details",
     "delete": "Delete device",
@@ -40,8 +40,8 @@
     "app": "Home",
     "dashboard": "Dashboard",
     "device-configuration": "Device Configuration",
-    "sensor-type": "Sensor Type",
-    "device": "Device",
+    "sensor-types": "Sensor Types",
+    "devices": "Devices",
     "sensor": "Sensor",
     "factory-layout": "Factory Layout",
     "piaf": "Piaf",
