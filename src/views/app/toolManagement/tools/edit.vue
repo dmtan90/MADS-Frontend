@@ -92,6 +92,10 @@ export default {
 
       toolService.readId(id).then(response => {
         this.tool = response;
+        this.tool.tool_box_id = response.tool_box && response.tool_box.tool_box_id;
+        this.tool.tool_type_id = response.tool_type && response.tool_type.tool_type_id;
+        delete this.tool.tool_box;
+        delete this.tool.tool_type;
       });
     },
     loadToolBoxes() {

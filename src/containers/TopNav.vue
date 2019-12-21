@@ -154,10 +154,6 @@ export default {
     changeLocale (locale) {
       this.setLang(locale)
     },
-    logout () {
-      this.logout()
-    },
-
     toggleFullScreen () {
       const isInFullScreen = this.isInFullScreen()
 
