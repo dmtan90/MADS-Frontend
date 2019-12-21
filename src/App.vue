@@ -34,4 +34,19 @@
   .error-field {
     border-color: #dc3545;
   }
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .capitalize-first-letter:first-letter {
+    text-transform: capitalize;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .nav-tabs {
+    font-size: 16px;
+  }
+  .w-20 {
+    width: 20%;
+  }
 </style>

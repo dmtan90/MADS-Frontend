@@ -9,7 +9,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   read: async function (params) {
@@ -18,10 +18,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
-      if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
-      }
+      return error.response.data
     }
   },
   update: async function (id, payload) {
@@ -30,7 +27,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   delete: async function (id) {
@@ -39,7 +36,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
+      return error.response.data
     }
   },
   readId: async function (id) {
@@ -48,10 +45,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
-      if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
-      }
+      return error.response.data
     }
   },
   getDeviceSensors: async function (id) {
@@ -59,10 +53,7 @@ const sensorService = {
       const response = await ApiService.get('/sensor-criteria/' + id)
       return response.data
     } catch (error) {
-      console.log(error)
-      if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
-      }
+      return error.response.data
     }
   }
 }

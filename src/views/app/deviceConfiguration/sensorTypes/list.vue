@@ -2,9 +2,9 @@
   <div>
     <b-row>
       <b-colxx xxs="12">
-        <piaf-breadcrumb heading="Notifications" />
+        <piaf-breadcrumb heading="Sensor Types" />
         <div class="float-sm-right">
-          <router-link to="notifications/new">
+          <router-link to="sensor-types/new">
             <b-button variant="primary" size="lg">Add New</b-button>
           </router-link>
         </div>
@@ -13,21 +13,21 @@
     </b-row>
     <b-row>
       <b-colxx xxs="12">
-        <b-card class="mb-4" title="Notifications">
+        <b-card class="mb-4" title="Sensor Types">
           <vuetable
             ref="vuetable"
             :api-mode="false"
             :fields="fields"
-            :data="data"
+            :data="sensorTypes"
           >
             <template v-slot:actions="slotProps">
               <router-link
-                :to="'notifications/' + slotProps.rowData.id + '/edit'"
+                :to="'sensor-types/' + slotProps.rowData.id + '/edit'"
                 tag="span"
               >
                 <i class="iconsminds-file-edit"></i>
               </router-link>
-              <span @click="deleteNotification(slotProps.rowData.id)">
+              <span @click="deleteSensorType(slotProps.rowData.id)">
                 <i class="iconsminds-delete-file"></i>
               </span>
             </template>
@@ -47,7 +47,7 @@
 
 import _ from "lodash";
 import Vuetable from "vuetable-2";
-import notificationService from "@/services/notification.service";
+import sensorTypeService from "@/services/sensorType.service";
 
 export default {
   components: {
@@ -57,60 +57,44 @@ export default {
     return {
       fields: [
         {
-          name: "device_name",
-          title: "<span>Device</span>",
-          sortField: "device_name",
+          name: "name",
+          sortField: "name",
           dataClass: "list-item-heading"
         },
         {
-          name: "sensor_name",
-          title: "<span>Sensor</span>",
-          sortField: "sensor_name",
+          name: "identifier",
+          sortField: "identifier",
           dataClass: "text-muted"
         },
         {
-          name: "alarm_status",
-          title: "<span>Alarm Status</span>",
-          sortField: "alarm_status",
-          dataClass: "text-muted",
-          formatter: value => {
-            return value.toUpperCase();
-          }
+          name: "make",
+          title: "<span>Manufacturer</span>",
+          sortField: "make",
+          dataClass: "text-muted"
         },
         {
           name: "__slot:actions",
           title: "<span>Actions</span>"
         }
       ],
-      data: [],
+      sensorTypes: [],
       perPage: 5
     };
   },
   methods: {
-    loadNotifications() {
-      notificationService.read().then(response => {
-        this.notifications = response.sensor_notification;
-        this.data = this.formatNotifications();
+    loadSensorTypes() {
+      sensorTypeService.read().then(response => {
+        this.sensorTypes = response.sensor_types;
       });
     },
-    formatNotifications() {
-      return this.notifications.map(notification => {
-        return {
-          id: notification.id,
-          device_name: notification.device.name,
-          sensor_name: notification.sensor.name,
-          alarm_status: notification.alarm_status
-        };
-      });
-    },
-    deleteNotification(id) {
-      notificationService.delete(id).then(response => {
-        this.loadNotifications();
+    deleteSensorType(id) {
+      sensorTypeService.delete(id).then(response => {
+        this.loadSensorTypes();
       });
     }
   },
   mounted() {
-    this.loadNotifications();
+    this.loadSensorTypes();
   }
 };
 </script>

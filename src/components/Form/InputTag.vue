@@ -60,7 +60,7 @@ export default {
   data () {
     return {
       newTag: '',
-      innerTags: [...this.value],
+      innerTags: [],
       isInputActive: false
     }
   },
@@ -140,6 +140,11 @@ export default {
     tagChange () {
       this.$emit('update:tags', this.innerTags)
       this.$emit('input', this.innerTags)
+    }
+  },
+  watch: {
+    value () {
+      this.innerTags = [...this.value]
     }
   }
 }

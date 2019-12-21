@@ -1,11 +1,11 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/device'
+const resource = '/tl-mgmt/tools'
 
-const deviceService = {
-  create: async function (payload) {
+const toolService = {
+  create: async function (config, payload) {
     try {
-      const response = await ApiService.post(resource, payload)
+      const response = await ApiService.post(resource + '?tool_type_id=' + config.tool_type_id + '&tool_box_id=' + config.tool_box_id, payload)
 
       return response.data
     } catch (error) {
@@ -50,4 +50,4 @@ const deviceService = {
   }
 }
 
-export default deviceService
+export default toolService

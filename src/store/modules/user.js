@@ -26,7 +26,7 @@ export default {
       state.currentUser = payload
     },
     setLogout (state) {
-      state.currentUser = null
+      state.currentUser = {}
       state.processing = false
       state.loginError = null
     },
@@ -36,7 +36,7 @@ export default {
     },
     setError (state, payload) {
       state.loginError = payload
-      state.currentUser = null
+      state.currentUser = {}
       state.processing = false
     },
     clearError (state) {

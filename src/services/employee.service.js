@@ -1,8 +1,8 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/device'
+const resource = '/tl-mgmt/employee'
 
-const deviceService = {
+const employeeService = {
   create: async function (payload) {
     try {
       const response = await ApiService.post(resource, payload)
@@ -50,4 +50,4 @@ const deviceService = {
   }
 }
 
-export default deviceService
+export default employeeService
