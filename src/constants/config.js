@@ -12,7 +12,7 @@ export const localeOptions = [
   { id: 'es', name: 'Español' }
 ]
 
-// export const apiUrl = 'http://localhost:4000'
-export const apiUrl = 'https://madsiot.herokuapp.com/api'
+export const apiUrl = 'http://localhost:4000'
+// export const apiUrl = 'https://madsiot.herokuapp.com/api'
 
 export const colors = ['light.purple', 'dark.purple', 'light.blue', 'dark.blue', 'light.green', 'dark.green', 'light.orange', 'dark.orange', 'light.red', 'dark.red']

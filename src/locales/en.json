@@ -58,7 +58,12 @@
     "search": "Search",
     "notifications": "Notifications",
     "edit": "Edit",
-    "new": "New"
+    "new": "New",
+    "tool-management": "Tool Management",
+    "employees": "Employees",
+    "tools": "Tools",
+    "tool-boxes": "Tool Boxes",
+    "tool-types": "Tool Types"
   },
   "pages": {
     "magic-is-in-the-details": "MONITORING, DIAGNOSTICS & AUTOMATION",

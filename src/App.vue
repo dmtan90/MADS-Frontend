@@ -43,4 +43,10 @@
   .cursor-pointer {
     cursor: pointer;
   }
+  .nav-tabs {
+    font-size: 16px;
+  }
+  .w-20 {
+    width: 20%;
+  }
 </style>
