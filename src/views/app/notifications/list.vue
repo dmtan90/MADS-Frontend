@@ -25,10 +25,10 @@
                 :to="'notifications/' + slotProps.rowData.id + '/edit'"
                 tag="span"
               >
-                <i class="iconsminds-file-edit"></i>
+                <i class="simple-icon-pencil"></i>
               </router-link>
               <span @click="deleteNotification(slotProps.rowData.id)">
-                <i class="iconsminds-delete-file"></i>
+                <i class="simple-icon-trash"></i>
               </span>
             </template>
           </vuetable>
@@ -114,10 +114,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-i {
-  font-size: 20px;
-  cursor: pointer;
-}
-</style>

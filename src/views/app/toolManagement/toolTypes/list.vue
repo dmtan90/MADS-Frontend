@@ -4,7 +4,7 @@
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Tool Types">
           <router-link to="tool-types/new">
-            <b-button variant="primary" size="md" class="add-sensor"
+            <b-button variant="primary" size="md" class="add-new"
               >Add New</b-button
             >
           </router-link>
@@ -19,10 +19,10 @@
                 :to="'tool-types/' + slotProps.rowData.tool_type_id + '/edit'"
                 tag="span"
               >
-                <i class="iconsminds-file-edit"></i>
+                <i class="simple-icon-pencil"></i>
               </router-link>
-              <span @click="deleteToolType(slotProps.rowData.id)">
-                <i class="iconsminds-delete-file"></i>
+              <span @click="deleteToolType(slotProps.rowData.tool_type_id)">
+                <i class="simple-icon-trash"></i>
               </span>
             </template>
           </vuetable>
@@ -74,18 +74,14 @@ export default {
         this.toolTypes = response.tool_type;
       });
     },
-    deleteToolType() {}
+    deleteToolType(id) {
+      toolTypeService.delete(id).then(response => {
+        this.loadToolTypes();
+      });
+    }
   },
   mounted() {
     this.loadToolTypes();
   }
 };
 </script>
-
-<style lang="scss" scoped>
-  .add-sensor{
-    position: absolute;
-    right: 1.75rem;
-    top: 1.75rem;
-  }
-</style>

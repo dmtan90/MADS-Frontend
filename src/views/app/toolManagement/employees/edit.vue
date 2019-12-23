@@ -10,10 +10,7 @@
                   <b-form-input type="text" v-model="employee.name" />
                 </b-form-group>
                 <b-form-group label="Phone Number">
-                  <b-form-input
-                    type="text"
-                    v-model="employee.phone_number"
-                  />
+                  <b-form-input type="text" v-model="employee.phone_number" />
                 </b-form-group>
                 <b-form-group label="Address">
                   <b-form-textarea
@@ -22,7 +19,7 @@
                   ></b-form-textarea>
                 </b-form-group>
                 <b-form-group label="Role">
-                  <b-form-input type="text" v-model="employee.role" />
+                  <v-select v-model="employee.role" :options="roles" />
                 </b-form-group>
               </b-form>
               <b-row v-if="errors.length > 0">
@@ -38,7 +35,9 @@
               </b-row>
               <div class="mt-5">
                 <router-link to="/app/tool-management/employees">
-                  <b-button size="lg" variant="outline-primary">Cancel</b-button>
+                  <b-button size="lg" variant="outline-primary"
+                    >Cancel</b-button
+                  >
                 </router-link>
                 <b-button size="lg" variant="primary" @click="updateEmployee"
                   >Submit</b-button
@@ -66,6 +65,7 @@ export default {
   data() {
     return {
       employee: {},
+      roles: ["supervisor", "worker"],
       errors: []
     };
   },
@@ -75,7 +75,7 @@ export default {
 
       employeeService.readId(id).then(response => {
         this.employee = response;
-      })
+      });
     },
     updateEmployee() {
       let payload = this.employee;
