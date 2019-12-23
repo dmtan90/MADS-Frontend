@@ -5,9 +5,6 @@
 </template>
 
 <style lang="scss">
-  // .vue-switcher--unchecked div:after {
-  //   left: 15px !important;
-  // }
   .vue-switcher div {
     height: 27px !important;
     width: 58px !important;
@@ -21,12 +18,6 @@
   }
   .vue-switcher.vue-switcher--unchecked div:after {
     left: 2px!important;
-  }
-  .vuetable thead tr th {
-    font-size: 15px;
-  }
-  .vuetable tbody tr td {
-    font-size: 15px;
   }
   .error-message {
     color: #dc3545;
@@ -48,5 +39,24 @@
   }
   .w-20 {
     width: 20%;
+  }
+  .vuetable{
+    thead tr th, tbody tr td {
+      font-size: 15px;
+    }
+    .vuetable-body{
+      .vuetable-slot {
+        i {
+          cursor: pointer;
+          margin-right: 10px;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+  .add-new{
+    position: absolute;
+    right: 1.75rem;
+    top: 1.75rem;
   }
 </style>

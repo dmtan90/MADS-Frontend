@@ -4,7 +4,7 @@
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Employees">
           <router-link to="employees/new">
-            <b-button variant="primary" size="md" class="add-sensor">Add New</b-button>
+            <b-button variant="primary" size="md" class="add-new">Add New</b-button>
           </router-link>
           <vuetable
             ref="vuetable"
@@ -17,10 +17,10 @@
                 :to="'employees/' + slotProps.rowData.employee_id + '/edit'"
                 tag="span"
               >
-                <i class="iconsminds-file-edit"></i>
+                <i class="simple-icon-pencil"></i>
               </router-link>
               <span @click="deleteEmployee(slotProps.rowData.employee_id)">
-                <i class="iconsminds-delete-file"></i>
+                <i class="simple-icon-trash"></i>
               </span>
             </template>
           </vuetable>
@@ -95,11 +95,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-  .add-sensor{
-    position: absolute;
-    right: 1.75rem;
-    top: 1.75rem;
-  }
-</style>

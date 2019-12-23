@@ -15,10 +15,10 @@
           </template>
           <template v-slot:actions="slotProps">
             <span @click="editDeviceSensor(slotProps.rowData.id)" class="cursor-pointer">
-              <i class="iconsminds-file-edit"></i>
+              <i class="simple-icon-pencil"></i>
             </span>
             <span @click="deleteDeviceSensor(slotProps.rowData.id)" class="cursor-pointer">
-              <i class="iconsminds-delete-file"></i>
+              <i class="simple-icon-trash"></i>
             </span>
           </template>
         </vuetable>

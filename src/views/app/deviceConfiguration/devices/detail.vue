@@ -7,39 +7,56 @@
       </b-colxx>
     </b-row>
     <div class="row">
-      <div class="col col-3">
+      <div class="col col-12">
         <div class="card">
           <div class="card-body">
             <b-row>
-              <b-colxx>
-                <b-img
+              <b-colxx xxs="2">
+                <b-img class="device-image"
                   src="https://acqdat.herokuapp.com/images/device_detail_card.png"
                   thumbnail
                   fluid
                 ></b-img>
               </b-colxx>
-            </b-row>
-            <b-row>
-              <b-colxx>
-                <p>Name : {{device.name}}</p>
-                <p>Description : {{device.description}}</p>
-                <p>Token : {{device.access_token}}</p>
-                <p>UUID : {{device.uuid}}</p>
+              <b-colxx xxs="10">
+                <p><b>Name : </b>{{ device.name }}</p>
+                <p><b>Description : </b>{{ device.description }}</p>
+                <p><b>Token : </b>{{ device.access_token }}</p>
+                <p><b>UUID : </b>{{ device.uuid }}</p>
               </b-colxx>
             </b-row>
           </div>
         </div>
       </div>
-      <div class="col col-9">
+    </div>
+    <div class="row mt-4">
+      <div class="col col-12">
         <b-card title="Sensors" v-if="sensorComponent === 'list'">
-          <b-button variant="primary" size="md" class="add-sensor" @click="sensorComponent = 'new'">Add New</b-button>
-          <list-sensors :sensors="deviceSensors" @deleteSensor="deleteDeviceSensor" @editSensor="editDeviceSensor"></list-sensors>
+          <b-button
+            variant="primary"
+            size="md"
+            class="add-new"
+            @click="sensorComponent = 'new'"
+            >Add New</b-button
+          >
+          <list-sensors
+            :sensors="deviceSensors"
+            @deleteSensor="deleteDeviceSensor"
+            @editSensor="editDeviceSensor"
+          ></list-sensors>
         </b-card>
         <b-card title="New Sensor" v-if="sensorComponent === 'new'">
-          <new-sensor @setSensorComponent="sensorComponent = 'list'" @loadSensors="loadDeviceSensors"></new-sensor>
+          <new-sensor
+            @setSensorComponent="sensorComponent = 'list'"
+            @loadSensors="loadDeviceSensors"
+          ></new-sensor>
         </b-card>
         <b-card title="Edit Sensor" v-if="sensorComponent === 'edit'">
-          <edit-sensor :sensorId="editSensorId" @setSensorComponent="sensorComponent = 'list'" @loadSensors="loadDeviceSensors"></edit-sensor>
+          <edit-sensor
+            :sensorId="editSensorId"
+            @setSensorComponent="sensorComponent = 'list'"
+            @loadSensors="loadDeviceSensors"
+          ></edit-sensor>
         </b-card>
       </div>
     </div>
@@ -66,7 +83,7 @@ export default {
       device: [],
       deviceSensors: [],
       editSensorId: null,
-      sensorComponent: 'list'
+      sensorComponent: "list"
     };
   },
   methods: {
@@ -79,7 +96,7 @@ export default {
     },
     loadDeviceSensors() {
       let id = this.$route.params.id;
-      this.sensorComponent = 'list';
+      this.sensorComponent = "list";
       this.editSensorId = null;
 
       sensorService.getDeviceSensors(id).then(response => {
@@ -93,7 +110,7 @@ export default {
     },
     editDeviceSensor(id) {
       this.editSensorId = id;
-      this.sensorComponent = 'edit';
+      this.sensorComponent = "edit";
     }
   },
   mounted() {
@@ -103,9 +120,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .add-sensor{
-    position: absolute;
-    right: 1.75rem;
-    top: 1.75rem;
+  .device-image {
+    width: 90%;
   }
 </style>
