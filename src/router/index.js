@@ -1,92 +1,92 @@
-import Vue from "vue";
-import Router from "vue-router";
-import AuthRequired from "@/utils/AuthRequired";
+import Vue from 'vue'
+import Router from 'vue-router'
+import AuthRequired from '@/utils/AuthRequired'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const routes = [
   {
-    path: "/",
-    component: () => import(/* webpackChunkName: "app" */ "@/views/app"),
-    redirect: "/app/dashboard",
+    path: '/',
+    component: () => import(/* webpackChunkName: "app" */ '@/views/app'),
+    redirect: '/app/dashboard',
     beforeEnter: AuthRequired,
     children: [
       {
-        path: "app/dashboard",
+        path: 'app/dashboard',
         component: () =>
-          import(/* webpackChunkName: "dashboard" */ "@/views/app/dashboard")
+          import(/* webpackChunkName: "dashboard" */ '@/views/app/dashboard')
       },
       {
-        path: "app/device-configuration",
+        path: 'app/device-configuration',
         component: () =>
           import(
-            /* webpackChunkName: "device-configuration" */ "@/views/app/deviceConfiguration"
+            /* webpackChunkName: "device-configuration" */ '@/views/app/deviceConfiguration'
           ),
-        redirect: "/app/device-configuration/devices",
+        redirect: '/app/device-configuration/devices',
         children: [
           {
-            path: "sensor-types",
+            path: 'sensor-types',
             component: () =>
               import(
-                /* webpackChunkName: "sensorTypes" */ "@/views/app/deviceConfiguration/sensorTypes"
+                /* webpackChunkName: "sensorTypes" */ '@/views/app/deviceConfiguration/sensorTypes'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* sensorTypes */ "@/views/app/deviceConfiguration/sensorTypes/list"
+                    /* sensorTypes */ '@/views/app/deviceConfiguration/sensorTypes/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* newSensorType */ "@/views/app/deviceConfiguration/sensorTypes/new"
+                    /* newSensorType */ '@/views/app/deviceConfiguration/sensorTypes/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* editSensorType */ "@/views/app/deviceConfiguration/sensorTypes/edit"
+                    /* editSensorType */ '@/views/app/deviceConfiguration/sensorTypes/edit'
                   )
               }
             ]
           },
           {
-            path: "devices",
+            path: 'devices',
             component: () =>
               import(
-                /* webpackChunkName: "devices" */ "@/views/app/deviceConfiguration/devices"
+                /* webpackChunkName: "devices" */ '@/views/app/deviceConfiguration/devices'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* devices */ "@/views/app/deviceConfiguration/devices/list"
+                    /* devices */ '@/views/app/deviceConfiguration/devices/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* newDevice */ "@/views/app/deviceConfiguration/devices/new"
+                    /* newDevice */ '@/views/app/deviceConfiguration/devices/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* editDevice */ "@/views/app/deviceConfiguration/devices/edit"
+                    /* editDevice */ '@/views/app/deviceConfiguration/devices/edit'
                   )
               },
               {
-                path: ":id",
+                path: ':id',
                 component: () =>
                   import(
-                    /* deviceDetail */ "@/views/app/deviceConfiguration/devices/detail"
+                    /* deviceDetail */ '@/views/app/deviceConfiguration/devices/detail'
                   )
               }
             ]
@@ -94,214 +94,214 @@ const routes = [
         ]
       },
       {
-        path: "app/site-layout",
+        path: 'app/site-layout',
         component: () =>
-          import(/* webpackChunkName: "single" */ "@/views/app/SiteDesign"),
+          import(/* webpackChunkName: "single" */ '@/views/app/SiteDesign'),
         children: [
           {
-            path: "list-view",
+            path: 'list-view',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ "@/views/app/SiteDesign/listView"
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/listView'
               ),
             children: [
               {
-                path: "",
-                component: () => import("@/views/app/SiteDesign/listView/list")
+                path: '',
+                component: () => import('@/views/app/SiteDesign/listView/list')
               },
               {
-                path: "new",
-                component: () => import("@/views/app/SiteDesign/listView/new")
+                path: 'new',
+                component: () => import('@/views/app/SiteDesign/listView/new')
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* editSensorType */ "@/views/app/SiteDesign/listView/edit"
+                    /* editSensorType */ '@/views/app/SiteDesign/listView/edit'
                   )
               }
             ]
           },
           {
-            path: "",
+            path: '',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ "@/views/app/SiteDesign/map"
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/map'
               )
           },
           {
-            path: "tile",
+            path: 'tile',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ "@/views/app/SiteDesign/tile"
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/tile'
               ),
             children: [
               {
-                path: "",
-                component: () => import("@/views/app/SiteDesign/tile/list")
+                path: '',
+                component: () => import('@/views/app/SiteDesign/tile/list')
               }
             ]
           }
         ]
       },
       {
-        path: "app/notifications",
+        path: 'app/notifications',
         component: () =>
           import(
-            /* webpackChunkName: "notifications" */ "@/views/app/notifications"
+            /* webpackChunkName: "notifications" */ '@/views/app/notifications'
           ),
         children: [
           {
-            path: "",
+            path: '',
             component: () =>
-              import(/* notifications */ "@/views/app/notifications/list")
+              import(/* notifications */ '@/views/app/notifications/list')
           },
           {
-            path: "new",
+            path: 'new',
             component: () =>
-              import(/* newNotification */ "@/views/app/notifications/new")
+              import(/* newNotification */ '@/views/app/notifications/new')
           },
           {
-            path: ":id/edit",
+            path: ':id/edit',
             component: () =>
-              import(/* editNotification */ "@/views/app/notifications/edit")
+              import(/* editNotification */ '@/views/app/notifications/edit')
           }
         ]
       },
       {
-        path: "app/tool-management",
+        path: 'app/tool-management',
         component: () =>
           import(
-            /* webpackChunkName: "tmDashboard" */ "@/views/app/toolManagement"
+            /* webpackChunkName: "tmDashboard" */ '@/views/app/toolManagement'
           ),
-        redirect: "app/tool-management/dashboard",
+        redirect: 'app/tool-management/dashboard',
         children: [
           {
-            path: "dashboard",
+            path: 'dashboard',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ "@/views/app/toolManagement/dashboard"
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/toolManagement/dashboard'
               )
           },
           {
-            path: "employees",
+            path: 'employees',
             component: () =>
               import(
-                /* webpackChunkName: "tmEmplooyees" */ "@/views/app/toolManagement/employees"
+                /* webpackChunkName: "tmEmplooyees" */ '@/views/app/toolManagement/employees'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmEmplooyees" */ "@/views/app/toolManagement/employees/list"
+                    /* webpackChunkName: "tmEmplooyees" */ '@/views/app/toolManagement/employees/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmNewEmplooyee" */ "@/views/app/toolManagement/employees/new"
+                    /* webpackChunkName: "tmNewEmplooyee" */ '@/views/app/toolManagement/employees/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmEditEmplooyee" */ "@/views/app/toolManagement/employees/edit"
+                    /* webpackChunkName: "tmEditEmplooyee" */ '@/views/app/toolManagement/employees/edit'
                   )
               }
             ]
           },
           {
-            path: "tools",
-            name: "tools",
+            path: 'tools',
+            name: 'tools',
             component: () =>
               import(
-                /* webpackChunkName: "tmTools" */ "@/views/app/toolManagement/tools"
+                /* webpackChunkName: "tmTools" */ '@/views/app/toolManagement/tools'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmTools" */ "@/views/app/toolManagement/tools/list"
+                    /* webpackChunkName: "tmTools" */ '@/views/app/toolManagement/tools/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmNewTool" */ "@/views/app/toolManagement/tools/new"
+                    /* webpackChunkName: "tmNewTool" */ '@/views/app/toolManagement/tools/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmEditTool" */ "@/views/app/toolManagement/tools/edit"
+                    /* webpackChunkName: "tmEditTool" */ '@/views/app/toolManagement/tools/edit'
                   )
               }
             ]
           },
           {
-            path: "tool-boxes",
-            name: "tool-boxes",
+            path: 'tool-boxes',
+            name: 'tool-boxes',
             component: () =>
               import(
-                /* webpackChunkName: "tmToolBoxes" */ "@/views/app/toolManagement/toolBoxes"
+                /* webpackChunkName: "tmToolBoxes" */ '@/views/app/toolManagement/toolBoxes'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmToolBoxes" */ "@/views/app/toolManagement/toolBoxes/list"
+                    /* webpackChunkName: "tmToolBoxes" */ '@/views/app/toolManagement/toolBoxes/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmNewToolBox" */ "@/views/app/toolManagement/toolBoxes/new"
+                    /* webpackChunkName: "tmNewToolBox" */ '@/views/app/toolManagement/toolBoxes/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmEditToolBox" */ "@/views/app/toolManagement/toolBoxes/edit"
+                    /* webpackChunkName: "tmEditToolBox" */ '@/views/app/toolManagement/toolBoxes/edit'
                   )
               }
             ]
           },
           {
-            path: "tool-types",
-            name: "tool-types",
+            path: 'tool-types',
+            name: 'tool-types',
             component: () =>
               import(
-                /* webpackChunkName: "tmToolTypes" */ "@/views/app/toolManagement/toolTypes"
+                /* webpackChunkName: "tmToolTypes" */ '@/views/app/toolManagement/toolTypes'
               ),
             children: [
               {
-                path: "",
+                path: '',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmToolTypes" */ "@/views/app/toolManagement/toolTypes/list"
+                    /* webpackChunkName: "tmToolTypes" */ '@/views/app/toolManagement/toolTypes/list'
                   )
               },
               {
-                path: "new",
+                path: 'new',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmNewToolType" */ "@/views/app/toolManagement/toolTypes/new"
+                    /* webpackChunkName: "tmNewToolType" */ '@/views/app/toolManagement/toolTypes/new'
                   )
               },
               {
-                path: ":id/edit",
+                path: ':id/edit',
                 component: () =>
                   import(
-                    /* webpackChunkName: "tmEditToolType" */ "@/views/app/toolManagement/toolTypes/edit"
+                    /* webpackChunkName: "tmEditToolType" */ '@/views/app/toolManagement/toolTypes/edit'
                   )
               }
             ]
@@ -311,40 +311,40 @@ const routes = [
     ]
   },
   {
-    path: "/error",
-    component: () => import(/* webpackChunkName: "error" */ "@/views/Error")
+    path: '/error',
+    component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
   },
   {
-    path: "/user",
-    component: () => import(/* webpackChunkName: "user" */ "@/views/user"),
-    redirect: "/user/login",
+    path: '/user',
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user'),
+    redirect: '/user/login',
     children: [
       {
-        path: "login",
+        path: 'login',
         component: () =>
-          import(/* webpackChunkName: "user" */ "@/views/user/Login")
+          import(/* webpackChunkName: "user" */ '@/views/user/Login')
       },
       {
-        path: "register",
+        path: 'register',
         component: () =>
-          import(/* webpackChunkName: "user" */ "@/views/user/Register")
+          import(/* webpackChunkName: "user" */ '@/views/user/Register')
       },
       {
-        path: "forgot-password",
+        path: 'forgot-password',
         component: () =>
-          import(/* webpackChunkName: "user" */ "@/views/user/ForgotPassword")
+          import(/* webpackChunkName: "user" */ '@/views/user/ForgotPassword')
       }
     ]
   },
   {
-    path: "*",
-    component: () => import(/* webpackChunkName: "error" */ "@/views/Error")
+    path: '*',
+    component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
   }
-];
+]
 
 const router = new Router({
-  linkActiveClass: "active",
+  linkActiveClass: 'active',
   routes
-});
+})
 
-export default router;
+export default router

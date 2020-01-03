@@ -9,9 +9,21 @@
           :no-fade="true"
           v-model="selectedTab"
         >
-          <b-tab @click="goTo(0, '')" title="Map View" title-item-class="w-20 text-center sd"></b-tab>
-          <b-tab @click="goTo(1, 'tile')" title="Tile View" title-item-class="w-20 text-center sd"></b-tab>
-          <b-tab @click="goTo(2, 'list-view')" title="List View" title-item-class="w-20 text-center sd"></b-tab>
+          <b-tab
+            @click="goTo(0, '')"
+            title="Map View"
+            title-item-class="w-20 text-center sd"
+          ></b-tab>
+          <b-tab
+            @click="goTo(1, 'tile')"
+            title="Tile View"
+            title-item-class="w-20 text-center sd"
+          ></b-tab>
+          <b-tab
+            @click="goTo(2, 'list-view')"
+            title="List View"
+            title-item-class="w-20 text-center sd"
+          ></b-tab>
         </b-tabs>
       </b-colxx>
     </b-row>
@@ -23,43 +35,37 @@
   </div>
 </template>
 
-
 <script>
 /* eslint-disable */
-import _ from "lodash";
+import _ from 'lodash'
 
 export default {
   data() {
     return {
-      selectedTab: 0,
+      selectedTab: 0
     }
   },
   methods: {
     goTo(tabNo, tab) {
-      this.$router.push("/app/site-layout/" + tab);
-      this.selectedTab = tabNo;
+      this.$router.push('/app/site-layout/' + tab)
+      this.selectedTab = tabNo
     }
   },
   mounted() {
-    let path = this.$route.path;
-    if(_.includes(path, 'list-view')) {
-      this.selectedTab = 2;
-    }else if(_.includes(path,'tile')){
-      this.selectedTab = 1;
-    }
-    else {  
-      this.selectedTab = 0;
+    let path = this.$route.path
+    if (_.includes(path, 'list-view')) {
+      this.selectedTab = 2
+    } else if (_.includes(path, 'tile')) {
+      this.selectedTab = 1
+    } else {
+      this.selectedTab = 0
     }
   }
-};
+}
 </script>
 
-
-
-
-
 <style>
-    .sd {
-        width: 33.333% !important;
-    }
+.sd {
+  width: 33.333% !important;
+}
 </style>

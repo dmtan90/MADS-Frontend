@@ -1,52 +1,52 @@
-import ApiService from "@/services/api.service";
-const resource = "/site";
+import ApiService from '@/services/api.service'
+const resource = '/site'
 
 const siteService = {
-  create: async function(payload) {
+  create: async function (payload) {
     try {
-      const response = await ApiService.post(resource, payload);
+      const response = await ApiService.post(resource, payload)
 
-      return response.data;
+      return response.data
     } catch (error) {
-      return error.response.data;
+      return error.response.data
     }
   },
-  read: async function(params) {
+  read: async function (params) {
     try {
-      const response = await ApiService.get(resource, { params });
+      const response = await ApiService.get(resource, { params })
 
-      return response.data;
+      return response.data
     } catch (error) {
-      return error.response.data;
+      return error.response.data
     }
   },
-  update: async function(id, payload) {
+  update: async function (id, payload) {
     try {
-      const response = await ApiService.put(resource + "/" + id, payload);
+      const response = await ApiService.put(resource + '/' + id, payload)
 
-      return response.data;
+      return response.data
     } catch (error) {
-      return error.response.data;
+      return error.response.data
     }
   },
-  delete: async function(id) {
+  delete: async function (id) {
     try {
-      const response = await ApiService.delete(resource + "/" + id);
+      const response = await ApiService.delete(resource + '/' + id)
 
-      return response.data;
+      return response.data
     } catch (error) {
-      return error.response.data;
+      return error.response.data
     }
   },
-  readId: async function(id) {
+  readId: async function (id) {
     try {
-      const response = await ApiService.get(resource + "/" + id);
+      const response = await ApiService.get(resource + '/' + id)
 
-      return response.data;
+      return response.data
     } catch (error) {
-      return error.response.data;
+      return error.response.data
     }
   }
-};
+}
 
-export default siteService;
+export default siteService
