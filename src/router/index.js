@@ -134,7 +134,13 @@ const routes = [
             component: () =>
               import(
                 /* webpackChunkName: "tmDashboard" */ "@/views/app/SiteDesign/tile"
-              )
+              ),
+            children: [
+              {
+                path: "",
+                component: () => import("@/views/app/SiteDesign/tile/list")
+              }
+            ]
           }
         ]
       },
