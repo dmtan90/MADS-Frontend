@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <b-row>
+  <div>
+    <b-row>
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Site List">
           <router-link to="tool-types/new">
@@ -37,8 +37,9 @@
 </template>
 
 <script>
-import toolTypeService from "@/services/toolType.service";
-import Vuetable from "vuetable-2";
+/* eslint-disable */
+
+import Vuetable from 'vuetable-2'
 
 export default {
   components: {
@@ -49,30 +50,27 @@ export default {
       toolTypes: [],
       fields: [
         {
-          name: "",
-          title: "<span>Serial No.</span>",
-          sortField: "",
-          dataClass: ""
+          name: '',
+          title: '<span>Serial No.</span>',
+          sortField: '',
+          dataClass: ''
         },
         {
-          name: "",
-          sortField: "",
-          title: "<span>Clmn 2<span>",
-          dataClass: ""
+          name: '',
+          sortField: '',
+          title: '<span>Clmn 2<span>',
+          dataClass: ''
         },
         {
-          name: "",
-          sortField: "",
-          title: "<span>Clmn 3</span>",
-          dataClass: ""
+          name: '',
+          sortField: '',
+          title: '<span>Clmn 3</span>',
+          dataClass: ''
         }
       ]
-    };
-  },
+    }
+  }
 }
 </script>
 
-
-<style>
-
-</style>
+<style></style>

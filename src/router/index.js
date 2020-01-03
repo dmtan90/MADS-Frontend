@@ -126,14 +126,14 @@ const routes = [
             path: '',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/map'
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/mapView'
               )
           },
           {
             path: 'tile',
             component: () =>
               import(
-                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/tile'
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/tileView'
               ),
             children: [
               {
