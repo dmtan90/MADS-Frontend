@@ -9,6 +9,12 @@
                 <b-form-group label="Name">
                   <b-form-input type="text" v-model="site.name" />
                 </b-form-group>
+                <b-form-group label="Location">
+                  <google-autocomplete
+                    :searchText="siteLocation"
+                    @placeChanged="setSiteLocation"
+                  ></google-autocomplete>
+                </b-form-group>
               </b-form>
               <b-row v-if="errors.length > 0">
                 <b-colxx xxs="12">
@@ -16,14 +22,20 @@
                     v-for="(error, index) in errors"
                     :key="index"
                     class="mt-2 error-message capitalize-first-letter"
-                  >{{ error }}</div>
+                  >
+                    {{ error }}
+                  </div>
                 </b-colxx>
               </b-row>
               <div class="mt-5">
                 <router-link to="/app/site-layout/list-view">
-                  <b-button size="lg" variant="outline-primary">Cancel</b-button>
+                  <b-button size="lg" variant="outline-primary"
+                    >Cancel</b-button
+                  >
                 </router-link>
-                <b-button size="lg" variant="primary" @click="updateSite">Submit</b-button>
+                <b-button size="lg" variant="primary" @click="updateSite"
+                  >Submit</b-button
+                >
               </div>
             </b-colxx>
           </b-row>
@@ -36,51 +48,62 @@
 <script>
 /* eslint-disable */
 
-import siteService from "@/services/site.service";
-import _ from "lodash";
-import vSelect from "vue-select";
-import toolTypeService from "@/services/toolType.service";
+import siteService from "@/services/site.service"
+import _ from "lodash"
+import vSelect from "vue-select"
+import toolTypeService from "@/services/toolType.service"
+import googleAutocomplete from "./../../shared/googleAutocomplete.vue"
 
 export default {
   components: {
-    vSelect
+    vSelect,
+    googleAutocomplete
   },
   data() {
     return {
       site: {},
+      siteLocation: '',
       errors: []
-    };
+    }
   },
   methods: {
     loadSite() {
-      let id = this.$route.params.id;
+      let id = this.$route.params.id
 
       siteService.readId(id).then(response => {
-        this.site = response;
-      });
+        this.site = response
+        this.siteLocation = response.location_details.name
+      })
     },
     updateSite() {
-      let payload = this.site;
-      let id = this.$route.params.id;
+      let payload = this.site
+      let id = this.$route.params.id
 
       siteService.update(id, payload).then(response => {
-        this.errors = [];
+        this.errors = []
         if (response.errors) {
-          let errors = response.errors.message.error || response.errors.message;
+          let errors = response.errors.message.error || response.errors.message
           _.each(errors, (errors, key) => {
-            this.errors = _.concat(
-              this.errors,
-              _.lowerCase(key) + " " + errors
-            );
-          });
+            this.errors = _.concat(this.errors, _.lowerCase(key) + " " + errors)
+          })
         } else {
-          this.$router.push("/app/site-layout/list-view");
+          this.$router.push("/app/site-layout/list-view")
         }
-      });
+      })
+    },
+    setSiteLocation(place) {
+      let location_details = {
+        lat: place.geometry.location.lat(),
+        lon: place.geometry.location.lng(),
+        name: place.formatted_address,
+        place_id: place.place_id
+      }
+
+      this.site.location_details = location_details
     }
   },
   mounted() {
-    this.loadSite();
+    this.loadSite()
   }
-};
+}
 </script>
