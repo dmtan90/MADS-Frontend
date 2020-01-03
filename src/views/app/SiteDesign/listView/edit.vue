@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <b-row>
       <b-colxx xxs="12">
         <b-card title="Edit Site">
@@ -17,28 +16,26 @@
                     v-for="(error, index) in errors"
                     :key="index"
                     class="mt-2 error-message capitalize-first-letter"
-                  >
-                    {{ error }}
-                  </div>
+                  >{{ error }}</div>
                 </b-colxx>
               </b-row>
               <div class="mt-5">
                 <router-link to="/app/site-layout/list-view">
                   <b-button size="lg" variant="outline-primary">Cancel</b-button>
                 </router-link>
-                <b-button size="lg" variant="primary" @click="updateSite"
-                  >Submit</b-button
-                >
+                <b-button size="lg" variant="primary" @click="updateSite">Submit</b-button>
               </div>
             </b-colxx>
           </b-row>
         </b-card>
       </b-colxx>
-    </b-row> 
+    </b-row>
   </div>
 </template>
 
 <script>
+/* eslint-disable */
+
 import siteService from "@/services/site.service";
 import _ from "lodash";
 import vSelect from "vue-select";
@@ -57,10 +54,10 @@ export default {
   methods: {
     loadSite() {
       let id = this.$route.params.id;
-      
+
       siteService.readId(id).then(response => {
         this.site = response;
-      })
+      });
     },
     updateSite() {
       let payload = this.site;

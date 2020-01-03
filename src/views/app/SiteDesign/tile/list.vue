@@ -1,19 +1,23 @@
 <template>
   <div class="content">
-      <div  v-for="site in sites" v-bind:key="site.id" class="container">
-        <b-card class="mb-4" no-body>
+      <b-row>
+            <b-colxx xxs="12" xs="6" lg="3" v-for="site in sites" v-bind:key="site.id">
+<b-card class="mb-4" no-body>
             <div class="position-relative">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRRZhtlTg6PZNaGCLS4NFesp4_QYxw5_Qjxya3tmTyUqfvQQzSD" class="card-img-top"/>
+                <img src="https://piaf-vue.coloredstrategies.com/assets/img/card-thumb-1.jpg" class="card-img-top"/>
             </div>
             <b-card-body>
-                <h6 class="mb-4 card-subtitle">{{name}}</h6>
+                <h6 class="mb-4 card-subtitle">{{site.name}}</h6>
             </b-card-body>
         </b-card>
-      </div>
+            </b-colxx>
+      </b-row>
   </div>
 </template>
 
 <script>
+/* eslint-disable */
+
 import siteService from "@/services/site.service";
 
 export default {
@@ -43,37 +47,15 @@ export default {
         border-radius: 5px;
     }
    .content .container {
-        display: grid;
-        width: 70%;
-        margin: auto;
-        grid-template-columns: 1fr 1fr;
+        display: grid !important;
+        width: 70%  !important;
+        margin: auto !important;
+        grid-template-columns: 1fr 1fr !important;
         grid-column-gap: 20% !important;
     }
 
     .content .container .info-box {
-        margin: 50px 0 30px 0;
-        border: 2px solid #4cb6bb;
-        border-radius: 5px
-    }
-
-    .content .container .info-box .view {
-        margin: 20px 20px 30px 20px;
-        height: 200px;
-        border-radius: 5px
-    }
-
-    .content .container .info-box .view img {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px
-    }
-
-    .content .container .info-box p {
-        text-align: center;
-        width: 100%;
-        margin: 0 0 70px 0;
-        font-size: 20px !important;
-        color: #4cb6bb
+        margin: 50px 0 30px 0 !important;
     }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div> 
+  <div>
     <b-row>
       <b-colxx xxs="12">
         <b-card title="Add Site">
@@ -16,18 +16,14 @@
                     v-for="(error, index) in errors"
                     :key="index"
                     class="mt-2 error-message capitalize-first-letter"
-                  >
-                    {{ error }}
-                  </div>
+                  >{{ error }}</div>
                 </b-colxx>
               </b-row>
               <div class="mt-5">
                 <router-link to="/app/site-layout/list-view">
                   <b-button size="lg" variant="outline-primary">Cancel</b-button>
                 </router-link>
-                <b-button size="lg" variant="primary" @click="createNewSite"
-                  >Submit</b-button
-                >
+                <b-button size="lg" variant="primary" @click="createNewSite">Submit</b-button>
               </div>
             </b-colxx>
           </b-row>
@@ -37,15 +33,9 @@
   </div>
 </template>
 
-                <!-- <b-form-group label="Description">
-                  <b-form-textarea
-                    rows="4"
-                    v-model="toolTypeForm.description"
-                  ></b-form-textarea>
-                </b-form-group> -->
-
 <script>
 /* eslint-disable */
+
 import siteService from "@/services/site.service";
 import _ from "lodash";
 import vSelect from "vue-select";
@@ -58,7 +48,7 @@ export default {
   data() {
     return {
       newSiteForm: {
-        name: ""      
+        name: ""
       },
       errors: []
     };

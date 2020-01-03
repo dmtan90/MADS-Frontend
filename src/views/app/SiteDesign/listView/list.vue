@@ -1,24 +1,14 @@
 <template>
-    <div>
-      <b-row>
+  <div>
+    <b-row>
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Site List">
           <router-link to="list-view/new">
-            <b-button variant="primary" size="md" class="add-new"
-              >Add New</b-button
-            >
+            <b-button variant="primary" size="md" class="add-new">Add New</b-button>
           </router-link>
-          <vuetable
-            ref="vuetable"
-            :api-mode="false"
-            :fields="fields"
-            :data="sites"
-          >
+          <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="sites">
             <template v-slot:actions="slotProps">
-              <router-link
-                :to="'list-view/' + slotProps.rowData.id + '/edit'"
-                tag="span"
-              >
+              <router-link :to="'list-view/' + slotProps.rowData.id + '/edit'" tag="span">
                 <i class="simple-icon-pencil"></i>
               </router-link>
               <span @click="deleteSite(slotProps.rowData.id)">
@@ -38,6 +28,8 @@ ref="pagination"
 ></vuetable-pagination-bootstrap> -->
 
 <script>
+/* eslint-disable */
+
 import siteService from "@/services/site.service";
 import Vuetable from "vuetable-2";
 import axios from "axios";
@@ -49,7 +41,7 @@ export default {
   data() {
     return {
       sites: [],
-      siteData : null,
+      siteData: null,
       fields: [
         {
           name: "id",
@@ -70,28 +62,26 @@ export default {
       ]
     };
   },
-  methods : {
+  methods: {
     loadSites() {
-        siteService.read().then(response => {
-        this.sites = response.sites
+      siteService.read().then(response => {
+        this.sites = response.sites;
       });
     },
     deleteSite(id) {
-        siteService.delete(id).then(response => {
+      siteService.delete(id).then(response => {
         this.loadSites();
       });
     }
   },
-    mounted() {
+  mounted() {
     this.loadSites();
   }
-
-}
+};
 </script>
 
 
 <style>
-
 </style><!-- <vuetable-pagination-bootstrap
 ref="pagination"
 @vuetable-pagination:change-page="onChangePage"
