@@ -1,8 +1,7 @@
 import ApiService from "@/services/api.service";
+const resource = "/site";
 
-const resource = "/device";
-
-const deviceService = {
+const siteService = {
   create: async function(payload) {
     try {
       const response = await ApiService.post(resource, payload);
@@ -50,4 +49,4 @@ const deviceService = {
   }
 };
 
-export default deviceService;
+export default siteService;

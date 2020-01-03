@@ -41,12 +41,12 @@
             <router-link
               :class="{ active: selectedParentMenu === 'single' }"
               @click.native="changeSelectedParentHasNoSubmenu('pages')"
-              to="/app/factory-layout"
+              to="/app/site-layout"
               tag="li"
             >
               <a
                 ><i class="iconsminds-three-arrow-fork"></i>
-                {{ $t("Factory") }}</a
+                {{ $t("Site Explorer") }}</a
               >
             </router-link>
           </li>
@@ -103,7 +103,6 @@
     </div>
   </div>
 </template>
-
 <script>
 /* eslint-disable */
 
