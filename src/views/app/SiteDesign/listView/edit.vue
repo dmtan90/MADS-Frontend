@@ -9,11 +9,19 @@
                 <b-form-group label="Name">
                   <b-form-input type="text" v-model="site.name" />
                 </b-form-group>
-                <b-form-group label="Location">
+                <b-form-group label="Current Location">
+                  <b-form-input type="text" disabled v-model="siteLocation" />
+                </b-form-group>
+                <b-form-group label="New Location">
                   <google-autocomplete
                     :searchText="siteLocation"
                     @placeChanged="setSiteLocation"
                   ></google-autocomplete>
+                </b-form-group>
+                <b-form-group label="Image">
+                  <input type="file" id="img" @change="uploadImage" />
+                  <!-- <label class="button" for="img">Upload a New Image</label> -->
+                  <span>{{ image_name }}</span>
                 </b-form-group>
               </b-form>
               <b-row v-if="errors.length > 0">
@@ -48,11 +56,12 @@
 <script>
 /* eslint-disable */
 
-import siteService from "@/services/site.service"
-import _ from "lodash"
-import vSelect from "vue-select"
-import toolTypeService from "@/services/toolType.service"
-import googleAutocomplete from "./../../shared/googleAutocomplete.vue"
+import siteService from '@/services/site.service'
+import _ from 'lodash'
+import vSelect from 'vue-select'
+import toolTypeService from '@/services/toolType.service'
+import googleAutocomplete from './../../shared/googleAutocomplete.vue'
+import axios from 'axios'
 
 export default {
   components: {
@@ -63,15 +72,17 @@ export default {
     return {
       site: {},
       siteLocation: '',
-      errors: []
+      errors: [],
+      image_name: '',
+      selectedFile: null
     }
   },
   methods: {
     loadSite() {
       let id = this.$route.params.id
-
       siteService.readId(id).then(response => {
         this.site = response
+        this.extractName(response.image_url)
         this.siteLocation = response.location_details.name
       })
     },
@@ -79,15 +90,28 @@ export default {
       let payload = this.site
       let id = this.$route.params.id
 
-      siteService.update(id, payload).then(response => {
+      let fd = new FormData()
+      if (this.selectedFile) {
+        fd.append('image', this.selectedFile, this.selectedFile.name)
+      }
+      fd.append('name', this.site.name)
+      fd.append('location_details[lat]', this.site.location_details.lat)
+      fd.append('location_details[lng]', this.site.location_details.lon)
+      fd.append('location_details[name]', this.site.location_details.name)
+      fd.append(
+        'location_details[place_id]',
+        this.site.location_details.place_id
+      )
+
+      axios.put(`http://7f7c6280.ngrok.io/site/${id}`, fd).then(response => {
         this.errors = []
         if (response.errors) {
           let errors = response.errors.message.error || response.errors.message
           _.each(errors, (errors, key) => {
-            this.errors = _.concat(this.errors, _.lowerCase(key) + " " + errors)
+            this.errors = _.concat(this.errors, _.lowerCase(key) + ' ' + errors)
           })
         } else {
-          this.$router.push("/app/site-layout/list-view")
+          this.$router.push('/app/site-layout/list-view')
         }
       })
     },
@@ -100,6 +124,26 @@ export default {
       }
 
       this.site.location_details = location_details
+    },
+    uploadImage(file) {
+      this.selectedFile = file.target.files[0]
+      this.image_name = ''
+    },
+    extractName(url) {
+      let extRevUrl = ''
+      for (let i = url.length - 1; i >= 0; i--) {
+        if (url[i] !== '/') {
+          extRevUrl += url[i]
+        } else {
+          break
+        }
+      }
+
+      let extUrl = ''
+      for (let i = extRevUrl.length - 1; i >= 0; i--) {
+        extUrl += extRevUrl[i]
+      }
+      this.image_name = extUrl
     }
   },
   mounted() {
@@ -107,3 +151,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.button {
+  padding: 10px 20px;
+  text-align: center;
+  color: #fff;
+  border-radius: 50px;
+  background: #4cb6bb;
+  font-weight: bold;
+  cursor: pointer;
+}</style
+>>

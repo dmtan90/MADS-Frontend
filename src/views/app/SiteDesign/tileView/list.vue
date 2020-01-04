@@ -5,7 +5,7 @@
         <b-card class="mb-4" no-body>
           <div class="position-relative">
             <img
-              src="https://piaf-vue.coloredstrategies.com/assets/img/card-thumb-1.jpg"
+              :src="site.image_url"
               class="card-img-top"
             />
           </div>
@@ -47,16 +47,5 @@ export default {
 .content {
   background: #fff;
   border-radius: 5px;
-}
-.content .container {
-  display: grid !important;
-  width: 70% !important;
-  margin: auto !important;
-  grid-template-columns: 1fr 1fr !important;
-  grid-column-gap: 20% !important;
-}
-
-.content .container .info-box {
-  margin: 50px 0 30px 0 !important;
 }
 </style>

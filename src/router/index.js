@@ -99,6 +99,13 @@ const routes = [
           import(/* webpackChunkName: "single" */ '@/views/app/SiteDesign'),
         children: [
           {
+            path: '',
+            component: () =>
+              import(
+                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/mapView'
+              )
+          },
+          {
             path: 'list-view',
             component: () =>
               import(
@@ -122,15 +129,9 @@ const routes = [
               }
             ]
           },
+
           {
-            path: '',
-            component: () =>
-              import(
-                /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/mapView'
-              )
-          },
-          {
-            path: 'tile',
+            path: 'tile-view',
             component: () =>
               import(
                 /* webpackChunkName: "tmDashboard" */ '@/views/app/SiteDesign/tileView'
@@ -138,7 +139,7 @@ const routes = [
             children: [
               {
                 path: '',
-                component: () => import('@/views/app/SiteDesign/tile/list')
+                component: () => import('@/views/app/SiteDesign/tileView/list')
               }
             ]
           }

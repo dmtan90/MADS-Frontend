@@ -15,7 +15,7 @@
             title-item-class="w-20 text-center sd"
           ></b-tab>
           <b-tab
-            @click="goTo(1, 'tile')"
+            @click="goTo(1, 'tile-view')"
             title="Tile View"
             title-item-class="w-20 text-center sd"
           ></b-tab>
@@ -55,7 +55,7 @@ export default {
     let path = this.$route.path
     if (_.includes(path, 'list-view')) {
       this.selectedTab = 2
-    } else if (_.includes(path, 'tile')) {
+    } else if (_.includes(path, 'tile-view')) {
       this.selectedTab = 1
     } else {
       this.selectedTab = 0
