@@ -2,7 +2,6 @@ export const defaultMenuType = 'menu-sub-hidden' // 'menu-default', 'menu-sub-hi
 export const defaultStartPath = '/app/dashboards/default'
 export const searchPath = '/app/pages/search'
 export const buyUrl = 'https://1.envato.market/nEyZa'
-
 export const subHiddenBreakpoint = 1440
 export const menuHiddenBreakpoint = 768
 

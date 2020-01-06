@@ -6,11 +6,11 @@
           <div class="position-relative">
             <img
               :src="site.image_url"
-              class="card-img-top"
+              class="card-img-top tile"
             />
           </div>
           <b-card-body>
-            <h6 class="mb-4 card-subtitle">{{site.name}}</h6>
+            <h6 class="mb-4 card-subtitle site-name">{{site.name}}</h6>
           </b-card-body>
         </b-card>
       </b-colxx>
@@ -44,8 +44,12 @@ export default {
 
 
 <style>
-.content {
-  background: #fff;
-  border-radius: 5px;
+.tile {
+  height: 230px !important;
+  object-fit: cover !important
+}
+
+.site-name {
+  margin: 0 !important;
 }
 </style>

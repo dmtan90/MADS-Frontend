@@ -12,7 +12,7 @@
                 <b-form-group label="Current Location">
                   <b-form-input type="text" disabled v-model="siteLocation" />
                 </b-form-group>
-                <b-form-group label="New Location">
+                <b-form-group label="Edit Location">
                   <google-autocomplete
                     :searchText="siteLocation"
                     @placeChanged="setSiteLocation"
@@ -127,7 +127,7 @@ export default {
     },
     uploadImage(file) {
       this.selectedFile = file.target.files[0]
-      this.image_name = ''
+      this.image_name = file.target.files[0].name
     },
     extractName(url) {
       let extRevUrl = ''
@@ -153,6 +153,16 @@ export default {
 </script>
 
 <style scoped>
+
+input[type="file"]
+{ 
+   color: transparent;
+   width: 100%; 
+   height: 36px; 
+   border-radius: 3px; 
+}
+
+
 .button {
   padding: 10px 20px;
   text-align: center;
