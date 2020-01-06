@@ -58,6 +58,7 @@ import toolTypeService from '@/services/toolType.service'
 import googleAutocomplete from './../../shared/googleAutocomplete.vue'
 import VueDropzone from 'vue2-dropzone'
 import axios from 'axios'
+import {apiUrl} from "../../../../constants/config"
 
 export default {
   components: {
@@ -98,8 +99,7 @@ export default {
         'location_details[place_id]',
         this.newSiteForm.location_details.place_id
       )
-      console.log('dataataaa', fd)
-      axios.post('http://7f7c6280.ngrok.io/site', fd).then(response => {
+      siteService.create(fd).then(response => {
         this.errors = []
         if (response.errors) {
           let errors = response.errors.message.error || response.errors.message

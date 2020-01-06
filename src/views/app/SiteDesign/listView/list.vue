@@ -65,7 +65,6 @@ export default {
   methods: {
     loadSites() {
       siteService.read().then(response => {
-        console.log("lissst",response)
         this.sites = response.sites;
       });
     },

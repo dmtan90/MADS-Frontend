@@ -12,7 +12,7 @@ export const localeOptions = [
   { id: 'es', name: 'Español' }
 ]
 
-export const apiUrl = 'http://7f7c6280.ngrok.io'
+export const apiUrl = 'http://localhost:4000'
 // export const apiUrl = 'https://madsiot.herokuapp.com/api'
 // 'https://02285a8e.ngrok.io'
 
