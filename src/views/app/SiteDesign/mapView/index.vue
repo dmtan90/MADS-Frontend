@@ -24,7 +24,12 @@ export default {
         )
         const marker = new google.maps.Marker({
           position,
-          map
+          animation: google.maps.Animation.DROP,
+          map,
+          title: site.name
+        })
+        marker.addListener('click', function() {
+          infowindow.open(map, marker)
         })
       })
     })

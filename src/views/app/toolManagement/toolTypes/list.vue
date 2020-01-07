@@ -1,87 +1,110 @@
 <template>
   <div>
-    <b-row>
-      <b-colxx xxs="12">
-        <b-card class="mb-4" title="Tool Types">
-          <router-link to="tool-types/new">
-            <b-button variant="primary" size="md" class="add-new"
-              >Add New</b-button
-            >
-          </router-link>
-          <vuetable
-            ref="vuetable"
-            :api-mode="false"
-            :fields="fields"
-            :data="toolTypes"
-          >
-            <template v-slot:actions="slotProps">
-              <router-link
-                :to="'tool-types/' + slotProps.rowData.tool_type_id + '/edit'"
-                tag="span"
+    <div v-if="toolTypes.length === 0">
+      <Loader />
+    </div>
+    <div v-else>
+      <b-row>
+        <b-colxx xxs="12">
+          <b-card class="mb-4" title="Tool Types">
+            <router-link to="tool-types/new">
+              <b-button variant="primary" size="md" class="add-new"
+                >Add New</b-button
               >
-                <i class="simple-icon-pencil"></i>
-              </router-link>
-              <span @click="deleteToolType(slotProps.rowData.tool_type_id)">
-                <i class="simple-icon-trash"></i>
-              </span>
-            </template>
-          </vuetable>
-          <!-- <vuetable-pagination-bootstrap
-            ref="pagination"
-            @vuetable-pagination:change-page="onChangePage"
-          ></vuetable-pagination-bootstrap> -->
-        </b-card>
-      </b-colxx>
-    </b-row>
+            </router-link>
+            <vuetable
+              ref="vuetable"
+              :api-mode="false"
+              :fields="fields"
+              :data="toolTypes"
+            >
+              <template v-slot:actions="slotProps">
+                <router-link
+                  :to="'tool-types/' + slotProps.rowData.tool_type_id + '/edit'"
+                  tag="span"
+                >
+                  <i class="simple-icon-pencil"></i>
+                </router-link>
+                <span @click="deleteToolType(slotProps.rowData.tool_type_id)">
+                  <i class="simple-icon-trash"></i>
+                </span>
+              </template>
+            </vuetable>
+          </b-card>
+        </b-colxx>
+      </b-row>
+      <Pagination
+        :total_pages="total_pages"
+        :page_number="page_number"
+        :page_size="page_size"
+        v-on:page-num-click="onPageNumClick"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 
-import toolTypeService from "@/services/toolType.service";
-import Vuetable from "vuetable-2";
+import toolTypeService from '@/services/toolType.service'
+import Vuetable from 'vuetable-2'
+import Pagination from '../../../../components/Pagination/Pagination'
+import Loader from "../../../../components/Loader/Loader"
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    Pagination,
+    Loader
   },
   data() {
     return {
       toolTypes: [],
       fields: [
         {
-          name: "tool_type_id",
-          title: "<span>Serial No.</span>",
-          sortField: "uutool_type_idid",
-          dataClass: "list-item-heading"
+          name: 'tool_type_id',
+          title: '<span>Serial No.</span>',
+          sortField: 'uutool_type_idid',
+          dataClass: 'list-item-heading'
         },
         {
-          name: "identifier",
-          sortField: "identifier",
-          dataClass: "text-muted"
+          name: 'identifier',
+          sortField: 'identifier',
+          dataClass: 'text-muted'
         },
         {
-          name: "__slot:actions",
-          title: "<span>Actions</span>"
+          name: '__slot:actions',
+          title: '<span>Actions</span>'
         }
-      ]
-    };
+      ],
+      page_number: 1,
+      page_size: 2,
+      total_pages: null
+    }
   },
   methods: {
     loadToolTypes() {
-      toolTypeService.read().then(response => {
-        this.toolTypes = response.tool_type;
-      });
+      toolTypeService
+        .read({ page_number: this.page_number, page_size: this.page_size })
+        .then(response => {
+          this.toolTypes = response.tool_type
+          this.total_pages = response.total_pages
+        })
+    },
+    onPageNumClick(num) {
+      this.page_number = num
+      this.toolTypes = []
+      this.loadToolTypes()
     },
     deleteToolType(id) {
       toolTypeService.delete(id).then(response => {
-        this.loadToolTypes();
-      });
+        this.toolTypes = []
+        this.loadToolTypes()
+      })
     }
   },
   mounted() {
-    this.loadToolTypes();
+    this.loadToolTypes()
   }
-};
+}
 </script>

@@ -2,7 +2,12 @@
   <div>
     <b-row>
       <b-colxx xxs="12">
-        <piaf-breadcrumb heading="Site Management" />
+        <div class="top-bar">
+          <piaf-breadcrumb heading="Site Explorer" />
+          <router-link class="add-new-btn" to="list-view/new">
+            Add New Site
+          </router-link>
+        </div>
         <b-tabs
           nav-class="separator-tabs ml-0 mb-5"
           content-class="tab-content"
@@ -65,6 +70,27 @@ export default {
 </script>
 
 <style>
+.top-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.add-new-btn {
+  border: none;
+  background: #4cb6bb;
+  padding: 15px 30px;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-new-btn:hover {
+  color: #fff !important;
+}
+
 .sd {
   width: 33.333% !important;
 }

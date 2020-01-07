@@ -3,86 +3,107 @@
     <b-row>
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Site List">
-          <router-link to="list-view/new">
-            <b-button variant="primary" size="md" class="add-new">Add New</b-button>
-          </router-link>
-          <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="sites">
-            <template v-slot:actions="slotProps">
-              <router-link :to="'list-view/' + slotProps.rowData.id + '/edit'" tag="span">
-                <i class="simple-icon-pencil"></i>
-              </router-link>
-              <span @click="deleteSite(slotProps.rowData.id)">
-                <i class="simple-icon-trash"></i>
-              </span>
-            </template>
-          </vuetable>
+          <div v-if="sites.length === 0">
+            <Loader />
+          </div>
+          <div v-else>
+            <vuetable
+              ref="vuetable"
+              :api-mode="false"
+              :fields="fields"
+              :data="sites"
+            >
+              <template v-slot:actions="slotProps">
+                <router-link
+                  :to="'list-view/' + slotProps.rowData.id + '/edit'"
+                  tag="span"
+                >
+                  <i class="simple-icon-pencil"></i>
+                </router-link>
+                <span @click="deleteSite(slotProps.rowData.id)">
+                  <i class="simple-icon-trash"></i>
+                </span>
+              </template>
+            </vuetable>
+          </div>
         </b-card>
       </b-colxx>
     </b-row>
+    <Pagination
+      :total_pages="total_pages"
+      :page_number="page_number"
+      :page_size="page_size"
+      v-on:page-num-click="onPageNumClick"
+    />
   </div>
 </template>
-
-<!-- <vuetable-pagination-bootstrap
-ref="pagination"
-@vuetable-pagination:change-page="onChangePage"
-></vuetable-pagination-bootstrap> -->
 
 <script>
 /* eslint-disable */
 
-import siteService from "@/services/site.service";
-import Vuetable from "vuetable-2";
-import axios from "axios";
+import siteService from '@/services/site.service'
+import Vuetable from 'vuetable-2'
+import axios from 'axios'
+import Pagination from '../../../../components/Pagination/Pagination'
+import Loader from '../../../../components/Loader/Loader'
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    Pagination,
+    Loader
   },
   data() {
     return {
       sites: [],
       siteData: null,
+      page_number: 1,
+      page_size: 5,
+      total_pages: null,
+
       fields: [
         {
-          name: "id",
-          title: "<span>Serial No.</span>",
-          sortField: "id",
-          dataClass: "list-item-heading"
+          name: 'id',
+          title: '<span>Serial No.</span>',
+          sortField: 'id',
+          dataClass: 'list-item-heading'
         },
         {
-          name: "name",
-          title: "<span>Site Name</span>",
-          sortField: "name",
-          dataClass: "list-item-heading"
+          name: 'name',
+          title: '<span>Site Name</span>',
+          sortField: 'name',
+          dataClass: 'list-item-heading'
         },
         {
-          name: "__slot:actions",
-          title: "<span>Actions</span>"
+          name: '__slot:actions',
+          title: '<span>Actions</span>'
         }
       ]
-    };
+    }
   },
   methods: {
     loadSites() {
-      siteService.read().then(response => {
-        this.sites = response.sites;
-      });
+      siteService
+        .read({ page_number: this.page_number, page_size: this.page_size })
+        .then(response => {
+          this.sites = response.sites
+          this.total_pages = response.total_pages
+        })
+    },
+    onPageNumClick(num) {
+      this.page_number = num
+      this.sites = []
+      this.loadSites()
     },
     deleteSite(id) {
       siteService.delete(id).then(response => {
-        this.loadSites();
-      });
+        this.sites = []
+        this.loadSites()
+      })
     }
   },
   mounted() {
-    this.loadSites();
+    this.loadSites()
   }
-};
+}
 </script>
-
-
-<style>
-</style><!-- <vuetable-pagination-bootstrap
-ref="pagination"
-@vuetable-pagination:change-page="onChangePage"
-></vuetable-pagination-bootstrap> -->
