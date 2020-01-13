@@ -63,7 +63,9 @@
     "employees": "Employees",
     "tools": "Tools",
     "tool-boxes": "Tool Boxes",
-    "tool-types": "Tool Types"
+    "tool-types": "Tool Types",
+    "site-layout": "Site Explorer",
+    "list-view": "List View"
   },
   "pages": {
     "magic-is-in-the-details": "MONITORING, DIAGNOSTICS & AUTOMATION",

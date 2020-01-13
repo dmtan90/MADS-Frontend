@@ -2,7 +2,6 @@ export const defaultMenuType = 'menu-sub-hidden' // 'menu-default', 'menu-sub-hi
 export const defaultStartPath = '/app/dashboards/default'
 export const searchPath = '/app/pages/search'
 export const buyUrl = 'https://1.envato.market/nEyZa'
-
 export const subHiddenBreakpoint = 1440
 export const menuHiddenBreakpoint = 768
 
@@ -12,7 +11,19 @@ export const localeOptions = [
   { id: 'es', name: 'Español' }
 ]
 
-// export const apiUrl = 'http://localhost:4000'
-export const apiUrl = 'https://madsiot.herokuapp.com/api'
+export const apiUrl = 'http://localhost:4000'
+// export const apiUrl = 'https://madsiot.herokuapp.com/api'
+// 'https://02285a8e.ngrok.io'
 
-export const colors = ['light.purple', 'dark.purple', 'light.blue', 'dark.blue', 'light.green', 'dark.green', 'light.orange', 'dark.orange', 'light.red', 'dark.red']
+export const colors = [
+  'light.purple',
+  'dark.purple',
+  'light.blue',
+  'dark.blue',
+  'light.green',
+  'dark.green',
+  'light.orange',
+  'dark.orange',
+  'light.red',
+  'dark.red'
+]
