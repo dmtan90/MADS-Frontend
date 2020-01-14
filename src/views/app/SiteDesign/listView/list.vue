@@ -23,6 +23,9 @@
                 <span @click="deleteSite(slotProps.rowData.id)">
                   <i class="simple-icon-trash"></i>
                 </span>
+                <span @click="configureSite(slotProps.rowData.id)">
+                  <i class="simple-icon-settings"></i>
+                </span>
               </template>
             </vuetable>
           </div>
@@ -103,6 +106,10 @@ export default {
         this.sites = []
         this.loadSites()
       })
+    },
+    configureSite(id) {
+      let routeData = this.$router.resolve('/app/digital-twin-configuration');
+      window.open(routeData.href, '_blank');
     }
   },
   mounted() {

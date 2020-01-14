@@ -1,10 +1,14 @@
 <template>
-  <div class="h-100">
+  <div>
     <router-view/>
   </div>
 </template>
 
 <style lang="scss">
+  body {
+    height: 100%;
+  }
+
   .vue-switcher div {
     height: 27px !important;
     width: 58px !important;

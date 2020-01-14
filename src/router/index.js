@@ -338,6 +338,10 @@ const routes = [
     ]
   },
   {
+    path: '/app/digital-twin-configuration',
+    component: () => import(/* webpackChunkName: "digitalTwinConfiguration" */ '@/views/app/digitalTwin')
+  },
+  {
     path: '*',
     component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
   }
