@@ -11,39 +11,44 @@
         <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
-    <div v-if="devices.length === 0">
+    <div v-if="loader">
       <Loader />
     </div>
     <div v-else>
       <b-row>
         <b-colxx xxs="12">
           <b-card class="mb-4" title="Devices">
-            <vuetable
-              ref="vuetable"
-              :api-mode="false"
-              :fields="fields"
-              :data="devices"
-            >
-              <template v-slot:name="slotProps">
-                <router-link
-                  :to="'devices/' + slotProps.rowData.id"
-                  tag="span"
-                  class="cursor-pointer"
-                  >{{ slotProps.rowData.name }}</router-link
-                >
-              </template>
-              <template v-slot:actions="slotProps">
-                <router-link
-                  :to="'devices/' + slotProps.rowData.id + '/edit'"
-                  tag="span"
-                >
-                  <i class="simple-icon-pencil"></i>
-                </router-link>
-                <span @click="deleteDevice(slotProps.rowData.id)">
-                  <i class="simple-icon-trash"></i>
-                </span>
-              </template>
-            </vuetable>
+            <div v-if="loader">
+              <Loader />
+            </div>
+            <div v-else>
+              <vuetable
+                ref="vuetable"
+                :api-mode="false"
+                :fields="fields"
+                :data="devices"
+              >
+                <template v-slot:name="slotProps">
+                  <router-link
+                    :to="'devices/' + slotProps.rowData.id"
+                    tag="span"
+                    class="cursor-pointer"
+                    >{{ slotProps.rowData.name }}</router-link
+                  >
+                </template>
+                <template v-slot:actions="slotProps">
+                  <router-link
+                    :to="'devices/' + slotProps.rowData.id + '/edit'"
+                    tag="span"
+                  >
+                    <i class="simple-icon-pencil"></i>
+                  </router-link>
+                  <span @click="deleteDevice(slotProps.rowData.id)">
+                    <i class="simple-icon-trash"></i>
+                  </span>
+                </template>
+              </vuetable>
+            </div>
           </b-card>
         </b-colxx>
       </b-row>
@@ -98,9 +103,10 @@ export default {
           title: '<span>Actions</span>'
         }
       ],
+      loader: true,
       devices: [],
       page_number: 1,
-      page_size: 1,
+      page_size: 5,
       total_pages: null
     }
   },
@@ -111,14 +117,17 @@ export default {
         .then(response => {
           this.devices = response.devices
           this.total_pages = response.total_pages
+          this.loader = false
         })
     },
     onPageNumClick(num) {
+      this.loader = true
       this.page_number = num
       this.devices = []
       this.loadDevices()
     },
     deleteDevice(id) {
+      this.loader = true
       deviceService.delete(id).then(response => {
         this.devices = []
         this.loadDevices()

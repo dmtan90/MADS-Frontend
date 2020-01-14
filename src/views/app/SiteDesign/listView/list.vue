@@ -3,7 +3,7 @@
     <b-row>
       <b-colxx xxs="12">
         <b-card class="mb-4" title="Site List">
-          <div v-if="sites.length === 0">
+          <div v-if="loader">
             <Loader />
           </div>
           <div v-else>
@@ -60,7 +60,7 @@ export default {
       page_number: 1,
       page_size: 5,
       total_pages: null,
-
+      loader: true,
       fields: [
         {
           name: 'id',
@@ -88,14 +88,17 @@ export default {
         .then(response => {
           this.sites = response.sites
           this.total_pages = response.total_pages
+          this.loader = false
         })
     },
     onPageNumClick(num) {
+      this.loader = true
       this.page_number = num
       this.sites = []
       this.loadSites()
     },
     deleteSite(id) {
+      this.loader = true
       siteService.delete(id).then(response => {
         this.sites = []
         this.loadSites()

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="tools.length === 0">
+    <div v-if="loader">
       <Loader />
     </div>
     <div v-else>
@@ -104,8 +104,9 @@ export default {
           title: '<span>Actions</span>'
         }
       ],
+      loader: true,
       page_number: 1,
-      page_size: 2,
+      page_size: 5,
       total_pages: null
     }
   },
@@ -116,14 +117,17 @@ export default {
         .then(response => {
           this.tools = response.tools
           this.total_pages = response.total_pages
+          this.loader = false
         })
     },
     onPageNumClick(num) {
+      this.loader = true
       this.page_number = num
       this.tools = []
       this.loadTools()
     },
     deleteTool(id) {
+      this.loader = true
       toolService.delete(id).then(response => {
         this.tools = []
         this.loadTools()

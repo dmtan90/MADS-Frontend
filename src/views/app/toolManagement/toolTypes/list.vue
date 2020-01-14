@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="toolTypes.length === 0">
+    <div v-if="loader">
       <Loader />
     </div>
     <div v-else>
@@ -49,7 +49,7 @@
 import toolTypeService from '@/services/toolType.service'
 import Vuetable from 'vuetable-2'
 import Pagination from '../../../../components/Pagination/Pagination'
-import Loader from "../../../../components/Loader/Loader"
+import Loader from '../../../../components/Loader/Loader'
 
 export default {
   components: {
@@ -59,6 +59,7 @@ export default {
   },
   data() {
     return {
+      loader: true,
       toolTypes: [],
       fields: [
         {
@@ -78,7 +79,7 @@ export default {
         }
       ],
       page_number: 1,
-      page_size: 2,
+      page_size: 5,
       total_pages: null
     }
   },
@@ -89,6 +90,7 @@ export default {
         .then(response => {
           this.toolTypes = response.tool_type
           this.total_pages = response.total_pages
+          this.loader = false
         })
     },
     onPageNumClick(num) {

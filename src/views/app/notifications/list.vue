@@ -11,7 +11,7 @@
         <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
-    <div v-if="data.length === 0">
+    <div v-if="loader">
       <Loader />
     </div>
     <div v-else>
@@ -94,9 +94,10 @@ export default {
           title: '<span>Actions</span>'
         }
       ],
+      loader : true,
       data: [],
       page_number: 1,
-      page_size: 2,
+      page_size: 5,
       total_pages: null
     }
   },
@@ -108,9 +109,11 @@ export default {
           this.notifications = response.sensor_notification
           this.data = this.formatNotifications()
           this.total_pages = response.total_pages
+          this.loader = false
         })
     },
     onPageNumClick(num) {
+      this.loader = true
       this.page_number = num
       this.data = []
       this.loadNotifications()
@@ -126,6 +129,7 @@ export default {
       })
     },
     deleteNotification(id) {
+      this.loader = true
       notificationService.delete(id).then(response => {
         this.data = []
         this.loadNotifications()

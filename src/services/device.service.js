@@ -24,7 +24,6 @@ const deviceService = {
   update: async function (id, payload) {
     try {
       const response = await ApiService.put(resource + '/' + id, payload)
-
       return response.data
     } catch (error) {
       return error.response.data
@@ -33,7 +32,6 @@ const deviceService = {
   delete: async function (id) {
     try {
       const response = await ApiService.delete(resource + '/' + id)
-
       return response.data
     } catch (error) {
       return error.response.data
@@ -42,7 +40,6 @@ const deviceService = {
   readId: async function (id) {
     try {
       const response = await ApiService.get(resource + '/' + id)
-
       return response.data
     } catch (error) {
       return error.response.data

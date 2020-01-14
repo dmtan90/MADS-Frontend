@@ -4,7 +4,7 @@
       <b-colxx xxs="12">
         <div class="top-bar">
           <piaf-breadcrumb heading="Site Explorer" />
-          <router-link class="add-new-btn" to="list-view/new">
+          <router-link class="add-new-btn" to="/app/site-layout/list-view/new">
             Add New Site
           </router-link>
         </div>
