@@ -4,7 +4,7 @@
       <b-colxx xxs="12">
         <div class="top-bar">
           <piaf-breadcrumb heading="Site Explorer" />
-          <router-link class="add-new-btn" to="/app/site-layout/list-view/new">
+          <router-link class="add-new-btn" :to="`/app/site-layout/list-view/new?currTab=${selectedTab}`">
             Add New Site
           </router-link>
         </div>
@@ -52,19 +52,25 @@ export default {
   },
   methods: {
     goTo(tabNo, tab) {
-      this.$router.push('/app/site-layout/' + tab)
       this.selectedTab = tabNo
+      this.$router.push('/app/site-layout/' + tab + `?currTab=${this.selectedTab}`);
+    },
+    changeHeader() {
+      let path = this.$route.path
+      if (_.includes(path, 'list-view')) {
+        this.selectedTab = 2
+      } else if (_.includes(path, 'tile-view')) {
+        this.selectedTab = 1
+      } else {
+        this.selectedTab = 0
+      }
     }
   },
   mounted() {
-    let path = this.$route.path
-    if (_.includes(path, 'list-view')) {
-      this.selectedTab = 2
-    } else if (_.includes(path, 'tile-view')) {
-      this.selectedTab = 1
-    } else {
-      this.selectedTab = 0
-    }
+    this.changeHeader()
+  },
+  updated() {
+    this.changeHeader()
   }
 }
 </script>

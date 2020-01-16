@@ -2,52 +2,67 @@
   <div>
     <b-row>
       <b-colxx xxs="12">
-        <b-card title="Edit Site">
-          <b-row>
-            <b-colxx xxs="6">
-              <b-form>
-                <b-form-group label="Name">
-                  <b-form-input type="text" v-model="site.name" />
-                </b-form-group>
-                <b-form-group label="Current Location">
-                  <b-form-input type="text" disabled v-model="siteLocation" />
-                </b-form-group>
-                <b-form-group label="Edit Location">
-                  <google-autocomplete
-                    :searchText="siteLocation"
-                    @placeChanged="setSiteLocation"
-                  ></google-autocomplete>
-                </b-form-group>
-                <b-form-group label="Image">
-                  <input type="file" id="img" @change="uploadImage" />
-                  <!-- <label class="button" for="img">Upload a New Image</label> -->
-                  <span>{{ image_name }}</span>
-                </b-form-group>
-              </b-form>
-              <b-row v-if="errors.length > 0">
-                <b-colxx xxs="12">
-                  <div
-                    v-for="(error, index) in errors"
-                    :key="index"
-                    class="mt-2 error-message capitalize-first-letter"
+        <div v-if="loader">
+          <Loader />
+        </div>
+        <div v-else>
+          <b-card title="Edit Site">
+            <b-row>
+              <b-colxx xxs="6">
+                <b-form>
+                  <b-form-group label="Name">
+                    <b-form-input type="text" v-model="site.name" />
+                  </b-form-group>
+                  <!-- <b-form-group label="Current Location">
+                    <b-form-input type="text" disabled v-model="siteLocation" />
+                  </b-form-group> -->
+                  <b-form-group label="Edit Location">
+                    <google-autocomplete
+                      :searchText="siteLocation"
+                      @placeChanged="setSiteLocation"
+                    ></google-autocomplete>
+                  </b-form-group>
+                  <b-form-group label="Image">
+                    <input type="file" id="img" @change="uploadImage" />
+                    <!-- <label class="button" for="img">Upload a New Image</label> -->
+                    <span>{{ image_name }}</span>
+                  </b-form-group>
+                </b-form>
+                <b-row v-if="errors.length > 0">
+                  <b-colxx xxs="12">
+                    <div
+                      v-for="(error, index) in errors"
+                      :key="index"
+                      class="mt-2 error-message capitalize-first-letter"
+                    >
+                      {{ error }}
+                    </div>
+                  </b-colxx>
+                </b-row>
+                <div class="mt-5">
+                    <router-link v-if="this.$route.query.currTab === '0'" to="/app/site-layout/">
+                      <b-button size="lg" variant="outline-primary"
+                        >Cancel</b-button
+                      >
+                    </router-link>
+                    <router-link v-else-if="this.$route.query.currTab === '1'" to="/app/site-layout/tile-view">
+                      <b-button size="lg" variant="outline-primary"
+                        >Cancel</b-button
+                      >
+                    </router-link>
+                    <router-link v-else to="/app/site-layout/list-view">
+                      <b-button size="lg" variant="outline-primary"
+                        >Cancel</b-button
+                      >
+                    </router-link>
+                  <b-button size="lg" variant="primary" @click="updateSite"
+                    >Submit</b-button
                   >
-                    {{ error }}
-                  </div>
-                </b-colxx>
-              </b-row>
-              <div class="mt-5">
-                <router-link to="/app/site-layout/list-view">
-                  <b-button size="lg" variant="outline-primary"
-                    >Cancel</b-button
-                  >
-                </router-link>
-                <b-button size="lg" variant="primary" @click="updateSite"
-                  >Submit</b-button
-                >
-              </div>
-            </b-colxx>
-          </b-row>
-        </b-card>
+                </div>
+              </b-colxx>
+            </b-row>
+          </b-card>
+        </div>
       </b-colxx>
     </b-row>
   </div>
@@ -62,12 +77,14 @@ import vSelect from 'vue-select'
 import toolTypeService from '@/services/toolType.service'
 import googleAutocomplete from './../../shared/googleAutocomplete.vue'
 import axios from 'axios'
-import {apiUrl} from "../../../../constants/config"
+import { apiUrl } from '../../../../constants/config'
+import Loader from '../../../../components/Loader/Loader'
 
 export default {
   components: {
     vSelect,
-    googleAutocomplete
+    googleAutocomplete,
+    Loader
   },
   data() {
     return {
@@ -75,7 +92,8 @@ export default {
       siteLocation: '',
       errors: [],
       image_name: '',
-      selectedFile: null
+      selectedFile: null,
+      loader: true
     }
   },
   methods: {
@@ -85,9 +103,11 @@ export default {
         this.site = response
         this.extractName(response.image_url)
         this.siteLocation = response.location_details.name
+        this.loader = false
       })
     },
     updateSite() {
+      this.loader = true
       let payload = this.site
       let id = this.$route.params.id
 
@@ -96,14 +116,17 @@ export default {
         fd.append('image', this.selectedFile, this.selectedFile.name)
       }
       fd.append('name', this.site.name)
-      fd.append('location_details[lat]', this.site.location_details.lat)
-      fd.append('location_details[lng]', this.site.location_details.lon)
-      fd.append('location_details[name]', this.site.location_details.name)
-      fd.append(
-        'location_details[place_id]',
-        this.site.location_details.place_id
-      )
-      siteService.update(id,fd).then(response => {
+      if (this.site.location_details) {
+        fd.append('location_details[lat]', this.site.location_details.lat)
+        fd.append('location_details[lng]', this.site.location_details.lon)
+        fd.append('location_details[name]', this.site.location_details.name)
+        fd.append(
+          'location_details[place_id]',
+          this.site.location_details.place_id
+        )
+      }
+      siteService.update(id, fd).then(response => {
+        this.loader = false
         this.errors = []
         if (response.errors) {
           let errors = response.errors.message.error || response.errors.message
@@ -111,11 +134,25 @@ export default {
             this.errors = _.concat(this.errors, _.lowerCase(key) + ' ' + errors)
           })
         } else {
-          this.$router.push('/app/site-layout/list-view')
+          if (parseInt(this.$route.query.currTab) === 2) {
+            this.$router.push('/app/site-layout/list-view')
+          } else if (parseInt(this.$route.query.currTab) === 1) {
+            this.$router.push('/app/site-layout/tile-view')
+          } else if (parseInt(this.$route.query.currTab) === 0) {
+            this.$router.push('/app/site-layout')
+          } else {
+            this.$router.push('/app/site-layout/list-view')
+          }
         }
       })
     },
     setSiteLocation(place) {
+      console.log(
+        'lat -> ',
+        place.geometry.location.lat(),
+        ' long -> ',
+        place.geometry.location.lng()
+      )
       let location_details = {
         lat: place.geometry.location.lat(),
         lon: place.geometry.location.lng(),
@@ -153,15 +190,12 @@ export default {
 </script>
 
 <style scoped>
-
-input[type="file"]
-{ 
-   color: transparent;
-   width: 100%; 
-   height: 36px; 
-   border-radius: 3px; 
+input[type='file'] {
+  color: transparent;
+  width: 100%;
+  height: 36px;
+  border-radius: 3px;
 }
-
 
 .button {
   padding: 10px 20px;
