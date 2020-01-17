@@ -1,36 +1,34 @@
 <template>
   <vue-draggable-resizable
     @dragging="onDrag"
-    @resizing="onLineChartResize"
+    @resizing="onPieChartResize"
     @dragstop="onDragStop"
-    @resizestop="onResizeStop"
-    :w="300"
-    :h="240"
+    :w="width"
+    :h="height"
     :x="x"
     :y="y"
   >
     <div :class="{ 'd-none': isDragged }">
       <img
-        name="line"
-        draggable="true"
-        width="70"
         src="https://img.icons8.com/carbon-copy/100/000000/graph.png"
+        width="50"
       />
     </div>
-    <div id="line" :class="{ 'd-none': !isDragged }"></div>
+    <div :id="widgetId" :class="{ 'd-none': !isDragged }"></div>
   </vue-draggable-resizable>
 </template>
 
 <script>
+import c3 from 'c3'
 import VueDraggableResizable from 'vue-draggable-resizable'
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 
 export default {
+  props: ['widgetId'],
   data () {
     return {
-      resizing: false,
-      width: 0,
-      height: 0,
+      width: 50,
+      height: 50,
       x: 0,
       y: 0,
       isDragged: false
@@ -41,26 +39,37 @@ export default {
   },
   methods: {
     onDrag (x, y) {
-      this.dragging = true
+      this.$emit('instanceUsed')
       this.x = x
       this.y = y
     },
     onDragStop (x, y) {
+      if (!this.isDragged) {
+        this.width = 300
+        this.height = 240
+
+        this.lineChart = c3.generate({
+          size: {
+            height: 240,
+            width: 300
+          },
+          bindto: '#' + this.widgetId,
+          data: {
+            columns: [
+              ['data1', 30, 200, 100, 400, 150, 250],
+              ['data2', 50, 20, 10, 40, 15, 25]
+            ]
+          }
+        })
+      }
+
       this.isDragged = true
-      this.dragging = false
     },
-    onResize (x, y, width, height) {
-      this.resizing = true
-      this.x = x
-      this.y = y
-      this.width = width
-      this.height = height
-    },
-    onResizeStop (x, y, width, height) {
-      this.resizing = false
-    },
-    onLineChartResize (x, y, width, height) {
-      this.$emit('line-chart-resize', { width: width, height: height })
+    onPieChartResize (x, y, width, height) {
+      this.lineChart.resize({
+        height: height,
+        width: width
+      })
     }
   }
 }
