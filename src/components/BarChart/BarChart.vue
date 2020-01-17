@@ -1,7 +1,7 @@
 <template>
   <vue-draggable-resizable
     @dragging="onDrag"
-    @resizing="onPieChartResize"
+    @resizing="onBarChartResize"
     @dragstop="onDragStop"
     :w="width"
     :h="height"
@@ -9,7 +9,6 @@
     :y="y"
   >
     <img
-      v-on:click="() => onCloseClick(widgetId)"
       class="close"
       :class="{ 'd-none': !isDragged }"
       width="30"
@@ -17,11 +16,12 @@
     />
     <div :class="{ 'd-none': isDragged }">
       <img
-        src="https://img.icons8.com/carbon-copy/100/000000/graph.png"
+        src="https://img.icons8.com/cotton/64/000000/bar-chart--v2.png"
         width="50"
       />
     </div>
-    <b-card :id="widgetId" :class="{ 'd-none': !isDragged }"></b-card>
+    <b-card :id="widgetId" :class="{ 'd-none': !isDragged }" title="Bar Chart">
+    </b-card>
   </vue-draggable-resizable>
 </template>
 
@@ -52,53 +52,32 @@ export default {
     },
     onDragStop (x, y) {
       if (!this.isDragged) {
-        this.width = 300
         this.height = 240
+        this.width = 300
 
-        this.lineChart = c3.generate({
+        this.Bar = c3.generate({
           size: {
             height: 240,
             width: 300
           },
           bindto: '#' + this.widgetId,
           data: {
-            x: 'x',
             columns: [
-              [
-                'x',
-                '2013-01-01',
-                '2013-01-02',
-                '2013-01-03',
-                '2013-01-04',
-                '2013-01-05',
-                '2013-01-06'
-              ],
               ['data1', 30, 200, 100, 400, 150, 250],
-              ['data2', 130, 340, 200, 500, 250, 350],
-              ['data3', 400, 500, 450, 700, 600, 500]
-            ]
-          },
-          axis: {
-            x: {
-              type: 'timeseries',
-              tick: {
-                format: '%Y-%m-%d'
-              }
-            }
+              ['data2', 130, 100, 140, 200, 150, 50]
+            ],
+            type: 'bar'
           }
         })
-      }
 
-      this.isDragged = true
+        this.isDragged = true
+      }
     },
-    onPieChartResize (x, y, width, height) {
-      this.lineChart.resize({
+    onBarChartResize (x, y, width, height) {
+      this.Bar.resize({
         height: height,
         width: width
       })
-    },
-    onCloseClick (id) {
-      this.$emit('on-close-click', id)
     }
   }
 }

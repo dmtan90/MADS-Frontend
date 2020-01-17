@@ -8,6 +8,7 @@
     :x="x"
     :y="y"
   >
+    <img class="close" :class="{ 'd-none': !isDragged }" width="30" src="https://img.icons8.com/carbon-copy/100/000000/close-window.png" />
     <div :class="{ 'd-none': isDragged }">
       <img src="https://img.icons8.com/cotton/64/000000/pie-chart.png" width="50"/>
     </div>
@@ -74,3 +75,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .vdr {
+    position: relative;
+  }
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%,-150%);
+  }
+</style>
