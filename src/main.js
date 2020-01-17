@@ -30,6 +30,7 @@ import TokenService from '@/services/token.service'
 import contentmenu from 'v-contextmenu'
 import VCalendar from 'v-calendar'
 import 'v-calendar/lib/v-calendar.min.css'
+import 'c3/c3.min.css'
 /* OPTINAL -end */
 import App from '@/App'
 
