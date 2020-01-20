@@ -13,6 +13,7 @@
                   <b-form-group label="Name">
                     <b-form-input type="text" v-model="site.name" />
                   </b-form-group>
+                  <span class="error-msg">{{ errorMsg.name }}</span>
                   <!-- <b-form-group label="Current Location">
                     <b-form-input type="text" disabled v-model="siteLocation" />
                   </b-form-group> -->
@@ -22,6 +23,7 @@
                       @placeChanged="setSiteLocation"
                     ></google-autocomplete>
                   </b-form-group>
+                  <span class="error-msg">{{ errorMsg.location_details }}</span>
                   <b-form-group label="Image">
                     <input type="file" id="img" @change="uploadImage" />
                     <!-- <label class="button" for="img">Upload a New Image</label> -->
@@ -93,7 +95,11 @@ export default {
       errors: [],
       image_name: '',
       selectedFile: null,
-      loader: true
+      loader: true,
+      errorMsg: {
+        name: '',
+        location_details: ''
+      }
     }
   },
   methods: {
@@ -107,6 +113,21 @@ export default {
       })
     },
     updateSite() {
+
+      if(_.isEmpty(this.site.name)){
+        this.errorMsg.name = 'Name is required'
+        return;
+      }else{
+        this.errorMsg.name = ''
+      }
+
+      if(_.isEmpty(this.site.location_details)){
+        this.errorMsg.location_details = 'Location is required'
+        return;
+      }else {
+        this.errorMsg.location_details = ''
+      }
+
       this.loader = true
       let payload = this.site
       let id = this.$route.params.id
@@ -118,13 +139,14 @@ export default {
       fd.append('name', this.site.name)
       if (this.site.location_details) {
         fd.append('location_details[lat]', this.site.location_details.lat)
-        fd.append('location_details[lng]', this.site.location_details.lon)
+        fd.append('location_details[lng]', this.site.location_details.lng)
         fd.append('location_details[name]', this.site.location_details.name)
         fd.append(
           'location_details[place_id]',
           this.site.location_details.place_id
         )
       }
+
       siteService.update(id, fd).then(response => {
         this.loader = false
         this.errors = []
@@ -147,15 +169,9 @@ export default {
       })
     },
     setSiteLocation(place) {
-      console.log(
-        'lat -> ',
-        place.geometry.location.lat(),
-        ' long -> ',
-        place.geometry.location.lng()
-      )
       let location_details = {
         lat: place.geometry.location.lat(),
-        lon: place.geometry.location.lng(),
+        lng: place.geometry.location.lng(),
         name: place.formatted_address,
         place_id: place.place_id
       }
@@ -205,5 +221,10 @@ input[type='file'] {
   background: #4cb6bb;
   font-weight: bold;
   cursor: pointer;
-}</style
+}
+
+.error-msg {
+  color: red;
+}
+</style
 >>

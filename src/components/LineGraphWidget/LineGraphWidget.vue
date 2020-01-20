@@ -9,7 +9,7 @@
     :y="y"
   >
     <img
-      v-on:click="() => onCloseClick(widgetId)"
+      v-on:click="onCloseClick"
       class="close"
       :class="{ 'd-none': !isDragged }"
       width="30"
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     onDrag (x, y) {
-      this.$emit('instanceUsed')
+      this.$emit('instanceUsed', this.widgetId)
       this.x = x
       this.y = y
     },
@@ -97,8 +97,8 @@ export default {
         width: width
       })
     },
-    onCloseClick (id) {
-      this.$emit('on-close-click', id)
+    onCloseClick () {
+      this.$emit('onCloseClick', this.widgetId)
     }
   }
 }

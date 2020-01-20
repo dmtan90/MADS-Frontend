@@ -9,6 +9,7 @@
     :y="y"
   >
     <img
+      v-on:click="onCloseClick"
       class="close"
       :class="{ 'd-none': !isDragged }"
       width="30"
@@ -78,6 +79,9 @@ export default {
         height: height,
         width: width
       })
+    },
+    onCloseClick () {
+      this.$emit('onCloseClick', this.widgetId)
     }
   }
 }

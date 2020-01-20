@@ -17,7 +17,6 @@ import GaugeChartWidget from '../../../components/GaugeChart/GaugeChart'
 export default {
   data () {
     return {
-      draggedElements: []
     }
   },
   methods: {
@@ -40,6 +39,11 @@ export default {
             this.$once('instanceUsed', () => {
               that.createPieChartWidgetInstance()
             })
+            this.$on('onCloseClick', (widgetId) => {
+              let draggedEle = document.getElementById(widgetId).parentNode
+              draggedEle.remove()
+              componentInstance.$destroy()
+            })
           }
         })
       )
@@ -57,6 +61,11 @@ export default {
           created () {
             this.$once('instanceUsed', () => {
               that.createLineGraphWidgetInstance()
+            })
+            this.$on('onCloseClick', (widgetId) => {
+              let draggedEle = document.getElementById(widgetId).parentNode
+              draggedEle.remove()
+              componentInstance.$destroy()
             })
           }
         })
@@ -76,6 +85,11 @@ export default {
             this.$once('instanceUsed', () => {
               that.createBarChartWidgetInstance()
             })
+            this.$on('onCloseClick', (widgetId) => {
+              let draggedEle = document.getElementById(widgetId).parentNode
+              draggedEle.remove()
+              componentInstance.$destroy()
+            })
           }
         })
       )
@@ -93,6 +107,11 @@ export default {
           created () {
             this.$once('instanceUsed', () => {
               that.createGaugeChartWidgetInstance()
+            })
+            this.$on('onCloseClick', (widgetId) => {
+              let draggedEle = document.getElementById(widgetId).parentNode
+              draggedEle.remove()
+              componentInstance.$destroy()
             })
           }
         })
