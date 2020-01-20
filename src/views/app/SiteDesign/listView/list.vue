@@ -15,7 +15,7 @@
             >
               <template v-slot:actions="slotProps">
                 <router-link
-                  :to="'list-view/' + slotProps.rowData.id + '/edit'"
+                  :to="'list-view/' + slotProps.rowData.id + '/edit' + '?currTab=' + currTab"
                   tag="span"
                 >
                   <i class="simple-icon-pencil"></i>
@@ -64,6 +64,7 @@ export default {
       page_size: 5,
       total_pages: null,
       loader: true,
+      currTab: 2,
       fields: [
         {
           name: 'id',

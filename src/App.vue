@@ -63,4 +63,10 @@
     right: 1.75rem;
     top: 1.75rem;
   }
+  .c3-line {
+    fill: none !important;
+  }
+  .vdr {
+    border: none !important;
+  }
 </style>
