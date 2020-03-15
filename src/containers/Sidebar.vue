@@ -46,7 +46,7 @@
             >
               <a
                 ><i class="iconsminds-three-arrow-fork"></i>
-                {{ $t("Site Explorer") }}</a
+                {{ $t("menu.site-layout") }}</a
               >
             </router-link>
           </li>
