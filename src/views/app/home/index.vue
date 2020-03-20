@@ -97,14 +97,21 @@
         </div>
       </div>
     </div>
+    <div>
+      <app-window></app-window>
+    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import _ from 'lodash'
+import appWindow from '../appWindow'
 
 export default {
+  components: {
+    appWindow
+  },
   data() {
     return {
       displayedApps: {},
