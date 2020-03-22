@@ -89,7 +89,6 @@
             <svg class="icon">
               <use :xlink:href="'/assets/img/icons-sprite.svg#' + app.iconId"></use>
             </svg>
-            <div class="break"></div>
             <span>
               {{app.displayName}}
             </span>
@@ -97,21 +96,14 @@
         </div>
       </div>
     </div>
-    <div>
-      <app-window></app-window>
-    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import _ from 'lodash'
-import appWindow from '../appWindow'
 
 export default {
-  components: {
-    appWindow
-  },
   data() {
     return {
       displayedApps: {},
@@ -411,10 +403,5 @@ export default {
         }
       }
     }
-  }
-
-  .break{
-    flex-basis: 100%;
-    height: 0;
   }
 </style>

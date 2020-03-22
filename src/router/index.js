@@ -348,6 +348,24 @@ const routes = [
   {
     path: '/app/home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/app/home')
+  },
+  {
+    path: '/app/widget-manager',
+    component: () => import(/* webpackChunkName: "widgetManager" */ '@/views/app/widgetManager'),
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "widgetManager" */ '@/views/app/widgetManager/widgetManager')
+      },
+      {
+        path: 'store',
+        component: () => import(/* webpackChunkName: "widgetStore" */ '@/views/app/widgetManager/widgetStore')
+      },
+      {
+        path: 'my-widgets',
+        component: () => import(/* webpackChunkName: "myWidgets" */ '@/views/app/widgetManager/myWidgets')
+      }
+    ]
   }
 ]
 

@@ -69,4 +69,54 @@
   .vdr {
     border: none !important;
   }
+  .break{
+    flex-basis: 100%;
+    height: 0;
+  }
+  .app-window {
+    .sidebar {
+      width: 100px;
+      position: absolute;
+      left: 0;
+      top: 40px;
+      height: calc(100% - 40px);
+      border-right: 1px solid rgba(242, 242, 242, 1);
+      .item {
+        width: 100px;
+        height: 100px;
+        border-bottom: 1px solid rgba(242, 242, 242, 1);
+        text-align: center;
+        padding: 6px;
+        position: relative;
+        .item-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+          .icon {
+            width: 30px;
+            height: 30px;
+            display: block;
+            margin: 0 auto;
+            fill: #808080;
+          }
+          span {
+            display: block;
+            padding-top: 5px;
+            line-height: 1.2;
+            font-size: 12px;
+          }
+        }
+        &.active > .active-tab {
+            position: absolute;
+            width: 4px;
+            height: 80px;
+            top: 10px;
+            left: 0;
+            background-color: rgba(76, 146, 195, 1);
+        }
+      }
+    }
+  }
 </style>

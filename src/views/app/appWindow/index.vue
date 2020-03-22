@@ -1,12 +1,7 @@
 <template>
   <div class="app-window">
     <div class="header">
-      <svg class="icon">
-        <use xlink:href="/assets/img/icons-sprite.svg#M6-Widget-Manager"></use>
-      </svg>
-      <span>
-        Widget Manager
-      </span>
+      <slot name="header"></slot>
       <div class="right-section">
         <div>Min</div>
         <div>Max</div>
@@ -14,21 +9,10 @@
       </div>
     </div>
     <div class="sidebar">
-      <div class="item">
-
-      </div>
-      <div class="item">
-
-      </div>
-      <div class="item">
-
-      </div>
-      <div class="item">
-
-      </div>
+      <slot name="sidebar"></slot>
     </div>
     <div class="content">
-      Welcome to Widget Manager
+      <slot name="content"></slot>
     </div>
   </div>
 </template>
@@ -38,7 +22,6 @@
 import _ from 'lodash'
 
 export default {
-  
 }
 </script>
 
@@ -63,7 +46,7 @@ export default {
       }
       span {
         padding-left: 24px;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
       }
       .right-section {
@@ -73,19 +56,6 @@ export default {
           padding: 0 5px;
           cursor: pointer;
         }
-      }
-    }
-    .sidebar {
-        width: 100px;
-        position: absolute;
-        left: 0;
-        top: 40px;
-        height: calc(100% - 40px);
-        border-right: 1px solid rgba(242, 242, 242, 1);
-      .item {
-        width: 100px;
-        height: 100px;
-        border-bottom: 1px solid rgba(242, 242, 242, 1);
       }
     }
     .content {
