@@ -76,11 +76,11 @@
   .app-window {
     .sidebar {
       width: 100px;
-      position: absolute;
-      left: 0;
-      top: 40px;
+      display: inline-block;
       height: calc(100% - 40px);
       border-right: 1px solid rgba(242, 242, 242, 1);
+      position: fixed;
+      top: 40px;
       .item {
         width: 100px;
         height: 100px;
@@ -95,8 +95,8 @@
           transform: translate(-50%, -50%);
           cursor: pointer;
           .icon {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             display: block;
             margin: 0 auto;
             fill: #808080;

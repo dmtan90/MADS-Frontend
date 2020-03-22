@@ -8,6 +8,7 @@
         <div>Close</div>
       </div>
     </div>
+    <div class="break"></div>
     <div class="sidebar">
       <slot name="sidebar"></slot>
     </div>
@@ -31,22 +32,28 @@ export default {
     background-color: white;
     height: calc(100% - 60px);
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: scroll;
     .header {
       display: flex;
       height: 40px;
+      width: 100%;
       color: #f8f8f8;
       background-color: rgba(76, 146, 195, 1);
       align-items: center;
       padding-left: 20px;
       padding-right: 10px;
+      position: fixed;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.149019607843137);
+      z-index: 999;
       .icon {
-        width: 27px;
-        height: 27px;
+        width: 24px;
+        height: 24px;
       }
       span {
         padding-left: 24px;
-        font-size: 15px;
+        font-size: 18px;
         font-weight: 700;
       }
       .right-section {
@@ -59,10 +66,11 @@ export default {
       }
     }
     .content {
-      position: absolute;
-      top: 40px;
+      display: inline-block;
       height: calc(100% - 40px);
-      left: 100px;
+      width: calc(100% - 100px);
+      margin-left: 100px;
+      margin-top: 40px;
     }
   }
 </style>
