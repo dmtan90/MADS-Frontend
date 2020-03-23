@@ -364,6 +364,10 @@ const routes = [
       {
         path: 'my-widgets',
         component: () => import(/* webpackChunkName: "myWidgets" */ '@/views/app/widgetManager/myWidgets')
+      },
+      {
+        path: 'widget/:id',
+        component: () => import(/* webpackChunkName: "widgetDetail" */ '@/views/app/widgetManager/widgetDetail')
       }
     ]
   }

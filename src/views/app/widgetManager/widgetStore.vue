@@ -28,7 +28,9 @@
       <div v-if="selectedCategory === 'charts' || selectedCategory === 'stocks'">
         <b-row>
           <b-colxx xxs="4">
-            <img src="/assets/img/u2351.png" alt="">
+            <router-link to="/app/widget-manager/widget/1">
+              <img src="/assets/img/u2351.png" alt="">
+            </router-link>
           </b-colxx>
           <b-colxx xxs="4">
             <img src="/assets/img/u2352.png" alt="">
@@ -50,7 +52,9 @@
       <div v-if="selectedCategory === 'maps' || selectedCategory === 'gantt'">
         <b-row>
           <b-colxx xxs="4">
-            <img src="/assets/img/u2358.png" alt="">
+            <router-link to="/app/widget-manager/widget/1">
+              <img src="/assets/img/u2358.png" alt="">
+            </router-link>
           </b-colxx>
           <b-colxx xxs="4">
             <img src="/assets/img/u2359.png" alt="">
