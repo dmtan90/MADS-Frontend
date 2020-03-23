@@ -48,8 +48,8 @@ export default {
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.149019607843137);
       z-index: 999;
       .icon {
-        width: 24px;
-        height: 24px;
+        width: 27px;
+        height: 27px;
       }
       span {
         padding-left: 24px;
