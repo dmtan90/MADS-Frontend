@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     component: () => import(/* webpackChunkName: "app" */ '@/views/app'),
-    redirect: '/app/dashboard',
+    redirect: '/app/home',
     beforeEnter: AuthRequired,
     children: [
       {
@@ -344,6 +344,32 @@ const routes = [
   {
     path: '*',
     component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
+  },
+  {
+    path: '/app/home',
+    component: () => import(/* webpackChunkName: "home" */ '@/views/app/home')
+  },
+  {
+    path: '/app/widget-manager',
+    component: () => import(/* webpackChunkName: "widgetManager" */ '@/views/app/widgetManager'),
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "widgetManager" */ '@/views/app/widgetManager/widgetManager')
+      },
+      {
+        path: 'store',
+        component: () => import(/* webpackChunkName: "widgetStore" */ '@/views/app/widgetManager/widgetStore')
+      },
+      {
+        path: 'my-widgets',
+        component: () => import(/* webpackChunkName: "myWidgets" */ '@/views/app/widgetManager/myWidgets')
+      },
+      {
+        path: 'widget/:id',
+        component: () => import(/* webpackChunkName: "widgetDetail" */ '@/views/app/widgetManager/widgetDetail')
+      }
+    ]
   }
 ]
 
