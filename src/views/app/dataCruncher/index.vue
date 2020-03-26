@@ -3,15 +3,15 @@
     <app-window :sidebarData="sidebarData">
       <template v-slot:header>
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#M6-Widget-Manager"></use>
+          <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
         </svg>
         <span>
-          Widget Manager
+          Data Cruncher
         </span>
       </template>
       <template v-slot:sidebar>
         <div v-for="(item, key) in sidebarData" :key="key">
-          <router-link :to="'/app/widget-manager' + item.routerLink" tag="div" class="item">
+          <router-link :to="'/app/data-cruncher' + item.routerLink" tag="div" class="item">
             <div class="item-content">
               <svg class="icon">
                 <use :xlink:href="'/assets/img/widget-manager-icons.svg#' + item.iconId"></use>
@@ -33,7 +33,6 @@
 /* eslint-disable */
 import appWindow from '../appWindow'
 
-
 export default {
   components: {
     appWindow
@@ -46,30 +45,15 @@ export default {
   methods: {
     getSidebarData() {
       return {
-        'widgetManager': {
-          displayName: 'Widget Manager',
+        'dataCruncher': {
+          displayName: 'Data Cruncher',
           iconId: '1-widget-manager',
           routerLink: ''
         },
         'widgetStore': {
-          displayName: 'Widget Store',
+          displayName: 'Workspace',
           iconId: '2-widget-store',
-          routerLink: '/store'
-        },
-        'myWidget': {
-          displayName: 'My Widget',
-          iconId: '3-my-widgets',
-          routerLink: '/my-widgets'
-        },
-        'search': {
-          displayName: 'Search',
-          iconId: '4-search',
-          routerLink: '/search'
-        },
-        'editor': {
-          displayName: 'Editor',
-          iconId: '5-editor',
-          routerLink: '/editor'
+          routerLink: '/workspace'
         }
       }
     }

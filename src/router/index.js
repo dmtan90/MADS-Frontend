@@ -370,6 +370,20 @@ const routes = [
         component: () => import(/* webpackChunkName: "widgetDetail" */ '@/views/app/widgetManager/widgetDetail')
       }
     ]
+  },
+  {
+    path: '/app/data-cruncher',
+    component: () => import(/* webpackChunkName: "dataCruncher" */ '@/views/app/dataCruncher'),
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "dataCruncher" */ '@/views/app/dataCruncher/dataCruncher')
+      },
+      {
+        path: 'workspace',
+        component: () => import(/* webpackChunkName: "dataCruncherWorkspace" */ '@/views/app/dataCruncher/workspace')
+      }
+    ]
   }
 ]
 
