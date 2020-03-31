@@ -18,7 +18,7 @@
               </svg>
               <span>{{item.displayName}}</span>
             </div>
-            <div class="active-tab"></div>
+            <div :class="{'active-tab': isActiveLink(item)}"></div>
           </router-link>
         </div>
       </template>
@@ -72,12 +72,10 @@ export default {
           routerLink: '/editor'
         }
       }
-    }
-  },
-  computed: {
-    currentPage() {
-      debugger;
-      return this.$route.path;
+    },
+    isActiveLink(item) {
+      let link = '/app/widget-manager' + item.routerLink;
+      return this.$route.path === link;
     }
   },
   mounted() {

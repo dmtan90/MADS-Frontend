@@ -14,11 +14,11 @@
           <router-link :to="'/app/data-cruncher' + item.routerLink" tag="div" class="item">
             <div class="item-content">
               <svg class="icon">
-                <use :xlink:href="'/assets/img/widget-manager-icons.svg#' + item.iconId"></use>
+                <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
               </svg>
               <span>{{item.displayName}}</span>
             </div>
-            <div class="active-tab"></div>
+            <div :class="{'active-tab': isActiveLink(item)}"></div>
           </router-link>
         </div>
       </template>
@@ -56,12 +56,10 @@ export default {
           routerLink: '/workspace'
         }
       }
-    }
-  },
-  computed: {
-    currentPage() {
-      debugger;
-      return this.$route.path;
+    },
+    isActiveLink(item) {
+      let link = '/app/data-cruncher' + item.routerLink;
+      return this.$route.path === link;
     }
   },
   mounted() {
