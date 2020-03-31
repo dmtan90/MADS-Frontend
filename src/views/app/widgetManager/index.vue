@@ -11,19 +11,22 @@
       </template>
       <template v-slot:sidebar>
         <div v-for="(item, key) in sidebarData" :key="key">
-          <router-link :to="'/app/widget-manager' + item.routerLink" tag="div" class="item">
+          <div class="item" @click="openSection(key)">
             <div class="item-content">
               <svg class="icon">
                 <use :xlink:href="'/assets/img/widget-manager-icons.svg#' + item.iconId"></use>
               </svg>
               <span>{{item.displayName}}</span>
             </div>
-            <div :class="{'active-tab': isActiveLink(item)}"></div>
-          </router-link>
+            <div :class="{'active-tab': currentSection === key}"></div>
+          </div>
         </div>
       </template>
       <template v-slot:content>
-        <router-view></router-view>
+        <widget-manager v-if="currentSection === 'widgetManager'"></widget-manager>
+        <widget-store v-if="currentSection === 'widgetStore'"></widget-store>
+        <my-widget v-if="currentSection === 'myWidget'"></my-widget>
+        <editor v-if="currentSection === 'editor'"></editor>
       </template>
     </app-window>
   </div>
@@ -32,15 +35,23 @@
 <script>
 /* eslint-disable */
 import appWindow from '../appWindow'
-
+import widgetManager from './widgetManager'
+import widgetStore from './widgetStore'
+import myWidget from './myWidgets'
+import editor from './editor'
 
 export default {
   components: {
-    appWindow
+    appWindow,
+    widgetManager,
+    widgetStore,
+    myWidget,
+    editor
   },
   data() {
     return {
-      sidebarData: {}
+      sidebarData: {},
+      currentSection: 'widgetManager'
     }
   },
   methods: {
@@ -61,11 +72,6 @@ export default {
           iconId: '3-my-widgets',
           routerLink: '/my-widgets'
         },
-        'search': {
-          displayName: 'Search',
-          iconId: '4-search',
-          routerLink: '/search'
-        },
         'editor': {
           displayName: 'Editor',
           iconId: '5-editor',
@@ -73,9 +79,8 @@ export default {
         }
       }
     },
-    isActiveLink(item) {
-      let link = '/app/widget-manager' + item.routerLink;
-      return this.$route.path === link;
+    openSection(section) {
+      this.currentSection = section;
     }
   },
   mounted() {

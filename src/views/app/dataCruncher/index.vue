@@ -11,19 +11,20 @@
       </template>
       <template v-slot:sidebar>
         <div v-for="(item, key) in sidebarData" :key="key">
-          <router-link :to="'/app/data-cruncher' + item.routerLink" tag="div" class="item">
+          <div class="item" @click="openSection(key)">
             <div class="item-content">
               <svg class="icon">
                 <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
               </svg>
               <span>{{item.displayName}}</span>
             </div>
-            <div :class="{'active-tab': isActiveLink(item)}"></div>
-          </router-link>
+            <div :class="{'active-tab': currentSection === key}"></div>
+          </div>
         </div>
       </template>
       <template v-slot:content>
-        <router-view></router-view>
+        <data-cruncher v-if="currentSection === 'dataCruncher'"></data-cruncher>
+        <workspace v-if="currentSection === 'workspace'"></workspace>
       </template>
     </app-window>
   </div>
@@ -32,14 +33,19 @@
 <script>
 /* eslint-disable */
 import appWindow from '../appWindow'
+import dataCruncher from './dataCruncher'
+import workspace from './workspace'
 
 export default {
   components: {
-    appWindow
+    appWindow,
+    dataCruncher,
+    workspace
   },
   data() {
     return {
-      sidebarData: {}
+      sidebarData: {},
+      currentSection: 'dataCruncher'
     }
   },
   methods: {
@@ -50,16 +56,15 @@ export default {
           iconId: '1-widget-manager',
           routerLink: ''
         },
-        'widgetStore': {
+        'workspace': {
           displayName: 'Workspace',
           iconId: '2-widget-store',
           routerLink: '/workspace'
         }
       }
     },
-    isActiveLink(item) {
-      let link = '/app/data-cruncher' + item.routerLink;
-      return this.$route.path === link;
+    openSection(section) {
+      this.currentSection = section;
     }
   },
   mounted() {

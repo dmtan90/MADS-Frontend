@@ -31,6 +31,16 @@
           <use xlink:href="/assets/img/icons-sprite.svg#P1-Dashboards"></use>
         </svg>
       </div>
+      <div class="taskbar-icons app-icon" @click="openAppWindow('widget-manager')">
+        <svg class="icon">
+          <use xlink:href="/assets/img/icons-sprite.svg#M6-Widget-Manager"></use>
+        </svg>
+      </div>
+      <div class="taskbar-icons app-icon" @click="openAppWindow('data-cruncher')">
+        <svg class="icon">
+          <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
+        </svg>
+      </div>
       <div class="taskbar-right">
         <div class="txt-white">SG</div>
         <div class="txt-white">10:30</div>
@@ -96,14 +106,25 @@
         </div>
       </div>
     </div>
+    <div v-if="openApps.length > 0">
+      <widget-manager v-if="openApps[0] === 'widget-manager'"></widget-manager>
+      <data-cruncher v-if="openApps[0] === 'data-cruncher'"></data-cruncher>
+    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import _ from 'lodash'
+import { mapGetters, mapActions } from 'vuex'
+import widgetManager from './../widgetManager'
+import dataCruncher from './../dataCruncher'
 
 export default {
+  components: {
+    widgetManager,
+    dataCruncher
+  },
   data() {
     return {
       displayedApps: {},
@@ -114,6 +135,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addToOpenApps']),
     openSlider: function() {
       this.isSmallSlider = !this.isSmallSlider;
       if(this.isLargeSlider) {
@@ -200,6 +222,9 @@ export default {
           iconId: 'M6-Widget-Manager'
         }
       }
+    },
+    openAppWindow(app) {
+      this.addToOpenApps([app]);
     }
   },
   watch: {
@@ -215,7 +240,9 @@ export default {
   mounted() {
     this.displayedApps = this.getAllApps();
     this.allApps = this.getAllApps();
-
+  },
+  computed: {
+    ...mapGetters(['openApps', 'minimizedApps'])
   }
 }
 </script>
@@ -243,9 +270,9 @@ export default {
     width: 60px;
     height: 60px;
     display: flex;
-    cursor: pointer;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     .icon {
       width: 24px;
       height: 24px;
@@ -288,6 +315,7 @@ export default {
     -webkit-box-shadow: none;
 		box-shadow: none;
     transition: all .4s ease-out;
+    z-index: 9999;
     .slider-up-icon {
       position: absolute;
       width: 40px;

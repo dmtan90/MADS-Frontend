@@ -5,7 +5,7 @@
       <div class="right-section">
         <div>Min</div>
         <div>Max</div>
-        <div>Close</div>
+        <div @click="closeApp()">Close</div>
       </div>
     </div>
     <div class="break"></div>
@@ -21,16 +21,23 @@
 <script>
 /* eslint-disable */
 import _ from 'lodash'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  methods: {
+    ...mapActions(['addToOpenApps']),
+    closeApp() {
+      this.addToOpenApps([])
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
   .app-window {
     position: absolute;
-    background-color: white;
     height: calc(100% - 60px);
+    background-color: white;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -44,7 +51,7 @@ export default {
       align-items: center;
       padding-left: 20px;
       padding-right: 10px;
-      position: fixed;
+      position: absolute;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.149019607843137);
       z-index: 999;
       .icon {
@@ -62,6 +69,50 @@ export default {
         div {
           padding: 0 5px;
           cursor: pointer;
+        }
+      }
+    }
+    .sidebar {
+      width: 100px;
+      display: inline-block;
+      height: calc(100% - 40px);
+      border-right: 1px solid rgba(242, 242, 242, 1);
+      position: absolute;
+      top: 40px;
+      .item {
+        width: 100px;
+        height: 100px;
+        border-bottom: 1px solid rgba(242, 242, 242, 1);
+        text-align: center;
+        padding: 6px;
+        position: relative;
+        .item-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+          .icon {
+            width: 40px;
+            height: 40px;
+            display: block;
+            margin: 0 auto;
+            fill: #808080;
+          }
+          span {
+            display: block;
+            padding-top: 5px;
+            line-height: 1.2;
+            font-size: 12px;
+          }
+        }
+        .active-tab {
+            position: absolute;
+            width: 4px;
+            height: 80px;
+            top: 10px;
+            left: 0;
+            background-color: rgba(76, 146, 195, 1);
         }
       }
     }
