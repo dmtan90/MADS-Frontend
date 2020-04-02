@@ -3,7 +3,7 @@
     <app-window :sidebarData="sidebarData">
       <template v-slot:header>
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
         </svg>
         <span>
           Data Cruncher
@@ -14,7 +14,7 @@
           <div class="item" @click="openSection(key)">
             <div class="item-content">
               <svg class="icon">
-                <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
+                <use :xlink:href="'/assets/img/mads-data-cruncher-icons.svg#' + item.iconId"></use>
               </svg>
               <span>{{item.displayName}}</span>
             </div>
@@ -53,13 +53,38 @@ export default {
       return {
         'dataCruncher': {
           displayName: 'Data Cruncher',
-          iconId: '1-widget-manager',
+          iconId: 'data-cruncher',
           routerLink: ''
         },
         'workspace': {
           displayName: 'Workspace',
-          iconId: '2-widget-store',
+          iconId: 'workspace',
           routerLink: '/workspace'
+        },
+        'dataLake': {
+          displayName: 'Data Lake',
+          iconId: 'data-lake',
+          routerLink: ''
+        },
+        'functions': {
+          displayName: 'Functions',
+          iconId: 'functions',
+          routerLink: ''
+        },
+        'exportedWidgets': {
+          displayName: 'Exported Widgets',
+          iconId: 'exported-widgets',
+          routerLink: ''
+        },
+        'settings': {
+          displayName: 'Settings',
+          iconId: 'settings',
+          routerLink: ''
+        },
+        'help': {
+          displayName: 'Help',
+          iconId: 'help',
+          routerLink: ''
         }
       }
     },

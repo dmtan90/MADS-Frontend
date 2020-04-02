@@ -3,9 +3,21 @@
     <div class="header">
       <slot name="header"></slot>
       <div class="right-section">
-        <div>Min</div>
-        <div>Max</div>
-        <div @click="closeApp()">Close</div>
+        <div class="window-icons">
+          <svg class="icon hide-icon">
+            <use xlink:href="/assets/img/mads-app-window-icons.svg#hide"></use>
+          </svg>
+        </div>
+        <div class="window-icons">
+          <svg class="icon collapse-icon">
+            <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
+          </svg>
+        </div>
+        <div class="window-icons" @click="closeApp()">
+          <svg class="icon close-icon">
+            <use xlink:href="/assets/img/mads-app-window-icons.svg#close"></use>
+          </svg>
+        </div>
       </div>
     </div>
     <div class="break"></div>
@@ -66,9 +78,23 @@ export default {
       .right-section {
         display: flex;
         margin-left: auto;
-        div {
-          padding: 0 5px;
+        .window-icons {
+          padding: 0 12px;
           cursor: pointer;
+          display: flex;
+          align-items: center;
+          .icon {
+            fill: white;
+            &.hide-icon {
+              width: 17px;
+            }
+            &.collapse-icon {
+              width: 16px;
+            }
+            &.close-icon {
+              width: 15px;
+            }
+          }
         }
       }
     }

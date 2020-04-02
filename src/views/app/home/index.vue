@@ -3,42 +3,42 @@
     <div class="taskbar">
       <div class="taskbar-icons home-icon" @click="openSlider()">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#C1-AppStore"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#C1-AppStore"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#C2-Settings"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#C3-Support"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#C4-Voice-Assistant"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#P1-Dashboards"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon" @click="openAppWindow('widget-manager')">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#M6-Widget-Manager"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
         </svg>
       </div>
       <div class="taskbar-icons app-icon" @click="openAppWindow('data-cruncher')">
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#A1-Data-Cruncher"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
         </svg>
       </div>
       <div class="taskbar-right">
@@ -59,7 +59,7 @@
         <div class="app-search-bar">
           <b-form>
             <svg class="icon">
-              <use xlink:href="/assets/img/icons-sprite.svg#C1-AppStore"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
             </svg>
             <b-form-group>
               <b-form-input type="text" placeholder="Search your apps, web" v-model="searchApp"/>
@@ -70,39 +70,63 @@
         <div class="recent-apps">
           <div class="recent">
             <svg class="icon">
-              <use xlink:href="/assets/img/icons-sprite.svg#C2-Settings"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
             </svg>
             <span>Settings</span>
           </div>
           <div class="recent">
             <svg class="icon">
-              <use xlink:href="/assets/img/icons-sprite.svg#C3-Support"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
             </svg>
             <span>Support</span>
           </div>
           <div class="recent">
             <svg class="icon">
-              <use xlink:href="/assets/img/icons-sprite.svg#C4-Voice-Assistant"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
             </svg>
             <span>Voice Assistant</span>
           </div>
           <div class="recent">
             <svg class="icon">
-              <use xlink:href="/assets/img/icons-sprite.svg#P1-Dashboards"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
             </svg>
             <span>Dashboard</span>
           </div>
         </div>
         <div class="break"></div>
         <div class="all-apps" v-if="isLargeSlider">
-          <div v-for="(app, key) in displayedApps" :key="key" class="app">
-            <svg class="icon">
-              <use :xlink:href="'/assets/img/icons-sprite.svg#' + app.iconId"></use>
-            </svg>
-            <span>
-              {{app.displayName}}
-            </span>
+          <div class="screen" v-if="screen === 0">
+            <div v-for="(appsList, index) in displayedApps[0]" :key="index">
+              <div v-for="app in appsList" :key="app.key" class="app">
+                <svg class="icon">
+                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                </svg>
+                <span>
+                  {{app.displayName}}
+                </span>
+              </div>
+            </div>
           </div>
+          <div class="screen" v-if="screen === 1">
+            <div v-for="(appsList, index) in displayedApps[1]" :key="index">
+              <div v-for="app in appsList" :key="app.key" class="app">
+                <svg class="icon">
+                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                </svg>
+                <span>
+                  {{app.displayName}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-nav" v-if="isLargeSlider && !this.searchApp">
+        <div @click="screen = 0">
+          <div class="nav" :class="{'active': screen === 0}"></div>
+        </div>
+        <div @click="screen = 1">
+          <div class="nav" :class="{'active': screen === 1}"></div>
         </div>
       </div>
     </div>
@@ -131,12 +155,14 @@ export default {
       allApps: {},
       searchApp: '',
       isSmallSlider: false,
-      isLargeSlider: false
+      isLargeSlider: false,
+      screen: 0
     }
   },
   methods: {
     ...mapActions(['addToOpenApps']),
     openSlider: function() {
+      this.screen = 0;
       this.isSmallSlider = !this.isSmallSlider;
       if(this.isLargeSlider) {
         this.isSmallSlider = false;
@@ -152,76 +178,169 @@ export default {
       this.isLargeSlider = false;
     },
     getAllApps: function() {
-      return {
-        'App Store': {
-          displayName: 'App Store',
-          iconId: 'C1-AppStore'
-        },
-        'Settings': {
-          displayName: 'Settings',
-          iconId: 'C2-Settings'
-        },
-        'Support': {
-          displayName: 'Support',
-          iconId: 'C3-Support'
-        },
-        'HeyMADS!': {
-          displayName: 'HeyMADS!',
-          iconId: 'C4-Voice-Assistant'
-        },
-        'Dashboards': {
-          displayName: 'Dashboards',
-          iconId: 'P1-Dashboards'
-        },
-        'Digital Twin': {
-          displayName: 'Digital Twin',
-          iconId: 'P2-Digital-Twin'
-        },
-        'Task Organiser': {
-          displayName: 'Task Organiser',
-          iconId: 'P3-Task-Organiser'
-        },
-        'Report Wizard': {
-          displayName: 'Report Wizard',
-          iconId: 'P4-Report-Wizard'
-        },
-        'Alerts Reminder': {
-          displayName: 'Alerts Reminder',
-          iconId: 'P5-Alerts-Reminders'
-        },
-        'Madsbook': {
-          displayName: 'Madsbook',
-          iconId: 'P6-Madsbook'
-        },
-        'VR Simulator': {
-          displayName: 'VR Simulator',
-          iconId: 'P7-VR-Simulator'
-        },
-        'File Manager': {
-          displayName: 'File Manager',
-          iconId: 'M1-File-Manager'
-        },
-        'IOT Manager': {
-          displayName: 'IOT Manager',
-          iconId: 'M2-IoT-Manager'
-        },
-        'Role Manager': {
-          displayName: 'Role Manager',
-          iconId: 'M3-Role-Manager'
-        },
-        'Entity-Manager': {
-          displayName: 'Entity-Manager',
-          iconId: 'M4-Entity-Manager'
-        },
-        'Tool-Manager': {
-          displayName: 'Tool-Manager',
-          iconId: 'M5-Tool-Manager'
-        },
-        'Widget-Manager': {
-          displayName: 'Widget-Manager',
-          iconId: 'M6-Widget-Manager'
-        }
-      }
+      return [
+        [
+          [
+            {
+              key: 'appStore',
+              displayName: 'App Store',
+              iconId: 'mads-app-store'
+            },
+            {
+              key: 'settings',
+              displayName: 'Settings',
+              iconId: 'mads-settings'
+            },
+            {
+              key: 'support',
+              displayName: 'Support',
+              iconId: 'mads-support'
+            },
+            {
+              key: 'heyMADS!',
+              displayName: 'HeyMADS!',
+              iconId: 'mads-voice-assistant'
+            }
+          ],
+          [
+            {
+              key: 'dashboards',
+              displayName: 'Dashboards',
+              iconId: 'mads-dashboard'
+            },
+            {
+              key: 'digitalTwin',
+              displayName: 'Digital Twin',
+              iconId: 'mads-digital-twin'
+            },
+            {
+              key: 'taskOrganiser',
+              displayName: 'Task Organiser',
+              iconId: 'mads-task-organiser'
+            },
+            {
+              key: 'reportWizard',
+              displayName: 'Report Wizard',
+              iconId: 'mads-report-wizard'
+            },
+            {
+              key: 'alertsReminder',
+              displayName: 'Alerts Reminder',
+              iconId: 'mads-alerts-reminders'
+            },
+            {
+              key: 'madsbook',
+              displayName: 'Madsbook',
+              iconId: 'mads-book'
+            },
+            {
+              key: 'vrSimulator',
+              displayName: 'VR Simulator',
+              iconId: 'mads-vr-simulator'
+            }
+          ],
+          [
+            {
+              key: 'fileManager',
+              displayName: 'File Manager',
+              iconId: 'mads-file-manager'
+            },
+            {
+              key: 'iotManager',
+              displayName: 'IOT Manager',
+              iconId: 'mads-iot-manager'
+            },
+            {
+              key: 'roleManager',
+              displayName: 'Role Manager',
+              iconId: 'mads-role-manager'
+            },
+            {
+              key: 'entityManager',
+              displayName: 'Entity Manager',
+              iconId: 'mads-entity-manager'
+            },
+            {
+              key: 'toolManager',
+              displayName: 'Tool Manager',
+              iconId: 'mads-tool-manager'
+            },
+            {
+              key: 'widgetManager',
+              displayName: 'Widget Manager',
+              iconId: 'mads-widget-manager'
+            }
+          ]
+        ],
+        [
+          [
+            {
+              key: 'dataCruncher',
+              displayName: 'Data Cruncher',
+              iconId: 'mads-data-cruncher'
+            },
+            {
+              key: 'trendPredictor',
+              displayName: 'Trend Predictor',
+              iconId: 'mads-trend-predictor'
+            },
+            {
+              key: 'usageAnalyser',
+              displayName: 'Usage Analyser',
+              iconId: 'mads-usage-analyser'
+            }
+          ],
+          [
+            {
+              key: 'madsSecure',
+              displayName: 'Role Manager',
+              iconId: 'mads-secure'
+            },
+            {
+              key: 'loginTracker',
+              displayName: 'Login Tracker',
+              iconId: 'mads-login-tracker'
+            },
+            {
+              key: 'networkAnalyser',
+              displayName: 'Network Analyser',
+              iconId: 'mads-network-analyser'
+            },
+            {
+              key: 'secureShare',
+              displayName: 'Secure Share',
+              iconId: 'mads-secure-share'
+            },
+            {
+              key: 'appLocker',
+              displayName: 'App Locker',
+              iconId: 'mads-app-locker'
+            },
+            {
+              key: 'passwordManager',
+              displayName: 'Password Manager',
+              iconId: 'mads-password-manager'
+            }
+          ],
+          [
+            {
+              key: 'calendar',
+              displayName: 'Calendar',
+              iconId: 'mads-calendar'
+            },
+            {
+              key: 'calculator',
+              displayName: 'Calculator',
+              iconId: 'mads-calculator'
+            },
+            {
+              key: 'chatApp',
+              displayName: 'Chat App',
+              iconId: 'mads-chat-app'
+            }
+          ]
+        ]
+      ]
     },
     openAppWindow(app) {
       this.addToOpenApps([app]);
@@ -232,9 +351,18 @@ export default {
       if(!this.searchApp) {
         this.displayedApps = this.allApps;
       }
-      this.displayedApps = _.filter(this.allApps, (app) => {
-        return _.includes(_.toLower(app.displayName), _.toLower(this.searchApp));
-      });
+      else {
+        this.screen = 0;
+        this.displayedApps = 
+          _.chain(this.allApps)
+          .flattenDeep()
+          .filter((app) => {
+            return _.includes(_.toLower(app.displayName), _.toLower(this.searchApp));
+          })
+          .value();
+
+        this.displayedApps = [[this.displayedApps]];
+      }
     }
   },
   mounted() {
@@ -367,7 +495,7 @@ export default {
         form {
           position: relative;
           input {
-            border-radius: 16px;
+            border-radius: 32px;
             padding-left: 40px;
             padding-right: 40px;
             &::placeholder {
@@ -412,22 +540,51 @@ export default {
         margin-top: 3%;
         width: 70%;
         vertical-align: middle;
-        .app {
-          color: white;
-          width: 14%;
-          height: 120px;
-          display: inline-block;
-          text-align: center;
-          margin-top: 2%;
-          cursor: pointer;
-          .icon {
-            width: 60px;
-            height: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        .screen{
+          width: 100%;
+          .app {
+            color: white;
+            width: 14%;
+            height: 120px;
+            display: inline-block;
+            text-align: center;
+            margin-top: 2%;
+            cursor: pointer;
+            .icon {
+              width: 60px;
+              height: 60px;
+            }
+            span {
+              padding-top: 9px;
+              display: block;
+            }
           }
-          span {
-            padding-top: 9px;
-            display: block;
-          }
+        }
+      }
+    }
+    .screen-nav {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: absolute;
+      bottom: 30px;
+      div {
+        cursor: pointer;
+      }
+      .nav {
+        width: 12px;
+        height: 12px;
+        background: white;
+        margin: 10px;
+        border-radius: 50%;
+        opacity: 0.5;
+        cursor: pointer;
+        &.active {
+          opacity: 1;
         }
       }
     }

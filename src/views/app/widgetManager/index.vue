@@ -3,7 +3,7 @@
     <app-window :sidebarData="sidebarData">
       <template v-slot:header>
         <svg class="icon">
-          <use xlink:href="/assets/img/icons-sprite.svg#M6-Widget-Manager"></use>
+          <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
         </svg>
         <span>
           Widget Manager
@@ -14,7 +14,7 @@
           <div class="item" @click="openSection(key)">
             <div class="item-content">
               <svg class="icon">
-                <use :xlink:href="'/assets/img/widget-manager-icons.svg#' + item.iconId"></use>
+                <use :xlink:href="'/assets/img/mads-widget-manager-icons.svg#' + item.iconId"></use>
               </svg>
               <span>{{item.displayName}}</span>
             </div>
@@ -59,22 +59,22 @@ export default {
       return {
         'widgetManager': {
           displayName: 'Widget Manager',
-          iconId: '1-widget-manager',
+          iconId: 'widget-manager',
           routerLink: ''
         },
         'widgetStore': {
           displayName: 'Widget Store',
-          iconId: '2-widget-store',
+          iconId: 'widget-store',
           routerLink: '/store'
         },
         'myWidget': {
           displayName: 'My Widget',
-          iconId: '3-my-widgets',
+          iconId: 'my-widgets',
           routerLink: '/my-widgets'
         },
         'editor': {
           displayName: 'Editor',
-          iconId: '5-editor',
+          iconId: 'editor',
           routerLink: '/editor'
         }
       }
