@@ -40,6 +40,7 @@
     "vue-select": "^2.6.2",
     "vue-shortkey": "^3.1.7",
     "vue-simple-calendar": "^4.2.1",
+    "vue-simple-context-menu": "^3.1.10",
     "vue-slider-component": "^3.0.16",
     "vue-spinner": "^1.0.3",
     "vue-switches": "^2.0.1",

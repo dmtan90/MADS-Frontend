@@ -1,49 +1,51 @@
 <template>
   <div class="fixed-background">
-    <div class="taskbar">
-      <div class="taskbar-icons home-icon" @click="openSlider()">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon" @click="openAppWindow('widget-manager')">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
-        </svg>
-      </div>
-      <div class="taskbar-icons app-icon" @click="openAppWindow('data-cruncher')">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
-        </svg>
-      </div>
-      <div class="taskbar-right">
-        <div class="txt-white">SG</div>
-        <div class="txt-white">10:30</div>
+    <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
+      <div class="taskbar-container"  v-show="!isAutohideTaskbar">
+        <div class="taskbar-icons home-icon" @click="openSlider()">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon" @click="openAppWindow('widget-manager')">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
+          </svg>
+        </div>
+        <div class="taskbar-icons app-icon" @click="openAppWindow('data-cruncher')">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
+          </svg>
+        </div>
+        <div class="taskbar-right">
+          <div class="txt-white">SG</div>
+          <div class="txt-white">10:30</div>
+        </div>
       </div>
     </div>
     <div class="slider-div" :class="{'small-height-slider': isSmallSlider, 'large-height-slider': isLargeSlider}">
@@ -134,6 +136,15 @@
       <widget-manager v-if="openApps[0] === 'widget-manager'"></widget-manager>
       <data-cruncher v-if="openApps[0] === 'data-cruncher'"></data-cruncher>
     </div>
+    <div v-else class="mads-desktop" @contextmenu.prevent.stop="handleClick($event)">
+      <input type="file" style="display: none" ref="setWallpaper" @change="changeWallpaper">
+    </div>
+    <vue-simple-context-menu
+      :elementId="'contextMenuId'"
+      :options="getContextMenuOptions()"
+      :ref="'vueSimpleContextMenu'"
+      @option-clicked="optionClicked"
+/>
   </div>
 </template>
 
@@ -143,11 +154,14 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
+import VueSimpleContextMenu from 'vue-simple-context-menu'
+import 'vue-simple-context-menu/dist/vue-simple-context-menu.css'
 
 export default {
   components: {
     widgetManager,
-    dataCruncher
+    dataCruncher,
+    VueSimpleContextMenu
   },
   data() {
     return {
@@ -156,7 +170,9 @@ export default {
       searchApp: '',
       isSmallSlider: false,
       isLargeSlider: false,
-      screen: 0
+      screen: 0,
+      isAutohideTaskbar: false,
+      isTabletMode: false
     }
   },
   methods: {
@@ -344,6 +360,41 @@ export default {
     },
     openAppWindow(app) {
       this.addToOpenApps([app]);
+    },
+    setWallpaper() {
+      this.$refs.setWallpaper.click();
+    },
+    changeWallpaper(file) {
+      console.log('change wallpaper in process');
+    },
+    getContextMenuOptions() {
+      let autohideTaskbarName = this.isAutohideTaskbar ? 'Autoshow Taskbar' : 'Autohide Taskbar';
+      let tabletModeName = this.isTabletMode ? 'Desktop Mode' : 'Tablet Mode';
+      return [
+        {name: autohideTaskbarName, slug: 'autohide_taskbar'},
+        {name: 'Taskbar position', slug: 'taskbar_position'},
+        {name: 'Set wallpaper', slug: 'set_wallpaper'},
+        {name: tabletModeName, slug: 'tablet_mode'}
+      ]
+    },
+    handleClick(event) {
+      this.$refs.vueSimpleContextMenu.showMenu(event, 'desktop');
+    },
+    optionClicked (event) {
+      let clickedOption = event.option.slug;
+      switch(clickedOption) {
+        case 'autohide_taskbar':
+          this.isAutohideTaskbar = !this.isAutohideTaskbar;
+          break;
+        case 'tablet_mode':
+          this.isTabletMode = !this.isTabletMode;
+          break;
+        case 'set_wallpaper':
+          this.setWallpaper();
+          break;
+        default:
+          break;
+      }
     }
   },
   watch: {
@@ -376,20 +427,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	.taskbar {
-    display: flex;
+  .taskbar {
     position: absolute;
     left: 0px;
     bottom: 0px;
     width: 100%;
     height: 60px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: none;
-    border-radius: 0px;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-		box-shadow: none;
-    align-items: center;
+    transition: all 0.3s ease-out;
+    .taskbar-container {
+      display: flex;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 0px;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      align-items: center;
+    }
+    &.auto-hide {
+      height: 0;
+    }
   }
 
   .taskbar-icons {
@@ -588,5 +645,12 @@ export default {
         }
       }
     }
+  }
+
+  .mads-desktop {
+    position: absolute;
+    height: calc(100% - 60px);
+    background-color: transparent;
+    width: 100%;
   }
 </style>
