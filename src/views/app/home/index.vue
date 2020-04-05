@@ -1,51 +1,61 @@
 <template>
-  <div class="fixed-background" :style="{background: getBackgroundUrl()}">
+  <div class="fixed-background" id="fullScreen" :style="{background: getBackgroundUrl()}">
     <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
       <div class="taskbar-container"  v-show="!isAutohideTaskbar">
-        <div class="taskbar-icons home-icon" @click="toggleSlider()">
+        <div class="home-icon" @click="toggleSlider()">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
           </svg>
         </div>
-        <div class="taskbar-icons app-icon">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': openedApps['widget-manager']}" @click="openAppWindow('widget-manager')">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
-          </svg>
-          <div class="active"></div>
-        </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': openedApps['data-cruncher']}" @click="openAppWindow('data-cruncher')">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
-          </svg>
-          <div class="active"></div>
+        <div class="taskbar-center">
+          <div class="taskbar-icons app-icon" v-tooltip="'App Store'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
+            </svg>
+          </div>
+          <div class="taskbar-icons app-icon" v-tooltip="'Settings'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
+            </svg>
+          </div>
+          <div class="taskbar-icons app-icon" v-tooltip="'Support'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
+            </svg>
+          </div>
+          <div class="taskbar-icons app-icon" v-tooltip="'Voice Assistant'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
+            </svg>
+          </div>
+          <div class="taskbar-icons app-icon" v-tooltip="'Dashboard'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
+            </svg>
+          </div>
+          <div class="taskbar-icons app-icon" :class="{'opened': openedApps['widget-manager']}" @click="openAppWindow('widget-manager')" v-tooltip="'Widget Manager'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
+            </svg>
+            <div class="active"></div>
+          </div>
+          <div class="taskbar-icons app-icon" :class="{'opened': openedApps['data-cruncher']}" @click="openAppWindow('data-cruncher')" v-tooltip="'Data Cruncher'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
+            </svg>
+            <div class="active"></div>
+          </div>
         </div>
         <div class="taskbar-right">
           <div class="txt-white">SG</div>
+          <div class="fullscreen">
+            <svg class="icon collapse-icon" v-if="isFullScreen" @click="exitFullScreen()">
+              <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
+            </svg>
+            <svg class="icon expand-icon" v-if="!isFullScreen" @click="goFullScreen()">
+              <use xlink:href="/assets/img/mads-app-window-icons.svg#expand"></use>
+            </svg>
+          </div>
           <div class="txt-white">10:30</div>
         </div>
       </div>
@@ -210,7 +220,8 @@ export default {
         {key: 'earth', name: 'Earth'}, {key: 'geometric_shapes', name: 'Geometric Shapes'}, {key: 'solid_colors', name: 'Solid Colors'}],
       wallpapers: {},
       selectedWallpaperCateogry: {key: 'landscapes', name: 'Landscapes'},
-      selectedWallpaper: 'landspaces_4.jpeg'
+      selectedWallpaper: 'landspaces_4.jpeg',
+      isFullScreen: false
     }
   },
   methods: {
@@ -441,6 +452,34 @@ export default {
         geometric_shapes: ["geometric_shapes_1.jpeg", "geometric_shapes_2.jpeg", "geometric_shapes_3.jpeg", "geometric_shapes_4.jpeg", "geometric_shapes_5.jpeg", "geometric_shapes_6.jpeg", "geometric_shapes_7.jpeg"],
         solid_colors: ["solid_colors_1.jpeg", "solid_colors_2.jpeg", "solid_colors_3.jpeg", "solid_colors_4.jpeg", "solid_colors_5.jpeg", "solid_colors_6.jpeg", "solid_colors_7.jpeg"]
       }
+    },
+    exitFullScreen() {
+      this.isFullScreen = false;
+      // exit full-screen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    },
+    goFullScreen() {
+      this.isFullScreen = true;
+      let i = document.getElementById("body");
+
+      // go full-screen
+      if (i.requestFullscreen) {
+        i.requestFullscreen();
+      } else if (i.webkitRequestFullscreen) {
+        i.webkitRequestFullscreen();
+      } else if (i.mozRequestFullScreen) {
+        i.mozRequestFullScreen();
+      } else if (i.msRequestFullscreen) {
+        i.msRequestFullscreen();
+      }
     }
   },
   watch: {
@@ -490,6 +529,27 @@ export default {
       -webkit-box-shadow: none;
       box-shadow: none;
       align-items: center;
+      .home-icon {
+        border-width: 0px;
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        fill: white;
+        cursor: pointer;
+        .icon {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      .taskbar-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+      }
     }
     &.auto-hide {
       height: 0;
@@ -525,11 +585,9 @@ export default {
   }
 
   .taskbar-right {
-    position: absolute;
-    right: 30px;
+    margin-right: 15px;
     display: flex;
     border-width: 0px;
-    width: 100px;
     height: 35px;
     background-color: rgba(255, 255, 255, 0.498039215686275);
     border: none;
@@ -539,12 +597,23 @@ export default {
     box-shadow: none;
     align-items: center;
     justify-content: center;
+    padding: 0 10px;
     .txt-white {
       font-family: 'Lato-Bold', 'Lato Bold', 'Lato', sans-serif;
       color: white;
       font-weight: 700;
       font-size: 14px;
       padding: 0 5px;
+    }
+    .fullscreen {
+      display: flex;
+      .icon {
+        margin: 0 10px;
+        width: 15px;
+        height: 15px;
+        fill: white;
+        cursor: pointer;
+      }
     }
   }
 

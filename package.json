@@ -23,6 +23,7 @@
     "lodash": "^4.17.15",
     "v-calendar": "^0.9.7",
     "v-contextmenu": "^2.8.0",
+    "v-tooltip": "^2.0.3",
     "video.js": "^7.4.1",
     "vue": "^2.6.6",
     "vue-autosuggest": "^1.8.2",
