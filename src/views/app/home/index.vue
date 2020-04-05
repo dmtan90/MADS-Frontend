@@ -539,6 +539,7 @@ export default {
         justify-content: center;
         fill: white;
         cursor: pointer;
+        transform: rotate(180deg);
         .icon {
           width: 24px;
           height: 24px;
