@@ -414,11 +414,11 @@ export default {
       return "url('/assets/img/" + this.selectedWallpaper + "')";
     },
     getContextMenuOptions() {
-      let autohideTaskbarName = this.isAutohideTaskbar ? 'Autoshow Taskbar' : 'Autohide Taskbar';
+      let autohideTaskbarName = this.isAutohideTaskbar ? 'Show Taskbar' : 'Autohide Taskbar';
       return [
         {name: autohideTaskbarName, slug: 'autohide_taskbar'},
-        {name: 'Taskbar position', slug: 'taskbar_position'},
-        {name: 'Set wallpaper', slug: 'set_wallpaper'}
+        {name: 'Taskbar Position', slug: 'taskbar_position'},
+        {name: 'Set Wallpaper', slug: 'set_wallpaper'}
       ]
     },
     handleClick(event) {
