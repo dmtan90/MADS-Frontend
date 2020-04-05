@@ -1,33 +1,31 @@
 <template>
-  <div>
-    <app-window :sidebarData="sidebarData">
-      <template v-slot:header>
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
-        </svg>
-        <span>
-          Data Cruncher
-        </span>
-      </template>
-      <template v-slot:sidebar>
-        <div v-for="(item, key) in sidebarData" :key="key">
-          <div class="item" @click="openSection(key)">
-            <div class="item-content">
-              <svg class="icon">
-                <use :xlink:href="'/assets/img/mads-data-cruncher-icons.svg#' + item.iconId"></use>
-              </svg>
-              <span>{{item.displayName}}</span>
-            </div>
-            <div :class="{'active-tab': currentSection === key}"></div>
+  <app-window :sidebarData="sidebarData" :zIndex="openedApps['data-cruncher'].zIndex" :appName="'data-cruncher'">
+    <template v-slot:header>
+      <svg class="icon">
+        <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
+      </svg>
+      <span>
+        Data Cruncher
+      </span>
+    </template>
+    <template v-slot:sidebar>
+      <div v-for="(item, key) in sidebarData" :key="key">
+        <div class="item" @click="openSection(key)">
+          <div class="item-content">
+            <svg class="icon">
+              <use :xlink:href="'/assets/img/mads-data-cruncher-icons.svg#' + item.iconId"></use>
+            </svg>
+            <span>{{item.displayName}}</span>
           </div>
+          <div :class="{'active-tab': currentSection === key}"></div>
         </div>
-      </template>
-      <template v-slot:content>
-        <data-cruncher v-if="currentSection === 'dataCruncher'"></data-cruncher>
-        <workspace v-if="currentSection === 'workspace'"></workspace>
-      </template>
-    </app-window>
-  </div>
+      </div>
+    </template>
+    <template v-slot:content>
+      <data-cruncher v-if="currentSection === 'dataCruncher'"></data-cruncher>
+      <workspace v-if="currentSection === 'workspace'"></workspace>
+    </template>
+  </app-window>
 </template>
 
 <script>
@@ -35,6 +33,7 @@
 import appWindow from '../appWindow'
 import dataCruncher from './dataCruncher'
 import workspace from './workspace'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -94,6 +93,9 @@ export default {
   },
   mounted() {
     this.sidebarData = this.getSidebarData();
+  },
+  computed: {
+    ...mapGetters(['openedApps'])
   }
 }
 </script>

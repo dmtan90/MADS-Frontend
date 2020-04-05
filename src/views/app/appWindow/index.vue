@@ -1,10 +1,10 @@
 <template>
-  <div class="app-window">
+  <div class="app-window" :style="{'z-index': zIndex}" :class="{'minimized': openedApps[appName]['state'] === 'minimize'}">
     <div class="header">
       <slot name="header"></slot>
       <div class="right-section">
         <div class="window-icons">
-          <svg class="icon hide-icon">
+          <svg class="icon hide-icon" @click="hideAppWindow()">
             <use xlink:href="/assets/img/mads-app-window-icons.svg#hide"></use>
           </svg>
         </div>
@@ -13,7 +13,7 @@
             <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
           </svg>
         </div>
-        <div class="window-icons" @click="closeApp()">
+        <div class="window-icons" @click="closeAppWindow()">
           <svg class="icon close-icon">
             <use xlink:href="/assets/img/mads-app-window-icons.svg#close"></use>
           </svg>
@@ -36,19 +36,25 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: ['zIndex', 'appName'],
   methods: {
-    ...mapActions(['addToOpenApps']),
-    closeApp() {
-      this.addToOpenApps([])
+    ...mapActions(['openApp', 'closeApp', 'hideApp']),
+    closeAppWindow() {
+      this.closeApp(this.appName);
+    },
+    hideAppWindow() {
+      this.hideApp(this.appName);
     }
+  },
+  computed: {
+    ...mapGetters(['openedApps'])
   }
 }
 </script>
 
 <style lang="scss" scoped>
   .app-window {
-    position: absolute;
-    height: calc(100% - 60px);
+    height: 100%;
     background-color: white;
     width: 100%;
     display: flex;
@@ -149,6 +155,14 @@ export default {
       width: calc(100% - 100px);
       margin-left: 100px;
       margin-top: 40px;
+    }
+    &.minimized {
+      .header {
+        display: none;
+      }
+      .sidebar {
+        display: none;
+      }
     }
   }
 </style>

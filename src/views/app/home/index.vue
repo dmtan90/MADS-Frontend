@@ -2,9 +2,9 @@
   <div class="fixed-background" :style="{background: getBackgroundUrl()}">
     <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
       <div class="taskbar-container"  v-show="!isAutohideTaskbar">
-        <div class="taskbar-icons home-icon" @click="openSlider()">
+        <div class="taskbar-icons home-icon" @click="toggleSlider()">
           <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
+            <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
           </svg>
         </div>
         <div class="taskbar-icons app-icon">
@@ -32,15 +32,17 @@
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
         </div>
-        <div class="taskbar-icons app-icon" @click="openAppWindow('widget-manager')">
+        <div class="taskbar-icons app-icon" :class="{'opened': openedApps['widget-manager']}" @click="openAppWindow('widget-manager')">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
           </svg>
+          <div class="active"></div>
         </div>
-        <div class="taskbar-icons app-icon" @click="openAppWindow('data-cruncher')">
+        <div class="taskbar-icons app-icon" :class="{'opened': openedApps['data-cruncher']}" @click="openAppWindow('data-cruncher')">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
           </svg>
+          <div class="active"></div>
         </div>
         <div class="taskbar-right">
           <div class="txt-white">SG</div>
@@ -48,95 +50,100 @@
         </div>
       </div>
     </div>
-    <div class="slider-div" :class="{'small-height-slider': isSmallSlider, 'large-height-slider': isLargeSlider}">
-      <div v-if="isSmallSlider">
-        <div class="slider-up-icon" :class="{'d-none': isLargeSlider}" @click="openLargeSlider()">
-          <img src="/assets/img/u212.svg" class="inner-icon" alt="">
-        </div>
-      </div>
-      <div v-if="isLargeSlider">
-        <div class="hide-slider-content" :class="{'d-none': isSmallSlider}" @click="hideLargeSlider()"></div>
-      </div>
-      <div class="slider-content">
-        <div class="app-search-bar">
-          <b-form>
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-logo"></use>
-            </svg>
-            <b-form-group>
-              <b-form-input type="text" placeholder="Search your apps, web" v-model="searchApp"/>
-            </b-form-group>
-          </b-form>
-        </div>
-        <div class="break"></div>
-        <div class="recent-apps">
-          <div class="recent">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
-            </svg>
-            <span>Settings</span>
+    <div class="slider-div" :class="{'active': showSlider}">
+      <div v-if="showSlider">
+        <div class="hide-slider-content" @click="toggleSlider()"></div>
+        <div class="slider-content">
+          <div class="app-search-bar">
+            <b-form>
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-icon"></use>
+              </svg>
+              <b-form-group>
+                <b-form-input type="text" placeholder="Search your apps, web" v-model="searchApp"/>
+              </b-form-group>
+            </b-form>
           </div>
-          <div class="recent">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-            </svg>
-            <span>Support</span>
-          </div>
-          <div class="recent">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-            </svg>
-            <span>Voice Assistant</span>
-          </div>
-          <div class="recent">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-            </svg>
-            <span>Dashboard</span>
-          </div>
-        </div>
-        <div class="break"></div>
-        <div class="all-apps" v-if="isLargeSlider">
-          <div class="screen" v-if="screen === 0">
-            <div v-for="(appsList, index) in displayedApps[0]" :key="index">
-              <div v-for="app in appsList" :key="app.key" class="app">
-                <svg class="icon">
-                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                </svg>
-                <span>
-                  {{app.displayName}}
-                </span>
-              </div>
+          <div class="break"></div>
+          <div class="recent-apps">
+            <div class="recent">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
+              </svg>
+              <span>Settings</span>
+            </div>
+            <div class="recent">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
+              </svg>
+              <span>Support</span>
+            </div>
+            <div class="recent">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
+              </svg>
+              <span>Voice Assistant</span>
+            </div>
+            <div class="recent">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
+              </svg>
+              <span>Dashboard</span>
             </div>
           </div>
-          <div class="screen" v-if="screen === 1">
-            <div v-for="(appsList, index) in displayedApps[1]" :key="index">
-              <div v-for="app in appsList" :key="app.key" class="app">
-                <svg class="icon">
-                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                </svg>
-                <span>
-                  {{app.displayName}}
-                </span>
+          <div class="break"></div>
+          <div class="all-apps">
+            <div class="screen" v-if="screen === 0">
+              <div v-for="(appsList, index) in displayedApps[0]" :key="index">
+                <div v-for="app in appsList" :key="app.key" class="app">
+                  <svg class="icon">
+                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                  </svg>
+                  <span>
+                    {{app.displayName}}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="screen" v-if="screen === 1">
+              <div v-for="(appsList, index) in displayedApps[1]" :key="index">
+                <div v-for="app in appsList" :key="app.key" class="app">
+                  <svg class="icon">
+                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                  </svg>
+                  <span>
+                    {{app.displayName}}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="screen-nav" v-if="isLargeSlider && !this.searchApp">
-        <div @click="screen = 0">
-          <div class="nav" :class="{'active': screen === 0}"></div>
-        </div>
-        <div @click="screen = 1">
-          <div class="nav" :class="{'active': screen === 1}"></div>
+        <div class="screen-nav" v-if="!this.searchApp">
+          <div @click="screen = 0">
+            <div class="nav" :class="{'active': screen === 0}"></div>
+          </div>
+          <div @click="screen = 1">
+            <div class="nav" :class="{'active': screen === 1}"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div v-if="openApps.length > 0">
-      <widget-manager v-if="openApps[0] === 'widget-manager'"></widget-manager>
-      <data-cruncher v-if="openApps[0] === 'data-cruncher'"></data-cruncher>
+    <div>
+      <div class="app-container"
+        :class="{'maximized': openedApps['widget-manager'] && openedApps['widget-manager']['state'] === 'maximize'}"
+        :style="{'z-index': openedApps['widget-manager'] && openedApps['widget-manager'].zIndex}"
+        >
+        <widget-manager v-if="openedApps['widget-manager']"></widget-manager>
+      </div>
+      <div class="app-container"
+        :class="{'maximized': openedApps['data-cruncher'] && openedApps['data-cruncher']['state'] === 'maximize'}"
+        :style="{'z-index': openedApps['data-cruncher'] && openedApps['data-cruncher'].zIndex}"
+      >
+        <data-cruncher v-if="openedApps['data-cruncher']"></data-cruncher>
+      </div>
+      <div class="mads-desktop" @contextmenu.prevent.stop="handleClick($event)">
     </div>
-    <div v-else class="mads-desktop" @contextmenu.prevent.stop="handleClick($event)">
       <b-modal id="set-wallpaper-modal" ref="setWallpaperModal" size="lg" hide-footer>
         <b-row>
           <b-colxx xxs="3" class="left-panel">
@@ -194,11 +201,9 @@ export default {
       displayedApps: {},
       allApps: {},
       searchApp: '',
-      isSmallSlider: false,
-      isLargeSlider: false,
       screen: 0,
+      showSlider: false,
       isAutohideTaskbar: false,
-      isTabletMode: false,
       wallpaperCategories: [
         {key: 'landscapes', name: 'Landscapes'}, {key: 'seascapes', name: 'Seascapes'}, {key: 'art', name: 'Art'},
         {key: 'cityscapes', name: 'Cityscapes'}, {key: 'life', name: 'Life'}, {key: 'textures', name: 'Textures'},
@@ -209,22 +214,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addToOpenApps']),
-    openSlider: function() {
+    ...mapActions(['openApp', 'maximizeApp']),
+    toggleSlider: function() {
       this.screen = 0;
-      this.isSmallSlider = !this.isSmallSlider;
-      if(this.isLargeSlider) {
-        this.isSmallSlider = false;
-        this.isLargeSlider = false;
-      }
-    },
-    openLargeSlider: function() {
-      this.isSmallSlider = false;      
-      this.isLargeSlider = true;
-    },
-    hideLargeSlider: function() {
-      this.isSmallSlider = false;
-      this.isLargeSlider = false;
+      this.searchApp = '';
+      this.showSlider = !this.showSlider;
     },
     getAllApps: function() {
       return [
@@ -392,7 +386,12 @@ export default {
       ]
     },
     openAppWindow(app) {
-      this.addToOpenApps([app]);
+      this.showSlider = false;
+      if(this.openedApps[app]) {
+        this.maximizeApp(app);
+      } else {
+        this.openApp(app);
+      }
     },
     setWallpaper() {
       this.$refs.setWallpaperModal.show();
@@ -405,12 +404,10 @@ export default {
     },
     getContextMenuOptions() {
       let autohideTaskbarName = this.isAutohideTaskbar ? 'Autoshow Taskbar' : 'Autohide Taskbar';
-      let tabletModeName = this.isTabletMode ? 'Desktop Mode' : 'Tablet Mode';
       return [
         {name: autohideTaskbarName, slug: 'autohide_taskbar'},
         {name: 'Taskbar position', slug: 'taskbar_position'},
-        {name: 'Set wallpaper', slug: 'set_wallpaper'},
-        {name: tabletModeName, slug: 'tablet_mode'}
+        {name: 'Set wallpaper', slug: 'set_wallpaper'}
       ]
     },
     handleClick(event) {
@@ -471,7 +468,7 @@ export default {
     this.wallpapers = this.getAllWallpapers();
   },
   computed: {
-    ...mapGetters(['openApps', 'minimizedApps'])
+    ...mapGetters(['openedApps'])
   }
 }
 </script>
@@ -512,6 +509,19 @@ export default {
       width: 24px;
       height: 24px;
     }
+    &.home-icon {
+      fill: white;
+    }
+    &.opened {
+      .active {
+        width: 6px;
+        height: 6px;
+        position: absolute;
+        background-color: white;
+        bottom: 6px;
+        border-radius: 3px;
+      }
+    }
   }
 
   .taskbar-right {
@@ -550,7 +560,8 @@ export default {
     -webkit-box-shadow: none;
 		box-shadow: none;
     transition: all .4s ease-out;
-    z-index: 9999;
+    z-index: 1005;
+    height: 0;
     .slider-up-icon {
       position: absolute;
       width: 40px;
@@ -577,16 +588,7 @@ export default {
       top: 15px;
       cursor: pointer;
     }
-    &.small-height-slider {
-      height: 301px;
-      .slider-content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 90px;
-      }
-    }
-    &.large-height-slider {
+    &.active {
       height: calc(100% - 60px);
       .slider-content {
         display: flex;
@@ -697,10 +699,24 @@ export default {
     }
   }
 
+  .app-container {
+    height: 0;
+    width: 100%;
+    position: absolute;
+    transition: all .5s ease-out;
+    bottom: 60px;
+    &.maximized {
+      height: calc(100% - 60px);
+      width: 100%;
+      left: 0;
+    }
+  }
+
   .mads-desktop {
     position: absolute;
     height: calc(100% - 60px);
     background-color: transparent;
     width: 100%;
+    z-index: 1000;
   }
 </style>
