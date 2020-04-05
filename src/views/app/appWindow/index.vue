@@ -105,6 +105,7 @@ export default {
       border-right: 1px solid rgba(242, 242, 242, 1);
       position: absolute;
       top: 40px;
+      overflow: scroll;
       .item {
         width: 100px;
         height: 100px;

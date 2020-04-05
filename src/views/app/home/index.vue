@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed-background">
+  <div class="fixed-background" :style="{background: getBackgroundUrl()}">
     <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
       <div class="taskbar-container"  v-show="!isAutohideTaskbar">
         <div class="taskbar-icons home-icon" @click="openSlider()">
@@ -137,14 +137,40 @@
       <data-cruncher v-if="openApps[0] === 'data-cruncher'"></data-cruncher>
     </div>
     <div v-else class="mads-desktop" @contextmenu.prevent.stop="handleClick($event)">
-      <input type="file" style="display: none" ref="setWallpaper" @change="changeWallpaper">
+      <b-modal id="set-wallpaper-modal" ref="setWallpaperModal" size="lg" hide-footer>
+        <b-row>
+          <b-colxx xxs="3" class="left-panel">
+            <ul class="categories">
+              <li v-for="category in wallpaperCategories" :key="category.key" class="item" :class="{'active': category.key === selectedWallpaperCateogry.key}" @click="selectedWallpaperCateogry = category">
+                {{category.name}}
+              </li>
+            </ul>
+          </b-colxx>
+          <b-colxx xxs="9" class="right-panel">
+            <div class="current-wallpaper">
+              <div class="wallpaper-img"><img :src="'/assets/img/' + selectedWallpaper" alt=""></div>
+              <div class="text-info">
+                <div class="currently">Currently set</div>
+                <div class="category">{{selectedWallpaperCateogry.name}}</div>
+              </div>
+            </div>
+            <b-row class="wallpaper-options">
+              <b-colxx xxs="4" v-for="(wallpaper, index) in wallpapers[selectedWallpaperCateogry.key]" :key="index"
+                class="wallpaper-img"
+              >
+                <img :src="'/assets/img/' + wallpaper" alt="" @click="changeWallpaper(wallpaper)">
+                </b-colxx>
+            </b-row>
+          </b-colxx>
+        </b-row>
+      </b-modal>
     </div>
     <vue-simple-context-menu
       :elementId="'contextMenuId'"
       :options="getContextMenuOptions()"
       :ref="'vueSimpleContextMenu'"
       @option-clicked="optionClicked"
-/>
+    />
   </div>
 </template>
 
@@ -172,7 +198,14 @@ export default {
       isLargeSlider: false,
       screen: 0,
       isAutohideTaskbar: false,
-      isTabletMode: false
+      isTabletMode: false,
+      wallpaperCategories: [
+        {key: 'landscapes', name: 'Landscapes'}, {key: 'seascapes', name: 'Seascapes'}, {key: 'art', name: 'Art'},
+        {key: 'cityscapes', name: 'Cityscapes'}, {key: 'life', name: 'Life'}, {key: 'textures', name: 'Textures'},
+        {key: 'earth', name: 'Earth'}, {key: 'geometric_shapes', name: 'Geometric Shapes'}, {key: 'solid_colors', name: 'Solid Colors'}],
+      wallpapers: {},
+      selectedWallpaperCateogry: {key: 'landscapes', name: 'Landscapes'},
+      selectedWallpaper: 'landspaces_4.jpeg'
     }
   },
   methods: {
@@ -362,10 +395,13 @@ export default {
       this.addToOpenApps([app]);
     },
     setWallpaper() {
-      this.$refs.setWallpaper.click();
+      this.$refs.setWallpaperModal.show();
     },
-    changeWallpaper(file) {
-      console.log('change wallpaper in process');
+    changeWallpaper(wallpaper) {
+      this.selectedWallpaper = wallpaper;
+    },
+    getBackgroundUrl() {
+      return "url('/assets/img/" + this.selectedWallpaper + "')";
     },
     getContextMenuOptions() {
       let autohideTaskbarName = this.isAutohideTaskbar ? 'Autoshow Taskbar' : 'Autohide Taskbar';
@@ -395,6 +431,19 @@ export default {
         default:
           break;
       }
+    },
+    getAllWallpapers () {
+      return {
+        landscapes: ["landspaces_1.jpeg", "landspaces_2.jpeg", "landspaces_3.jpeg", "landspaces_4.jpeg", "landspaces_5.jpeg", "landspaces_6.jpeg", "landspaces_7.jpeg"],
+        seascapes: ["seascapes_1.jpeg", "seascapes_2.jpeg", "seascapes_3.jpeg", "seascapes_4.jpeg", "seascapes_5.jpeg", "seascapes_6.jpeg", "seascapes_7.jpeg"],
+        art: ["art_1.jpeg", "art_2.jpeg", "art_3.jpeg", "art_4.jpeg", "art_5.jpeg", "art_6.jpeg", "art_7.jpeg"],
+        cityscapes: ["cityscapes_1.jpeg", "cityscapes_2.jpeg", "cityscapes_3.jpeg", "cityscapes_4.jpeg", "cityscapes_5.jpeg", "cityscapes_6.jpeg", "cityscapes_7.jpeg"],
+        life: ["life_1.jpeg", "life_2.jpeg", "life_3.jpeg", "life_4.jpeg", "life_5.jpeg", "life_6.jpeg", "life_7.jpeg"],
+        textures: ["textures_1.jpeg", "textures_2.jpeg", "textures_3.jpeg", "textures_4.jpeg", "textures_5.jpeg", "textures_6.jpeg", "textures_7.jpeg"],
+        earth: ["earth_1.jpeg", "earth_2.jpeg", "earth_3.jpeg", "earth_4.jpeg", "earth_5.jpeg", "earth_6.jpeg", "earth_7.jpeg"],
+        geometric_shapes: ["geometric_shapes_1.jpeg", "geometric_shapes_2.jpeg", "geometric_shapes_3.jpeg", "geometric_shapes_4.jpeg", "geometric_shapes_5.jpeg", "geometric_shapes_6.jpeg", "geometric_shapes_7.jpeg"],
+        solid_colors: ["solid_colors_1.jpeg", "solid_colors_2.jpeg", "solid_colors_3.jpeg", "solid_colors_4.jpeg", "solid_colors_5.jpeg", "solid_colors_6.jpeg", "solid_colors_7.jpeg"]
+      }
     }
   },
   watch: {
@@ -419,6 +468,7 @@ export default {
   mounted() {
     this.displayedApps = this.getAllApps();
     this.allApps = this.getAllApps();
+    this.wallpapers = this.getAllWallpapers();
   },
   computed: {
     ...mapGetters(['openApps', 'minimizedApps'])
@@ -436,7 +486,7 @@ export default {
     transition: all 0.3s ease-out;
     .taskbar-container {
       display: flex;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.6);
       border: none;
       border-radius: 0px;
       -moz-box-shadow: none;
