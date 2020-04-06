@@ -1,7 +1,7 @@
 <template>
   <div class="fixed-background" id="fullScreen" :style="{background: getBackgroundUrl()}">
     <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
-      <div class="taskbar-container"  v-show="!isAutohideTaskbar">
+      <div class="taskbar-container">
         <div class="home-icon" @click="toggleSlider()">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
@@ -103,27 +103,31 @@
           </div>
           <div class="break"></div>
           <div class="all-apps">
-            <div class="screen" v-if="screen === 0">
-              <div v-for="(appsList, index) in displayedApps[0]" :key="index">
-                <div v-for="app in appsList" :key="app.key" class="app">
-                  <svg class="icon">
-                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                  </svg>
-                  <span>
-                    {{app.displayName}}
-                  </span>
+            <div class="screen" :class="{'active': screen === 0}">
+              <div v-if="screen === 0">
+                <div v-for="(appsList, index) in displayedApps[0]" :key="index">
+                  <div v-for="app in appsList" :key="app.key" class="app">
+                    <svg class="icon">
+                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                    </svg>
+                    <span>
+                      {{app.displayName}}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="screen" v-if="screen === 1">
-              <div v-for="(appsList, index) in displayedApps[1]" :key="index">
-                <div v-for="app in appsList" :key="app.key" class="app">
-                  <svg class="icon">
-                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                  </svg>
-                  <span>
-                    {{app.displayName}}
-                  </span>
+            <div class="screen" :class="{'active': screen === 1}">
+              <div v-if="screen === 1">
+                <div v-for="(appsList, index) in displayedApps[1]" :key="index">
+                  <div v-for="app in appsList" :key="app.key" class="app">
+                    <svg class="icon">
+                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                    </svg>
+                    <span>
+                      {{app.displayName}}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -722,7 +726,11 @@ export default {
         display: flex;
         flex-wrap: wrap;
         .screen{
-          width: 100%;
+          width: 0;
+          transition: width .5s ease-in-out;
+          &.active {
+            width: 100%;
+          }
           .app {
             color: white;
             width: 14%;

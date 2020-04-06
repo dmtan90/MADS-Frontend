@@ -40,10 +40,16 @@ export default {
     async maximizeApp ({ commit, state }, app) {
       let openedApps = {}
       openedApps[app] = _.merge({}, state.openedApps[app], {
-        'state': 'maximize',
         'zIndex': state.appWindowCurrentIndex + 10
       })
+
       commit('updateAppWindowCurrentIndex', state.appWindowCurrentIndex + 10)
+      commit('addToOpenedApps', openedApps)
+
+      openedApps[app] = _.merge({}, state.openedApps[app], {
+        'state': 'maximize'
+      })
+
       commit('addToOpenedApps', openedApps)
     },
     async closeApp ({ commit, state }, app) {
