@@ -196,14 +196,11 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
-import VueSimpleContextMenu from 'vue-simple-context-menu'
-import 'vue-simple-context-menu/dist/vue-simple-context-menu.css'
 
 export default {
   components: {
     widgetManager,
-    dataCruncher,
-    VueSimpleContextMenu
+    dataCruncher
   },
   data() {
     return {

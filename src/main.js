@@ -29,7 +29,6 @@ import TokenService from '@/services/token.service'
 /* SERVICE -end */
 
 /* OPTINAL -begin */
-import contentmenu from 'v-contextmenu'
 import VCalendar from 'v-calendar'
 import 'v-calendar/lib/v-calendar.min.css'
 import 'c3/c3.min.css'
@@ -67,7 +66,6 @@ Vue.component('vue-perfect-scrollbar', vuePerfectScrollbar)
 
 /* OPTINAL -begin */
 Vue.use(require('vue-shortkey'))
-Vue.use(contentmenu)
 Vue.use(VCalendar, {
   firstDayOfWeek: 2, // ...other defaults,
   formats: {
