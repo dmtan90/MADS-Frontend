@@ -730,7 +730,7 @@ export default {
         flex-wrap: wrap;
         .screen{
           width: 0;
-          transition: width .5s ease-in-out;
+          // transition: width .5s ease-in-out;
           &.active {
             width: 100%;
           }

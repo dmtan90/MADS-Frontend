@@ -29,7 +29,7 @@
         <div v-if="selectedCategory === 'charts' || selectedCategory === 'stocks'">
           <b-row>
             <b-colxx xxs="4">
-              <img src="/assets/img/u2351.png" alt="" @click="showWidgetStore = false;">
+              <img src="/assets/img/u2351.png" alt="" @click="openWidgetDetailPage({id: 1})">
             </b-colxx>
             <b-colxx xxs="4">
               <img src="/assets/img/u2352.png" alt="">
@@ -73,7 +73,7 @@
 
       </div>
     </div>
-    <div v-else>
+    <div v-if="showWidgetDetail">
       <widget-detail></widget-detail>
     </div>
   </div>
@@ -82,6 +82,7 @@
 <script>
 /* eslint-disable */
 import widgetDetail from './widgetDetail';
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -89,14 +90,20 @@ export default {
   },
   data() {
     return {
-      selectedCategory: 'charts',
-      showWidgetStore: true
+      selectedCategory: 'charts'
     }
   },
   methods: {
+    ...mapActions(['openWidgetDetail', 'toggleWidgetStoreState', 'toggleWidgetDetailState']),
     setCategory(category) {
       this.selectedCategory = category;
+    },
+    openWidgetDetailPage(widget) {
+      this.openWidgetDetail(widget)
     }
+  },
+  computed: {
+    ...mapGetters(['openedWidgetDetail', 'showWidgetStore', 'showWidgetDetail'])
   }
 }
 </script>

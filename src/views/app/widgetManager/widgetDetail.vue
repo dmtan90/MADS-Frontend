@@ -2,7 +2,7 @@
   <div class="widget-detail">
     <b-row class="widget-row">
       <b-colxx xxs="2" class="widget-types">
-        <div class="back-btn">Back</div>
+        <div class="back-btn" @click="goToWidgetStore()">Back</div>
         <div v-for="i in [2,3,4,5,6,7,8,9,10]" :key="i" class="options">
           Option {{i}}
         </div>
@@ -64,6 +64,7 @@
 /* eslint-disable */
 import Highcharts from 'highcharts'
 import Exporting from 'highcharts/modules/exporting'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -72,6 +73,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['toggleWidgetStoreState', 'toggleWidgetDetailState']),
     generateChart() {
       this.chart = Highcharts.chart('widget-container', {
         title: {
@@ -134,6 +136,10 @@ export default {
             }]
         }
       });
+    },
+    goToWidgetStore() {
+      this.toggleWidgetDetailState(false);
+      this.toggleWidgetStoreState(true);
     }
   },
   mounted() {

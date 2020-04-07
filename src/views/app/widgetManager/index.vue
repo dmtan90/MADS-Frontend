@@ -54,6 +54,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['toggleWidgetStoreState', 'toggleWidgetDetailState']),
     getSidebarData() {
       return {
         'widgetManager': {
@@ -80,6 +81,12 @@ export default {
     },
     openSection(section) {
       this.currentSection = section;
+      switch(section) {
+        case 'widgetStore':
+          this.toggleWidgetDetailState(false);
+          this.toggleWidgetStoreState(true);
+          break;
+      }
     }
   },
   mounted() {
