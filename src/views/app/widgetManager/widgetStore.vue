@@ -1,96 +1,109 @@
 <template>
   <div>
-    <div class="widget-header">
-      <div class="header">
-        <div class="content">
-          <div class="txt">
-            Graphic resource for everyone
-          </div>
-          <b-form>
-            <b-form-group>
-              <b-form-input type="text" placeholder="Search your apps, web"/>
-            </b-form-group>
-          </b-form>
-          <div class="btn-group">
-            <button class="btn popular-btn">Popular</button>
-            <button class="btn recent-btn">Recent</button>
+    <div v-if="showWidgetStore">
+      <div class="widget-header">
+        <div class="header">
+          <div class="content">
+            <div class="txt">
+              Graphic resource for everyone
+            </div>
+            <b-form>
+              <b-form-group>
+                <b-form-input type="text" placeholder="Search your apps, web"/>
+              </b-form-group>
+            </b-form>
+            <div class="btn-group">
+              <button class="btn popular-btn">Popular</button>
+              <button class="btn recent-btn">Recent</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="widget-category">
-      <span class="category" :class="{'active': selectedCategory === 'charts'}" @click="setCategory('charts')">Charts</span>
-      <span class="category" :class="{'active': selectedCategory === 'stocks'}" @click="setCategory('stocks')">Stocks</span>
-      <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
-      <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
-    </div>
-    <div class="widgets">
-      <div v-if="selectedCategory === 'charts' || selectedCategory === 'stocks'">
-        <b-row>
-          <b-colxx xxs="4">
-            <router-link to="/app/widget-manager/widget/1">
-              <img src="/assets/img/u2351.png" alt="">
-            </router-link>
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2352.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2353.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2354.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2355.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2356.png" alt="">
-          </b-colxx>
-        </b-row>
+      <div class="widget-category">
+        <span class="category" :class="{'active': selectedCategory === 'charts'}" @click="setCategory('charts')">Charts</span>
+        <span class="category" :class="{'active': selectedCategory === 'stocks'}" @click="setCategory('stocks')">Stocks</span>
+        <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
+        <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
       </div>
-      <div v-if="selectedCategory === 'maps' || selectedCategory === 'gantt'">
-        <b-row>
-          <b-colxx xxs="4">
-            <router-link to="/app/widget-manager/widget/1">
+      <div class="widgets">
+        <div v-if="selectedCategory === 'charts' || selectedCategory === 'stocks'">
+          <b-row>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2351.png" alt="" @click="openWidgetDetailPage({id: 1})">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2352.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2353.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2354.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2355.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2356.png" alt="">
+            </b-colxx>
+          </b-row>
+        </div>
+        <div v-if="selectedCategory === 'maps' || selectedCategory === 'gantt'">
+          <b-row>
+            <b-colxx xxs="4">
               <img src="/assets/img/u2358.png" alt="">
-            </router-link>
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2359.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2360.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2361.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2362.png" alt="">
-          </b-colxx>
-          <b-colxx xxs="4">
-            <img src="/assets/img/u2363.png" alt="">
-          </b-colxx>
-        </b-row>
-      </div>
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2359.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2360.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2361.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2362.png" alt="">
+            </b-colxx>
+            <b-colxx xxs="4">
+              <img src="/assets/img/u2363.png" alt="">
+            </b-colxx>
+          </b-row>
+        </div>
 
+      </div>
+    </div>
+    <div v-if="showWidgetDetail">
+      <widget-detail></widget-detail>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import widgetDetail from './widgetDetail';
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    widgetDetail
+  },
   data() {
     return {
       selectedCategory: 'charts'
     }
   },
   methods: {
+    ...mapActions(['openWidgetDetail', 'toggleWidgetStoreState', 'toggleWidgetDetailState']),
     setCategory(category) {
       this.selectedCategory = category;
+    },
+    openWidgetDetailPage(widget) {
+      this.openWidgetDetail(widget)
     }
+  },
+  computed: {
+    ...mapGetters(['openedWidgetDetail', 'showWidgetStore', 'showWidgetDetail'])
   }
 }
 </script>

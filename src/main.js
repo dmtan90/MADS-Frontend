@@ -20,6 +20,8 @@ import RefreshButton from '@/components/Common/RefreshButton'
 import Colxx from '@/components/Common/Colxx'
 import vuePerfectScrollbar from 'vue-perfect-scrollbar'
 import VueKonva from 'vue-konva'
+import VTooltip from 'v-tooltip'
+import VueEasyCm from 'vue-easycm'
 
 /* SERVICE -begin */
 import ApiService from '@/services/api.service'
@@ -37,6 +39,8 @@ import App from '@/App'
 Vue.use(VueKonva)
 Vue.use(BootstrapVue)
 Vue.use(VueI18n)
+Vue.use(VTooltip)
+Vue.use(VueEasyCm)
 
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API
