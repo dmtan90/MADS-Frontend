@@ -73,23 +73,22 @@
     flex-basis: 100%;
     height: 0;
   }
-  .vue-simple-context-menu {
-    background-color: rgba(255, 255, 255, 1) !important;
-    font-size: 14px;
-    font-family: inherit !important;
-    &__item {
-      width: 180px;
-      height: 40px;
-      &:hover {
+  .cm-ul {
+    background-color: white !important;
+    box-shadow: 0 3px 6px 0 rgba(51,51,51,.2);
+    border-radius: 4px;
+    li {
+      width: 180px !important;
+      height: 40px !important;
+      div {
+        display: flex !important;
+        align-items: center;
+        justify-content: left;
+      }
+      div:hover {
         background-color: rgba(242, 242, 242, 1) !important;
         color: #333 !important;
       }
-    }
-    li:first-of-type {
-      margin-top: 0 !important;
-    }
-    li:last-of-type {
-      margin-bottom: 0 !important;
     }
   }
   #set-wallpaper-modal {

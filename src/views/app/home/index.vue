@@ -1,6 +1,6 @@
 <template>
   <div class="fixed-background" id="fullScreen" :style="{background: getBackgroundUrl()}">
-    <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
+    <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar, 'bottom-taskbar': taskbarPosition === 'bottom', 'left-taskbar': taskbarPosition === 'left', 'right-taskbar': taskbarPosition === 'right'}">
       <div class="taskbar-container">
         <div class="home-icon" @click="toggleSlider()">
           <svg class="icon">
@@ -156,8 +156,9 @@
       >
         <data-cruncher v-if="openedApps['data-cruncher']"></data-cruncher>
       </div>
-      <div class="mads-desktop" @contextmenu.prevent.stop="handleClick($event)">
-    </div>
+      <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
+        <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
+      </div>
       <b-modal id="set-wallpaper-modal" ref="setWallpaperModal" size="lg" hide-footer>
         <b-row>
           <b-colxx xxs="3" class="left-panel">
@@ -186,12 +187,6 @@
         </b-row>
       </b-modal>
     </div>
-    <vue-simple-context-menu
-      :elementId="'contextMenuId'"
-      :options="getContextMenuOptions()"
-      :ref="'vueSimpleContextMenu'"
-      @option-clicked="optionClicked"
-    />
   </div>
 </template>
 
@@ -225,7 +220,8 @@ export default {
       wallpapers: {},
       selectedWallpaperCateogry: {key: 'landscapes', name: 'Landscapes'},
       selectedWallpaper: 'landspaces_4.jpeg',
-      isFullScreen: false
+      isFullScreen: false,
+      taskbarPosition: 'bottom'
     }
   },
   methods: {
@@ -420,29 +416,10 @@ export default {
     getContextMenuOptions() {
       let autohideTaskbarName = this.isAutohideTaskbar ? 'Show Taskbar' : 'Autohide Taskbar';
       return [
-        {name: autohideTaskbarName, slug: 'autohide_taskbar'},
-        {name: 'Taskbar Position', slug: 'taskbar_position'},
-        {name: 'Set Wallpaper', slug: 'set_wallpaper'}
+        {text: autohideTaskbarName},
+        {text: 'Taskbar Position'},
+        {text: 'Set Wallpaper'}
       ]
-    },
-    handleClick(event) {
-      this.$refs.vueSimpleContextMenu.showMenu(event, 'desktop');
-    },
-    optionClicked (event) {
-      let clickedOption = event.option.slug;
-      switch(clickedOption) {
-        case 'autohide_taskbar':
-          this.isAutohideTaskbar = !this.isAutohideTaskbar;
-          break;
-        case 'tablet_mode':
-          this.isTabletMode = !this.isTabletMode;
-          break;
-        case 'set_wallpaper':
-          this.setWallpaper();
-          break;
-        default:
-          break;
-      }
     },
     getAllWallpapers () {
       return {
@@ -483,6 +460,32 @@ export default {
         i.mozRequestFullScreen();
       } else if (i.msRequestFullscreen) {
         i.msRequestFullscreen();
+      }
+    },
+    setTaskbarPosition(event) {
+      switch(event) {
+        case 0:
+          this.taskbarPosition = 'bottom';
+          break;
+        case 1:
+          this.taskbarPosition = 'left';
+          break;
+        case 2:
+          this.taskbarPosition = 'right';
+          break;
+      }
+    },
+    desktopContextMenuEvent(event){
+      switch(event[0]) {
+        case 0:
+          this.isAutohideTaskbar = !this.isAutohideTaskbar;
+          break;
+        case 1:
+          this.setTaskbarPosition(event[1]);
+          break;
+        case 2:
+          this.setWallpaper();
+          break;
       }
     }
   },
