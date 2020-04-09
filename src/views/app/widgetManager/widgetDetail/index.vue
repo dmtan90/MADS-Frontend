@@ -9,8 +9,8 @@
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
         <chart-widget :defaultValues="widget.default_values"></chart-widget>
-        <div class="button-group">
-          <button class="btn download-btn">Download</button>
+        <div class="button-group" v-if="!userWidget && widget.id">
+          <button class="btn download-btn" :class="{'disabled': checkIfWidgetAlreadyDownloaded()}"  @click="downloadwidiget()">Download</button>
         </div>
       </b-colxx>
       <b-colxx xxs="3" class="widget-properties">
@@ -61,17 +61,21 @@
 
 <script>
 /* eslint-disable */
+import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetService from '@/services/widget.service'
+import userWidgetService from '@/services/userWidget.service'
 import chartWidget from './chart-widget'
 
 export default {
+  props: ['userWidget'],
   components: {
     chartWidget
   },
   data() {
     return {
-      widget: {}
+      widget: {},
+      userWidgets: []
     }
   },
   methods: {
@@ -86,13 +90,35 @@ export default {
         .then(response => {
           this.widget = response;
         })
+    },
+    downloadwidiget() {
+      let config = {userId: this.currentUser.uid, widgetId: this.widget.id}
+      userWidgetService
+        .create(config)
+        .then(response => {
+          if(response.success) {
+            this.loadCurrentUserWidgets()
+          }
+        })
+    },
+    loadCurrentUserWidgets () {
+      let config = {userId: this.currentUser.uid}
+      userWidgetService
+        .read(config, { page_number: 1, page_size: 10 })
+        .then(response => {
+          this.userWidgets = _.map(response.user_widgets, (widget) => widget.id)
+        })
+    },
+    checkIfWidgetAlreadyDownloaded() {
+      return _.includes(this.userWidgets, this.widget.id)
     }
   },
   computed: {
-    ...mapGetters(['openedWidgetDetail'])
+    ...mapGetters(['currentUser', 'openedWidgetDetail'])
   },
   mounted() {
     this.loadWidget();
+    this.loadCurrentUserWidgets();
   }
 }
 </script>
@@ -144,6 +170,9 @@ export default {
               background: rgba(76, 146, 195, 1);
               color: white;
               width: 120px;
+              &.disabled {
+                pointer-events: none;
+              }
             }
             &.share-btn {
               background-color: rgba(76, 146, 195, 0.2);
@@ -156,6 +185,8 @@ export default {
       .widget-properties {
         height: 100%;
         padding: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
         .header {
           height: 40px;
           font-size: 15px;

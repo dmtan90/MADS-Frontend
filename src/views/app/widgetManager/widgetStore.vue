@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <widget-detail v-if="showWidgetDetail"></widget-detail>
+    <widget-detail v-if="showWidgetDetail" :userWidget="false"></widget-detail>
   </div>
 </template>
 

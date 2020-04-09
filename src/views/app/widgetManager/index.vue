@@ -83,6 +83,7 @@ export default {
       this.currentSection = section;
       switch(section) {
         case 'widgetStore':
+        case 'my-widgets':
           this.toggleWidgetDetailState(false);
           this.toggleWidgetStoreState(true);
           break;
