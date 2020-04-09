@@ -59,7 +59,6 @@ export default {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    overflow: scroll;
     .header {
       display: flex;
       height: 40px;
@@ -112,6 +111,7 @@ export default {
       position: absolute;
       top: 40px;
       overflow-y: scroll;
+      overflow-x: hidden;
       .item {
         width: 100px;
         height: 100px;
@@ -155,6 +155,7 @@ export default {
       width: calc(100% - 100px);
       margin-left: 100px;
       margin-top: 40px;
+      overflow: scroll;
     }
     &.minimized {
       .header {
