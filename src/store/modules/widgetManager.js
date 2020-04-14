@@ -22,9 +22,9 @@ export default {
   },
   actions: {
     async openWidgetDetail ({ commit, _ }, widget) {
+      commit('setOpenedWidgetDetail', widget.id)
       commit('setShowWidgetStoreState', false)
       commit('setShowWidgetDetailState', true)
-      commit('setOpenedWidgetDetail', widget.id)
     },
     async toggleWidgetStoreState ({ commit, _ }, toggleState) {
       commit('setShowWidgetStoreState', toggleState)

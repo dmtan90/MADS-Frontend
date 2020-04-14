@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="widget-store">
     <div v-if="showWidgetStore">
       <div class="widget-header">
         <div class="header">
@@ -25,64 +25,32 @@
         <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
         <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
       </div>
-      <div class="widgets">
-        <div v-if="selectedCategory === 'charts' || selectedCategory === 'stocks'">
+      <div class="widgets-section">
+        <div class="widgets">
           <b-row>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2351.png" alt="" @click="openWidgetDetailPage({id: 1})">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2352.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2353.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2354.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2355.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2356.png" alt="">
+            <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgets" :key="index">
+              <div class="widget-container">
+                <div class="widget-image">
+                  <img :src="widget.image_url" alt="" @click="openWidgetDetailPage(widget)">
+                </div>
+                <div class="widget-info">
+                  <h3>{{widget.label}}</h3>
+                </div>
+              </div>
             </b-colxx>
           </b-row>
         </div>
-        <div v-if="selectedCategory === 'maps' || selectedCategory === 'gantt'">
-          <b-row>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2358.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2359.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2360.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2361.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2362.png" alt="">
-            </b-colxx>
-            <b-colxx xxs="4">
-              <img src="/assets/img/u2363.png" alt="">
-            </b-colxx>
-          </b-row>
-        </div>
-
       </div>
     </div>
-    <div v-if="showWidgetDetail">
-      <widget-detail></widget-detail>
-    </div>
+    <widget-detail v-if="showWidgetDetail" :userWidget="false"></widget-detail>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import widgetDetail from './widgetDetail';
+import widgetDetail from './widgetDetail/index';
 import { mapGetters, mapActions } from 'vuex'
+import widgetService from '@/services/widget.service'
 
 export default {
   components: {
@@ -90,7 +58,8 @@ export default {
   },
   data() {
     return {
-      selectedCategory: 'charts'
+      selectedCategory: 'charts',
+      widgets: []
     }
   },
   methods: {
@@ -100,10 +69,20 @@ export default {
     },
     openWidgetDetailPage(widget) {
       this.openWidgetDetail(widget)
+    },
+    loadWidgets() {
+      widgetService
+        .read({ page_number: 1, page_size: 10 })
+        .then(response => {
+          this.widgets = response.widgets;
+        })
     }
   },
   computed: {
     ...mapGetters(['openedWidgetDetail', 'showWidgetStore', 'showWidgetDetail'])
+  },
+  mounted() {
+    this.loadWidgets();
   }
 }
 </script>
@@ -190,12 +169,42 @@ export default {
       }
     }
   }
-  .widgets {
-    padding: 40px 60px;
-    img {
-      width: 100%;
-      padding: 0 20px;
-      margin-bottom: 40px;
+  .widgets-section {
+    background: #f2f2f2;
+    .widgets {
+      padding: 40px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      .widget-container {
+        background: #f9f9f9;
+        box-shadow: 0 3px 4px #ddd;
+        .widget-image {
+          height: 250px;
+          max-height: 250px;
+          background-color: #fff;
+          img {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+          }
+        }
+        .widget-info {
+          border-top: 1px solid #EDEDED;
+          padding: 10px;
+          text-align: center;
+          h3 {
+            text-transform: capitalize;
+            margin: 0;
+            color: #6B6FCE;
+          }
+        }
+      }
+      .widget {
+        margin: 20px 0;
+      }
     }
+  }
+  .widget-store {
+    height: 100%;
   }
 </style>

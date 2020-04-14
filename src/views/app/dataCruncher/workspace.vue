@@ -25,12 +25,22 @@
             Widgets
           </div>
         </div>
-        <div id="canvas-options" v-show="leftPanelSection === 'data'"></div>
+        <div id="canvas-options" class="tree-section" v-show="leftPanelSection === 'data'">
+          <div class="section-toggle">
+            <div class="section" :class="{ active: treeSection === 'sensor_parameters' }" @click="toggleTreeSection('sensor_parameters')">
+              Sensor Parameters
+            </div>
+            <div class="section" draggable="true" :class="{ active: treeSection === 'asset_properties' }" @click="toggleTreeSection('asset_properties')">
+              Asset Properties
+            </div>
+          </div>
+          <tree-view :treeData="treeData" v-if="treeData"></tree-view>
+        </div>
         <div v-if="leftPanelSection === 'functions'">Functions</div>
         <div v-if="leftPanelSection === 'widgets'">Widgets</div>
       </b-colxx>
       <b-colxx xxs="9" class="right-panel">
-        <div class="data-canvas">
+        <div class="data-canvas" @dragover.prevent @drop="dragElement($event)">
           <div id="canvas-diagram"></div>
         </div>
         <div class="data-excel">
@@ -70,9 +80,6 @@
       </b-colxx>
     </b-row>
   </div>
-  <!-- <div>
-    <joint-demo></joint-demo>
-  </div> -->
 </template>
 
 <script>
@@ -82,15 +89,20 @@ import $ from "jquery"
 import "jointjs/dist/joint.core.css"
 import * as joint from "jointjs"
 import _ from "lodash"
-import jointDemo from "./jointDemo"
+import { mapGetters, mapActions } from 'vuex'
+import treeView from "./treeView"
+import organizationService from "@/services/organization.service"
 
 export default {
   components: {
-    jointDemo
+    treeView
   },
   data() {
     return {
+      orgData: null,
+      treeData: null,
       leftPanelSection: "data",
+      treeSection: "sensor_parameters",
       selectedRow: null,
       selectedColumn: null,
       stencilGraph: null,
@@ -119,6 +131,15 @@ export default {
     }
   },
   methods: {
+    loadOrganization() {
+      let config = {userId: this.currentUser.uid}
+      organizationService
+        .read(config)
+        .then(response => {
+          this.orgData = response;
+          this.makeTreeData();
+        })
+    },
     jointjsDemo() {
       this.diagramGraph = new joint.dia.Graph()
       this.diagramPaper = new joint.dia.Paper({
@@ -139,256 +160,95 @@ export default {
         },
         linkPinning: false
       })
-
-      // Canvas from which you take shapes
-      this.stencilGraph = new joint.dia.Graph()
-      this.stencilPaper = new joint.dia.Paper({
-        el: $("#canvas-options"),
-        width: 400,
-        height: 800,
-        model: this.stencilGraph,
-        interactive: false
-      })
-
-      this.buildElementAndLinkChild(this.organisation, this.xPos, this.yPos)
-
-      this.stencilPaper.on(
-        "element:pointerdown",
-        this.stencilPaperOnListener.bind(this)
-      )
     },
-    getOrganisationHierarchy() {
-      return {
-        name: "Organisation",
-        background: "#9dd4e8",
-        entities: [
-          {
-            name: "Site 1",
-            background: "#f2b3bd",
-            entities: [
-              {
-                name: "Section 1.1",
-                background: "#f9ad81",
-                entities: [
-                  {
-                    name: "Sensor 1.1A",
-                    background: "#a4d0a9",
-                    entities: []
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "Site 2",
-            background: "#f2b3bd",
-            entities: [
-              {
-                name: "Sensor 2.A",
-                background: "#a4d0a9",
-
-                entities: []
-              },
-              {
-                name: "Sensor 2.B",
-                background: "#a4d0a9",
-                entities: []
-              }
-            ]
-          },
-          {
-            name: "Site 3",
-            background: "#f2b3bd",
-            entities: [
-              {
-                name: "Section 3.1",
-                background: "#f9ad81",
-                entities: [
-                  {
-                    name: "Sensor 3.1.A",
-                    background: "#a4d0a9",
-                    entities: []
-                  }
-                ]
-              },
-              {
-                name: "Sensor 3.A",
-                background: "#a4d0a9",
-                entities: []
-              }
-            ]
-          }
-        ]
-      }
-    },
-    buildElementAndLinkChild(element, xPos, yPos, parent = null) {
-      // joint.shapes.basic.DecoratedRect = joint.shapes.basic.Generic.extend({
-      //   markup:
-      //     '<g class="rotatable"><g class="scalable"><rect/></g><image/><text/></g>',
-
-      //   defaults: joint.util.deepSupplement(
-      //     {
-      //       type: "basic.DecoratedRect",
-      //       size: { width: 100, height: 60 },
-      //       attrs: {
-      //         rect: {
-      //           fill: element.background,
-      //           strokeWidth: 1,
-      //           stroke: "#cccccc",
-      //           width: 100,
-      //           height: 60
-      //         },
-      //         text: {
-      //           "font-size": 14,
-      //           text: "",
-      //           "ref-x": 0.5,
-      //           "ref-y": 0.5,
-      //           ref: "rect",
-      //           "y-alignment": "middle",
-      //           "x-alignment": "middle",
-      //           fill: "black"
-      //         },
-      //         image: {
-      //           "ref-x": 2,
-      //           "ref-y": 2,
-      //           ref: "rect",
-      //           width: 16,
-      //           height: 16
-      //         }
-      //       }
-      //     },
-      //     joint.shapes.basic.Generic.prototype.defaults
-      //   )
-      // })
-
-      let shape = new joint.shapes.standard.Rectangle({
+    dragElement(event) {
+      let elementText = event.dataTransfer.getData("text");
+      let flyShape = new joint.shapes.standard.Rectangle({
         position: {
-          x: xPos,
-          y: yPos
+          x: event.offsetX,
+          y: event.offsetY
         },
         size: {
-          width: this.entityWidth,
-          height: this.entityHeight
+          width: 105,
+          height: 35
         },
         attrs: {
           text: {
-            text: element.name,
+            text: elementText,
             fontSize: "12",
             magnet: true
           },
           body: {
-            fill: element.background,
+            fill: '#b0e0e6',
             strokeWidth: 1,
             stroke: "#cccccc"
           }
         }
-      })
+      });
 
-      shape.addTo(this.stencilGraph)
-
-      this.yPos = this.yPos + this.yOffset
-
-      if (parent) {
-        let link = new joint.shapes.standard.Link({
-          attrs: {
-            line: {
-              strokeWidth: 1,
-              stroke: "#cccccc",
-              targetMarker: null
-            }
-          }
-        })
-        link.source(parent, {
-          anchor: {
-            name: "bottomLeft",
-            args: {
-              dx: 10
-            }
-          }
-        })
-        link.target(shape, {
-          anchor: {
-            name: "left",
-            args: {
-              dy: -10
-            }
-          }
-        })
-        link.router("manhattan")
-        link.connector("normal")
-        link.addTo(this.stencilGraph)
-      }
-
-      let that = this
-
-      _.forEach(element.entities, function(entity) {
-        that.buildElementAndLinkChild(
-          entity,
-          xPos + that.xOffset,
-          that.yPos,
-          shape
-        )
-      })
+      flyShape.addTo(this.diagramGraph);
     },
-    stencilPaperOnListener(cellView, e, x, y) {
-      let that = this
-      $("body").append(
-        '<div id="flyPaper" style="position:fixed; z-index:100; opacity:.7; pointer-event:none;"></div>'
-      )
-      var flyGraph = new joint.dia.Graph(),
-        flyPaper = new joint.dia.Paper({
-          el: $("#flyPaper"),
-          model: flyGraph,
-          width: 90,
-          height: 35,
-          interactive: false
-        }),
-        flyShape = cellView.model.clone(),
-        pos = cellView.model.position(),
-        offset = {
-          x: x - pos.x,
-          y: y - pos.y
+    toggleTreeSection(section) {
+      this.treeSection = section;
+      if(this.treeSection === 'sensor_parameters') {
+        this.treeData = this.sensorParameterData;
+      } else {
+        this.treeData = this.assetPropertyData;
+      }
+    },
+    formatSensorParameterData(entity) {
+      let childrenPresent = (entity.type !== 'Parameter');
+      let that = this;
+      if(childrenPresent) {
+        return {
+          title: entity.name,
+          expanded: true,
+          children: _.map(entity.entities, function(entity) {
+            return that.formatSensorParameterData(entity)
+          })
         }
-
-      flyShape.position(0, 0)
-      flyGraph.addCell(flyShape)
-      $("#flyPaper").offset({
-        left: e.pageX - offset.x,
-        top: e.pageY - offset.y
-      })
-      $("body").on("mousemove.fly", function(e) {
-        $("#flyPaper").offset({
-          left: e.pageX - offset.x,
-          top: e.pageY - offset.y
-        })
-      })
-      $("body").on("mouseup.fly", function(e) {
-        var x = e.pageX,
-          y = e.pageY,
-          target = that.diagramPaper.$el.offset()
-
-        // Dropped over paper ?
-        if (
-          x > target.left &&
-          x < target.left + that.diagramPaper.$el.width() &&
-          y > target.top &&
-          y < target.top + that.diagramPaper.$el.height()
-        ) {
-          var s = flyShape.clone()
-          s.position(x - target.left - offset.x, y - target.top - offset.y)
-          that.diagramGraph.addCell(s)
+      } else {
+        return {
+          title: '<span draggable="true" class="draggable-element" data-name="' + entity.name + '">' + entity.name + '</span>'
         }
-        $("body")
-          .off("mousemove.fly")
-          .off("mouseup.fly")
-        flyShape.remove()
-        $("#flyPaper").remove()
-      })
+      }
+    },
+    formatAssetPropertyData(entity) {
+      let isPropertiesPresent = entity.properties && _.size(entity.properties) > 0;
+      let that = this;
+      if(!isPropertiesPresent) {
+        return {
+          title: entity.name,
+          expanded: true,
+          children: _.map(entity.entities, function(entity) {
+            return that.formatAssetPropertyData(entity)
+          })
+        }
+      } else {
+        return {
+          title: entity.name,
+          expanded: true,
+          children: _.map(entity.properties, function(property) {
+            return {
+              title: '<span draggable="true" class="draggable-element" data-name="' + property + '">' + property + '</span>'
+            }
+          })
+        }
+      }
+    },
+    makeTreeData() {
+      let entity = this.orgData;
+      this.sensorParameterData = [this.formatSensorParameterData(entity)];
+      this.treeData = this.sensorParameterData;
+      this.assetPropertyData = [this.formatAssetPropertyData(entity)];
     }
   },
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
   mounted() {
-    this.organisation = this.getOrganisationHierarchy()
     this.jointjsDemo()
+    this.loadOrganization()
   }
 }
 </script>
@@ -423,6 +283,29 @@ export default {
           }
           &:last-child {
             border-right: none;
+          }
+        }
+      }
+      .tree-section {
+        .section-toggle {
+          display: flex;
+          background: #f1f1f1;
+          height: 40px;
+          margin-bottom: 20px;
+          .section {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #cccccc;
+            border-bottom: 1px solid #cccccc;
+            cursor: pointer;
+            &.active {
+              background: white;
+            }
+            &:last-child {
+              border-right: none;
+            }
           }
         }
       }

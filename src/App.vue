@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <router-view/>
   </div>
 </template>
@@ -174,7 +174,6 @@
       }
     }
   }
-
   .tooltip {
     display: block !important;
     z-index: 10000;
@@ -284,5 +283,19 @@
       opacity: 1;
       transition: opacity .15s;
     }
+  }
+  .halo-tree {
+    li:before {
+      border-left: 1px solid #999;
+    }
+    li:after, li.leaf:after {
+      border-top: 1px solid #999;
+    }
+    // .tree-node-el {
+    //   .node-title {
+    //     padding: 4px 6px;
+    //     border: 1px solid #cccccc;
+    //   }
+    // }
   }
 </style>

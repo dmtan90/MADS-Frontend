@@ -23,6 +23,9 @@ import VueKonva from 'vue-konva'
 import VTooltip from 'v-tooltip'
 import VueEasyCm from 'vue-easycm'
 
+import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
+import VTree from 'vue-tree-halower'
+
 /* SERVICE -begin */
 import ApiService from '@/services/api.service'
 import TokenService from '@/services/token.service'
@@ -40,6 +43,8 @@ Vue.use(BootstrapVue)
 Vue.use(VueI18n)
 Vue.use(VTooltip)
 Vue.use(VueEasyCm)
+
+Vue.use(VTree)
 
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API

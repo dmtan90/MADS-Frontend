@@ -8,10 +8,9 @@
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
-        <div id="widget-container" style="height: 400px; display: flex; justify-content: center;"></div>
-        <div class="button-group">
-          <button class="btn download-btn">Popular</button>
-          <button class="btn share-btn">Recent</button>
+        <chart-widget :defaultValues="widget.default_values"></chart-widget>
+        <div class="button-group" v-if="!userWidget && widget.id">
+          <button class="btn download-btn" :class="{'disabled': checkIfWidgetAlreadyDownloaded()}"  @click="downloadwidiget()">Download</button>
         </div>
       </b-colxx>
       <b-colxx xxs="3" class="widget-properties">
@@ -62,90 +61,64 @@
 
 <script>
 /* eslint-disable */
-import Highcharts from 'highcharts'
-import Exporting from 'highcharts/modules/exporting'
+import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
+import widgetService from '@/services/widget.service'
+import userWidgetService from '@/services/userWidget.service'
+import chartWidget from './chart-widget'
 
 export default {
+  props: ['userWidget'],
+  components: {
+    chartWidget
+  },
   data() {
     return {
-      chart: null
+      widget: {},
+      userWidgets: []
     }
   },
   methods: {
     ...mapActions(['toggleWidgetStoreState', 'toggleWidgetDetailState']),
-    generateChart() {
-      this.chart = Highcharts.chart('widget-container', {
-        title: {
-            text: 'Solar Employment Growth by Sector, 2010-2016'
-        },
-        subtitle: {
-            text: 'Source: thesolarfoundation.com'
-        },
-        yAxis: {
-            title: {
-                text: 'Number of Employees'
-            }
-        },
-        xAxis: {
-            accessibility: {
-                rangeDescription: 'Range: 2010 to 2017'
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle'
-        },
-        plotOptions: {
-            series: {
-                label: {
-                    connectorAllowed: false
-                },
-                pointStart: 2010
-            }
-        },
-        series: [{
-            name: 'Installation',
-            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-        }, {
-            name: 'Manufacturing',
-            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
-        }, {
-            name: 'Sales & Distribution',
-            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
-        }, {
-            name: 'Project Development',
-            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
-        }, {
-            name: 'Other',
-            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
-        }],
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        verticalAlign: 'bottom'
-                    }
-                }
-            }]
-        }
-      });
-    },
     goToWidgetStore() {
       this.toggleWidgetDetailState(false);
       this.toggleWidgetStoreState(true);
+    },
+    loadWidget() {
+      widgetService
+        .readId(this.openedWidgetDetail)
+        .then(response => {
+          this.widget = response;
+        })
+    },
+    downloadwidiget() {
+      let config = {userId: this.currentUser.uid, widgetId: this.widget.id}
+      userWidgetService
+        .create(config)
+        .then(response => {
+          if(response.success) {
+            this.loadCurrentUserWidgets()
+          }
+        })
+    },
+    loadCurrentUserWidgets () {
+      let config = {userId: this.currentUser.uid}
+      userWidgetService
+        .read(config, { page_number: 1, page_size: 10 })
+        .then(response => {
+          this.userWidgets = _.map(response.user_widgets, (widget) => widget.id)
+        })
+    },
+    checkIfWidgetAlreadyDownloaded() {
+      return _.includes(this.userWidgets, this.widget.id)
     }
   },
+  computed: {
+    ...mapGetters(['currentUser', 'openedWidgetDetail'])
+  },
   mounted() {
-    Exporting(Highcharts);
-    this.generateChart();
-    // this.chart.reflow();
+    this.loadWidget();
+    this.loadCurrentUserWidgets();
   }
 }
 </script>
@@ -165,6 +138,7 @@ export default {
           height: 40px;
           border-bottom: 1px solid rgba(215, 215, 215, 1);
           padding: 6px 12px;
+          cursor: pointer;
         }
         .options {
           height: 40px;
@@ -196,6 +170,9 @@ export default {
               background: rgba(76, 146, 195, 1);
               color: white;
               width: 120px;
+              &.disabled {
+                pointer-events: none;
+              }
             }
             &.share-btn {
               background-color: rgba(76, 146, 195, 0.2);
@@ -208,6 +185,8 @@ export default {
       .widget-properties {
         height: 100%;
         padding: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
         .header {
           height: 40px;
           font-size: 15px;

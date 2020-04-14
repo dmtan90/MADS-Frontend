@@ -1,17 +1,40 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import AuthRequired from '@/utils/AuthRequired'
+import AuthRequired from '@/utils/AuthRequired'
 
 Vue.use(Router)
 
 const routes = [
   {
     path: '',
-    component: () => import(/* webpackChunkName: "home" */ '@/views/app/home')
+    component: () => import(/* webpackChunkName: "home" */ '@/views/app/home'),
+    beforeEnter: AuthRequired
   },
   {
     path: '*',
     component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
+  },
+  {
+    path: '/user',
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user'),
+    redirect: '/user/login',
+    children: [
+      {
+        path: 'login',
+        component: () =>
+          import(/* webpackChunkName: "user" */ '@/views/user/Login')
+      },
+      {
+        path: 'register',
+        component: () =>
+          import(/* webpackChunkName: "user" */ '@/views/user/Register')
+      },
+      {
+        path: 'forgot-password',
+        component: () =>
+          import(/* webpackChunkName: "user" */ '@/views/user/ForgotPassword')
+      }
+    ]
   }
   // {
   //   path: '/',
@@ -322,28 +345,6 @@ const routes = [
   // {
   //   path: '/error',
   //   component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
-  // },
-  // {
-  //   path: '/user',
-  //   component: () => import(/* webpackChunkName: "user" */ '@/views/user'),
-  //   redirect: '/user/login',
-  //   children: [
-  //     {
-  //       path: 'login',
-  //       component: () =>
-  //         import(/* webpackChunkName: "user" */ '@/views/user/Login')
-  //     },
-  //     {
-  //       path: 'register',
-  //       component: () =>
-  //         import(/* webpackChunkName: "user" */ '@/views/user/Register')
-  //     },
-  //     {
-  //       path: 'forgot-password',
-  //       component: () =>
-  //         import(/* webpackChunkName: "user" */ '@/views/user/ForgotPassword')
-  //     }
-  //   ]
   // },
   // {
   //   path: '/app/digital-twin-configuration',
