@@ -1,7 +1,7 @@
 <template>
   <div class="app-window" :style="{'z-index': zIndex}" :class="{'minimized': openedApps[appName]['state'] === 'minimize'}">
     <div class="header">
-      <slot name="header"></slot>
+      <slot name="header">Header</slot>
       <div class="right-section">
         <div class="window-icons">
           <svg class="icon hide-icon" @click="hideAppWindow()">
@@ -22,7 +22,7 @@
     </div>
     <div class="break"></div>
     <div class="sidebar">
-      <slot name="sidebar"></slot>
+      <slot name="sidebar">Sidebar</slot>
     </div>
     <div class="content">
       <slot name="content"></slot>
