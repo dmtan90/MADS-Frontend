@@ -38,8 +38,7 @@
   </symbol>
 </svg>
 
-<!-- Usage -->
-<svg class="icon">
+<!-- <svg class="icon">
   <use xlink:href="#data-cruncher"></use>
 </svg>
 <svg class="icon">
@@ -59,4 +58,4 @@
 </svg>
 <svg class="icon">
   <use xlink:href="#workspace"></use>
-</svg>
+</svg> -->

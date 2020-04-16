@@ -1,61 +1,49 @@
 import _ from 'lodash'
+import roleManager from '@/store/modules/roleManager'
+import widgetManager from '@/store/modules/widgetManager'
+import dataCruncher from '@/store/modules/dataCruncher'
 
 export default {
   state: {
-    appWindowCurrentIndex: 1000,
-    openedApps: {}
+    appWindowCurrentZIndex: 1000
   },
-  getters: {
-    openedApps: state => state.openedApps
-  },
+  getters: {},
   mutations: {
-    addToOpenedApps (state, payload) {
-      state.openedApps = _.assign({}, state.openedApps, payload)
+    updateAppState (state, payload) {
+      let appKey = payload.appKey
+      state[appKey] = _.merge({}, payload)
     },
-    updateAppWindowCurrentIndex (state, payload) {
-      state.appWindowCurrentIndex = payload
-    },
-    removeFromOpenedApps (state, payload) {
-      state.openedApps = _.assign({}, payload)
+    updateAppWindowCurrentZIndex (state, payload) {
+      state.appWindowCurrentZIndex = payload
     }
   },
   actions: {
-    async openApp ({ commit, state }, app) {
-      let openedApps = {}
-      openedApps[app] = {
-        'state': 'maximize',
-        'zIndex': state.appWindowCurrentIndex + 10
-      }
-      commit('updateAppWindowCurrentIndex', state.appWindowCurrentIndex + 10)
-      commit('addToOpenedApps', openedApps)
-    },
-    async hideApp ({ commit, state }, app) {
-      let openedApps = {}
-      openedApps[app] = _.merge({}, state.openedApps[app], {
-        'state': 'minimize'
-      })
-      commit('updateAppWindowCurrentIndex', state.appWindowCurrentIndex + 10)
-      commit('addToOpenedApps', openedApps)
-    },
-    async maximizeApp ({ commit, state }, app) {
-      let openedApps = {}
-      openedApps[app] = _.merge({}, state.openedApps[app], {
-        'zIndex': state.appWindowCurrentIndex + 10
-      })
+    async openApp ({ commit, state }, appKey) {
+      let appState = _.merge(state[appKey], { appZindex: state.appWindowCurrentZIndex + 10 })
+      commit('updateAppState', appState)
+      commit('updateAppWindowCurrentZIndex', state.appWindowCurrentZIndex + 10)
 
-      commit('updateAppWindowCurrentIndex', state.appWindowCurrentIndex + 10)
-      commit('addToOpenedApps', openedApps)
-
-      openedApps[app] = _.merge({}, state.openedApps[app], {
-        'state': 'maximize'
-      })
-
-      commit('addToOpenedApps', openedApps)
+      appState = _.merge(state[appKey], { appState: 'maximize' })
+      commit('updateAppState', appState)
     },
-    async closeApp ({ commit, state }, app) {
-      let openedApps = state.openedApps
-      delete openedApps[app]
-      commit('removeFromOpenedApps', openedApps)
+    async hideApp ({ commit, state }, appKey) {
+      let appState = _.merge(state[appKey], { appState: 'minimize' })
+      commit('updateAppState', appState)
+
+      appState = _.merge(state[appKey], { appZindex: 0 })
+      commit('updateAppState', appState)
+    },
+    async closeApp ({ commit, state }, appKey) {
+      let appState = _.merge(state[appKey], { appState: 'closed' })
+      commit('updateAppState', appState)
+
+      appState = _.merge(state[appKey], { appZindex: 0 })
+      commit('updateAppState', appState)
     }
+  },
+  modules: {
+    roleManager,
+    widgetManager,
+    dataCruncher
   }
 }

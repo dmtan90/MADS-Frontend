@@ -33,15 +33,21 @@
               <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
             </svg>
           </div>
-          <div class="taskbar-icons app-icon" :class="{'opened': openedApps['widget-manager']}" @click="openAppWindow('widget-manager')" v-tooltip="'Widget Manager'">
+          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('widgetManager') !== 'closed'}" @click="openAppWindow('widgetManager')" v-tooltip="'Widget Manager'">
             <svg class="icon">
               <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
             </svg>
             <div class="active"></div>
           </div>
-          <div class="taskbar-icons app-icon" :class="{'opened': openedApps['data-cruncher']}" @click="openAppWindow('data-cruncher')" v-tooltip="'Data Cruncher'">
+          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('dataCruncher') !== 'closed'}" @click="openAppWindow('dataCruncher')" v-tooltip="'Data Cruncher'">
             <svg class="icon">
               <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
+            </svg>
+            <div class="active"></div>
+          </div>
+          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-app-icons.svg#mads-role-manager"></use>
             </svg>
             <div class="active"></div>
           </div>
@@ -144,17 +150,14 @@
       </div>
     </div>
     <div>
-      <div class="app-container"
-        :class="{'maximized': openedApps['widget-manager'] && openedApps['widget-manager']['state'] === 'maximize'}"
-        :style="{'z-index': openedApps['widget-manager'] && openedApps['widget-manager'].zIndex}"
-        >
-        <widget-manager v-if="openedApps['widget-manager']"></widget-manager>
+      <div class="app-container" :class="{'maximized': getAppState('widgetManager') === 'maximize'}" :style="{'z-index': getAppZIndex('widgetManager')}">
+        <widget-manager v-if="getAppState('widgetManager') !== 'closed'"></widget-manager>
       </div>
-      <div class="app-container"
-        :class="{'maximized': openedApps['data-cruncher'] && openedApps['data-cruncher']['state'] === 'maximize'}"
-        :style="{'z-index': openedApps['data-cruncher'] && openedApps['data-cruncher'].zIndex}"
-      >
-        <data-cruncher v-if="openedApps['data-cruncher']"></data-cruncher>
+      <div class="app-container" :class="{'maximized': getAppState('dataCruncher') === 'maximize'}" :style="{'z-index': getAppZIndex('dataCruncher')}">
+        <data-cruncher v-if="getAppState('dataCruncher') !== 'closed'"></data-cruncher>
+      </div>
+      <div class="app-container" :class="{'maximized': getAppState('roleManager') === 'maximize'}" :style="{'z-index': getAppZIndex('roleManager')}">
+        <role-manager v-if="getAppState('roleManager') !== 'closed'"></role-manager>
       </div>
       <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
         <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
@@ -196,11 +199,13 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
+import roleManager from './../roleManager'
 
 export default {
   components: {
     widgetManager,
-    dataCruncher
+    dataCruncher,
+    roleManager
   },
   data() {
     return {
@@ -395,11 +400,13 @@ export default {
     },
     openAppWindow(app) {
       this.showSlider = false;
-      if(this.openedApps[app]) {
-        this.maximizeApp(app);
-      } else {
-        this.openApp(app);
-      }
+      this.openApp(app);
+    },
+    getAppState(app) {
+      return this.$store.state.appWindow[app].appState
+    },
+    getAppZIndex(app) {
+      return this.$store.state.appWindow[app].appZindex
     },
     setWallpaper() {
       this.$refs.setWallpaperModal.show();
@@ -783,7 +790,9 @@ export default {
     position: absolute;
     transition: all .5s ease-out;
     bottom: 60px;
+    background-color: none;
     &.maximized {
+      background-color: white;
       height: calc(100% - 60px);
       width: 100%;
       left: 0;

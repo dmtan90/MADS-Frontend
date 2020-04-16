@@ -1,19 +1,19 @@
 <template>
-  <app-window :appName="'dataCruncher'">
+  <app-window :appName="'roleManager'">
     <template v-slot:content>
-      <data-cruncher></data-cruncher>
+      <role-manager></role-manager>
     </template>
   </app-window>
 </template>
 
 <script>
 import appWindow from './../appWindow'
-import dataCruncher from './dataCruncher'
+import roleManager from './roleManager'
 
 export default {
   components: {
     appWindow,
-    dataCruncher
+    roleManager
   }
 }
 </script>

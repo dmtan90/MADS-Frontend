@@ -5,7 +5,6 @@ import app from '@/main'
 import menu from '@/store/modules/menu'
 import user from '@/store/modules/user'
 import appWindow from '@/store/modules/appWindow'
-import widgetManager from '@/store/modules/widgetManager'
 
 Vue.use(Vuex)
 
@@ -26,8 +25,7 @@ const store = new Vuex.Store({
   modules: {
     menu,
     user,
-    appWindow,
-    widgetManager
+    appWindow
   }
 })
 

@@ -31,7 +31,7 @@
   </symbol>
 </svg>
 
-<svg class="icon">
+<!-- <svg class="icon">
   <use xlink:href="#editor"></use>
 </svg>
 <svg class="icon">
@@ -45,4 +45,4 @@
 </svg>
 <svg class="icon">
   <use xlink:href="#widget-store"></use>
-</svg>
+</svg> -->
