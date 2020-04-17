@@ -44,7 +44,6 @@ export default {
     appSections: appSections,
     appSectionsIconFile: 'mads-data-cruncher-icons.svg',
     currentSection: 'dataCruncher',
-    currentPage: 'index',
     appState: 'closed',
     appZindex: 0
   }

@@ -79,14 +79,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleWidgetStoreState', 'toggleWidgetDetailState']),
+    ...mapActions(['selectWidget', 'setCurrentPage']),
     goToWidgetStore() {
-      this.toggleWidgetDetailState(false);
-      this.toggleWidgetStoreState(true);
+      this.setCurrentPage('index')
+      this.selectWidget(null)
     },
     loadWidget() {
       widgetService
-        .readId(this.openedWidgetDetail)
+        .readId(this.selectedWidget)
         .then(response => {
           this.widget = response;
         })
@@ -114,7 +114,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'openedWidgetDetail'])
+    ...mapGetters(['currentUser', 'selectedWidget', 'currentPage'])
   },
   mounted() {
     this.loadWidget();

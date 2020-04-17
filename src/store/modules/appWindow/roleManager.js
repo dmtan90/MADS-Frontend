@@ -44,7 +44,6 @@ export default {
     appSections: appSections,
     appSectionsIconFile: 'mads-role-manager-icons.svg',
     currentSection: 'roleManager',
-    currentPage: 'index',
     appState: 'closed',
     appZindex: 0
   }

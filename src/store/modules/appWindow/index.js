@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import roleManager from '@/store/modules/roleManager'
-import widgetManager from '@/store/modules/widgetManager'
-import dataCruncher from '@/store/modules/dataCruncher'
+import roleManager from './roleManager'
+import widgetManager from './widgetManager'
+import dataCruncher from './dataCruncher'
 
 export default {
   state: {
@@ -38,6 +38,11 @@ export default {
       commit('updateAppState', appState)
 
       appState = _.merge(state[appKey], { appZindex: 0 })
+      commit('updateAppState', appState)
+    },
+    async setCurrentSection ({ commit, state }, data) {
+      let appKey = data.appKey
+      let appState = _.merge(state[appKey], { currentSection: data.section })
       commit('updateAppState', appState)
     }
   },
