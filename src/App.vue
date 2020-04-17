@@ -8,7 +8,6 @@
   body {
     height: 100%;
   }
-
   .vue-switcher div {
     height: 27px !important;
     width: 58px !important;
@@ -297,5 +296,19 @@
     //     border: 1px solid #cccccc;
     //   }
     // }
+  }
+  input, button {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    border-color: #e4e9ef !important;
+  }
+  button {
+    border-radius: 4px !important;
+  }
+  .b-dropdown {
+    width: 100%;
+    .dropdown-toggle, .dropdown-menu {
+      min-width: 100%;
+    }
   }
 </style>

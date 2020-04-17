@@ -22,6 +22,7 @@ import vuePerfectScrollbar from 'vue-perfect-scrollbar'
 import VueKonva from 'vue-konva'
 import VTooltip from 'v-tooltip'
 import VueEasyCm from 'vue-easycm'
+import _ from 'lodash'
 
 import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 import VTree from 'vue-tree-halower'
@@ -45,6 +46,8 @@ Vue.use(VTooltip)
 Vue.use(VueEasyCm)
 
 Vue.use(VTree)
+
+Object.defineProperty(Vue.prototype, '$_', { value: _ })
 
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API

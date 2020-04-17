@@ -39,6 +39,7 @@ export default {
     top: 40px;
     overflow-y: scroll;
     overflow-x: hidden;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
     .section {
       width: 100px;
       height: 100px;

@@ -46,7 +46,7 @@ export default {
     padding-left: 20px;
     padding-right: 10px;
     position: absolute;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.149019607843137);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
     z-index: 999;
     .icon {
       width: 27px;

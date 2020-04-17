@@ -41,6 +41,7 @@ export default {
       margin-left: 100px;
       margin-top: 40px;
       overflow: scroll;
+      background-color: #f8f8f8;
     }
     &.minimized {
       .app-header {
