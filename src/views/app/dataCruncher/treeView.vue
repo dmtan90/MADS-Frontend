@@ -1,6 +1,6 @@
 <template>
   <div class="tree">
-    <v-tree ref='tree' :data='treeData' />
+    <v-tree ref='tree' :data='treeData' :multiple='true' :halfcheck='true' :selectAlone='true' />
   </div>
 </template>
 
@@ -13,7 +13,11 @@ export default {
   data () {
     return {}
   },
-  methods: {},
+  methods: {
+    getNodes(option) {
+      return this.$refs.tree.getNodes({[option]: true})
+    }
+  },
   updated: function () {
     this.$nextTick(function () {
       $('li.leaf .draggable-element').on('dragstart', function(event) {

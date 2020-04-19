@@ -3,7 +3,7 @@
     <h2 class="page-heading">Users</h2>
     <div>
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS (0)</li>
+        <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS ({{users.length}})</li>
         <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES (0)</li>
       </ul>
     </div>
@@ -21,7 +21,7 @@
         <label for="dropdown-left">Role</label>
       </div>
       <div class="invite-member">
-        <b-button variant="primary">Invite member</b-button>
+        <b-button v-b-modal.invite-user-modal>Invite member</b-button>
       </div>
     </div>
     <div class="users-table">
@@ -32,7 +32,7 @@
           :data="users"
         >
         <template v-slot:checkbox>
-          <input type="checkbox" id="checkbox">
+          <b-form-checkbox></b-form-checkbox>
         </template>
         <template v-slot:teams="props">
           <span>
@@ -60,15 +60,20 @@
         </template>
       </vuetable>
     </div>
+
+    <!-- Modal Section -->
+    <invite-user-modal></invite-user-modal>
   </div>
 </template>
 
 <script>
 import Vuetable from 'vuetable-2'
+import inviteUserModal from './inviteUserModal'
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    inviteUserModal
   },
   data () {
     return {
@@ -77,7 +82,7 @@ export default {
       fields: [
         {
           name: '__slot:checkbox',
-          title: '',
+          title: '__slot:checkbox',
           dataClass: ''
         },
         {
