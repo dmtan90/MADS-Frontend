@@ -100,6 +100,36 @@ const UserService = {
     } catch (error) {
       throw new AuthenticationError(error.response.status, error.response.data.detail)
     }
+  },
+
+  getUserProfile: async function (config) {
+    try {
+      const response = await ApiService.get('/users/' + config.userId)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
+  },
+
+  saveUserSettings: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/users/' + config.userId + '/settings', payload)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
+  },
+
+  updateUserSettings: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/users/' + config.userId + '/settings/' + config.userSettingsId, payload)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
   }
 }
 

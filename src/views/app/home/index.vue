@@ -82,29 +82,11 @@
           </div>
           <div class="break"></div>
           <div class="recent-apps">
-            <div class="recent">
+            <div class="recent" v-for="(app, index) in visualSettings.recently_visited_apps" :key="index">
               <svg class="icon">
-                <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
+                <use :xlink:href="'/assets/img/mads-app-icons.svg#' + allAppsMap[app].iconId"></use>
               </svg>
-              <span>Settings</span>
-            </div>
-            <div class="recent">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-              </svg>
-              <span>Support</span>
-            </div>
-            <div class="recent">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-              </svg>
-              <span>Voice Assistant</span>
-            </div>
-            <div class="recent">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-              </svg>
-              <span>Dashboard</span>
+              <span>{{allAppsMap[app].displayName}}</span>
             </div>
           </div>
           <div class="break"></div>
@@ -194,9 +176,9 @@
 </template>
 
 <script>
-/* eslint-disable */
 import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
+import userService from '@/services/user.service'
 import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
 import roleManager from './../roleManager'
@@ -207,33 +189,42 @@ export default {
     dataCruncher,
     roleManager
   },
-  data() {
+  data () {
     return {
       displayedApps: {},
       allApps: {},
+      allAppsMap: {},
       searchApp: '',
       screen: 0,
       showSlider: false,
       isAutohideTaskbar: false,
       wallpaperCategories: [
-        {key: 'landscapes', name: 'Landscapes'}, {key: 'seascapes', name: 'Seascapes'}, {key: 'art', name: 'Art'},
-        {key: 'cityscapes', name: 'Cityscapes'}, {key: 'life', name: 'Life'}, {key: 'textures', name: 'Textures'},
-        {key: 'earth', name: 'Earth'}, {key: 'geometric_shapes', name: 'Geometric Shapes'}, {key: 'solid_colors', name: 'Solid Colors'}],
+        { key: 'landscapes', name: 'Landscapes' }, { key: 'seascapes', name: 'Seascapes' }, { key: 'art', name: 'Art' },
+        { key: 'cityscapes', name: 'Cityscapes' }, { key: 'life', name: 'Life' }, { key: 'textures', name: 'Textures' },
+        { key: 'earth', name: 'Earth' }, { key: 'geometric_shapes', name: 'Geometric Shapes' }, { key: 'solid_colors', name: 'Solid Colors' }],
       wallpapers: {},
-      selectedWallpaperCateogry: {key: 'landscapes', name: 'Landscapes'},
+      selectedWallpaperCateogry: { key: 'landscapes', name: 'Landscapes' },
       selectedWallpaper: 'landspaces_4.jpeg',
       isFullScreen: false,
       taskbarPosition: 'bottom'
     }
   },
   methods: {
-    ...mapActions(['openApp', 'maximizeApp']),
-    toggleSlider: function() {
-      this.screen = 0;
-      this.searchApp = '';
-      this.showSlider = !this.showSlider;
+    ...mapActions(['openApp', 'maximizeApp', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
+    getUserProfile () {
+      let config = { userId: this.currentUser.uid }
+      userService
+        .getUserProfile(config)
+        .then(response => {
+          this.setUserSettings(response.user_setting)
+        })
     },
-    getAllApps: function() {
+    toggleSlider () {
+      this.screen = 0
+      this.searchApp = ''
+      this.showSlider = !this.showSlider
+    },
+    getAllApps () {
       return [
         [
           [
@@ -398,127 +389,161 @@ export default {
         ]
       ]
     },
-    openAppWindow(app) {
-      this.showSlider = false;
-      this.openApp(app);
+    getAllAppsMap () {
+      let allApps = this.$_.flattenDeep(this.allApps)
+      return this.$_.reduce(allApps, (appsObj, app) => {
+        let key = app.key
+        return _.merge(appsObj, {
+          [key]: app
+        })
+      }, {})
     },
-    getAppState(app) {
+    openAppWindow (app) {
+      this.showSlider = false
+      this.openApp(app)
+      this.setRecentVisitedApp(app)
+      this.saveUserSettings()
+    },
+    saveUserSettings () {
+      let config = { userId: this.currentUser.uid }
+      let payload = {
+        visual_settings: this.visualSettings,
+        data_settings: this.dataSettings
+      }
+
+      if (this.userSettingsId) {
+        config = _.merge(config, { userSettingsId: this.userSettingsId })
+        userService
+          .updateUserSettings(config, payload)
+          .then(response => {})
+      } else {
+        userService
+          .saveUserSettings(config, payload)
+          .then(response => {
+            this.setUserSettings({ data_settings: response.data_settings, visual_settings: response.visual_settings, user_setting_id: response.id })
+          })
+      }
+    },
+    getAppState (app) {
       return this.$store.state.appWindow[app].appState
     },
-    getAppZIndex(app) {
+    getAppZIndex (app) {
       return this.$store.state.appWindow[app].appZindex
     },
-    setWallpaper() {
-      this.$refs.setWallpaperModal.show();
+    setWallpaper () {
+      this.$refs.setWallpaperModal.show()
     },
-    changeWallpaper(wallpaper) {
-      this.selectedWallpaper = wallpaper;
+    changeWallpaper (wallpaper) {
+      this.setDesktopWallpaper(wallpaper)
+      this.saveUserSettings()
     },
-    getBackgroundUrl() {
-      return "url('/assets/img/" + this.selectedWallpaper + "')";
+    getBackgroundUrl () {
+      let url = this.visualSettings.desktop_wallpaper
+      return "url('/assets/img/" + url + "')"
     },
-    getContextMenuOptions() {
-      let autohideTaskbarName = this.isAutohideTaskbar ? 'Show Taskbar' : 'Autohide Taskbar';
+    getContextMenuOptions () {
+      let autohideTaskbarName = this.isAutohideTaskbar ? 'Show Taskbar' : 'Autohide Taskbar'
       return [
-        {text: autohideTaskbarName},
-        {text: 'Taskbar Position'},
-        {text: 'Set Wallpaper'}
+        { text: autohideTaskbarName },
+        { text: 'Taskbar Position' },
+        { text: 'Set Wallpaper' }
       ]
     },
     getAllWallpapers () {
       return {
-        landscapes: ["landspaces_1.jpeg", "landspaces_2.jpeg", "landspaces_3.jpeg", "landspaces_4.jpeg", "landspaces_5.jpeg", "landspaces_6.jpeg", "landspaces_7.jpeg"],
-        seascapes: ["seascapes_1.jpeg", "seascapes_2.jpeg", "seascapes_3.jpeg", "seascapes_4.jpeg", "seascapes_5.jpeg", "seascapes_6.jpeg", "seascapes_7.jpeg"],
-        art: ["art_1.jpeg", "art_2.jpeg", "art_3.jpeg", "art_4.jpeg", "art_5.jpeg", "art_6.jpeg", "art_7.jpeg"],
-        cityscapes: ["cityscapes_1.jpeg", "cityscapes_2.jpeg", "cityscapes_3.jpeg", "cityscapes_4.jpeg", "cityscapes_5.jpeg", "cityscapes_6.jpeg", "cityscapes_7.jpeg"],
-        life: ["life_1.jpeg", "life_2.jpeg", "life_3.jpeg", "life_4.jpeg", "life_5.jpeg", "life_6.jpeg", "life_7.jpeg"],
-        textures: ["textures_1.jpeg", "textures_2.jpeg", "textures_3.jpeg", "textures_4.jpeg", "textures_5.jpeg", "textures_6.jpeg", "textures_7.jpeg"],
-        earth: ["earth_1.jpeg", "earth_2.jpeg", "earth_3.jpeg", "earth_4.jpeg", "earth_5.jpeg", "earth_6.jpeg", "earth_7.jpeg"],
-        geometric_shapes: ["geometric_shapes_1.jpeg", "geometric_shapes_2.jpeg", "geometric_shapes_3.jpeg", "geometric_shapes_4.jpeg", "geometric_shapes_5.jpeg", "geometric_shapes_6.jpeg", "geometric_shapes_7.jpeg"],
-        solid_colors: ["solid_colors_1.jpeg", "solid_colors_2.jpeg", "solid_colors_3.jpeg", "solid_colors_4.jpeg", "solid_colors_5.jpeg", "solid_colors_6.jpeg", "solid_colors_7.jpeg"]
+        landscapes: ['landspaces_1.jpeg', 'landspaces_2.jpeg', 'landspaces_3.jpeg', 'landspaces_4.jpeg', 'landspaces_5.jpeg', 'landspaces_6.jpeg', 'landspaces_7.jpeg'],
+        seascapes: ['seascapes_1.jpeg', 'seascapes_2.jpeg', 'seascapes_3.jpeg', 'seascapes_4.jpeg', 'seascapes_5.jpeg', 'seascapes_6.jpeg', 'seascapes_7.jpeg'],
+        art: ['art_1.jpeg', 'art_2.jpeg', 'art_3.jpeg', 'art_4.jpeg', 'art_5.jpeg', 'art_6.jpeg', 'art_7.jpeg'],
+        cityscapes: ['cityscapes_1.jpeg', 'cityscapes_2.jpeg', 'cityscapes_3.jpeg', 'cityscapes_4.jpeg', 'cityscapes_5.jpeg', 'cityscapes_6.jpeg', 'cityscapes_7.jpeg'],
+        life: ['life_1.jpeg', 'life_2.jpeg', 'life_3.jpeg', 'life_4.jpeg', 'life_5.jpeg', 'life_6.jpeg', 'life_7.jpeg'],
+        textures: ['textures_1.jpeg', 'textures_2.jpeg', 'textures_3.jpeg', 'textures_4.jpeg', 'textures_5.jpeg', 'textures_6.jpeg', 'textures_7.jpeg'],
+        earth: ['earth_1.jpeg', 'earth_2.jpeg', 'earth_3.jpeg', 'earth_4.jpeg', 'earth_5.jpeg', 'earth_6.jpeg', 'earth_7.jpeg'],
+        geometric_shapes: ['geometric_shapes_1.jpeg', 'geometric_shapes_2.jpeg', 'geometric_shapes_3.jpeg', 'geometric_shapes_4.jpeg', 'geometric_shapes_5.jpeg', 'geometric_shapes_6.jpeg', 'geometric_shapes_7.jpeg'],
+        solid_colors: ['solid_colors_1.jpeg', 'solid_colors_2.jpeg', 'solid_colors_3.jpeg', 'solid_colors_4.jpeg', 'solid_colors_5.jpeg', 'solid_colors_6.jpeg', 'solid_colors_7.jpeg']
       }
     },
-    exitFullScreen() {
-      this.isFullScreen = false;
+    exitFullScreen () {
+      this.isFullScreen = false
       // exit full-screen
       if (document.exitFullscreen) {
-        document.exitFullscreen();
+        document.exitFullscreen()
       } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
+        document.webkitExitFullscreen()
       } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
+        document.mozCancelFullScreen()
       } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+        document.msExitFullscreen()
       }
     },
-    goFullScreen() {
-      this.isFullScreen = true;
-      let i = document.getElementById("body");
+    goFullScreen () {
+      this.isFullScreen = true
+      let i = document.getElementById('body')
 
       // go full-screen
       if (i.requestFullscreen) {
-        i.requestFullscreen();
+        i.requestFullscreen()
       } else if (i.webkitRequestFullscreen) {
-        i.webkitRequestFullscreen();
+        i.webkitRequestFullscreen()
       } else if (i.mozRequestFullScreen) {
-        i.mozRequestFullScreen();
+        i.mozRequestFullScreen()
       } else if (i.msRequestFullscreen) {
-        i.msRequestFullscreen();
+        i.msRequestFullscreen()
       }
     },
-    setTaskbarPosition(event) {
-      switch(event) {
+    setTaskbarPosition (event) {
+      switch (event) {
         case 0:
-          this.taskbarPosition = 'bottom';
-          break;
+          this.taskbarPosition = 'bottom'
+          break
         case 1:
-          this.taskbarPosition = 'left';
-          break;
+          this.taskbarPosition = 'left'
+          break
         case 2:
-          this.taskbarPosition = 'right';
-          break;
+          this.taskbarPosition = 'right'
+          break
       }
     },
-    desktopContextMenuEvent(event){
-      switch(event[0]) {
+    desktopContextMenuEvent (event) {
+      switch (event[0]) {
         case 0:
-          this.isAutohideTaskbar = !this.isAutohideTaskbar;
-          break;
+          this.isAutohideTaskbar = !this.isAutohideTaskbar
+          break
         case 1:
-          this.setTaskbarPosition(event[1]);
-          break;
+          this.setTaskbarPosition(event[1])
+          break
         case 2:
-          this.setWallpaper();
-          break;
+          this.setWallpaper()
+          break
       }
     }
   },
   watch: {
-    searchApp() {
-      if(!this.searchApp) {
-        this.displayedApps = this.allApps;
-      }
-      else {
-        this.screen = 0;
-        this.displayedApps = 
+    searchApp () {
+      if (!this.searchApp) {
+        this.displayedApps = this.allApps
+      } else {
+        this.screen = 0
+        this.displayedApps =
           _.chain(this.allApps)
-          .flattenDeep()
-          .filter((app) => {
-            return _.includes(_.toLower(app.displayName), _.toLower(this.searchApp));
-          })
-          .value();
+            .flattenDeep()
+            .filter((app) => {
+              return _.includes(_.toLower(app.displayName), _.toLower(this.searchApp))
+            })
+            .value()
 
-        this.displayedApps = [[this.displayedApps]];
+        this.displayedApps = [[this.displayedApps]]
       }
     }
   },
-  mounted() {
-    this.displayedApps = this.getAllApps();
-    this.allApps = this.getAllApps();
-    this.wallpapers = this.getAllWallpapers();
+  mounted () {
+    this.getUserProfile()
+    this.displayedApps = this.getAllApps()
+    this.allApps = this.getAllApps()
+    this.wallpapers = this.getAllWallpapers()
+    this.allAppsMap = this.getAllAppsMap()
   },
   computed: {
-    ...mapGetters(['openedApps'])
+    ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
   }
 }
 </script>
