@@ -19,6 +19,14 @@ const widgetService = {
     } catch (error) {
       return error.response.data
     }
+  },
+  search: async function (searchText) {
+    try {
+      const response = await ApiService.get('/search?label=' + searchText)
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
   }
 }
 

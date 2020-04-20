@@ -44,8 +44,10 @@
     width: 20%;
   }
   .vuetable{
-    thead tr th, tbody tr td {
-      font-size: 15px;
+    border: 1px solid #f3f3f3;
+    thead {
+      border-bottom: 1px solid #f3f3f3;
+      background-color: #f8f8f8;
     }
     .vuetable-body{
       .vuetable-slot {
@@ -307,8 +309,17 @@
   }
   .b-dropdown {
     width: 100%;
+    text-align: left;
     .dropdown-toggle, .dropdown-menu {
       min-width: 100%;
+    }
+    .dropdown-toggle {
+      text-align: left;
+      &::after {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+      }
     }
   }
 </style>

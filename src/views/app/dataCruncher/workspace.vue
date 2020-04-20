@@ -262,6 +262,7 @@ export default {
     margin: 0;
     height: 100%;
     .left-panel {
+      background-color: white;
       border-right: 1px solid gray;
       padding: 0;
       height: 100%;
@@ -323,6 +324,7 @@ export default {
         height: 45%;
         overflow: scroll;
         padding: 2px;
+        background-color: white;
         table {
           width: 100%;
           position: relative;

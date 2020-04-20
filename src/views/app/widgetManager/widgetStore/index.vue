@@ -8,7 +8,7 @@
           </div>
           <b-form>
             <b-form-group>
-              <b-form-input type="text" placeholder="Search your apps, web"/>
+              <b-form-input type="text" v-model="searchText" debounce="500" @change="searchWidget()" placeholder="Search widgets"/>
             </b-form-group>
           </b-form>
           <div class="btn-group">
@@ -27,7 +27,7 @@
     <div class="widgets-section">
       <div class="widgets">
         <b-row>
-          <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgets" :key="index">
+          <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in displayedWidgets" :key="index">
             <div class="widget-container">
               <div class="widget-image">
                 <img :src="widget.image_url" alt="" @click="openWidgetDetailPage(widget)">
@@ -44,36 +44,51 @@
 </template>
 
 <script>
-/* eslint-disable */
 import { mapActions } from 'vuex'
 import widgetService from '@/services/widget.service'
 
 export default {
-  data() {
+  data () {
     return {
       selectedCategory: 'charts',
-      widgets: []
+      widgets: [],
+      searchText: '',
+      widgetSearchResults: [],
+      displayedWidgets: []
     }
   },
   methods: {
     ...mapActions(['selectWidget', 'setCurrentPage']),
-    setCategory(category) {
-      this.selectedCategory = category;
+    setCategory (category) {
+      this.selectedCategory = category
     },
-    openWidgetDetailPage(widget) {
+    openWidgetDetailPage (widget) {
       this.selectWidget(widget.id)
       this.setCurrentPage('widgetDetail')
     },
-    loadWidgets() {
+    loadWidgets () {
       widgetService
         .read({ page_number: 1, page_size: 10 })
         .then(response => {
-          this.widgets = response.widgets;
+          this.widgets = response.widgets
+          this.displayedWidgets = this.widgets
         })
+    },
+    searchWidget () {
+      if (this.searchText) {
+        widgetService
+          .search(this.searchText)
+          .then(response => {
+            this.widgetSearchResults = response.widgets
+            this.displayedWidgets = this.widgetSearchResults
+          })
+      } else {
+        this.displayedWidgets = this.widgets
+      }
     }
   },
-  mounted() {
-    this.loadWidgets();
+  mounted () {
+    this.loadWidgets()
   }
 }
 </script>
@@ -108,7 +123,7 @@ export default {
           padding-left: 20px;
           padding-right: 20px;
           &::placeholder {
-            text-align: center;
+            text-align: left;
             font-size: 15px;
           }
         }
