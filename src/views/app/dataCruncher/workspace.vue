@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     loadOrganization() {
-      let config = {userId: this.currentUser.uid}
+      let config = {userId: this.currentUser.id}
       organizationService
         .read(config)
         .then(response => {

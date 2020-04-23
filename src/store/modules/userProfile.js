@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 export default {
   state: {
-    profile: {},
+    currentUser: null,
     visualSettings: {
       recently_visited_apps: [],
       taskbar_pos: 'bottom',
@@ -12,12 +12,15 @@ export default {
     userSettingsId: false
   },
   getters: {
-    getProfile: state => state.profile,
+    currentUser: state => state.currentUser,
     visualSettings: state => state.visualSettings,
     dataSettings: state => state.dataSettings,
     userSettingsId: state => state.userSettingsId
   },
   mutations: {
+    setUserProfile (state, payload) {
+      state.currentUser = payload
+    },
     setVisualSettings (state, payload) {
       state.visualSettings = _.merge({}, payload)
     },
@@ -29,6 +32,16 @@ export default {
     }
   },
   actions: {
+    async setUserProfile ({ commit, _ }, user) {
+      commit('setUserProfile', { ...user })
+      if (user.user_setting) {
+        let settings = user.user_setting
+        commit('setVisualSettings', settings.visual_settings)
+        commit('setDataSettings', settings.data_settings)
+        commit('setUserSettingsId', settings.user_setting_id)
+      }
+    },
+
     async setUserSettings ({ commit, _ }, settings) {
       if (settings) {
         commit('setVisualSettings', settings.visual_settings)

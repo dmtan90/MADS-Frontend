@@ -210,13 +210,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['openApp', 'maximizeApp', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
-    getUserProfile () {
-      let config = { userId: this.currentUser.uid }
+    ...mapActions(['openApp', 'maximizeApp', 'setUserProfile', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
+    getCurrentUserProfile () {
+      let currentUserId = localStorage.getItem('user_id')
+
       userService
-        .getUserProfile(config)
+        .getUserProfile({ userId: currentUserId })
         .then(response => {
-          this.setUserSettings(response.user_setting)
+          this.setUserProfile(response)
         })
     },
     toggleSlider () {
@@ -405,7 +406,7 @@ export default {
       this.saveUserSettings()
     },
     saveUserSettings () {
-      let config = { userId: this.currentUser.uid }
+      let config = { userId: this.currentUser.id }
       let payload = {
         visual_settings: this.visualSettings,
         data_settings: this.dataSettings
@@ -438,7 +439,7 @@ export default {
       this.saveUserSettings()
     },
     getBackgroundUrl () {
-      let url = this.visualSettings.desktop_wallpaper
+      let url = this.visualSettings.desktop_wallpaper || 'landspaces_1.jpeg'
       return "url('/assets/img/" + url + "')"
     },
     getContextMenuOptions () {
@@ -536,7 +537,7 @@ export default {
     }
   },
   mounted () {
-    this.getUserProfile()
+    this.getCurrentUserProfile()
     this.displayedApps = this.getAllApps()
     this.allApps = this.getAllApps()
     this.wallpapers = this.getAllWallpapers()

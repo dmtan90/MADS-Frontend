@@ -1,9 +1,27 @@
+import UserService from '@/services/user.service'
+import TokenService from '@/services/token.service'
+import store from '@/store'
+
 export default (to, from, next) => {
-  if (localStorage.getItem('user') != null && localStorage.getItem('user').length > 0) {
+  let isUserLoggedIn = store.getters.isUserLoggedIn
+
+  if (localStorage.getItem('access_token') != null) {
+    if (!isUserLoggedIn) {
+      UserService.validateAccessToken()
+        .then(response => {
+          TokenService.saveToken(response.access_token)
+          localStorage.setItem('user_id', response.user_id)
+          next()
+        }, _ => {
+          TokenService.removeToken()
+          TokenService.removeRefreshToken()
+          localStorage.removeItem('user_id')
+          next('/user/login')
+        })
+    }
     // verify with firebase or jwt
     next()
   } else {
-    localStorage.removeItem('user')
     next('/user/login')
   }
 }

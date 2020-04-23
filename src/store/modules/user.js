@@ -4,7 +4,7 @@ import router from '@/router'
 
 export default {
   state: {
-    currentUser: localStorage.getItem('user') != null ? JSON.parse(localStorage.getItem('user')) : null,
+    isUserLoggedIn: false,
     accessToken: TokenService.getToken(),
     loginError: null,
     loginErrorCode: null,
@@ -12,21 +12,23 @@ export default {
     refreshTokenPromise: null
   },
   getters: {
-    currentUser: state => state.currentUser,
+    isUserLoggedIn: state => state.isUserLoggedIn,
     processing: state => state.processing,
     loginError: state => state.loginError
   },
   mutations: {
+    setUserLoggedIn (state, payload) {
+      state.isUserLoggedIn = payload
+    },
     setToken (state, payload) {
       state.accessToken = payload
       state.processing = false
       state.loginError = null
     },
     setUser (state, payload) {
-      state.currentUser = payload
     },
     setLogout (state) {
-      state.currentUser = {}
+      state.isUserLoggedIn = false
       state.processing = false
       state.loginError = null
     },
@@ -36,7 +38,6 @@ export default {
     },
     setError (state, payload) {
       state.loginError = payload
-      state.currentUser = {}
       state.processing = false
     },
     clearError (state) {
@@ -51,19 +52,10 @@ export default {
       commit('setProcessing', true)
 
       try {
-        const token = await UserService.login(payload.email, payload.password)
-        const user = {
-          'uid': 1,
-          'name': 'admin',
-          'email': 'admin@datakrew.com',
-          'img': 'https://via.placeholder.com/150'
-        }
-        commit('setToken', token)
-        commit('setUser', { ...user })
-
-        localStorage.setItem('user', JSON.stringify(user))
-
-        router.push(router.history.current.query.redirect || '/')
+        const userId = await UserService.login(payload.email, payload.password)
+        commit('setUserLoggedIn', true)
+        localStorage.setItem('user_id', userId)
+        router.push('/')
 
         return true
       } catch (error) {
@@ -102,7 +94,7 @@ export default {
         UserService.logout()
         commit('setLogout')
 
-        localStorage.removeItem('user')
+        localStorage.removeItem('user_id')
 
         router.push('/user/login')
       } catch (error) {

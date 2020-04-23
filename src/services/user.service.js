@@ -36,7 +36,7 @@ const UserService = {
 
       ApiService.mount401Interceptor()
 
-      return response.data.access_token
+      return response.data.user_id
     } catch (error) {
       throw new AuthenticationError(error.response.status, error.response.data.detail)
     }
@@ -99,6 +99,25 @@ const UserService = {
       return response.data
     } catch (error) {
       throw new AuthenticationError(error.response.status, error.response.data.detail)
+    }
+  },
+
+  validateAccessToken: async function () {
+    const requestData = {
+      method: 'post',
+      url: '/validate-token',
+      headers: { Authorization: `Bearer ${TokenService.getRefreshToken()}` },
+      data: {
+        access_token: TokenService.getToken()
+      }
+    }
+
+    try {
+      const response = await ApiService.customRequest(requestData)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
     }
   },
 

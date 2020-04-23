@@ -92,7 +92,7 @@ export default {
         })
     },
     downloadwidiget() {
-      let config = {userId: this.currentUser.uid, widgetId: this.widget.id}
+      let config = {userId: this.currentUser.id, widgetId: this.widget.id}
       userWidgetService
         .create(config)
         .then(response => {
@@ -102,7 +102,7 @@ export default {
         })
     },
     loadCurrentUserWidgets () {
-      let config = {userId: this.currentUser.uid}
+      let config = {userId: this.currentUser.id}
       userWidgetService
         .read(config, { page_number: 1, page_size: 10 })
         .then(response => {
