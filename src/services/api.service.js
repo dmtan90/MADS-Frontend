@@ -1,7 +1,6 @@
 import axios from 'axios'
-import store from '@/store'
-
 import TokenService from '@/services/token.service'
+import router from '@/router'
 
 const ApiService = {
 
@@ -59,25 +58,10 @@ const ApiService = {
       },
       async (error) => {
         if (error.request.status === 401) {
-          if (error.config.url.includes('/refresh')) {
-            // Refresh token has failed. Logout the user
-            store.dispatch('logout')
-            throw error
-          } else {
-            // Refresh the access token
-            try {
-              await store.dispatch('refreshAccess')
-              // Retry the original request
-              return this.customRequest({
-                method: error.config.method,
-                url: error.config.url,
-                data: error.config.data
-              })
-            } catch (e) {
-              // Refresh has failed - reject the original request
-              throw error
-            }
-          }
+          TokenService.removeToken()
+          TokenService.removeRefreshToken()
+          localStorage.removeItem('user_id')
+          router.push('/user/login')
         }
 
         // If error was not 401 just reject as is
