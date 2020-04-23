@@ -19,8 +19,6 @@ export default (to, from, next) => {
           next('/user/login')
         })
     }
-    // verify with firebase or jwt
-    next()
   } else {
     next('/user/login')
   }
