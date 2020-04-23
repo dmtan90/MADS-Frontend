@@ -1,176 +1,180 @@
 <template>
-  <div class="fixed-background" id="fullScreen" :style="{background: getBackgroundUrl()}">
-    <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar, 'bottom-taskbar': taskbarPosition === 'bottom', 'left-taskbar': taskbarPosition === 'left', 'right-taskbar': taskbarPosition === 'right'}">
-      <div class="taskbar-container">
-        <div class="home-icon" @click="toggleSlider()">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
-          </svg>
-        </div>
-        <div class="taskbar-center">
-          <div class="taskbar-icons app-icon" v-tooltip="'App Store'">
+  <div>
+    <div v-if="currentUser" class="fixed-background" id="fullScreen" :style="{background: getBackgroundUrl()}">
+      <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar, 'bottom-taskbar': taskbarPosition === 'bottom', 'left-taskbar': taskbarPosition === 'left', 'right-taskbar': taskbarPosition === 'right'}">
+        <div class="taskbar-container">
+          <div class="home-icon" @click="toggleSlider()">
             <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
+              <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
             </svg>
           </div>
-          <div class="taskbar-icons app-icon" v-tooltip="'Settings'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
-            </svg>
+          <div class="taskbar-center">
+            <div class="taskbar-icons app-icon" v-tooltip="'App Store'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
+              </svg>
+            </div>
+            <div class="taskbar-icons app-icon" v-tooltip="'Settings'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
+              </svg>
+            </div>
+            <div class="taskbar-icons app-icon" v-tooltip="'Support'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
+              </svg>
+            </div>
+            <div class="taskbar-icons app-icon" v-tooltip="'Voice Assistant'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
+              </svg>
+            </div>
+            <div class="taskbar-icons app-icon" v-tooltip="'Dashboard'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
+              </svg>
+            </div>
+            <div class="taskbar-icons app-icon" :class="{'opened': getAppState('widgetManager') !== 'closed'}" @click="openAppWindow('widgetManager')" v-tooltip="'Widget Manager'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
+              </svg>
+              <div class="active"></div>
+            </div>
+            <div class="taskbar-icons app-icon" :class="{'opened': getAppState('dataCruncher') !== 'closed'}" @click="openAppWindow('dataCruncher')" v-tooltip="'Data Cruncher'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
+              </svg>
+              <div class="active"></div>
+            </div>
+            <!-- <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-app-icons.svg#mads-role-manager"></use>
+              </svg>
+              <div class="active"></div>
+            </div> -->
           </div>
-          <div class="taskbar-icons app-icon" v-tooltip="'Support'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-            </svg>
+          <div class="taskbar-right">
+            <div class="txt-white">{{getUserNameInitials()}}</div>
+            <div class="fullscreen">
+              <svg class="icon collapse-icon" v-if="isFullScreen" @click="exitFullScreen()">
+                <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
+              </svg>
+              <svg class="icon expand-icon" v-if="!isFullScreen" @click="goFullScreen()">
+                <use xlink:href="/assets/img/mads-app-window-icons.svg#expand"></use>
+              </svg>
+            </div>
+            <div class="txt-white">{{this.clock}}</div>
           </div>
-          <div class="taskbar-icons app-icon" v-tooltip="'Voice Assistant'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-            </svg>
-          </div>
-          <div class="taskbar-icons app-icon" v-tooltip="'Dashboard'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-            </svg>
-          </div>
-          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('widgetManager') !== 'closed'}" @click="openAppWindow('widgetManager')" v-tooltip="'Widget Manager'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
-            </svg>
-            <div class="active"></div>
-          </div>
-          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('dataCruncher') !== 'closed'}" @click="openAppWindow('dataCruncher')" v-tooltip="'Data Cruncher'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
-            </svg>
-            <div class="active"></div>
-          </div>
-          <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
-            <svg class="icon">
-              <use xlink:href="/assets/img/mads-app-icons.svg#mads-role-manager"></use>
-            </svg>
-            <div class="active"></div>
-          </div>
-        </div>
-        <div class="taskbar-right">
-          <div class="txt-white">SG</div>
-          <div class="fullscreen">
-            <svg class="icon collapse-icon" v-if="isFullScreen" @click="exitFullScreen()">
-              <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
-            </svg>
-            <svg class="icon expand-icon" v-if="!isFullScreen" @click="goFullScreen()">
-              <use xlink:href="/assets/img/mads-app-window-icons.svg#expand"></use>
-            </svg>
-          </div>
-          <div class="txt-white">10:30</div>
         </div>
       </div>
-    </div>
-    <div class="slider-div" :class="{'active': showSlider}">
-      <div v-if="showSlider">
-        <div class="hide-slider-content" @click="toggleSlider()"></div>
-        <div class="slider-content">
-          <div class="app-search-bar">
-            <b-form>
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-app-icons.svg#mads-icon"></use>
-              </svg>
-              <b-form-group>
-                <b-form-input type="text" placeholder="Search your apps, web" v-model="searchApp"/>
-              </b-form-group>
-            </b-form>
-          </div>
-          <div class="break"></div>
-          <div class="recent-apps">
-            <div class="recent" v-for="(app, index) in visualSettings.recently_visited_apps" :key="index">
-              <svg class="icon">
-                <use :xlink:href="'/assets/img/mads-app-icons.svg#' + allAppsMap[app].iconId"></use>
-              </svg>
-              <span>{{allAppsMap[app].displayName}}</span>
+      <div class="slider-div" :class="{'active': showSlider}">
+        <div v-if="showSlider">
+          <div class="hide-slider-content" @click="toggleSlider()"></div>
+          <div class="slider-content">
+            <div class="app-search-bar">
+              <b-form>
+                <svg class="icon">
+                  <use xlink:href="/assets/img/mads-app-icons.svg#mads-icon"></use>
+                </svg>
+                <b-form-group>
+                  <b-form-input type="text" placeholder="Search your apps, web" v-model="searchApp"/>
+                </b-form-group>
+              </b-form>
             </div>
-          </div>
-          <div class="break"></div>
-          <div class="all-apps">
-            <div class="screen" :class="{'active': screen === 0}">
-              <div v-if="screen === 0">
-                <div v-for="(appsList, index) in displayedApps[0]" :key="index">
-                  <div v-for="app in appsList" :key="app.key" class="app">
-                    <svg class="icon">
-                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                    </svg>
-                    <span>
-                      {{app.displayName}}
-                    </span>
+            <div class="break"></div>
+            <div class="recent-apps">
+              <div class="recent" v-for="(app, index) in visualSettings.recently_visited_apps" :key="index">
+                <svg class="icon">
+                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + allAppsMap[app].iconId"></use>
+                </svg>
+                <span>{{allAppsMap[app].displayName}}</span>
+              </div>
+            </div>
+            <div class="break"></div>
+            <div class="all-apps">
+              <div class="screen" :class="{'active': screen === 0}">
+                <div v-if="screen === 0">
+                  <div v-for="(appsList, index) in displayedApps[0]" :key="index">
+                    <div v-for="app in appsList" :key="app.key" class="app">
+                      <svg class="icon">
+                        <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                      </svg>
+                      <span>
+                        {{app.displayName}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" :class="{'active': screen === 1}">
+                <div v-if="screen === 1">
+                  <div v-for="(appsList, index) in displayedApps[1]" :key="index">
+                    <div v-for="app in appsList" :key="app.key" class="app">
+                      <svg class="icon">
+                        <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
+                      </svg>
+                      <span>
+                        {{app.displayName}}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="screen" :class="{'active': screen === 1}">
-              <div v-if="screen === 1">
-                <div v-for="(appsList, index) in displayedApps[1]" :key="index">
-                  <div v-for="app in appsList" :key="app.key" class="app">
-                    <svg class="icon">
-                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                    </svg>
-                    <span>
-                      {{app.displayName}}
-                    </span>
-                  </div>
+          </div>
+          <div class="screen-nav" v-if="!this.searchApp">
+            <div @click="screen = 0">
+              <div class="nav" :class="{'active': screen === 0}"></div>
+            </div>
+            <div @click="screen = 1">
+              <div class="nav" :class="{'active': screen === 1}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="app-container" :class="{'maximized': getAppState('widgetManager') === 'maximize'}" :style="{'z-index': getAppZIndex('widgetManager')}">
+          <widget-manager v-if="getAppState('widgetManager') !== 'closed'"></widget-manager>
+        </div>
+        <div class="app-container" :class="{'maximized': getAppState('dataCruncher') === 'maximize'}" :style="{'z-index': getAppZIndex('dataCruncher')}">
+          <data-cruncher v-if="getAppState('dataCruncher') !== 'closed'"></data-cruncher>
+        </div>
+        <div class="app-container" :class="{'maximized': getAppState('roleManager') === 'maximize'}" :style="{'z-index': getAppZIndex('roleManager')}">
+          <role-manager v-if="getAppState('roleManager') !== 'closed'"></role-manager>
+        </div>
+        <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
+          <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
+        </div>
+        <b-modal id="set-wallpaper-modal" ref="setWallpaperModal" size="lg" hide-footer>
+          <b-row>
+            <b-colxx xxs="3" class="left-panel">
+              <ul class="categories">
+                <li v-for="category in wallpaperCategories" :key="category.key" class="item" :class="{'active': category.key === selectedWallpaperCateogry.key}" @click="selectedWallpaperCateogry = category">
+                  {{category.name}}
+                </li>
+              </ul>
+            </b-colxx>
+            <b-colxx xxs="9" class="right-panel">
+              <div class="current-wallpaper">
+                <div class="wallpaper-img"><img :src="'/assets/img/' + selectedWallpaper" alt=""></div>
+                <div class="text-info">
+                  <div class="currently">Currently set</div>
+                  <div class="category">{{selectedWallpaperCateogry.name}}</div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="screen-nav" v-if="!this.searchApp">
-          <div @click="screen = 0">
-            <div class="nav" :class="{'active': screen === 0}"></div>
-          </div>
-          <div @click="screen = 1">
-            <div class="nav" :class="{'active': screen === 1}"></div>
-          </div>
-        </div>
+              <b-row class="wallpaper-options">
+                <b-colxx xxs="4" v-for="(wallpaper, index) in wallpapers[selectedWallpaperCateogry.key]" :key="index"
+                  class="wallpaper-img"
+                >
+                  <img :src="'/assets/img/' + wallpaper" alt="" @click="changeWallpaper(wallpaper)">
+                  </b-colxx>
+              </b-row>
+            </b-colxx>
+          </b-row>
+        </b-modal>
       </div>
     </div>
-    <div>
-      <div class="app-container" :class="{'maximized': getAppState('widgetManager') === 'maximize'}" :style="{'z-index': getAppZIndex('widgetManager')}">
-        <widget-manager v-if="getAppState('widgetManager') !== 'closed'"></widget-manager>
-      </div>
-      <div class="app-container" :class="{'maximized': getAppState('dataCruncher') === 'maximize'}" :style="{'z-index': getAppZIndex('dataCruncher')}">
-        <data-cruncher v-if="getAppState('dataCruncher') !== 'closed'"></data-cruncher>
-      </div>
-      <div class="app-container" :class="{'maximized': getAppState('roleManager') === 'maximize'}" :style="{'z-index': getAppZIndex('roleManager')}">
-        <role-manager v-if="getAppState('roleManager') !== 'closed'"></role-manager>
-      </div>
-      <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
-        <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
-      </div>
-      <b-modal id="set-wallpaper-modal" ref="setWallpaperModal" size="lg" hide-footer>
-        <b-row>
-          <b-colxx xxs="3" class="left-panel">
-            <ul class="categories">
-              <li v-for="category in wallpaperCategories" :key="category.key" class="item" :class="{'active': category.key === selectedWallpaperCateogry.key}" @click="selectedWallpaperCateogry = category">
-                {{category.name}}
-              </li>
-            </ul>
-          </b-colxx>
-          <b-colxx xxs="9" class="right-panel">
-            <div class="current-wallpaper">
-              <div class="wallpaper-img"><img :src="'/assets/img/' + selectedWallpaper" alt=""></div>
-              <div class="text-info">
-                <div class="currently">Currently set</div>
-                <div class="category">{{selectedWallpaperCateogry.name}}</div>
-              </div>
-            </div>
-            <b-row class="wallpaper-options">
-              <b-colxx xxs="4" v-for="(wallpaper, index) in wallpapers[selectedWallpaperCateogry.key]" :key="index"
-                class="wallpaper-img"
-              >
-                <img :src="'/assets/img/' + wallpaper" alt="" @click="changeWallpaper(wallpaper)">
-                </b-colxx>
-            </b-row>
-          </b-colxx>
-        </b-row>
-      </b-modal>
+    <div v-else class="loading">
     </div>
   </div>
 </template>
@@ -191,6 +195,8 @@ export default {
   },
   data () {
     return {
+      timer: null,
+      clock: '',
       displayedApps: {},
       allApps: {},
       allAppsMap: {},
@@ -211,6 +217,11 @@ export default {
   },
   methods: {
     ...mapActions(['openApp', 'maximizeApp', 'setUserProfile', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
+    getUserNameInitials () {
+      let firstNameInitial = (this.currentUser.first_name || '')[0] || ''
+      let lastNameInitial = (this.currentUser.last_name || '')[0] || ''
+      return firstNameInitial + lastNameInitial
+    },
     getCurrentUserProfile () {
       let currentUserId = localStorage.getItem('user_id')
 
@@ -516,6 +527,15 @@ export default {
           this.setWallpaper()
           break
       }
+    },
+    getTime () {
+      let today = new Date()
+      let hours = today.getHours()
+      let minutes = today.getMinutes()
+
+      this.clock = hours + ':' + minutes
+
+      this.timer = setTimeout(this.getTime, 1000)
     }
   },
   watch: {
@@ -542,9 +562,13 @@ export default {
     this.allApps = this.getAllApps()
     this.wallpapers = this.getAllWallpapers()
     this.allAppsMap = this.getAllAppsMap()
+    this.getTime()
   },
   computed: {
     ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
+  },
+  destroyed () {
+    clearTimeout(this.timer)
   }
 }
 </script>
@@ -642,6 +666,7 @@ export default {
       font-weight: 700;
       font-size: 14px;
       padding: 0 5px;
+      text-transform: uppercase;
     }
     .fullscreen {
       display: flex;
@@ -831,5 +856,13 @@ export default {
     background-color: transparent;
     width: 100%;
     z-index: 1000;
+  }
+</style>
+
+<style lang="scss">
+  #set-wallpaper-modal {
+    button.close {
+      background-color: transparent !important;
+    }
   }
 </style>

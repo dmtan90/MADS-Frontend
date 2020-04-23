@@ -22,7 +22,7 @@
               </label>
               <div class="d-flex justify-content-between align-items-center">
                   <router-link tag="a" to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
-                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow" :disabled="processing">{{ $t('buttons.login')}}</b-button>
+                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow btn-login" :disabled="processing">{{ $t('buttons.login')}}</b-button>
               </div>
           </b-form>
         </div>

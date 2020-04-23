@@ -299,7 +299,7 @@
     //   }
     // }
   }
-  input, button {
+  input, button:not(.btn-login) {
     background-color: #ffffff !important;
     color: #333 !important;
     border-color: #e4e9ef !important;
