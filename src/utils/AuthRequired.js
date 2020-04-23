@@ -18,6 +18,8 @@ export default (to, from, next) => {
           localStorage.removeItem('user_id')
           next('/user/login')
         })
+    } else {
+      next()
     }
   } else {
     next('/user/login')
