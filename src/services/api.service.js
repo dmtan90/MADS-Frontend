@@ -57,7 +57,7 @@ const ApiService = {
         return response
       },
       async (error) => {
-        if (error.request.status === 401) {
+        if (error.request.status === 403) {
           TokenService.removeToken()
           TokenService.removeRefreshToken()
           localStorage.removeItem('user_id')
