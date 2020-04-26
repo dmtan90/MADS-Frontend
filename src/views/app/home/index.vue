@@ -46,12 +46,12 @@
               </svg>
               <div class="active"></div>
             </div>
-            <!-- <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
+            <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-app-icons.svg#mads-role-manager"></use>
               </svg>
               <div class="active"></div>
-            </div> -->
+            </div>
           </div>
           <div class="taskbar-right">
             <div class="txt-white">{{getUserNameInitials()}}</div>

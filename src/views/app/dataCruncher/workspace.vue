@@ -90,7 +90,7 @@ import "jointjs/dist/joint.core.css"
 import * as joint from "jointjs"
 import _ from "lodash"
 import { mapGetters, mapActions } from 'vuex'
-import treeView from "./treeView"
+import treeView from "../shared/outlineTreeView"
 import organizationService from "@/services/organization.service"
 
 export default {

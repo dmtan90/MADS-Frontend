@@ -50,30 +50,27 @@
           </span>
         </template>
         <template v-slot:actions="props">
-          <b-dropdown id="dropdown-left" text="Actions">
-            <b-dropdown-item>Edit {{props.rowData.user}} Role</b-dropdown-item>
-            <b-dropdown-item>Edit {{props.rowData.user}} Teams</b-dropdown-item>
-            <b-dropdown-item>Edit {{props.rowData.user}} Assets</b-dropdown-item>
-            <b-dropdown-item>Edit {{props.rowData.user}} Apps</b-dropdown-item>
-            <b-dropdown-item>Enable/Disable {{props.rowData.user}} Activity Tracking</b-dropdown-item>
-          </b-dropdown>
+          <span @click="editUser(props.rowData.user)" class="edit-user">Edit</span>
         </template>
       </vuetable>
     </div>
 
     <!-- Modal Section -->
     <invite-user-modal></invite-user-modal>
+    <edit-user-modal ref="editUser"></edit-user-modal>
   </div>
 </template>
 
 <script>
 import Vuetable from 'vuetable-2'
 import inviteUserModal from './inviteUserModal'
+import editUserModal from './editUserModal'
 
 export default {
   components: {
     Vuetable,
-    inviteUserModal
+    inviteUserModal,
+    editUserModal
   },
   data () {
     return {
@@ -178,6 +175,9 @@ export default {
     },
     renderList (list) {
       return this.$_.join(list, ', ')
+    },
+    editUser (user) {
+      this.$refs.editUser.$refs.editUserModal.show()
     }
   },
   mounted () {
@@ -239,6 +239,18 @@ export default {
     }
     .users-table {
       margin-top: 30px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  .users {
+    .users-table {
+      .edit-user {
+        text-decoration: underline;
+        color: #2aa7ff;
+        cursor: pointer;
+      }
     }
   }
 </style>

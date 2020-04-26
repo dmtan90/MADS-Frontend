@@ -298,6 +298,10 @@
     //     border: 1px solid #cccccc;
     //   }
     // }
+    .check {
+      left: -1px;
+      top: -2px;
+    }
   }
   input, button:not(.btn-login) {
     background-color: #ffffff !important;

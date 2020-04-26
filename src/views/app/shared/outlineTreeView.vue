@@ -1,6 +1,6 @@
 <template>
   <div class="tree">
-    <v-tree ref='tree' :data='treeData' :multiple='true' :halfcheck='true' :selectAlone='true' />
+    <v-tree ref='tree' :data='treeData' :multiple='multiple' :halfcheck='halfcheck' />
   </div>
 </template>
 
@@ -9,7 +9,20 @@
 import $ from "jquery"
 
 export default {
-  props: ['treeData'],
+  props: {
+    treeData: {
+      type: Array,
+      required: true
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    halfcheck: {
+      type: Boolean,
+      default: false
+    }    
+  },
   data () {
     return {}
   },

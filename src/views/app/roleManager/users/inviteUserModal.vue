@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <section v-if="currentStep === 1">
+    <section v-if="currentStep === 1" class="details">
       <b-form>
         <b-form-group label="Email" label-for="email">
           <b-form-input id="email" type="email" required></b-form-input>
@@ -58,53 +58,12 @@
     <section v-if="currentStep === 2" class="assets">
       <h5>Select Assets</h5>
       <div class="assets-container">
-        <tree-view ref="treeView" :treeData="treeData" v-if="treeData"></tree-view>
+        <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
       </div>
     </section>
     <section v-if="currentStep === 3" class="apps">
       <h5>Select Apps</h5>
-      <div class="apps-container">
-        <div v-if="screen === 0" class="screen">
-          <div v-for="(appsList, index) in displayedApps[0]" :key="index" class="apps-div">
-            <div v-for="app in appsList" :key="app.key" class="app">
-              <b-form-checkbox></b-form-checkbox>
-              <div class="app-div">
-                <svg class="icon">
-                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                </svg>
-                <div class="break"></div>
-                <span>
-                  {{app.displayName}}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="screen === 1" class="screen">
-          <div v-for="(appsList, index) in displayedApps[1]" :key="index" class="apps-div">
-            <div v-for="app in appsList" :key="app.key" class="app">
-              <b-form-checkbox></b-form-checkbox>
-              <div class="app-div">
-                <svg class="icon">
-                  <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                </svg>
-                <div class="break"></div>
-                <span>
-                  {{app.displayName}}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="screen-nav">
-        <div @click="screen = 0">
-          <div class="nav" :class="{'active': screen === 0}"></div>
-        </div>
-        <div @click="screen = 1">
-          <div class="nav" :class="{'active': screen === 1}"></div>
-        </div>
-      </div>
+      <apps-list></apps-list>
     </section>
     <div class="footer">
       <b-button  @click="$bvModal.hide('invite-user-modal')">Cancel</b-button>
@@ -117,11 +76,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import organizationService from '@/services/organization.service'
-import treeView from './../../dataCruncher/treeView'
+import treeView from '../../shared/outlineTreeView'
+import appsList from '../../shared/modalAppsList'
 
 export default {
   components: {
-    treeView
+    treeView,
+    appsList
   },
   data () {
     return {
@@ -130,9 +91,7 @@ export default {
       selectedTeam: [],
       options: ['Apple', 'Orange', 'Banana', 'Lime', 'Peach', 'Chocolate', 'Strawberry'],
       value: [],
-      treeData: null,
-      screen: 0,
-      displayedApps: []
+      treeData: null
     }
   },
   methods: {
@@ -153,7 +112,8 @@ export default {
           id: entity.id,
           type: entity.type,
           title: entity.name,
-          expanded: true,
+          expanded: (entity.type !== 'Sensor'),
+          chkDisabled: (entity.type === 'Sensor'),
           children: this.$_.map(entity.entities, function (entity) {
             return that.formatSensorParameterData(entity)
           })
@@ -162,7 +122,8 @@ export default {
         return {
           id: entity.id,
           type: entity.type,
-          title: entity.name
+          title: entity.name,
+          chkDisabled: true
         }
       }
     },
@@ -187,6 +148,7 @@ export default {
           expanded: true,
           children: this.$_.map(entity.properties, function (property) {
             return {
+              chkDisabled: true,
               title: '<span draggable="true" class="draggable-element" data-name="' + property + '">' + property + '</span>'
             }
           })
@@ -202,7 +164,6 @@ export default {
     inviteUser () {
       this.$refs.inviteUserModal.hide()
       this.currentStep = 1
-      console.log('invited')
     },
     onOptionClick ({ option, addTag }) {
       addTag(option)
@@ -214,171 +175,6 @@ export default {
         this.$refs.treeView.getNodes('halfcheck')
       }
       this.currentStep = this.currentStep + 1
-    },
-    getAllApps: function () {
-      return [
-        [
-          [
-            {
-              key: 'appStore',
-              displayName: 'App Store',
-              iconId: 'mads-app-store'
-            },
-            {
-              key: 'settings',
-              displayName: 'Settings',
-              iconId: 'mads-settings'
-            },
-            {
-              key: 'support',
-              displayName: 'Support',
-              iconId: 'mads-support'
-            },
-            {
-              key: 'heyMADS!',
-              displayName: 'HeyMADS!',
-              iconId: 'mads-voice-assistant'
-            }
-          ],
-          [
-            {
-              key: 'dashboards',
-              displayName: 'Dashboards',
-              iconId: 'mads-dashboard'
-            },
-            {
-              key: 'digitalTwin',
-              displayName: 'Digital Twin',
-              iconId: 'mads-digital-twin'
-            },
-            {
-              key: 'taskOrganiser',
-              displayName: 'Task Organiser',
-              iconId: 'mads-task-organiser'
-            },
-            {
-              key: 'reportWizard',
-              displayName: 'Report Wizard',
-              iconId: 'mads-report-wizard'
-            },
-            {
-              key: 'alertsReminder',
-              displayName: 'Alerts Reminder',
-              iconId: 'mads-alerts-reminders'
-            },
-            {
-              key: 'madsbook',
-              displayName: 'Madsbook',
-              iconId: 'mads-book'
-            },
-            {
-              key: 'vrSimulator',
-              displayName: 'VR Simulator',
-              iconId: 'mads-vr-simulator'
-            }
-          ],
-          [
-            {
-              key: 'fileManager',
-              displayName: 'File Manager',
-              iconId: 'mads-file-manager'
-            },
-            {
-              key: 'iotManager',
-              displayName: 'IOT Manager',
-              iconId: 'mads-iot-manager'
-            },
-            {
-              key: 'roleManager',
-              displayName: 'Role Manager',
-              iconId: 'mads-role-manager'
-            },
-            {
-              key: 'entityManager',
-              displayName: 'Entity Manager',
-              iconId: 'mads-entity-manager'
-            },
-            {
-              key: 'toolManager',
-              displayName: 'Tool Manager',
-              iconId: 'mads-tool-manager'
-            },
-            {
-              key: 'widgetManager',
-              displayName: 'Widget Manager',
-              iconId: 'mads-widget-manager'
-            }
-          ]
-        ],
-        [
-          [
-            {
-              key: 'dataCruncher',
-              displayName: 'Data Cruncher',
-              iconId: 'mads-data-cruncher'
-            },
-            {
-              key: 'trendPredictor',
-              displayName: 'Trend Predictor',
-              iconId: 'mads-trend-predictor'
-            },
-            {
-              key: 'usageAnalyser',
-              displayName: 'Usage Analyser',
-              iconId: 'mads-usage-analyser'
-            }
-          ],
-          [
-            {
-              key: 'madsSecure',
-              displayName: 'Role Manager',
-              iconId: 'mads-secure'
-            },
-            {
-              key: 'loginTracker',
-              displayName: 'Login Tracker',
-              iconId: 'mads-login-tracker'
-            },
-            {
-              key: 'networkAnalyser',
-              displayName: 'Network Analyser',
-              iconId: 'mads-network-analyser'
-            },
-            {
-              key: 'secureShare',
-              displayName: 'Secure Share',
-              iconId: 'mads-secure-share'
-            },
-            {
-              key: 'appLocker',
-              displayName: 'App Locker',
-              iconId: 'mads-app-locker'
-            },
-            {
-              key: 'passwordManager',
-              displayName: 'Password Manager',
-              iconId: 'mads-password-manager'
-            }
-          ],
-          [
-            {
-              key: 'calendar',
-              displayName: 'Calendar',
-              iconId: 'mads-calendar'
-            },
-            {
-              key: 'calculator',
-              displayName: 'Calculator',
-              iconId: 'mads-calculator'
-            },
-            {
-              key: 'chatApp',
-              displayName: 'Chat App',
-              iconId: 'mads-chat-app'
-            }
-          ]
-        ]
-      ]
     }
   },
   computed: {
@@ -389,7 +185,6 @@ export default {
   },
   mounted () {
     this.loadOrganization()
-    this.displayedApps = this.getAllApps()
   }
 }
 </script>
@@ -426,73 +221,6 @@ export default {
       overflow: scroll;
       border: 1px solid #efefef;
       padding: 20px 0 0;
-    }
-  }
-  .apps {
-    .apps-container {
-      margin-top: 3%;
-      vertical-align: middle;
-      display: flex;
-      flex-wrap: wrap;
-      border: 1px solid #efefef;
-      padding: 0 0 10px 10px;
-      .screen{
-        width: 100%;
-        .apps-div {
-          display: flex;
-        }
-        .app {
-          width: 13%;
-          height: 90px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          margin-top: 2%;
-          cursor: pointer;
-          border: 1px solid #f3f3f3;
-          background-color: #f8f8f8;
-          margin-right: 4px;
-          border-radius: 4px;
-          .icon {
-            width: 25px;
-            height: 25px;
-          }
-          span {
-            padding-top: 9px;
-            display: block;
-          }
-          .app-div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-          }
-        }
-      }
-    }
-    .screen-nav {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      bottom: 30px;
-      div {
-        cursor: pointer;
-      }
-      .nav {
-        width: 12px;
-        height: 12px;
-        background:black;
-        margin: 10px;
-        border-radius: 50%;
-        opacity: 0.5;
-        cursor: pointer;
-        &.active {
-          opacity: 1;
-        }
-      }
     }
   }
   .footer {
