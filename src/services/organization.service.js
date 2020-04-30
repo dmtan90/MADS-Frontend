@@ -1,10 +1,10 @@
 import ApiService from '@/services/api.service'
-const resource = '/org'
+const resource = '/orgs'
 
 const organizationService = {
   read: async function (config) {
     try {
-      const response = await ApiService.get(resource + '/' + config.userId, {})
+      const response = await ApiService.get(resource + '/' + 1, {})
 
       return response.data
     } catch (error) {

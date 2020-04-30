@@ -92,6 +92,22 @@
       }
     }
   }
+  .modal {
+    .modal-content {
+      .modal-header {
+        border-bottom: none;
+        position: absolute;
+        right: 30px;
+        top: 25px;
+        padding: 0;
+        z-index: 999;
+        .close {
+          font-size: 30px;
+          padding: 0;
+        }
+      }
+    }
+  }
   #set-wallpaper-modal {
     .modal-dialog {
       top: 50%;
@@ -303,7 +319,7 @@
       top: -2px;
     }
   }
-  input, button:not(.btn-login) {
+  input, button:not(.btn-login):not(.btn-register) {
     background-color: #ffffff !important;
     color: #333 !important;
     border-color: #e4e9ef !important;

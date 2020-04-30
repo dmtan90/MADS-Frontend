@@ -1,55 +1,83 @@
 <template>
-  <b-modal id="invite-user-modal" ref="inviteUserModal" size="lg" hide-header hide-footer>
+  <b-modal id="create-team-modal" ref="inviteUserModal" size="lg" hide-footer>
     <div class="modal-heading">
-      <h3>Invite User</h3>
+      <h2>Add Team</h2>
       <div class="steps-header">
-        <div class="current-step">{{currentStep}}/3</div>
+        <div class="current-step">{{currentStep}}/4</div>
         <div class="steps">
           <div class="step" :class="{'completed': currentStep >= 1}"></div>
           <div class="step" :class="{'completed': currentStep >= 2}"></div>
           <div class="step" :class="{'completed': currentStep >= 3}"></div>
+          <div class="step" :class="{'completed': currentStep >= 4}"></div>
         </div>
       </div>
     </div>
-    <section v-if="currentStep === 1" class="details">
-      <b-form>
-        <b-form-group label="Email" label-for="email">
-          <b-form-input v-model="inviteEmail" id="email" type="email" required></b-form-input>
-        </b-form-group>
-        <b-form-group label="Select Role" label-for="role">
-          <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
-          </multiselect>
-        </b-form-group>
-        <b-form-group label="Select Teams">
-          <multiselect v-model="selectedTeams" :options="teams" :multiple="true" :close-on-select="false" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Search teams" label="name" track-by="id">
-            <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} teams selected</span></template>
-            <template slot="option" slot-scope="props">
-              <div class="multiple-select-options">
-                <span>{{props.option.name}}</span>
-                <b-form-checkbox :checked="isTeamSelected(props.option.id)" class="option-checkbox"></b-form-checkbox>
-              </div>
-            </template>
-          </multiselect>
-        </b-form-group>
-        <b-form-group label="Activity Tracking">
-          <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
-        </b-form-group>
-      </b-form>
-    </section>
-    <section v-if="currentStep === 2" class="assets">
-      <h5>Select Assets</h5>
-      <div class="assets-container">
-        <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
-      </div>
-    </section>
-    <section v-if="currentStep === 3" class="apps">
-      <h5>Select Apps</h5>
-      <apps-list></apps-list>
-    </section>
+    <div class="section-container">
+      <section v-if="currentStep === 1" class="details">
+        <b-form>
+          <b-form-group label="Team Name" label-for="team-name">
+            <b-form-input id="team-name" type="text" required></b-form-input>
+          </b-form-group>
+          <b-form-group label="Team Description" label-for="team-description">
+            <b-form-textarea id="team-description" rows="6" max-rows="6"></b-form-textarea>
+          </b-form-group>
+          <b-form-group label="Activity Tracking">
+            <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
+          </b-form-group>
+        </b-form>
+      </section>
+      <section v-if="currentStep === 2" class="users">
+        <b-form>
+          <b-form-group label="Select Users">
+            <b-form-tags v-model="value" no-outer-focus class="mb-2 team-section">
+              <template v-slot="{ tags, disabled, addTag, removeTag }">
+                <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
+                  <li v-for="tag in tags" :key="tag" class="list-inline-item">
+                    <b-form-tag
+                      @remove="removeTag(tag)"
+                      :title="tag"
+                      :disabled="disabled"
+                      variant="info"
+                    >{{ tag }}</b-form-tag>
+                  </li>
+                </ul>
+
+                <b-dropdown size="sm" variant="outline-secondary" block menu-class="w-100">
+                  <template v-slot:button-content>Search User</template>
+                  <b-dropdown-item-button
+                    v-for="option in availableOptions"
+                    :key="option"
+                    @click="onOptionClick({ option, addTag })"
+                  >
+                    {{ option }}
+                  </b-dropdown-item-button>
+                  <b-dropdown-text v-if="availableOptions.length === 0">
+                    There are no teams available to select
+                  </b-dropdown-text>
+                </b-dropdown>
+              </template>
+            </b-form-tags>
+          </b-form-group>
+          <b-form-group label="Team Lead" label-for="team-lead">
+            <b-form-select v-model="selectedTeamLead" :options="['user 1', 'user 2']"></b-form-select>
+          </b-form-group>
+        </b-form>
+      </section>
+      <section v-if="currentStep === 3" class="assets">
+        <h5>Select Assets</h5>
+        <div class="assets-container">
+          <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
+        </div>
+      </section>
+      <section v-if="currentStep === 4" class="apps">
+        <h5>Select Apps</h5>
+        <apps-list></apps-list>
+      </section>
+    </div>
     <div class="footer">
-      <b-button  @click="currentStep = 1; $bvModal.hide('invite-user-modal')">Cancel</b-button>
-      <b-button v-if="currentStep < 3" @click="next()">Next</b-button>
-      <b-button v-if="currentStep === 3" @click="inviteUser()">Save</b-button>
+      <b-button  @click="$bvModal.hide('create-team-modal')">Cancel</b-button>
+      <b-button v-if="currentStep < 4" @click="next()">Next</b-button>
+      <b-button v-if="currentStep === 4" @click="inviteUser()">Save</b-button>
     </div>
   </b-modal>
 </template>
@@ -57,33 +85,22 @@
 <script>
 import { mapGetters } from 'vuex'
 import organizationService from '@/services/organization.service'
-import invitationService from '@/services/invitation.service'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
 
 export default {
-  props: ['roles'],
   components: {
     treeView,
     appsList
   },
   data () {
     return {
-      inviteEmail: '',
-      selectedTeams: [],
-      teams: [
-        { name: 'Datakrew', id: 1 },
-        { name: 'Dailploy', id: 2 },
-        { name: 'Aviabird', id: 3 },
-        { name: 'Stackavenue', id: 4 },
-        { name: 'Aviahire', id: 5 }
-      ],
       currentStep: 1,
-      selectedRole: null,
+      selectedTeamLead: '',
       selectedTeam: [],
-      treeData: null,
-      selectedAssets: [],
-      selectedApps: []
+      options: ['Apple', 'Orange', 'Banana', 'Lime', 'Peach', 'Chocolate', 'Strawberry'],
+      value: [],
+      treeData: null
     }
   },
   methods: {
@@ -105,7 +122,7 @@ export default {
           type: entity.type,
           title: entity.name,
           expanded: (entity.type !== 'Sensor'),
-          chkDisabled: (entity.type === 'Sensor' || entity.type === 'Organisation'),
+          chkDisabled: (entity.type === 'Sensor'),
           children: this.$_.map(entity.entities, function (entity) {
             return that.formatSensorParameterData(entity)
           })
@@ -155,39 +172,25 @@ export default {
     },
     inviteUser () {
       this.$refs.inviteUserModal.hide()
-      let payload = {
-        invitation: {
-          email: this.inviteEmail,
-          assets: this.selectedAssets,
-          apps: this.selectedApps,
-          role_id: this.selectedRole.id
-        }
-      }
-      invitationService.create(payload)
-        .then((response) => {
-          this.selectedAssets = []
-          this.selectedApps = []
-          this.selectedRole = null
-        })
       this.currentStep = 1
     },
+    onOptionClick ({ option, addTag }) {
+      addTag(option)
+      this.search = ''
+    },
     next () {
-      if (this.currentStep === 2) {
-        let checkedNodes = this.$refs.treeView.getNodes('checked')
-        let halfcheckedNodes = this.$refs.treeView.getNodes('halfcheck')
-        this.selectedAssets = this.$_.map(this.$_.concat(checkedNodes, halfcheckedNodes), (node) => {
-          return { id: node.id }
-        })
+      if (this.currentStep === 3) {
+        this.$refs.treeView.getNodes('checked')
+        this.$refs.treeView.getNodes('halfcheck')
       }
       this.currentStep = this.currentStep + 1
-    },
-    isTeamSelected (teamId) {
-      let selectedIds = this.$_.map(this.selectedTeams, (team) => team.id)
-      return this.$_.includes(selectedIds, teamId)
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser']),
+    availableOptions () {
+      return this.options.filter(opt => this.value.indexOf(opt) === -1)
+    }
   },
   mounted () {
     this.loadOrganization()
@@ -198,18 +201,19 @@ export default {
 <style lang="scss" scoped>
   .modal-heading {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    height: 60px;
     .steps-header {
       text-align: center;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 0;
+      top: 20px;
       .steps {
         display: flex;
         .step {
           width: 50px;
-          height: 5px;
+          height: 6px;
           border: 1px solid #1261A0;
           border-radius: 2px;
           &.completed {
@@ -219,14 +223,20 @@ export default {
       }
     }
   }
-  .assets {
+  .section-container {
+    width: 80%;
     margin: 0 auto;
-    margin-bottom: 20px;
-    .assets-container {
-      height: 400px;
-      overflow: scroll;
-      border: 1px solid #efefef;
-      padding: 20px 0 0;
+    .details {
+    }
+    .assets {
+      margin: 0 auto;
+      margin-bottom: 20px;
+      .assets-container {
+        height: 350px;
+        overflow: scroll;
+        border: 1px solid #efefef;
+        padding: 20px 0 0;
+      }
     }
   }
   .footer {
@@ -251,9 +261,12 @@ export default {
       min-width: 105px;
     }
   }
-  #invite-user-modal {
+  #create-team-modal {
     .modal-content {
       min-height: 600px;
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
     }
   }
   .team-section {
@@ -296,12 +309,6 @@ export default {
           }
         }
       }
-    }
-  }
-  .multiple-select-options {
-    display: flex;
-    .option-checkbox {
-      margin: 0 0 0 auto;
     }
   }
 </style>

@@ -13,7 +13,7 @@ import '@/assets/css/vendor/bootstrap.min.css'
 import '@/assets/css/sass/themes/piaf.light.green.scss'
 /* ASSETS -end */
 
-import BootstrapVue from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import Notifications from '@/components/Common/Notification'
 import Breadcrumb from '@/components/Common/Breadcrumb'
 import RefreshButton from '@/components/Common/RefreshButton'
@@ -21,11 +21,14 @@ import Colxx from '@/components/Common/Colxx'
 import vuePerfectScrollbar from 'vue-perfect-scrollbar'
 import VueKonva from 'vue-konva'
 import VTooltip from 'v-tooltip'
+import ToggleButton from 'vue-js-toggle-button'
 import VueEasyCm from 'vue-easycm'
 import _ from 'lodash'
+import Multiselect from 'vue-multiselect'
 
 import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 import VTree from 'vue-tree-halower'
+import 'vue-multiselect/dist/vue-multiselect.min.css'  
 
 /* SERVICE -begin */
 import ApiService from '@/services/api.service'
@@ -41,9 +44,12 @@ import App from '@/App'
 
 Vue.use(VueKonva)
 Vue.use(BootstrapVue)
+Vue.use(BootstrapVueIcons)
 Vue.use(VueI18n)
 Vue.use(VTooltip)
 Vue.use(VueEasyCm)
+Vue.use(ToggleButton)
+Vue.component('multiselect', Multiselect)
 
 Vue.use(VTree)
 

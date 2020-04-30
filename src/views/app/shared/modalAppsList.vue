@@ -33,6 +33,10 @@
           </div>
         </div>
       </div>
+      <div class="select-all">
+        <b-form-checkbox v-model="selectAll"  @change="onSelectAll()"></b-form-checkbox>
+        <span>Select All</span>
+      </div>
     </div>
     <div class="screen-nav">
       <div @click="screen = 0">
@@ -50,6 +54,7 @@ export default {
   data () {
     return {
       screen: 0,
+      selectAll: false,
       displayedApps: [],
       selectedApps: {}
     }
@@ -224,6 +229,8 @@ export default {
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
         [key]: !this.selectedApps[key]
       })
+    },
+    onSelectAll () {
     }
   },
   mounted () {
@@ -240,6 +247,7 @@ export default {
       flex-wrap: wrap;
       border: 1px solid #efefef;
       padding: 0 0 10px 10px;
+      position: relative;
       .screen{
         width: 100%;
         .apps-div {
@@ -256,15 +264,16 @@ export default {
           cursor: pointer;
           border: 1px solid #f3f3f3;
           background-color: #f8f8f8;
-          margin-right: 4px;
+          margin-right: 8px;
           border-radius: 4px;
           .icon {
-            width: 25px;
-            height: 25px;
+            width: 21px;
+            height: 21px;
           }
           span {
             padding-top: 9px;
             display: block;
+            font-size: 12px;
           }
           .app-div {
             display: flex;
@@ -273,6 +282,13 @@ export default {
             flex-wrap: wrap;
           }
         }
+      }
+      .select-all {
+        display: flex;
+        position: absolute;
+        top: -30px;
+        right: 10px;
+        align-items: center;
       }
     }
     .screen-nav {

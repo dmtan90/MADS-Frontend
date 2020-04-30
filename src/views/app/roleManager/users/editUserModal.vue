@@ -1,67 +1,48 @@
 <template>
-  <b-modal id="edit-user-modal" ref="editUserModal" size="lg" hide-header hide-footer>
-    <div class="edit-user-details">
-      <div class="navigation">
+  <b-modal id="edit-user-modal" ref="editUserModal" size="lg" hide-footer>
+    <div class="edit-user-details row">
+      <div class="left-panel col col-3">
         <ul class="sections">
-          <li @click="section = 1" class="item">Edit User Details</li>
-          <li @click="section = 2">Edit User Assets</li>
-          <li @click="section = 3">Edit User Apps</li>
+          <li @click="section = 1" class="item" :class="{'active': section === 1}">Edit User Details</li>
+          <li @click="section = 2" class="item" :class="{'active': section === 2}">Edit User Assets</li>
+          <li @click="section = 3" class="item" :class="{'active': section === 3}">Edit User Apps</li>
         </ul>
       </div>
-      <div class="edit-section">
+      <div class="right-panel col col-9">
         <section v-if="section === 1" class="details">
-          <h5>Edit User Details</h5>
-          <b-form>
+          <h3>Edit User Details</h3>
+          <b-form style="margin-top: 30px">
             <b-form-group label="Email" label-for="email">
-              <b-form-input id="email" type="email" required></b-form-input>
+              <b-form-input v-model="userEmail" id="email" type="email" required></b-form-input>
             </b-form-group>
             <b-form-group label="Select Role" label-for="role">
-              <b-dropdown id="dropdown-left" text="Select Role" v-model="selectedRole">
-                <b-dropdown-item>Admin</b-dropdown-item>
-                <b-dropdown-item>Managers</b-dropdown-item>
-                <b-dropdown-item>Members</b-dropdown-item>
-              </b-dropdown>
+              <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
+              </multiselect>
             </b-form-group>
             <b-form-group label="Select Teams">
-              <b-form-tags v-model="value" no-outer-focus class="mb-2 team-section">
-                <template v-slot="{ tags, disabled, addTag, removeTag }">
-                  <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
-                    <li v-for="tag in tags" :key="tag" class="list-inline-item">
-                      <b-form-tag
-                        @remove="removeTag(tag)"
-                        :title="tag"
-                        :disabled="disabled"
-                        variant="info"
-                      >{{ tag }}</b-form-tag>
-                    </li>
-                  </ul>
-
-                  <b-dropdown size="sm" variant="outline-secondary" block menu-class="w-100">
-                    <template v-slot:button-content>Choose teams</template>
-                    <b-dropdown-item-button
-                      v-for="option in availableOptions"
-                      :key="option"
-                      @click="onOptionClick({ option, addTag })"
-                    >
-                      {{ option }}
-                    </b-dropdown-item-button>
-                    <b-dropdown-text v-if="availableOptions.length === 0">
-                      There are no teams available to select
-                    </b-dropdown-text>
-                  </b-dropdown>
+              <multiselect v-model="selectedTeams" :options="teams" :multiple="true" :close-on-select="false" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Search teams" label="name" track-by="id">
+                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} teams selected</span></template>
+                <template slot="option" slot-scope="props">
+                  <div class="multiple-select-options">
+                    <span>{{props.option.name}}</span>
+                    <b-form-checkbox :checked="isTeamSelected(props.option.id)" class="option-checkbox"></b-form-checkbox>
+                  </div>
                 </template>
-              </b-form-tags>
+              </multiselect>
+            </b-form-group>
+            <b-form-group label="Activity Tracking">
+              <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
             </b-form-group>
           </b-form>
         </section>
         <section v-if="section === 2" class="assets">
-          <h5>Edit User Assets</h5>
+          <h3>Edit User Assets</h3>
           <div class="assets-container">
             <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
           </div>
         </section>
         <section v-if="section === 3" class="apps">
-          <h5>Edit User Apps</h5>
+          <h3>Edit User Apps</h3>
           <apps-list></apps-list>
         </section>
         <div class="footer">
@@ -76,10 +57,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import organizationService from '@/services/organization.service'
+import orgUserService from '@/services/orgUser.service'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
 
 export default {
+  props: ['roles', 'user'],
   components: {
     treeView,
     appsList
@@ -87,10 +70,16 @@ export default {
   data () {
     return {
       section: 1,
-      selectedRole: '',
-      selectedTeam: [],
-      options: ['Apple', 'Orange', 'Banana', 'Lime', 'Peach', 'Chocolate', 'Strawberry'],
-      value: [],
+      selectedRole: null,
+      userEmail: '',
+      selectedTeams: [],
+      teams: [
+        { name: 'Datakrew', id: 1 },
+        { name: 'Dailploy', id: 2 },
+        { name: 'Aviabird', id: 3 },
+        { name: 'Stackavenue', id: 4 },
+        { name: 'Aviahire', id: 5 }
+      ],
       treeData: null
     }
   },
@@ -163,12 +152,32 @@ export default {
     },
     saveUser () {
       this.$refs.editUserModal.hide()
+      if (this.section === 1) {
+        this.updateUserDetails()
+      }
+    },
+    isTeamSelected (teamId) {
+      let selectedIds = this.$_.map(this.selectedTeams, (team) => team.id)
+      return this.$_.includes(selectedIds, teamId)
+    },
+    updateUserDetails () {
+      let config = { userId: this.user.id }
+      let payload = {
+        role_id: this.selectedRole.id
+      }
+      orgUserService.update(config, payload)
+        .then((response) => {
+          this.$emit('reloadUser')
+        })
     }
   },
   computed: {
-    ...mapGetters(['currentUser']),
-    availableOptions () {
-      return this.options.filter(opt => this.value.indexOf(opt) === -1)
+    ...mapGetters(['currentUser'])
+  },
+  watch: {
+    user (user) {
+      this.userEmail = this.user.email || ''
+      this.selectedRole = this.user.originialRole || null
     }
   },
   mounted () {
@@ -179,34 +188,59 @@ export default {
 
 <style lang="scss" scoped>
   .edit-user-details {
-    display: flex;
-    .navigation {
+    margin: 0;
+    height: 600px;
+    .left-panel {
       padding: 20px;
-      width: 30%;
       border-right: 1px solid #f3f3f3;
       .sections {
+        padding-top: 30px;
         padding-left: 0;
         margin-bottom: 0;
-        li {
+        li.item {
           list-style: none;
           font-size: 18px;
           cursor: pointer;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          border-top-right-radius: 20px;
+          border-bottom-right-radius: 20px;
+          margin-bottom: 20px;
+          color: black;
+          &.active {
+            font-weight: 700;
+          }
         }
       }
     }
-    .edit-section {
+    .right-panel {
+      section > h3 {
+        font-weight: 600;
+      }
       padding: 20px;
-      width: 70%;
       height: 100%;
       .assets {
         margin: 0 auto;
         margin-bottom: 20px;
         .assets-container {
+          margin-top: 30px;
           height: 400px;
           overflow: scroll;
           border: 1px solid #efefef;
           padding: 20px 0 0;
         }
+      }
+      .apps {
+        h3 {
+          margin-bottom: 30px;
+        }
+      }
+      .footer {
+        position: absolute;
+        text-align: right;
+        bottom: 1.75rem;
+        right: 1.75rem;
       }
     }
   }

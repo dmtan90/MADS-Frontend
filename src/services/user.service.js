@@ -123,7 +123,7 @@ const UserService = {
 
   getUserProfile: async function (config) {
     try {
-      const response = await ApiService.get('/users/' + config.userId)
+      const response = await ApiService.get('orgs/1/users/' + config.userId)
 
       return response.data
     } catch (error) {
@@ -133,7 +133,7 @@ const UserService = {
 
   saveUserSettings: async function (config, payload) {
     try {
-      const response = await ApiService.post('/users/' + config.userId + '/settings', payload)
+      const response = await ApiService.post('orgs/1/users/' + config.userId + '/settings', payload)
 
       return response.data
     } catch (error) {
@@ -143,7 +143,7 @@ const UserService = {
 
   updateUserSettings: async function (config, payload) {
     try {
-      const response = await ApiService.put('/users/' + config.userId + '/settings/' + config.userSettingsId, payload)
+      const response = await ApiService.put('orgs/1/users/' + config.userId + '/settings/' + config.userSettingsId, payload)
 
       return response.data
     } catch (error) {

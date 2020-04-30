@@ -9,19 +9,15 @@
     </div>
     <div class="table-options">
       <div class="search-box">
-        <b-form-input placeholder="Search members"></b-form-input>
+        <b-form-input v-model="searchText" @change="searchUsers()" placeholder="Search users"></b-form-input>
       </div>
       <div class="role-filter">
-        <b-dropdown id="dropdown-left" text="All roles">
-          <b-dropdown-item>All roles</b-dropdown-item>
-          <b-dropdown-item>Admin</b-dropdown-item>
-          <b-dropdown-item>Managers</b-dropdown-item>
-          <b-dropdown-item>Members</b-dropdown-item>
-        </b-dropdown>
+        <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
+        </multiselect>
         <label for="dropdown-left">Role</label>
       </div>
-      <div class="invite-member">
-        <b-button v-b-modal.invite-user-modal>Invite member</b-button>
+      <div class="invite-user">
+        <b-button v-b-modal.invite-user-modal>Invite user</b-button>
       </div>
     </div>
     <div class="users-table">
@@ -29,7 +25,7 @@
           ref="vuetable"
           :api-mode="false"
           :fields="fields"
-          :data="users"
+          :data="displayedUsers"
         >
         <template v-slot:checkbox>
           <b-form-checkbox></b-form-checkbox>
@@ -50,14 +46,14 @@
           </span>
         </template>
         <template v-slot:actions="props">
-          <span @click="editUser(props.rowData.user)" class="edit-user">Edit</span>
+          <span @click="editUser(props.rowData)" class="edit-user">Edit</span>
         </template>
       </vuetable>
     </div>
 
     <!-- Modal Section -->
-    <invite-user-modal></invite-user-modal>
-    <edit-user-modal ref="editUser"></edit-user-modal>
+    <invite-user-modal :roles="roles"></invite-user-modal>
+    <edit-user-modal :roles="roles" ref="editUser" :user="selectedUser" @reloadUser="loadUsers()"></edit-user-modal>
   </div>
 </template>
 
@@ -65,6 +61,8 @@
 import Vuetable from 'vuetable-2'
 import inviteUserModal from './inviteUserModal'
 import editUserModal from './editUserModal'
+import orgUserService from '@/services/orgUser.service'
+import roleService from '@/services/role.service'
 
 export default {
   components: {
@@ -75,11 +73,16 @@ export default {
   data () {
     return {
       users: [],
+      roles: [],
+      displayedUsers: [],
+      selectedUser: null,
       selectedTab: 'users',
+      selectedRole: null,
+      searchText: '',
       fields: [
         {
           name: '__slot:checkbox',
-          title: '__slot:checkbox',
+          title: '',
           dataClass: ''
         },
         {
@@ -88,7 +91,8 @@ export default {
         },
         {
           name: 'role',
-          sortField: 'role'
+          sortField: 'role',
+          dataClass: 'user-role'
         },
         {
           name: '__slot:teams',
@@ -103,9 +107,6 @@ export default {
           title: 'Apps'
         },
         {
-          name: 'activity'
-        },
-        {
           name: '__slot:actions',
           title: ''
         }
@@ -114,74 +115,62 @@ export default {
   },
   methods: {
     loadUsers () {
-      this.users = [
-        {
-          user: 'Chandra',
-          role: 'Admin',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Arjun',
-          role: 'Manager',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Sumanta',
-          role: 'Admin',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Ayoush',
-          role: 'Member',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Bandana',
-          role: 'Member',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Kiran',
-          role: 'Manager',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        },
-        {
-          user: 'Vikram',
-          role: 'Manager',
-          teams: ['Datakrew', 'Dailyploy'],
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher'],
-          activity: 'No activity'
-        }
-      ]
+      orgUserService.read({ orgId: 1 }, { page_size: 100 })
+        .then((response) => {
+          let users = response.users
+          this.users = this.$_.map((users), (user) => {
+            return {
+              id: user.id,
+              email: user.email,
+              user: user.first_name + ' ' + user.last_name,
+              originialRole: user.role,
+              role: user.role.name,
+              teams: [],
+              assets: [],
+              apps: []
+            }
+          })
+          this.displayedUsers = this.users
+        })
+    },
+    loadRoles () {
+      roleService.read({ page_number: 1, page_size: 10 })
+        .then(response => {
+          this.roles = response.roles
+        })
+    },
+    searchUsers () {
+      if (this.searchText) {
+        orgUserService.search(this.searchText)
+          .then((response) => {
+            this.displayedUsers = this.$_.map((response.users), (user) => {
+              return {
+                id: user.id,
+                email: user.email,
+                user: user.first_name + ' ' + user.last_name,
+                originialRole: user.role,
+                role: user.role.name,
+                teams: [],
+                assets: [],
+                apps: []
+              }
+            })
+          })
+      } else {
+        this.displayedUsers = this.users
+      }
     },
     renderList (list) {
       return this.$_.join(list, ', ')
     },
     editUser (user) {
+      this.selectedUser = user
       this.$refs.editUser.$refs.editUserModal.show()
     }
   },
   mounted () {
     this.loadUsers()
+    this.loadRoles()
   }
 }
 </script>
@@ -233,7 +222,7 @@ export default {
           top: -20px;
         }
       }
-      .invite-member {
+      .invite-user {
         margin: 0 0 0 auto;
       }
     }
@@ -250,6 +239,9 @@ export default {
         text-decoration: underline;
         color: #2aa7ff;
         cursor: pointer;
+      }
+      td.user-role {
+        text-transform: capitalize;
       }
     }
   }
