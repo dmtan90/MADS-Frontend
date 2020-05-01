@@ -57,7 +57,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import organizationService from '@/services/organization.service'
-import orgUserService from '@/services/orgUser.service'
+import userService from '@/services/user.service'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
 
@@ -165,7 +165,7 @@ export default {
       let payload = {
         role_id: this.selectedRole.id
       }
-      orgUserService.update(config, payload)
+      userService.update(config, payload)
         .then((response) => {
           this.$emit('reloadUser')
         })

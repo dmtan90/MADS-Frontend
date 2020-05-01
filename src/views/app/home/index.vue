@@ -92,7 +92,7 @@ export default {
     EventBus.$on('save-user-settings', () => { this.saveUserSettings() })
   },
   computed: {
-    ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
+    ...mapGetters(['isUserLoggedIn', 'currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
   }
 }
 </script>

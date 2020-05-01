@@ -92,9 +92,10 @@ export default {
         })
     },
     downloadwidiget() {
-      let config = {userId: this.currentUser.id, widgetId: this.widget.id}
+      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
+      let params = { widget_id: this.widget.id }
       userWidgetService
-        .create(config)
+        .create(config, params)
         .then(response => {
           if(response.success) {
             this.loadCurrentUserWidgets()
@@ -102,7 +103,7 @@ export default {
         })
     },
     loadCurrentUserWidgets () {
-      let config = {userId: this.currentUser.id}
+      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
       userWidgetService
         .read(config, { page_number: 1, page_size: 10 })
         .then(response => {

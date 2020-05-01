@@ -65,7 +65,7 @@ export default {
       this.setCurrentPage('widgetDetail')
     },
     loadUserWidgets () {
-      let config = {userId: this.currentUser.id}
+      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
       userWidgetService
         .read(config, { page_number: 1, page_size: 10 })
         .then(response => {

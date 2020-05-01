@@ -33,7 +33,7 @@ const routes = [
     ]
   },
   {
-    path: '/set_password/:inviteToken',
+    path: '/set-password/:inviteToken',
     component: () =>
     import(/* webpackChunkName: "resetPassword" */ '@/views/user/SetPassword')
   },

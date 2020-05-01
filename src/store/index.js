@@ -3,11 +3,10 @@ import Vuex from 'vuex'
 
 import app from '@/main'
 import menu from '@/store/modules/menu'
+import auth from '@/store/modules/auth'
 import user from '@/store/modules/user'
-import userProfile from '@/store/modules/userProfile'
 import appWindow from '@/store/modules/appWindow/index'
 import widgetManager from '@/store/modules/widgetManager'
-
 
 Vue.use(Vuex)
 
@@ -27,8 +26,8 @@ const store = new Vuex.Store({
   },
   modules: {
     menu,
+    auth,
     user,
-    userProfile,
     appWindow,
     widgetManager
   }

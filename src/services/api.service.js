@@ -11,8 +11,8 @@ const ApiService = {
     axios.defaults.baseURL = baseURL
   },
 
-  setHeader () {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${TokenService.getToken()}`
+  setHeader (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     axios.defaults.headers.common['Content-Type'] = 'multipart/form-data'
   },
 

@@ -61,7 +61,7 @@
 import Vuetable from 'vuetable-2'
 import inviteUserModal from './inviteUserModal'
 import editUserModal from './editUserModal'
-import orgUserService from '@/services/orgUser.service'
+import userService from '@/services/user.service'
 import roleService from '@/services/role.service'
 
 export default {
@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     loadUsers () {
-      orgUserService.read({ orgId: 1 }, { page_size: 100 })
+      userService.read({ orgId: 1 }, { page_size: 100 })
         .then((response) => {
           let users = response.users
           this.users = this.$_.map((users), (user) => {
@@ -141,7 +141,7 @@ export default {
     },
     searchUsers () {
       if (this.searchText) {
-        orgUserService.search(this.searchText)
+        userService.search(this.searchText)
           .then((response) => {
             this.displayedUsers = this.$_.map((response.users), (user) => {
               return {

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import orgUserService from '@/services/orgUser.service'
+import userService from '@/services/user.service'
 import TokenService from '@/services/token.service'
 
 export default {
@@ -59,7 +59,7 @@ export default {
         password_confirmation: this.passwordConfirmation
       }
 
-      orgUserService.create({ inviteToken: this.inviteToken }, payload)
+      userService.create({ inviteToken: this.inviteToken }, payload)
         .then((response) => {
           TokenService.removeToken()
           TokenService.removeRefreshToken()
