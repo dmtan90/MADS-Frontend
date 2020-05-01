@@ -8,7 +8,7 @@
         {{currentUser.first_name + ' ' + (currentUser.last_name || '')}}
       </div>
       <div class="password-section">
-        <b-form-input type="password" v-on:keyup.enter="loginUser()"></b-form-input>
+        <b-form-input type="password" v-on:keyup.enter="loginUser()" placeholder="Pasword"></b-form-input>
         <span class="forgot-passowrd">Forgot Password</span>
       </div>
     </div>

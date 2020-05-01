@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div @contextmenu="disableMenu($event)">
     <div v-if="currentUser" class="fixed-background" :style="{background: getBackgroundUrl()}">
       <taskbar :isAutohideTaskbar="hideTaskbar" :isScreenLocked="isScreenLocked"></taskbar>
       <div v-if="!isScreenLocked" id="fullScreen">
         <app-slider></app-slider>
         <apps-container></apps-container>
-        <set-wallpaper-modal ref="setWallpaper"></set-wallpaper-modal>
+        <set-wallpaper-modal></set-wallpaper-modal>
       </div>
       <div v-else class="lock-screen-container">
         <lock-screen></lock-screen>
@@ -73,6 +73,9 @@ export default {
             this.setUserSettings({ data_settings: response.data_settings, visual_settings: response.visual_settings, user_setting_id: response.id })
           })
       }
+    },
+    disableMenu (event) {
+      event.preventDefault()
     }
   },
   mounted () {
