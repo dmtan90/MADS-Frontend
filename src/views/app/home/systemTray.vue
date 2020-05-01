@@ -16,7 +16,7 @@
           <use xlink:href="/assets/img/system-tray-icons.svg#dark-mode"></use>
         </svg>
       </div>
-      <div class="icon-container">
+      <div class="icon-container" @click="logout()">
         <svg class="icon">
           <use xlink:href="/assets/img/system-tray-icons.svg#logout"></use>
         </svg>
@@ -55,12 +55,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import EventBus from './event-bus'
 
 export default {
   props: ['userNameInitials', 'isFullScreen'],
   methods: {
+    ...mapActions(['logout']),
     exitFullScreen () {
       EventBus.$emit('exit-full-screen')
     },

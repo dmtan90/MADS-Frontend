@@ -19,6 +19,16 @@ export default {
     async login (_, payload) {
       AuthService.login(payload.email, payload.password)
     },
+    async logout ({ commit }) {
+      await AuthService.logout()
+
+      localStorage.removeItem('user_id')
+      TokenService.removeToken()
+      TokenService.removeRefreshToken()
+      ApiService.removeHeader()
+      commit('setUserLoggedIn', false)
+      router.push('/user/login')
+    },
     async validateToken (_) {
       let refreshToken = TokenService.getRefreshToken()
       let accessToken = TokenService.getToken()

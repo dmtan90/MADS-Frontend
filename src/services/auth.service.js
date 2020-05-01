@@ -84,12 +84,6 @@ const AuthService = {
 
     try {
       const response = await ApiService.customRequest(requestData)
-
-      // Remove the token and remove Authorization header from Api Service as well
-      TokenService.removeToken()
-      TokenService.removeRefreshToken()
-      ApiService.removeHeader()
-
       return response.data
     } catch (error) {
       throw new AuthenticationError(error.response.status, error.response.data.detail)
