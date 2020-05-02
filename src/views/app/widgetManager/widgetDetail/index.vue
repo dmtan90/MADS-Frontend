@@ -186,8 +186,7 @@ export default {
       .widget-properties {
         height: 100%;
         padding: 0;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow: auto;
         .header {
           height: 40px;
           font-size: 15px;

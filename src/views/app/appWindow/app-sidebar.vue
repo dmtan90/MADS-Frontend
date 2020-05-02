@@ -37,11 +37,9 @@ export default {
     border-right: 1px solid rgba(242, 242, 242, 1);
     position: absolute;
     top: 40px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: auto;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
     .section {
-      width: 100px;
       height: 100px;
       border-bottom: 1px solid rgba(242, 242, 242, 1);
       text-align: center;

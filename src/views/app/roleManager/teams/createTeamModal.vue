@@ -233,7 +233,7 @@ export default {
       margin-bottom: 20px;
       .assets-container {
         height: 350px;
-        overflow: scroll;
+        overflow: auto;
         border: 1px solid #efefef;
         padding: 20px 0 0;
       }

@@ -171,7 +171,7 @@
             margin-right: 0;
             padding-right: 15px;
             height: 400px;
-            overflow: scroll;
+            overflow: auto;
             .wallpaper-img {
               width: 30%;
               height: 175px;
