@@ -59,6 +59,7 @@
 
 <script>
 import Vuetable from 'vuetable-2'
+import { mapGetters } from 'vuex'
 import inviteUserModal from './inviteUserModal'
 import editUserModal from './editUserModal'
 import userService from '@/services/user.service'
@@ -115,7 +116,8 @@ export default {
   },
   methods: {
     loadUsers () {
-      userService.read({ orgId: 1 }, { page_size: 100 })
+      let config = { orgId: this.currentUser.org.id }
+      userService.read(config, { page_size: 100 })
         .then((response) => {
           let users = response.users
           this.users = this.$_.map((users), (user) => {
@@ -141,7 +143,9 @@ export default {
     },
     searchUsers () {
       if (this.searchText) {
-        userService.search(this.searchText)
+        let config = { orgId: this.currentUser.org.id }
+
+        userService.search(config, this.searchText)
           .then((response) => {
             this.displayedUsers = this.$_.map((response.users), (user) => {
               return {
@@ -167,6 +171,9 @@ export default {
       this.selectedUser = user
       this.$refs.editUser.$refs.editUserModal.show()
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   },
   mounted () {
     this.loadUsers()

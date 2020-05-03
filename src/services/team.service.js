@@ -2,23 +2,33 @@ import ApiService from '@/services/api.service'
 
 const resource = '/teams'
 
-const sensorService = {
+const teamService = {
   create: async function (config, payload) {
     try {
-      const response = await ApiService.post(resource + '?device_id=' + config.device_id + '&sensor_type_id=' + config.sensor_type_id, payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  read: async function (params) {
+  read: async function (config, params) {
     try {
-      const response = await ApiService.get('/orgs/1' + resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + resource, { params })
 
       return response.data
     } catch (error) {
       return error.response.data
+    }
+  },
+  search: async function (config, payload) {
+    debugger
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/search?label=' + payload)
+
+      return response.data
+    } catch (error) {
+      return error.resource.data
     }
   }
   // update: async function (id, payload) {
@@ -50,4 +60,4 @@ const sensorService = {
   // }
 }
 
-export default sensorService
+export default teamService

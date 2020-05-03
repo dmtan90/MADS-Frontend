@@ -8,7 +8,7 @@
     </div>
     <div class="table-options">
       <div class="search-box">
-        <b-form-input placeholder="Search teams"></b-form-input>
+        <b-form-input placeholder="Search teams" v-model="searchText"></b-form-input>
       </div>
       <div class="create-team">
         <b-button v-b-modal.create-team-modal>Create Team</b-button>
@@ -26,18 +26,19 @@
         </template>
         <template v-slot:users="props">
           <span>
-            {{renderList(props.rowData.users)}}
+            {{renderUsers(props.rowData.members)}}
           </span>
+        </template>
+        <template v-slot:team-lead="props">
+          <span>{{renderTeamLead(props.rowData)}}</span>
         </template>
         <template v-slot:assets="props">
           <span>
-            {{renderList(props.rowData.assets)}}
+            {{renderAssets(props.rowData.assets)}}
           </span>
         </template>
-        <template v-slot:apps="props">
-          <span>
-            {{renderList(props.rowData.apps)}}
-          </span>
+        <template v-slot:apps>
+          <span>-</span>
         </template>
         <template v-slot:actions="props">
           <span @click="editUser(props.rowData.name)" class="edit-team">Edit</span>
@@ -46,12 +47,15 @@
     </div>
 
     <!-- Modal Section -->
-    <create-team-modal></create-team-modal>
+    <create-team-modal :orgUsers="orgUsers"></create-team-modal>
   </div>
 </template>
 
 <script>
 import Vuetable from 'vuetable-2'
+import { mapGetters } from 'vuex'
+import teamService from '@/services/team.service.js'
+import userService from '@/services/user.service'
 import createTeamModal from './createTeamModal'
 
 export default {
@@ -61,7 +65,9 @@ export default {
   },
   data () {
     return {
+      searchText: '',
       teams: [],
+      orgUsers: [],
       fields: [
         {
           name: '__slot:checkbox',
@@ -77,7 +83,7 @@ export default {
           title: 'Users'
         },
         {
-          name: 'team_lead',
+          name: '__slot:team-lead',
           sortField: 'team_lead',
           title: 'Team Lead'
         },
@@ -97,40 +103,57 @@ export default {
     }
   },
   methods: {
-    loadTeams () {
-      this.teams = [
-        {
-          name: 'Datakrew',
-          users: ['Chandra', 'Ayoush'],
-          team_lead: 'Arjun',
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher']
-        },
-        {
-          name: 'Dailyploy',
-          users: ['Ayoush', 'Chandra'],
-          team_lead: 'Vikram',
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher']
-        },
-        {
-          name: 'StackAvenue',
-          users: ['Vikram', 'Alam'],
-          team_lead: 'Kiran',
-          assets: ['Bintan Factory', 'Singapore office'],
-          apps: ['Widget Manager', 'Data Cruncher']
-        }
-      ]
+    // Api Load Data methods
+    loadOrgUsers () {
+      let config = { orgId: this.currentUser.org.id }
+
+      userService.read(config, { page_size: 100 })
+        .then((response) => {
+          this.orgUsers = response.users
+        })
     },
-    renderList (list) {
-      return this.$_.join(list, ', ')
+    loadTeams () {
+      let config = { orgId: this.currentUser.org.id }
+
+      teamService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.teams = response.teams
+        })
+    },
+    searchTeams () {
+      let config = { orgId: this.currentUser.org.id }
+      debugger
+      teamService.search(config, this.searchText)
+        .then((response) => {
+          debugger
+        })
+    },
+    // component methods
+    getTeamLead (team) {
+      return this.$_.find(team.members, (member) => { return(member.id === team.team_lead_id) })
     },
     editTeam (user) {
       // this.$refs.editUser.$refs.editUserModal.show()
+    },
+
+    // View helper methods
+    renderUsers (users) {
+      return this.$_.join(this.$_.map(users, (user) => { return (user.first_name +  ' ' + user.last_name || '') }), ', ')
+    },
+    renderAssets (assets) {
+      return this.$_.join(this.$_.map(assets, (asset) => { return asset.name }), ', ')
+    },
+    renderTeamLead (team) {
+      let teamLead = this.getTeamLead(team)
+      return (teamLead.first_name + ' ' + teamLead.last_name)
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   },
   mounted () {
     this.loadTeams()
+    this.loadOrgUsers()
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="create-team-modal" ref="inviteUserModal" size="lg" hide-footer>
+  <b-modal id="create-team-modal" ref="createTeamModal" size="lg" hide-footer>
     <div class="modal-heading">
       <h2>Add Team</h2>
       <div class="steps-header">
@@ -16,10 +16,10 @@
       <section v-if="currentStep === 1" class="details">
         <b-form>
           <b-form-group label="Team Name" label-for="team-name">
-            <b-form-input id="team-name" type="text" required></b-form-input>
+            <b-form-input id="team-name" v-model="name" type="text" required></b-form-input>
           </b-form-group>
           <b-form-group label="Team Description" label-for="team-description">
-            <b-form-textarea id="team-description" rows="6" max-rows="6"></b-form-textarea>
+            <b-form-textarea id="team-description" v-model="description" rows="6" max-rows="6"></b-form-textarea>
           </b-form-group>
           <b-form-group label="Activity Tracking">
             <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
@@ -27,41 +27,21 @@
         </b-form>
       </section>
       <section v-if="currentStep === 2" class="users">
-        <b-form>
-          <b-form-group label="Select Users">
-            <b-form-tags v-model="value" no-outer-focus class="mb-2 team-section">
-              <template v-slot="{ tags, disabled, addTag, removeTag }">
-                <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
-                  <li v-for="tag in tags" :key="tag" class="list-inline-item">
-                    <b-form-tag
-                      @remove="removeTag(tag)"
-                      :title="tag"
-                      :disabled="disabled"
-                      variant="info"
-                    >{{ tag }}</b-form-tag>
-                  </li>
-                </ul>
-
-                <b-dropdown size="sm" variant="outline-secondary" block menu-class="w-100">
-                  <template v-slot:button-content>Search User</template>
-                  <b-dropdown-item-button
-                    v-for="option in availableOptions"
-                    :key="option"
-                    @click="onOptionClick({ option, addTag })"
-                  >
-                    {{ option }}
-                  </b-dropdown-item-button>
-                  <b-dropdown-text v-if="availableOptions.length === 0">
-                    There are no teams available to select
-                  </b-dropdown-text>
-                </b-dropdown>
-              </template>
-            </b-form-tags>
-          </b-form-group>
-          <b-form-group label="Team Lead" label-for="team-lead">
-            <b-form-select v-model="selectedTeamLead" :options="['user 1', 'user 2']"></b-form-select>
-          </b-form-group>
-        </b-form>
+        <b-form-group label="Select Users">
+          <multiselect v-model="selectedUsers" :options="orgUsers" :multiple="true" :close-on-select="false" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Search users" label="first_name" track-by="id">
+            <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} users selected</span></template>
+            <template slot="option" slot-scope="props">
+              <div class="multiple-select-options">
+                <span>{{props.option.first_name}}</span>
+                <b-form-checkbox :checked="isUserSelected(props.option.id)" class="option-checkbox"></b-form-checkbox>
+              </div>
+            </template>
+          </multiselect>
+        </b-form-group>
+        <b-form-group label="Select Team Lead">
+          <multiselect v-model="selectedTeamLead" :options="orgUsers" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="first_name" track-by="id">
+          </multiselect>
+        </b-form-group>
       </section>
       <section v-if="currentStep === 3" class="assets">
         <h5>Select Assets</h5>
@@ -77,7 +57,7 @@
     <div class="footer">
       <b-button  @click="$bvModal.hide('create-team-modal')">Cancel</b-button>
       <b-button v-if="currentStep < 4" @click="next()">Next</b-button>
-      <b-button v-if="currentStep === 4" @click="inviteUser()">Save</b-button>
+      <b-button v-if="currentStep === 4" @click="createTeam()">Save</b-button>
     </div>
   </b-modal>
 </template>
@@ -85,10 +65,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import organizationService from '@/services/organization.service'
+import teamService from '@/services/team.service.js'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
 
 export default {
+  props: ['orgUsers'],
   components: {
     treeView,
     appsList
@@ -96,10 +78,12 @@ export default {
   data () {
     return {
       currentStep: 1,
-      selectedTeamLead: '',
-      selectedTeam: [],
-      options: ['Apple', 'Orange', 'Banana', 'Lime', 'Peach', 'Chocolate', 'Strawberry'],
-      value: [],
+      name: '',
+      description: '',
+      selectedTeamLead: null,
+      selectedUsers: [],
+      selectedAssets: [],
+      selectedApps: [],
       treeData: null
     }
   },
@@ -170,27 +154,46 @@ export default {
       this.treeData = this.sensorParameterData
       this.assetPropertyData = [this.formatAssetPropertyData(entity)]
     },
-    inviteUser () {
-      this.$refs.inviteUserModal.hide()
+    createTeam () {
+      let config = { orgId: this.currentUser.org.id }
+      let selectedUsers = this.$_.map(this.selectedUsers, (user) => {
+          return { id: user.id }
+        })
+
+      this.$refs.createTeamModal.hide()
+      let payload = {
+        team: {
+          name: this.name,
+          description: this.description,
+          team_lead_id: this.selectedTeamLead ? this.selectedTeamLead.id : null,
+          members: selectedUsers,
+          assets: this.selectedAssets,
+          apps: this.selectedApps
+        }
+      }
+      teamService.create(config, payload)
+        .create(response => {
+          
+        })
       this.currentStep = 1
-    },
-    onOptionClick ({ option, addTag }) {
-      addTag(option)
-      this.search = ''
     },
     next () {
       if (this.currentStep === 3) {
-        this.$refs.treeView.getNodes('checked')
-        this.$refs.treeView.getNodes('halfcheck')
+        let checkedNodes = this.$refs.treeView.getNodes('checked')
+        let halfcheckedNodes = this.$refs.treeView.getNodes('halfcheck')
+        this.selectedAssets = this.$_.map(this.$_.concat(checkedNodes, halfcheckedNodes), (node) => {
+          return { id: node.id }
+        })
       }
       this.currentStep = this.currentStep + 1
+    },
+    isUserSelected (userId) {
+      let selectedIds = this.$_.map(this.selectedUsers, (user) => user.id)
+      return this.$_.includes(selectedIds, userId)
     }
   },
   computed: {
-    ...mapGetters(['currentUser']),
-    availableOptions () {
-      return this.options.filter(opt => this.value.indexOf(opt) === -1)
-    }
+    ...mapGetters(['currentUser'])
   },
   mounted () {
     this.loadOrganization()

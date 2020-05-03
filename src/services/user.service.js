@@ -39,15 +39,15 @@ const UserService = {
   },
   update: async function (config, payload) {
     try {
-      const response = await ApiService.put('orgs/1' + '/users/' + config.userId, payload)
+      const response = await ApiService.put('orgs/' + config.orgId + '/users/' + config.userId, payload)
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  search: async function (payload) {
+  search: async function (config, payload) {
     try {
-      const response = await ApiService.get('orgs/1' + '/users/search?label=' + payload)
+      const response = await ApiService.get('orgs/' + config.orgId +'/users/search?label=' + payload)
       return response.data
     } catch (error) {
       return error.response.data
@@ -62,20 +62,18 @@ const UserService = {
       return error.response.data
     }
   },
-
   saveUserSettings: async function (config, payload) {
     try {
-      const response = await ApiService.post('orgs/1/users/' + config.userId + '/settings', payload)
+      const response = await ApiService.post('orgs/' + config.orgId + '/users/' + config.userId + '/settings', payload)
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-
   updateUserSettings: async function (config, payload) {
     try {
-      const response = await ApiService.put('orgs/1/users/' + config.userId + '/settings/' + config.userSettingsId, payload)
+      const response = await ApiService.put('orgs/' + config.orgId + '/users/' + config.userId + '/settings/' + config.userSettingsId, payload)
 
       return response.data
     } catch (error) {

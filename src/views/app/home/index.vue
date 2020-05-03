@@ -55,7 +55,7 @@ export default {
       return "url('/assets/img/" + url + "')"
     },
     saveUserSettings () {
-      let config = { userId: this.currentUser.id }
+      let config = { userId: this.currentUser.id, orgId: this.currentUser.org.id }
       let payload = {
         visual_settings: this.visualSettings,
         data_settings: this.dataSettings
