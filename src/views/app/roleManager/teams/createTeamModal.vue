@@ -157,8 +157,8 @@ export default {
     createTeam () {
       let config = { orgId: this.currentUser.org.id }
       let selectedUsers = this.$_.map(this.selectedUsers, (user) => {
-          return { id: user.id }
-        })
+        return { id: user.id }
+      })
 
       this.$refs.createTeamModal.hide()
       let payload = {
@@ -173,7 +173,6 @@ export default {
       }
       teamService.create(config, payload)
         .create(response => {
-          
         })
       this.currentStep = 1
     },

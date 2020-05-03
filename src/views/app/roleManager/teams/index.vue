@@ -41,13 +41,14 @@
           <span>-</span>
         </template>
         <template v-slot:actions="props">
-          <span @click="editUser(props.rowData.name)" class="edit-team">Edit</span>
+          <span @click="editTeam(props.rowData)" class="edit-team">Edit</span>
         </template>
       </vuetable>
     </div>
 
     <!-- Modal Section -->
     <create-team-modal :orgUsers="orgUsers"></create-team-modal>
+    <edit-team-modal ref="editTeam" :orgUsers="orgUsers" :team="selectedTeam"></edit-team-modal>
   </div>
 </template>
 
@@ -57,17 +58,20 @@ import { mapGetters } from 'vuex'
 import teamService from '@/services/team.service.js'
 import userService from '@/services/user.service'
 import createTeamModal from './createTeamModal'
+import editTeamModal from './editTeamModal'
 
 export default {
   components: {
     Vuetable,
-    createTeamModal
+    createTeamModal,
+    editTeamModal
   },
   data () {
     return {
       searchText: '',
       teams: [],
       orgUsers: [],
+      selectedTeam: null,
       fields: [
         {
           name: '__slot:checkbox',
@@ -122,18 +126,13 @@ export default {
     },
     searchTeams () {
       let config = { orgId: this.currentUser.org.id }
-      debugger
       teamService.search(config, this.searchText)
         .then((response) => {
-          debugger
         })
     },
     // component methods
     getTeamLead (team) {
-      return this.$_.find(team.members, (member) => { return(member.id === team.team_lead_id) })
-    },
-    editTeam (user) {
-      // this.$refs.editUser.$refs.editUserModal.show()
+      return this.$_.find(team.members, (member) => { return (member.id === team.team_lead_id) })
     },
 
     // View helper methods
@@ -146,6 +145,10 @@ export default {
     renderTeamLead (team) {
       let teamLead = this.getTeamLead(team)
       return (teamLead.first_name + ' ' + teamLead.last_name)
+    },
+    editTeam (team) {
+      this.selectedTeam = team
+      this.$refs.editTeam.$refs.editTeamModal.show()
     }
   },
   computed: {
