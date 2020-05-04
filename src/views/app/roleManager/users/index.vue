@@ -21,7 +21,7 @@
       </div>
     </div>
     <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles"></user-list>
-    <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list>
+    <!-- <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list> -->
 
     <!-- Modal Section -->
     <invite-user-modal :roles="roles"></invite-user-modal>
@@ -119,14 +119,14 @@ export default {
   mounted () {
     this.loadUsers()
     this.loadRoles()
-    this.loadInvitations()
+    // this.loadInvitations()
 
     EventBus.$on('reload-users', () => {
       this.loadUsers()
     })
 
     EventBus.$on('reload-invites', () => {
-      this.loadInvitations()
+      // this.loadInvitations()
     })
   }
 }
