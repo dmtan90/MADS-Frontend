@@ -323,8 +323,10 @@
     background-color: #ffffff !important;
     color: #333 !important;
     border-color: #e4e9ef !important;
+    border-radius: 4px !important;
   }
-  button {
+  input, textarea {
+    border-color: #3172A8 !important;
     border-radius: 4px !important;
   }
   .b-dropdown {

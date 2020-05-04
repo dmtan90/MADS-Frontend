@@ -2,10 +2,10 @@
   <div>
     <div class="table-options">
       <div class="search-box">
-        <b-form-input v-model="searchText" placeholder="Search sensors"></b-form-input>
+        <b-form-input v-model="searchText" placeholder="Search sensor types"></b-form-input>
       </div>
       <div class="add-sensor-type">
-        <b-button>Add sensor</b-button>
+        <b-button v-b-modal.create-sensor-type-modal>Add sensor type</b-button>
       </div>
     </div>
     <div class="lists-table sensors-table">
@@ -23,16 +23,21 @@
         </template>
       </vuetable>
     </div>
+
+    <!-- Modal Section -->
+    <create-sensor-type-modal></create-sensor-type-modal>
   </div>
 </template>
 
 <script>
 import fieldsDef from './sensorTypeFieldsDef'
 import Vuetable from 'vuetable-2'
+import createSensorTypeModal from './createSensorTypeModal'
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    createSensorTypeModal
   },
   data () {
     return {
