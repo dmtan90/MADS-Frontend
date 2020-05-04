@@ -50,6 +50,12 @@
           </svg>
           <div class="active"></div>
         </div>
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('entityManager') !== 'closed'}" @click="openAppWindow('entityManager')" v-tooltip="'Entity Manager'">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-entity-manager"></use>
+          </svg>
+          <div class="active"></div>
+        </div>
       </div>
       <div class="taskbar-right">
         <div class="options">

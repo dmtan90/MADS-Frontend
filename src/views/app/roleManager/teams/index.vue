@@ -11,7 +11,7 @@
         <b-form-input placeholder="Search teams" v-model="searchText"></b-form-input>
       </div>
       <div class="create-team">
-        <b-button v-b-modal.create-team-modal>Create Team</b-button>
+        <b-button v-b-modal.create-team-modal>Add Team</b-button>
       </div>
     </div>
     <div class="teams-table">
@@ -59,6 +59,7 @@ import teamService from '@/services/team.service.js'
 import userService from '@/services/user.service'
 import createTeamModal from './createTeamModal'
 import editTeamModal from './editTeamModal'
+import fieldsDef from './teamFieldsDef'
 
 export default {
   components: {
@@ -72,38 +73,7 @@ export default {
       teams: [],
       orgUsers: [],
       selectedTeam: null,
-      fields: [
-        {
-          name: '__slot:checkbox',
-          title: '__slot:checkbox',
-          dataClass: ''
-        },
-        {
-          name: 'name',
-          sortField: 'name'
-        },
-        {
-          name: '__slot:users',
-          title: 'Users'
-        },
-        {
-          name: '__slot:team-lead',
-          sortField: 'team_lead',
-          title: 'Team Lead'
-        },
-        {
-          name: '__slot:assets',
-          title: 'Assets'
-        },
-        {
-          name: '__slot:apps',
-          title: 'Apps'
-        },
-        {
-          name: '__slot:actions',
-          title: ''
-        }
-      ]
+      fields: fieldsDef
     }
   },
   methods: {
@@ -204,13 +174,6 @@ export default {
     }
     .teams-table {
       margin-top: 30px;
-    }
-  }
-</style>
-
-<style lang="scss">
-  .teams {
-    .teams-table {
       .edit-team {
         text-decoration: underline;
         color: #2aa7ff;

@@ -22,7 +22,6 @@ const teamService = {
     }
   },
   search: async function (config, payload) {
-    debugger
     try {
       const response = await ApiService.post('/orgs/' + config.orgId + resource + '/search?label=' + payload)
 

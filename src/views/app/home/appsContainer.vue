@@ -9,6 +9,9 @@
     <div class="app-container" :class="{'maximized': getAppState('roleManager') === 'maximize'}" :style="{'z-index': getAppZIndex('roleManager')}">
       <role-manager v-if="getAppState('roleManager') !== 'closed'"></role-manager>
     </div>
+    <div class="app-container" :class="{'maximized': getAppState('entityManager') === 'maximize'}" :style="{'z-index': getAppZIndex('entityManager')}">
+      <entity-manager v-if="getAppState('entityManager') !== 'closed'"></entity-manager>
+    </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
     </div>
@@ -21,12 +24,14 @@ import EventBus from './event-bus'
 import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
 import roleManager from './../roleManager'
+import entityManager from './../entityManager'
 
 export default {
   components: {
     widgetManager,
     dataCruncher,
-    roleManager
+    roleManager,
+    entityManager
   },
   data () {
     return {

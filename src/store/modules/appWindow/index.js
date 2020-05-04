@@ -2,6 +2,7 @@ import _ from 'lodash'
 import roleManager from './roleManager'
 import widgetManager from './widgetManager'
 import dataCruncher from './dataCruncher'
+import entityManager from './entityManager'
 
 export default {
   state: {
@@ -49,6 +50,7 @@ export default {
   modules: {
     roleManager,
     widgetManager,
-    dataCruncher
+    dataCruncher,
+    entityManager
   }
 }
