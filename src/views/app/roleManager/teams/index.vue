@@ -60,6 +60,7 @@ import userService from '@/services/user.service'
 import createTeamModal from './createTeamModal'
 import editTeamModal from './editTeamModal'
 import fieldsDef from './teamFieldsDef'
+import EventBus from '../eventBus'
 
 export default {
   components: {
@@ -127,6 +128,10 @@ export default {
   mounted () {
     this.loadTeams()
     this.loadOrgUsers()
+
+    EventBus.$on('reload-teams', () => {
+      this.loadTeams()
+    })
   }
 }
 </script>

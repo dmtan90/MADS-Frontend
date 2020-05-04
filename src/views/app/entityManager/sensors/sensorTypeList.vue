@@ -19,13 +19,14 @@
           <b-form-checkbox></b-form-checkbox>
         </template>
         <template v-slot:actions="props">
-          <span class="edit-sensor-type">Edit</span>
+          <span class="edit-sensor-type" @click="editSensorType(props.rowData)">Edit</span>
+          <span class="delete-sensor-type">Delete</span>
         </template>
       </vuetable>
     </div>
 
     <!-- Modal Section -->
-    <create-sensor-type-modal></create-sensor-type-modal>
+    <create-sensor-type-modal ref="sensorTypeModal" :edit="edit"></create-sensor-type-modal>
   </div>
 </template>
 
@@ -35,51 +36,23 @@ import Vuetable from 'vuetable-2'
 import createSensorTypeModal from './createSensorTypeModal'
 
 export default {
+  props: ['sensorTypes'],
   components: {
     Vuetable,
     createSensorTypeModal
   },
   data () {
     return {
-      sensorTypes: [],
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      edit: false
     }
   },
   methods: {
-    // Data Load methods
-    loadSensorTypes () {
-      this.sensorTypes = [
-        {
-          name: 'Sensor Type 1',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 2',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 3',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 4',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        }
-
-      ]
+    editSensorType (sensorType) {
+      this.edit = true
+      this.$refs.sensorTypeModal.$refs.createSensorTypeModal.show()
     }
-  },
-  mounted () {
-    this.loadSensorTypes()
   }
 }
 </script>
@@ -111,10 +84,11 @@ export default {
   }
   .sensors-table {
     margin-top: 30px;
-    .edit-sensor-type {
+    .edit-sensor-type, .delete-sensor-type {
       text-decoration: underline;
       color: #2aa7ff;
       cursor: pointer;
+      padding: 0 10px;
     }
   }
 </style>

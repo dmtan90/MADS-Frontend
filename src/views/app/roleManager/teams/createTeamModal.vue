@@ -39,7 +39,7 @@
           </multiselect>
         </b-form-group>
         <b-form-group label="Select Team Lead">
-          <multiselect v-model="selectedTeamLead" :options="orgUsers" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="first_name" track-by="id">
+          <multiselect v-model="selectedTeamLead" :options="orgUsers" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select team lead" label="first_name" track-by="id">
           </multiselect>
         </b-form-group>
       </section>
@@ -68,6 +68,7 @@ import organizationService from '@/services/organization.service'
 import teamService from '@/services/team.service.js'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
+import EventBus from '../eventBus'
 
 export default {
   props: ['orgUsers'],
@@ -172,7 +173,8 @@ export default {
         }
       }
       teamService.create(config, payload)
-        .create(response => {
+        .then(response => {
+          EventBus.$emit('reload-teams')
         })
       this.currentStep = 1
     },

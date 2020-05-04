@@ -4,17 +4,17 @@
     <div>
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors (0)</li>
-        <li :class="{'active': selectedTab === 'sensorTypes'}" @click="selectedTab = 'sensorTypes'">Sensor Types (0)</li>
+        <li :class="{'active': selectedTab === 'sensorTypes'}" @click="selectedTab = 'sensorTypes'">Sensor Types ({{sensorTypes.length}})</li>
       </ul>
     </div>
     <sensor-list v-if="selectedTab === 'sensors'"></sensor-list>
-    <sensor-type-list v-if="selectedTab === 'sensorTypes'"></sensor-type-list>
+    <sensor-type-list v-if="selectedTab === 'sensorTypes'" :sensorTypes="sensorTypes"></sensor-type-list>
   </div>
 </template>
 
 <script>
-import sensorList from './sensor'
-import sensorTypeList from './sensorType'
+import sensorList from './sensorList'
+import sensorTypeList from './sensorTypeList'
 
 export default {
   components: {
@@ -23,8 +23,43 @@ export default {
   },
   data () {
     return {
-      selectedTab: 'sensors'
+      selectedTab: 'sensors',
+      sensorTypes: []
     }
+  },
+  methods: {
+    loadSensorTypes () {
+      this.sensorTypes = [
+        {
+          name: 'Sensor Type 1',
+          metadata: 'metadata1, metadata2, metadata3',
+          parameters: 'parameter1, parameter2, parameter3',
+          creator: 'creator name'
+        },
+        {
+          name: 'Sensor Type 2',
+          metadata: 'metadata1, metadata2, metadata3',
+          parameters: 'parameter1, parameter2, parameter3',
+          creator: 'creator name'
+        },
+        {
+          name: 'Sensor Type 3',
+          metadata: 'metadata1, metadata2, metadata3',
+          parameters: 'parameter1, parameter2, parameter3',
+          creator: 'creator name'
+        },
+        {
+          name: 'Sensor Type 4',
+          metadata: 'metadata1, metadata2, metadata3',
+          parameters: 'parameter1, parameter2, parameter3',
+          creator: 'creator name'
+        }
+
+      ]
+    }
+  },
+  mounted () {
+    this.loadSensorTypes()
   }
 }
 </script>

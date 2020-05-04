@@ -15,7 +15,7 @@
         </ul>
       </div>
       <div class="right-panel col col-9">
-        <h3>Add Sensor Type</h3>
+        <h3>{{edit ? 'Edit' : 'Add'}} Sensor Type</h3>
         <section v-if="section === 1" class="details">
           <b-form>
             <b-form-group label="Sensor Type Name" label-for="sensor-type-name">
@@ -81,6 +81,12 @@
 
 <script>
 export default {
+  props: {
+    edit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       section: 1,

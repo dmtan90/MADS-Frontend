@@ -350,7 +350,7 @@ export default {
         form {
           position: relative;
           input {
-            border-radius: 32px;
+            border-radius: 32px !important;
             padding-left: 40px;
             padding-right: 40px;
             &::placeholder {

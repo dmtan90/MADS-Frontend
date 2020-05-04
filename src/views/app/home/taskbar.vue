@@ -57,7 +57,7 @@
           <div class="active"></div>
         </div>
       </div>
-      <div class="taskbar-right">
+      <div class="taskbar-right" :class="{'auto-margin': isScreenLocked}">
         <div class="options">
           <div class="txt-white">{{getUserNameInitials()}}</div>
           <div class="notification-icon">
@@ -253,7 +253,9 @@ export default {
     height: 60px;
     display: flex;
     align-items: center;
-    margin: 0 0 0 auto;
+    &.auto-margin {
+      margin: 0 0 0 auto;
+    }
     .options {
       position: relative;
       margin-right: 15px;
