@@ -4,10 +4,10 @@
     <div>
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS ({{users.length}})</li>
-        <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES (0)</li>
+        <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES ({{invitations.length}})</li>
       </ul>
     </div>
-    <div class="table-options">
+    <div class="table-options" v-if="selectedTab === 'users'">
       <div class="search-box">
         <b-form-input v-model="searchText" @change="searchUsers()" placeholder="Search users"></b-form-input>
       </div>
@@ -20,98 +20,39 @@
         <b-button v-b-modal.invite-user-modal>Invite user</b-button>
       </div>
     </div>
-    <div class="users-table">
-      <vuetable
-          ref="vuetable"
-          :api-mode="false"
-          :fields="fields"
-          :data="displayedUsers"
-        >
-        <template v-slot:checkbox>
-          <b-form-checkbox></b-form-checkbox>
-        </template>
-        <template v-slot:teams="props">
-          <span>
-            {{renderList(props.rowData.teams)}}
-          </span>
-        </template>
-        <template v-slot:assets="props">
-          <span>
-            {{renderList(props.rowData.assets)}}
-          </span>
-        </template>
-        <template v-slot:apps="props">
-          <span>
-            {{renderList(props.rowData.apps)}}
-          </span>
-        </template>
-        <template v-slot:actions="props">
-          <span @click="editUser(props.rowData)" class="edit-user">Edit</span>
-        </template>
-      </vuetable>
-    </div>
+    <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles"></user-list>
+    <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list>
 
     <!-- Modal Section -->
     <invite-user-modal :roles="roles"></invite-user-modal>
-    <edit-user-modal :roles="roles" ref="editUser" :user="selectedUser" @reloadUser="loadUsers()"></edit-user-modal>
   </div>
 </template>
 
 <script>
-import Vuetable from 'vuetable-2'
 import { mapGetters } from 'vuex'
 import inviteUserModal from './inviteUserModal'
-import editUserModal from './editUserModal'
 import userService from '@/services/user.service'
 import roleService from '@/services/role.service'
+import invitationService from '@/services/invitation.service'
+import userList from './userList'
+import inviteList from './inviteList'
+import EventBus from '../eventBus'
 
 export default {
   components: {
-    Vuetable,
-    inviteUserModal,
-    editUserModal
+    userList,
+    inviteList,
+    inviteUserModal
   },
   data () {
     return {
       users: [],
       roles: [],
+      invitations: [],
       displayedUsers: [],
-      selectedUser: null,
       selectedTab: 'users',
       selectedRole: null,
-      searchText: '',
-      fields: [
-        {
-          name: '__slot:checkbox',
-          title: '',
-          dataClass: ''
-        },
-        {
-          name: 'user',
-          sortField: 'user'
-        },
-        {
-          name: 'role',
-          sortField: 'role',
-          dataClass: 'user-role'
-        },
-        {
-          name: '__slot:teams',
-          title: 'Teams'
-        },
-        {
-          name: '__slot:assets',
-          title: 'Assets'
-        },
-        {
-          name: '__slot:apps',
-          title: 'Apps'
-        },
-        {
-          name: '__slot:actions',
-          title: ''
-        }
-      ]
+      searchText: ''
     }
   },
   methods: {
@@ -164,12 +105,12 @@ export default {
         this.displayedUsers = this.users
       }
     },
-    renderList (list) {
-      return this.$_.join(list, ', ')
-    },
-    editUser (user) {
-      this.selectedUser = user
-      this.$refs.editUser.$refs.editUserModal.show()
+    loadInvitations () {
+      let config = { orgId: this.currentUser.org.id }
+      invitationService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.invitations = response.invitations
+        })
     }
   },
   computed: {
@@ -178,6 +119,15 @@ export default {
   mounted () {
     this.loadUsers()
     this.loadRoles()
+    this.loadInvitations()
+
+    EventBus.$on('reload-users', () => {
+      this.loadUsers()
+    })
+
+    EventBus.$on('reload-invites', () => {
+      this.loadInvitations()
+    })
   }
 }
 </script>
@@ -231,24 +181,6 @@ export default {
       }
       .invite-user {
         margin: 0 0 0 auto;
-      }
-    }
-    .users-table {
-      margin-top: 30px;
-    }
-  }
-</style>
-
-<style lang="scss">
-  .users {
-    .users-table {
-      .edit-user {
-        text-decoration: underline;
-        color: #2aa7ff;
-        cursor: pointer;
-      }
-      td.user-role {
-        text-transform: capitalize;
       }
     }
   }

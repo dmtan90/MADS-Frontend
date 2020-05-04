@@ -1,21 +1,21 @@
 export default [
   {
     name: '__slot:checkbox',
-    title: '__slot:checkbox',
+    title: '',
     dataClass: ''
   },
   {
-    name: 'name',
-    sortField: 'name'
+    name: 'user',
+    sortField: 'user'
   },
   {
-    name: '__slot:users',
-    title: 'Users'
+    name: 'role',
+    sortField: 'role',
+    dataClass: 'user-role'
   },
   {
-    name: '__slot:team-lead',
-    sortField: 'team_lead',
-    title: 'Team Lead'
+    name: '__slot:teams',
+    title: 'Teams'
   },
   {
     name: '__slot:assets',

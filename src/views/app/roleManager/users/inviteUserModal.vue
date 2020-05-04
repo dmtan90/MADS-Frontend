@@ -1,7 +1,7 @@
 <template>
   <b-modal id="invite-user-modal" ref="inviteUserModal" size="lg" hide-header hide-footer>
     <div class="modal-heading">
-      <h3>Invite User</h3>
+      <h3>{{reinvite ? 'Re-Invite' : 'Invite'}} User</h3>
       <div class="steps-header">
         <div class="current-step">{{currentStep}}/3</div>
         <div class="steps">
@@ -60,9 +60,22 @@ import organizationService from '@/services/organization.service'
 import invitationService from '@/services/invitation.service'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
+import EventBus from '../eventBus'
 
 export default {
-  props: ['roles'],
+  props: {
+    roles: {
+      type: Array,
+      required: true
+    },
+    reinvite: {
+      type: Boolean,
+      default: false
+    },
+    invitation: {
+      default: null
+    }
+  },
   components: {
     treeView,
     appsList
@@ -168,6 +181,9 @@ export default {
           this.selectedAssets = []
           this.selectedApps = []
           this.selectedRole = null
+          this.email = ''
+
+          EventBus.$emit('reload-invites')
         })
       this.currentStep = 1
     },
@@ -188,6 +204,12 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser'])
+  },
+  watch: {
+    invitation (invitation) {
+      this.inviteEmail = invitation.email
+      this.selectedRole = invitation.role
+    }
   },
   mounted () {
     this.loadOrganization()

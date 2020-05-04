@@ -60,6 +60,7 @@ import organizationService from '@/services/organization.service'
 import userService from '@/services/user.service'
 import treeView from '../../shared/outlineTreeView'
 import appsList from '../../shared/modalAppsList'
+import EventBus from '../eventBus'
 
 export default {
   props: ['roles', 'user'],
@@ -161,13 +162,13 @@ export default {
       return this.$_.includes(selectedIds, teamId)
     },
     updateUserDetails () {
-      let config = { userId: this.user.id }
+      let config = { orgId: this.currentUser.org.id, userId: this.user.id }
       let payload = {
         role_id: this.selectedRole.id
       }
       userService.update(config, payload)
         .then((response) => {
-          this.$emit('reloadUser')
+          EventBus.$emit('reload-users')
         })
     }
   },
