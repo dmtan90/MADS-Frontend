@@ -38,7 +38,7 @@ export default {
 <style lang="scss" scoped>
   .app-header {
     display: flex;
-    height: 40px;
+    height: 45px;
     width: 100%;
     color: #f8f8f8;
     background-color: rgba(76, 146, 195, 1);

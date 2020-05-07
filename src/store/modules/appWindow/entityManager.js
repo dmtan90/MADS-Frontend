@@ -17,7 +17,8 @@ const appSections = [
   {
     key: 'sensors',
     name: 'Sensors',
-    iconId: 'sensors'
+    iconId: 'sensors',
+    class: 'sensor-icon'
   },
   {
     key: 'activity',

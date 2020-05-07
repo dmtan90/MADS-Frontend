@@ -3,7 +3,7 @@
     <div v-for="(section, index) in appVuexState.appSections" :key="index">
       <div class="section" @click="openSection(section)">
         <div class="section-content">
-          <svg class="icon">
+          <svg class="icon" :class="section.class ? section.class : ''">
             <use :xlink:href="'/assets/img/' + appVuexState.appSectionsIconFile +  '#' + section.iconId"></use>
           </svg>
           <span>{{section.name}}</span>
@@ -57,6 +57,9 @@ export default {
           display: block;
           margin: 0 auto;
           fill: #808080;
+          &.sensor-icon {
+            transform: rotate(180deg);
+          }
         }
         span {
           display: block;

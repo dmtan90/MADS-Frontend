@@ -1,6 +1,6 @@
 <template>
-  <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar, 'bottom-taskbar': taskbarPosition === 'bottom', 'left-taskbar': taskbarPosition === 'left', 'right-taskbar': taskbarPosition === 'right'}">
-    <div class="taskbar-container">
+  <div class="taskbar" :class="{'auto-hide': isAutohideTaskbar}">
+    <div class="taskbar-container" :class="{'locked': isScreenLocked}">
       <div class="home-icon" @click="toggleSlider()" v-if="!isScreenLocked">
         <svg class="icon">
           <use xlink:href="/assets/img/mads-app-icons.svg#app-launcher"></use>
@@ -73,10 +73,10 @@
               <use xlink:href="/assets/img/system-tray-icons.svg#expand"></use>
             </svg>
           </div>
-          <div class="txt-white">{{this.clock}}</div>
+          <div class="txt-white">{{currentTime | timeFormat}}</div>
         </div>
         <div class="system-tray-container" v-if="!isScreenLocked">
-          <system-tray :userNameInitials="getUserNameInitials()" :isFullScreen="isFullScreen"></system-tray>
+          <system-tray :userNameInitials="getUserNameInitials()" :isFullScreen="isFullScreen" :currentTime="currentTime" :currentTimeZone="currentTimeZone"></system-tray>
         </div>
       </div>
     </div>
@@ -99,7 +99,9 @@ export default {
       timer: null,
       clock: '',
       isFullScreen: false,
-      taskbarPosition: 'bottom'
+      taskbarPosition: 'bottom',
+      currentTime: this.$moment(),
+      currentTimeZone: this.$moment().tz(this.$moment.tz.guess(true)).format('z')
     }
   },
   methods: {
@@ -108,15 +110,6 @@ export default {
       let firstNameInitial = (this.currentUser.first_name || '')[0] || ''
       let lastNameInitial = (this.currentUser.last_name || '')[0] || ''
       return firstNameInitial + lastNameInitial
-    },
-    getTime () {
-      let today = new Date()
-      let hours = today.getHours()
-      let minutes = today.getMinutes()
-
-      this.clock = hours + ':' + minutes
-
-      this.timer = setTimeout(this.getTime, 1000)
     },
     exitFullScreen () {
       this.isFullScreen = false
@@ -156,19 +149,30 @@ export default {
       EventBus.$emit('open-app-window', app)
     }
   },
+  filters: {
+    timeFormat (currentTime) {
+      return currentTime.format('H:mm')
+    }
+  },
   computed: {
     ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
   },
   mounted () {
-    this.getTime()
     EventBus.$on('hide-taskbar', (payload) => { this.isAutohideTaskbar = payload })
     EventBus.$on('go-full-screen', () => { this.goFullScreen() })
     EventBus.$on('exit-full-screen', () => { this.exitFullScreen() })
+
+    // FullScreen Event Listener
     document.addEventListener('fullscreenchange', (event) => {
       if (!document.fullscreenElement) {
         this.isFullScreen = false
       }
     })
+
+    // Clock Timer
+    this.timer = setInterval(() => {
+      this.currentTime = this.$moment()
+    }, 1000)
   },
   destroyed () {
     clearTimeout(this.timer)
@@ -186,13 +190,16 @@ export default {
     transition: all 0.3s ease-out;
     .taskbar-container {
       display: flex;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(57, 63, 77, 0.9);
       border: none;
       border-radius: 0px;
       -moz-box-shadow: none;
       -webkit-box-shadow: none;
       box-shadow: none;
       align-items: center;
+      &.locked {
+        background-color: rgba(0, 0, 0, 0.6);
+      }
       .home-icon {
         border-width: 0px;
         position: relative;
@@ -262,7 +269,7 @@ export default {
       display: flex;
       border-width: 0px;
       height: 35px;
-      background-color: rgba(255, 255, 255, 0.498039215686275);
+      background-color: rgba(255, 255, 255, 0.5);
       border: none;
       border-radius: 70px;
       -moz-box-shadow: none;
@@ -305,13 +312,12 @@ export default {
     }
     .system-tray-container {
       position: absolute;
-      height: 320px;
-      width: 300px;
       right: 15px;
       bottom: 60px;
       z-index: 2000;
       align-items: center;
       display: none;
+      padding: 10px 0;
       }
       &:hover {
         .system-tray-container {

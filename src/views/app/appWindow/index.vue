@@ -36,7 +36,7 @@ export default {
     flex-wrap: wrap;
     .app-content {
       display: inline-block;
-      height: calc(100% - 40px);
+      height: calc(100% - 45px);
       width: calc(100% - 100px);
       margin-left: 100px;
       margin-top: 40px;

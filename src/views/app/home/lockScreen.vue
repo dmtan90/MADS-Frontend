@@ -56,7 +56,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: #1d1e22;
         font-size: 45px;
         border-radius: 55px;
       }

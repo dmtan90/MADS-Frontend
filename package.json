@@ -21,6 +21,7 @@
     "jointjs": "^3.1.1",
     "konva": "^4.2.2",
     "lodash": "^4.17.15",
+    "moment-timezone": "^0.5.28",
     "v-calendar": "^0.9.7",
     "v-tooltip": "^2.0.3",
     "video.js": "^7.7.5",
