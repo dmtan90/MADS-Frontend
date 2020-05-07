@@ -26,39 +26,43 @@
         <div class="all-apps">
           <div class="screen" :class="{'active': screen === 0}">
             <div v-if="screen === 0">
-              <div v-for="(appsList, index) in displayedApps[0]" :key="index">
-                <div v-for="app in appsList" :key="app.key" class="app">
-                  <svg class="icon">
-                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                  </svg>
-                  <span>
-                    {{app.displayName}}
-                  </span>
+              <div v-for="category in $_.take(appCategories, 3)" :key="category">
+                <div v-if="$_.size(apps[category])">
+                  <div v-for="app in apps[category]" :key="app.key" class="app">
+                    <svg class="icon">
+                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
+                    </svg>
+                    <span>
+                      {{app.name}}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="screen" :class="{'active': screen === 1}">
-            <div v-if="screen === 1">
-              <div v-for="(appsList, index) in displayedApps[1]" :key="index">
-                <div v-for="app in appsList" :key="app.key" class="app">
-                  <svg class="icon">
-                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-                  </svg>
-                  <span>
-                    {{app.displayName}}
-                  </span>
+            <div v-if="screen === 1 && $_.size(apps) > 3">
+              <div v-for="category in $_.takeRight(appCategories, 3)" :key="category">
+                <div v-if="$_.size(apps[category])">
+                  <div v-for="app in apps[category]" :key="app.key" class="app">
+                    <svg class="icon">
+                      <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
+                    </svg>
+                    <span>
+                      {{app.name}}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="screen-nav" v-if="!this.searchApp">
+      <div class="screen-nav">
         <div @click="screen = 0">
           <div class="nav" :class="{'active': screen === 0}"></div>
         </div>
-        <div @click="screen = 1">
+        <div @click="screen = 1" v-if="$_.size(apps) > 3">
           <div class="nav" :class="{'active': screen === 1}"></div>
         </div>
       </div>
@@ -67,196 +71,21 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import EventBus from './event-bus'
 
 export default {
   data () {
     return {
       showSlider: false,
-      displayedApps: {},
-      allApps: {},
-      allAppsMap: {},
       searchApp: '',
-      screen: 0
+      screen: 0,
+      allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
+      appCategories: [],
+      apps: {}
     }
   },
   methods: {
-    ...mapActions(['openApp', 'maximizeApp', 'setUserProfile', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
-    getAllApps () {
-      return [
-        [
-          [
-            {
-              key: 'appStore',
-              displayName: 'App Store',
-              iconId: 'mads-app-store'
-            },
-            {
-              key: 'settings',
-              displayName: 'Settings',
-              iconId: 'mads-settings'
-            },
-            {
-              key: 'support',
-              displayName: 'Support',
-              iconId: 'mads-support'
-            },
-            {
-              key: 'heyMADS!',
-              displayName: 'HeyMADS!',
-              iconId: 'mads-voice-assistant'
-            }
-          ],
-          [
-            {
-              key: 'dashboards',
-              displayName: 'Dashboards',
-              iconId: 'mads-dashboard'
-            },
-            {
-              key: 'digitalTwin',
-              displayName: 'Digital Twin',
-              iconId: 'mads-digital-twin'
-            },
-            {
-              key: 'taskOrganiser',
-              displayName: 'Task Organiser',
-              iconId: 'mads-task-organiser'
-            },
-            {
-              key: 'reportWizard',
-              displayName: 'Report Wizard',
-              iconId: 'mads-report-wizard'
-            },
-            {
-              key: 'alertsReminder',
-              displayName: 'Alerts Reminder',
-              iconId: 'mads-alerts-reminders'
-            },
-            {
-              key: 'madsbook',
-              displayName: 'Madsbook',
-              iconId: 'mads-book'
-            },
-            {
-              key: 'vrSimulator',
-              displayName: 'VR Simulator',
-              iconId: 'mads-vr-simulator'
-            }
-          ],
-          [
-            {
-              key: 'fileManager',
-              displayName: 'File Manager',
-              iconId: 'mads-file-manager'
-            },
-            {
-              key: 'iotManager',
-              displayName: 'IOT Manager',
-              iconId: 'mads-iot-manager'
-            },
-            {
-              key: 'roleManager',
-              displayName: 'Role Manager',
-              iconId: 'mads-role-manager'
-            },
-            {
-              key: 'entityManager',
-              displayName: 'Entity Manager',
-              iconId: 'mads-entity-manager'
-            },
-            {
-              key: 'toolManager',
-              displayName: 'Tool Manager',
-              iconId: 'mads-tool-manager'
-            },
-            {
-              key: 'widgetManager',
-              displayName: 'Widget Manager',
-              iconId: 'mads-widget-manager'
-            }
-          ]
-        ],
-        [
-          [
-            {
-              key: 'dataCruncher',
-              displayName: 'Data Cruncher',
-              iconId: 'mads-data-cruncher'
-            },
-            {
-              key: 'trendPredictor',
-              displayName: 'Trend Predictor',
-              iconId: 'mads-trend-predictor'
-            },
-            {
-              key: 'usageAnalyser',
-              displayName: 'Usage Analyser',
-              iconId: 'mads-usage-analyser'
-            }
-          ],
-          [
-            {
-              key: 'madsSecure',
-              displayName: 'Role Manager',
-              iconId: 'mads-secure'
-            },
-            {
-              key: 'loginTracker',
-              displayName: 'Login Tracker',
-              iconId: 'mads-login-tracker'
-            },
-            {
-              key: 'networkAnalyser',
-              displayName: 'Network Analyser',
-              iconId: 'mads-network-analyser'
-            },
-            {
-              key: 'secureShare',
-              displayName: 'Secure Share',
-              iconId: 'mads-secure-share'
-            },
-            {
-              key: 'appLocker',
-              displayName: 'App Locker',
-              iconId: 'mads-app-locker'
-            },
-            {
-              key: 'passwordManager',
-              displayName: 'Password Manager',
-              iconId: 'mads-password-manager'
-            }
-          ],
-          [
-            {
-              key: 'calendar',
-              displayName: 'Calendar',
-              iconId: 'mads-calendar'
-            },
-            {
-              key: 'calculator',
-              displayName: 'Calculator',
-              iconId: 'mads-calculator'
-            },
-            {
-              key: 'chatApp',
-              displayName: 'Chat App',
-              iconId: 'mads-chat-app'
-            }
-          ]
-        ]
-      ]
-    },
-    getAllAppsMap () {
-      let allApps = this.$_.flattenDeep(this.allApps)
-      return this.$_.reduce(allApps, (appsObj, app) => {
-        let key = app.key
-        return _.merge(appsObj, {
-          [key]: app
-        })
-      }, {})
-    },
     toggleSlider () {
       this.screen = 0
       this.searchApp = ''
@@ -264,31 +93,34 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
+    ...mapGetters(['visualSettings', 'orgApps'])
   },
   watch: {
     searchApp () {
-      if (!this.searchApp) {
-        this.displayedApps = this.allApps
-      } else {
-        this.screen = 0
-        this.displayedApps =
-          _.chain(this.allApps)
-            .flattenDeep()
-            .filter((app) => {
-              return _.includes(_.toLower(app.displayName), _.toLower(this.searchApp))
-            })
-            .value()
-
-        this.displayedApps = [[this.displayedApps]]
+      let apps = this.orgApps
+      if (this.searchApp) {
+        apps = this.$_.filter(apps, (app) => {
+          return this.$_.includes(this.$_.toLower(app.name), this.$_.toLower(this.searchApp))
+        })
       }
+      apps = this.$_.groupBy(apps, (app) => { return app.category })
+      this.apps = this.$_.assign({}, apps)
+      this.appCategories = this.$_.filter(this.allAppCategories, (category) => {
+        let displayedCategories = this.$_.keys(this.apps)
+        return this.$_.includes(displayedCategories, category)
+      })
+    },
+    orgApps () {
+      let apps = this.$_.groupBy(this.orgApps, (app) => { return app.category })
+      this.apps = this.$_.assign({}, apps)
+      this.appCategories = this.$_.filter(this.allAppCategories, (category) => {
+        let displayedCategories = this.$_.keys(this.apps)
+        return this.$_.includes(displayedCategories, category)
+      })
     }
   },
   mounted () {
     EventBus.$on('toggle-slider', () => { this.toggleSlider() })
-    this.displayedApps = this.getAllApps()
-    this.allApps = this.getAllApps()
-    this.allAppsMap = this.getAllAppsMap()
   }
 }
 </script>

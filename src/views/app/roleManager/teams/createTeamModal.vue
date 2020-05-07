@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     loadOrganization () {
-      let config = { userId: this.currentUser.id }
+      let config = { orgId: this.currentUser.org.id }
       organizationService
         .read(config)
         .then(response => {

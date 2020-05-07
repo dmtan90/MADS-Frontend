@@ -23,6 +23,7 @@ import appsContainer from './appsContainer'
 import setWallpaperModal from './setWallpaperModal'
 import lockScreen from './lockScreen'
 import userService from '@/services/user.service'
+import organizationService from '@/services/organization.service'
 import EventBus from './event-bus'
 
 export default {
@@ -40,14 +41,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['openApp', 'maximizeApp', 'setUserProfile', 'setUserSettings', 'setRecentVisitedApp', 'setDesktopWallpaper']),
+    ...mapActions(['setUserProfile', 'setUserSettings', 'setOrgApps']),
     getCurrentUserProfile () {
       let currentUserId = localStorage.getItem('user_id')
 
       userService
         .getUserProfile({ userId: currentUserId })
-        .then(response => {
-          this.setUserProfile(response)
+        .then(async response => {
+          await this.setUserProfile(response)
+          organizationService.readApps({ orgId: this.currentUser.org.id })
+            .then(response => {
+              this.setOrgApps(response.apps)
+            })
         })
     },
     getBackgroundUrl () {
@@ -81,6 +86,7 @@ export default {
   mounted () {
     this.isScreenLocked = localStorage.getItem('screenLocked') === 'true'
     this.getCurrentUserProfile()
+
     EventBus.$on('lock-screen', () => {
       this.isScreenLocked = true
       localStorage.setItem('screenLocked', true)
@@ -92,7 +98,7 @@ export default {
     EventBus.$on('save-user-settings', () => { this.saveUserSettings() })
   },
   computed: {
-    ...mapGetters(['isUserLoggedIn', 'currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
+    ...mapGetters(['currentUser', 'visualSettings', 'dataSettings', 'userSettingsId'])
   },
   created () {
     window.addEventListener('beforeunload', function (event) {

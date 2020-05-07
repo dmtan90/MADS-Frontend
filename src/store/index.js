@@ -7,6 +7,7 @@ import auth from '@/store/modules/auth'
 import user from '@/store/modules/user'
 import appWindow from '@/store/modules/appWindow/index'
 import widgetManager from '@/store/modules/widgetManager'
+import organization from '@/store/modules/org'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ const store = new Vuex.Store({
     auth,
     user,
     appWindow,
-    widgetManager
+    widgetManager,
+    organization
   }
 })
 
