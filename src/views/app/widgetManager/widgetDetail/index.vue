@@ -79,22 +79,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleWidgetStoreState', 'toggleWidgetDetailState']),
+    ...mapActions(['selectWidget', 'setCurrentPage']),
     goToWidgetStore() {
-      this.toggleWidgetDetailState(false);
-      this.toggleWidgetStoreState(true);
+      this.setCurrentPage('index')
+      this.selectWidget(null)
     },
     loadWidget() {
       widgetService
-        .readId(this.openedWidgetDetail)
+        .readId(this.selectedWidget)
         .then(response => {
           this.widget = response;
         })
     },
     downloadwidiget() {
-      let config = {userId: this.currentUser.uid, widgetId: this.widget.id}
+      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
+      let params = { widget_id: this.widget.id }
       userWidgetService
-        .create(config)
+        .create(config, params)
         .then(response => {
           if(response.success) {
             this.loadCurrentUserWidgets()
@@ -102,7 +103,7 @@ export default {
         })
     },
     loadCurrentUserWidgets () {
-      let config = {userId: this.currentUser.uid}
+      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
       userWidgetService
         .read(config, { page_number: 1, page_size: 10 })
         .then(response => {
@@ -114,7 +115,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'openedWidgetDetail'])
+    ...mapGetters(['currentUser', 'selectedWidget', 'currentPage'])
   },
   mounted() {
     this.loadWidget();
@@ -185,8 +186,7 @@ export default {
       .widget-properties {
         height: 100%;
         padding: 0;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow: auto;
         .header {
           height: 40px;
           font-size: 15px;

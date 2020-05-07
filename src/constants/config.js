@@ -12,8 +12,8 @@ export const localeOptions = [
 ]
 
 // export const apiUrl = 'http://localhost:4000'
-export const apiUrl = 'https://madsiot.herokuapp.com/api'
-// 'https://02285a8e.ngrok.io'
+export const apiUrl = 'https://datakrewtech.com/api/'
+// export const apiUrl = 'http://192.168.0.105:4000'
 
 export const colors = [
   'light.purple',

@@ -1,36 +1,26 @@
 export default {
   state: {
-    openedWidgetDetail: null,
-    showWidgetStore: true,
-    showWidgetDetail: false
+    currentPage: 'index',
+    selectedWidget: null
   },
   getters: {
-    openedWidgetDetail: state => state.openedWidgetDetail,
-    showWidgetStore: state => state.showWidgetStore,
-    showWidgetDetail: state => state.showWidgetDetail
+    currentPage: state => state.currentPage,
+    selectedWidget: state => state.selectedWidget
   },
   mutations: {
-    setOpenedWidgetDetail (state, payload) {
-      state.openedWidgetDetail = payload
+    setSelectedWidget (state, payload) {
+      state.selectedWidget = payload
     },
-    setShowWidgetStoreState (state, payload) {
-      state.showWidgetStore = payload
-    },
-    setShowWidgetDetailState (state, payload) {
-      state.showWidgetDetail = payload
+    setCurrentPage (state, payload) {
+      state.currentPage = payload
     }
   },
   actions: {
-    async openWidgetDetail ({ commit, _ }, widget) {
-      commit('setOpenedWidgetDetail', widget.id)
-      commit('setShowWidgetStoreState', false)
-      commit('setShowWidgetDetailState', true)
+    async selectWidget ({ commit, _ }, widgetId) {
+      commit('setSelectedWidget', widgetId)
     },
-    async toggleWidgetStoreState ({ commit, _ }, toggleState) {
-      commit('setShowWidgetStoreState', toggleState)
-    },
-    async toggleWidgetDetailState ({ commit, _ }, toggleState) {
-      commit('setShowWidgetDetailState', toggleState)
+    async setCurrentPage ({ commit, _ }, page) {
+      commit('setCurrentPage', page)
     }
   }
 }

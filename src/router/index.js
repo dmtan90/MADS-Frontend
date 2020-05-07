@@ -11,10 +11,6 @@ const routes = [
     beforeEnter: AuthRequired
   },
   {
-    path: '*',
-    component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
-  },
-  {
     path: '/user',
     component: () => import(/* webpackChunkName: "user" */ '@/views/user'),
     redirect: '/user/login',
@@ -35,6 +31,15 @@ const routes = [
           import(/* webpackChunkName: "user" */ '@/views/user/ForgotPassword')
       }
     ]
+  },
+  {
+    path: '/set-password/:inviteToken',
+    component: () =>
+    import(/* webpackChunkName: "resetPassword" */ '@/views/user/SetPassword')
+  },
+  {
+    path: '*',
+    component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
   }
   // {
   //   path: '/',
@@ -389,7 +394,6 @@ const routes = [
 ]
 
 const router = new Router({
-  mode: 'history',
   routes
 })
 

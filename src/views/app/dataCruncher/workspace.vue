@@ -90,7 +90,7 @@ import "jointjs/dist/joint.core.css"
 import * as joint from "jointjs"
 import _ from "lodash"
 import { mapGetters, mapActions } from 'vuex'
-import treeView from "./treeView"
+import treeView from "../shared/outlineTreeView"
 import organizationService from "@/services/organization.service"
 
 export default {
@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     loadOrganization() {
-      let config = {userId: this.currentUser.uid}
+      let config = {userId: this.currentUser.id}
       organizationService
         .read(config)
         .then(response => {
@@ -262,10 +262,11 @@ export default {
     margin: 0;
     height: 100%;
     .left-panel {
+      background-color: white;
       border-right: 1px solid gray;
       padding: 0;
       height: 100%;
-      overflow: scroll;
+      overflow: auto;
       .header {
         display: flex;
         background: #f1f1f1;
@@ -321,12 +322,13 @@ export default {
       .data-excel {
         margin-top: 30px;
         height: 45%;
-        overflow: scroll;
+        overflow: auto;
         padding: 2px;
+        background-color: white;
         table {
           width: 100%;
           position: relative;
-          overflow: scroll;
+          overflow: auto;
           thead {
             position: fixed;
             z-index: 99;

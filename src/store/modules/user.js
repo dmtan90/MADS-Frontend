@@ -1,115 +1,77 @@
-import { UserService, AuthenticationError } from '@/services/user.service'
-import TokenService from '@/services/token.service'
-import router from '@/router'
+import _ from 'lodash'
 
 export default {
   state: {
-    currentUser: localStorage.getItem('user') != null ? JSON.parse(localStorage.getItem('user')) : null,
-    accessToken: TokenService.getToken(),
-    loginError: null,
-    loginErrorCode: null,
-    processing: false,
-    refreshTokenPromise: null
+    currentUser: null,
+    visualSettings: {
+      recently_visited_apps: [],
+      taskbar_pos: 'bottom',
+      desktop_wallpaper: null
+    },
+    dataSettings: {},
+    userSettingsId: false
   },
   getters: {
     currentUser: state => state.currentUser,
-    processing: state => state.processing,
-    loginError: state => state.loginError
+    visualSettings: state => state.visualSettings,
+    dataSettings: state => state.dataSettings,
+    userSettingsId: state => state.userSettingsId
   },
   mutations: {
-    setToken (state, payload) {
-      state.accessToken = payload
-      state.processing = false
-      state.loginError = null
-    },
-    setUser (state, payload) {
+    setUserProfile (state, payload) {
       state.currentUser = payload
     },
-    setLogout (state) {
-      state.currentUser = {}
-      state.processing = false
-      state.loginError = null
+    setVisualSettings (state, payload) {
+      state.visualSettings = _.merge({}, payload)
     },
-    setProcessing (state, payload) {
-      state.processing = payload
-      state.loginError = null
+    setDataSettings (state, payload) {
+      state.dataSettings = _.merge({}, payload)
     },
-    setError (state, payload) {
-      state.loginError = payload
-      state.currentUser = {}
-      state.processing = false
-    },
-    clearError (state) {
-      state.loginError = null
-    },
-    refreshTokenPromise (state, promise) {
-      state.refreshTokenPromise = promise
+    setUserSettingsId (state, payload) {
+      state.userSettingsId = payload
     }
   },
   actions: {
-    async login ({ commit }, payload) {
-      commit('setProcessing', true)
-
-      try {
-        const token = await UserService.login(payload.email, payload.password)
-        const user = {
-          'uid': 1,
-          'name': 'admin',
-          'email': 'admin@datakrew.com',
-          'img': 'https://via.placeholder.com/150'
-        }
-        commit('setToken', token)
-        commit('setUser', { ...user })
-
-        localStorage.setItem('user', JSON.stringify(user))
-
-        router.push(router.history.current.query.redirect || '/')
-
-        return true
-      } catch (error) {
-        if (error instanceof AuthenticationError) {
-          commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
-        }
+    async setUserProfile ({ commit, _ }, user) {
+      commit('setUserProfile', { ...user })
+      if (user.user_setting) {
+        let settings = user.user_setting
+        commit('setVisualSettings', settings.visual_settings)
+        commit('setDataSettings', settings.data_settings)
+        commit('setUserSettingsId', settings.user_setting_id)
       }
     },
-    async refreshAccess ({ commit, state }) {
-      commit('setProcessing', true)
 
-      // If this is the first time the refreshToken has been called, make a request
-      // otherwise return the same promise to the caller
-      if (!state.refreshTokenPromise) {
-        const p = UserService.refreshToken()
-        commit('refreshTokenPromise', p)
-
-        // Wait for the UserService.refreshToken() to resolve. On success set the token and clear promise
-        // Clear the promise on error as well.
-        p.then(
-          response => {
-            commit('refreshTokenPromise', null)
-            commit('setToken', response)
-          },
-          error => {
-            commit('refreshTokenPromise', null)
-            commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
-          }
-        )
+    async setUserSettings ({ commit, _ }, settings) {
+      if (settings) {
+        commit('setVisualSettings', settings.visual_settings)
+        commit('setDataSettings', settings.data_settings)
+        commit('setUserSettingsId', settings.user_setting_id)
       }
-
-      return state.refreshTokenPromise
     },
-    async logout ({ commit }) {
-      try {
-        UserService.logout()
-        commit('setLogout')
 
-        localStorage.removeItem('user')
-
-        router.push('/user/login')
-      } catch (error) {
-        if (error instanceof AuthenticationError) {
-          commit('setError', { errorCode: error.errorCode, errorMessage: error.message })
-        }
+    async setRecentVisitedApp ({ commit, state }, app) {
+      let recentlyVisitedApps = state.visualSettings.recently_visited_apps
+      if (_.includes(recentlyVisitedApps, app)) {
+        recentlyVisitedApps = _.remove(recentlyVisitedApps, (vistedApp) => {
+          return app === vistedApp
+        })
       }
+      recentlyVisitedApps = _.concat(app, state.visualSettings.recently_visited_apps)
+
+      let visualSettings = _.merge(state.visualSettings, {
+        recently_visited_apps: recentlyVisitedApps
+      })
+
+      commit('setVisualSettings', visualSettings)
+    },
+
+    async setDesktopWallpaper ({ commit, state }, wallpaper) {
+      let visualSettings = _.merge(state.visualSettings, {
+        desktop_wallpaper: wallpaper
+      })
+
+      commit('setVisualSettings', visualSettings)
     }
   }
 }

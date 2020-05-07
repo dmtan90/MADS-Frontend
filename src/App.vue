@@ -8,7 +8,6 @@
   body {
     height: 100%;
   }
-
   .vue-switcher div {
     height: 27px !important;
     width: 58px !important;
@@ -45,8 +44,10 @@
     width: 20%;
   }
   .vuetable{
-    thead tr th, tbody tr td {
-      font-size: 15px;
+    border: 1px solid #f3f3f3;
+    thead {
+      border-bottom: 1px solid #f3f3f3;
+      background-color: #f8f8f8;
     }
     .vuetable-body{
       .vuetable-slot {
@@ -88,6 +89,22 @@
       div:hover {
         background-color: rgba(242, 242, 242, 1) !important;
         color: #333 !important;
+      }
+    }
+  }
+  .modal {
+    .modal-content {
+      .modal-header {
+        border-bottom: none;
+        position: absolute;
+        right: 30px;
+        top: 25px;
+        padding: 0;
+        z-index: 999;
+        .close {
+          font-size: 30px;
+          padding: 0;
+        }
       }
     }
   }
@@ -154,7 +171,7 @@
             margin-right: 0;
             padding-right: 15px;
             height: 400px;
-            overflow: scroll;
+            overflow: auto;
             .wallpaper-img {
               width: 30%;
               height: 175px;
@@ -297,5 +314,34 @@
     //     border: 1px solid #cccccc;
     //   }
     // }
+    .check {
+      left: -1px;
+      top: -2px;
+    }
+  }
+  input, button:not(.btn-login):not(.btn-register) {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    border-color: #e4e9ef !important;
+    border-radius: 4px !important;
+  }
+  input, textarea {
+    border-color: #3172A8 !important;
+    border-radius: 4px !important;
+  }
+  .b-dropdown {
+    width: 100%;
+    text-align: left;
+    .dropdown-toggle, .dropdown-menu {
+      min-width: 100%;
+    }
+    .dropdown-toggle {
+      text-align: left;
+      &::after {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+      }
+    }
   }
 </style>

@@ -22,7 +22,7 @@
               </label>
               <div class="d-flex justify-content-between align-items-center">
                   <router-link tag="a" to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
-                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow" :disabled="processing">{{ $t('buttons.login')}}</b-button>
+                  <b-button type="submit" variant="primary" size="lg" class="btn-shadow btn-login">{{ $t('buttons.login')}}</b-button>
               </div>
           </b-form>
         </div>
@@ -31,7 +31,7 @@
   </b-row>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   data () {
@@ -41,26 +41,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'processing', 'loginError', 'loginErrorCode'])
   },
   methods: {
     ...mapActions(['login']),
     formSubmit () {
-      // this.email = 'admin@datakrew.com'
-      // this.password = 'datakrew'
-
       if (this.email !== '' && this.password !== '') {
         this.login({ email: this.email, password: this.password })
         this.password = ''
       }
     }
-  },
-  watch: {
-    loginError (val) {
-      if (val != null) {
-        this.$notify('error', 'Login Error', val, { duration: 3000, permanent: false })
-      }
-    }
   }
+  // watch: {
+  //   loginError (val) {
+  //     if (val != null) {
+  //       this.$notify('error', 'Login Error', val, { duration: 3000, permanent: false })
+  //     }
+  //   }
+  // }
 }
 </script>

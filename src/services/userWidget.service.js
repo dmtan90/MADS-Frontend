@@ -1,19 +1,18 @@
 import ApiService from '@/services/api.service'
-const resource = '/user_widgets'
 
 const userWidgetService = {
   read: async function (config, params) {
     try {
-      const response = await ApiService.get(resource + '?user_id=' + config.userId, { params })
+      const response = await ApiService.get(`/orgs/${config.orgId}/users/${config.userId}/widgets`, { params })
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  create: async function (config) {
+  create: async function (config, params) {
     try {
-      const response = await ApiService.post(resource + '?user_id=' + config.userId + '&widget_id=' + config.widgetId)
+      const response = await ApiService.post(`/orgs/${config.orgId}/users/${config.userId}/widgets`, params)
 
       return response.data
     } catch (error) {
