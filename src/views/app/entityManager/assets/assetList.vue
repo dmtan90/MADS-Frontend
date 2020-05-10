@@ -2,45 +2,44 @@
   <div>
     <div class="table-options">
       <div class="search-box">
-        <b-form-input v-model="searchText" placeholder="Search sensor types"></b-form-input>
+        <b-form-input v-model="searchText" placeholder="Search asset"></b-form-input>
       </div>
-      <div class="add-sensor-type">
-        <b-button v-b-modal.add-edit-sensor-type-modal>Add sensor type</b-button>
+      <div class="add-asset">
+        <b-button v-b-modal.add-edit-asset-modal>Add asset</b-button>
       </div>
     </div>
-    <div class="lists-table sensors-table">
+    <div class="lists-table assets-table">
       <vuetable
           ref="vuetable"
           :api-mode="false"
           :fields="fields"
-          :data="sensorTypes"
+          :data="assets"
         >
         <template v-slot:checkbox>
           <b-form-checkbox></b-form-checkbox>
         </template>
         <template v-slot:actions="props">
-          <span class="edit-sensor-type" @click="editSensorType(props.rowData)">Edit</span>
-          <span class="delete-sensor-type">Delete</span>
+          <span class="edit-asset" @click="editAsset(props.rowData)">Edit</span>
+          <span class="delete-asset">Delete</span>
         </template>
       </vuetable>
     </div>
 
     <!-- Modal Section -->
-    <add-edit-sensor-type ref="addEditSensorType"></add-edit-sensor-type>
-
+    <add-edit-asset ref="addEditAsset"></add-edit-asset>
   </div>
 </template>
 
 <script>
-import fieldsDef from './sensorTypeFieldsDef'
+import fieldsDef from './assetFieldsDef'
 import Vuetable from 'vuetable-2'
-import addEditSensorType from './addEditSensorType'
+import addEditAsset from './addEditAsset'
 
 export default {
-  props: ['sensorTypes'],
+  props: ['assets'],
   components: {
     Vuetable,
-    addEditSensorType
+    addEditAsset
   },
   data () {
     return {
@@ -49,8 +48,8 @@ export default {
     }
   },
   methods: {
-    editSensorType (sensorType) {
-      this.$refs.addEditSensorType.edit()
+    editAsset (asset) {
+      this.$refs.addEditAsset.edit()
     }
   }
 }
@@ -77,13 +76,13 @@ export default {
         top: -20px;
       }
     }
-    .add-sensor-type {
+    .add-asset {
       margin: 0 0 0 auto;
     }
   }
-  .sensors-table {
+  .assets-table {
     margin-top: 30px;
-    .edit-sensor-type, .delete-sensor-type {
+    .edit-asset, .delete-asset {
       text-decoration: underline;
       color: #2aa7ff;
       cursor: pointer;
