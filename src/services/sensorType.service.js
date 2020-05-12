@@ -3,36 +3,36 @@ import ApiService from '@/services/api.service'
 const resource = '/sensor_type'
 
 const sensorTypeService = {
-  create: async function (payload) {
+  create: async function (config, payload) {
     try {
-      const response = await ApiService.post(resource, payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  read: async function (params) {
+  read: async function (config, params) {
     try {
-      const response = await ApiService.get(resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + resource, { params })
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  update: async function (id, payload) {
+  update: async function (config, payload) {
     try {
-      const response = await ApiService.put(resource + '/' + id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.id, payload)
 
       return response.data
     } catch (error) {
       return error.response.data
     }
   },
-  delete: async function (id) {
+  delete: async function (config) {
     try {
-      const response = await ApiService.delete(resource + '/' + id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.id)
 
       return response.data
     } catch (error) {

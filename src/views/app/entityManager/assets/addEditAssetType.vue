@@ -9,7 +9,7 @@
     @select-section="selectSection($event)"
     @next-section="nextSection()"
     @on-cancel="onCancel()"
-    @on-save="saveAsset()">
+    @on-save="saveAssetType()">
     <template v-slot:right-panel>
       <sections :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
     </template>
@@ -57,7 +57,7 @@ export default {
         this.allSectionsVisited = true
       }
     },
-    saveAsset () {
+    saveAssetType () {
       this.selectedSectionIndex = 1
       this.allSectionsVisited = false
     },

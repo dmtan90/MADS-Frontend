@@ -13,8 +13,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import sensorList from './sensorList'
 import sensorTypeList from './sensorTypeList'
+import sensorTypeService from '@/services/sensorType.service'
+import SensorEventBus from './sensorEventBus'
 
 export default {
   components: {
@@ -29,37 +32,22 @@ export default {
   },
   methods: {
     loadSensorTypes () {
-      this.sensorTypes = [
-        {
-          name: 'Sensor Type 1',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 2',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 3',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        },
-        {
-          name: 'Sensor Type 4',
-          metadata: 'metadata1, metadata2, metadata3',
-          parameters: 'parameter1, parameter2, parameter3',
-          creator: 'creator name'
-        }
-
-      ]
+      let config = { orgId: this.currentUser.org.id }
+      sensorTypeService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.sensorTypes = response.sensors_type
+        })
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   },
   mounted () {
     this.loadSensorTypes()
+
+    SensorEventBus.$on('reload-sensor-types', () => {
+      this.loadSensorTypes()
+    })
   }
 }
 </script>

@@ -5,7 +5,7 @@
         <b-form-input v-model="searchText" placeholder="Search sensor types"></b-form-input>
       </div>
       <div class="add-sensor-type">
-        <b-button v-b-modal.add-edit-sensor-type-modal>Add sensor type</b-button>
+        <b-button @click="addSensorType()">Add sensor type</b-button>
       </div>
     </div>
     <div class="lists-table sensors-table">
@@ -18,9 +18,15 @@
         <template v-slot:checkbox>
           <b-form-checkbox></b-form-checkbox>
         </template>
+        <template v-slot:metadata="props">
+          {{props.rowData.metadata.length}} Metadata
+        </template>
+        <template v-slot:parameters="props">
+          {{props.rowData.parameters.length}} Parameters
+        </template>
         <template v-slot:actions="props">
           <span class="edit-sensor-type" @click="editSensorType(props.rowData)">Edit</span>
-          <span class="delete-sensor-type">Delete</span>
+          <span class="delete-sensor-type" @click="deleteSensorType(props.rowData)">Delete</span>
         </template>
       </vuetable>
     </div>
@@ -32,15 +38,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import fieldsDef from './sensorTypeFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditSensorType from './addEditSensorType'
+import sensorTypeService from '@/services/sensorType.service'
+import SensorEventBus from './sensorEventBus'
 
 export default {
-  props: ['sensorTypes'],
   components: {
     Vuetable,
     addEditSensorType
+  },
+  props: {
+    sensorTypes: {
+      type: Array
+    }
   },
   data () {
     return {
@@ -49,9 +62,22 @@ export default {
     }
   },
   methods: {
+    addSensorType (sensorType) {
+      this.$refs.addEditSensorType.add()
+    },
     editSensorType (sensorType) {
-      this.$refs.addEditSensorType.edit()
+      this.$refs.addEditSensorType.edit(sensorType)
+    },
+    deleteSensorType (sensorType) {
+      let config = { orgId: this.currentUser.org.id, id: sensorType.id }
+      sensorTypeService.delete(config)
+        .then((response) => {
+          SensorEventBus.$emit('reload-sensor-types')
+        })
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

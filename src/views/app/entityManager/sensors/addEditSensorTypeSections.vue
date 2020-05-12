@@ -4,25 +4,25 @@
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
         <b-form-group label="Sensor Type Name" label-for="sensor-type-name">
-          <b-form-input id="sensor-type-name" type="text" required></b-form-input>
+          <b-form-input v-model="sensorType.name" id="sensor-type-name" type="text" required></b-form-input>
         </b-form-group>
         <b-form-group label="Sensor Type Description" label-for="sensor-type-description" class="description">
-          <b-form-textarea id="sensor-type-description" rows="6" max-rows="6"></b-form-textarea>
+          <b-form-textarea v-model="sensorType.description" id="sensor-type-description" rows="6" max-rows="6"></b-form-textarea>
         </b-form-group>
       </b-form>
     </section>
     <section v-if="selectedSectionIndex === 2" class="metadata">
       <div class="metadata-group">
-        <b-form class="horizontal-form" v-for="count in newMetadataCount" :key="count">
-          <b-form-group :label="count === 1  ? 'Metadata Name(key)' : ''" class="name">
-            <b-form-input type="text"></b-form-input>
+        <b-form class="horizontal-form" v-for="(metadata, index) in sensorType.metadata" :key="index">
+          <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
+            <b-form-input v-model="metadata.name" type="text"></b-form-input>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Data Type' : ''" class="data-type">
-            <multiselect :options="[{name: 'Type 1'}, {name: 'Type 2'}, {name: 'Type 3'}, {name: 'Type 4'}, {name: 'Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="id">
+          <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
+            <multiselect v-model="metadata.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Unit' : ''" class="unit">
-            <b-form-input></b-form-input>
+          <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
+            <b-form-input v-model="metadata.unit"></b-form-input>
           </b-form-group>
         </b-form>
         <b-button class="add-new-row" @click="addNewMetadata()">
@@ -35,16 +35,16 @@
     </section>
     <section v-if="selectedSectionIndex ===3" class="parameters">
       <div class="metadata-group">
-        <b-form class="horizontal-form" v-for="count in newParameterCount" :key="count">
-          <b-form-group :label="count === 1  ? 'Parameter Name(key)' : ''" class="name">
-            <b-form-input type="text"></b-form-input>
+        <b-form class="horizontal-form" v-for="(parameter, index) in sensorType.parameters" :key="index">
+          <b-form-group :label="(index === 0)  ? 'Parameter Name(key)' : ''" class="name">
+            <b-form-input v-model="parameter.name" type="text"></b-form-input>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Data Type' : ''" class="data-type">
-            <multiselect :options="[{name: 'Type 1'}, {name: 'Type 2'}, {name: 'Type 3'}, {name: 'Type 4'}, {name: 'Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="id">
+          <b-form-group :label="(index === 0)  ? 'Data Type' : ''" class="data-type">
+            <multiselect v-model="parameter.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
-          <b-form-group :label=" count === 1  ? 'Unit' : ''" class="unit">
-            <b-form-input></b-form-input>
+          <b-form-group :label=" (index === 0)  ? 'Unit' : ''" class="unit">
+            <b-form-input v-model="parameter.unit"></b-form-input>
           </b-form-group>
         </b-form>
         <b-button class="add-new-row" @click="addNewParameter()">
@@ -68,22 +68,49 @@ export default {
     editMode: {
       type: Boolean,
       default: false
+    },
+    sensorTypeData: {
+      type: Object
     }
   },
   data () {
     return {
-      name: '',
-      description: '',
-      newMetadataCount: 1,
-      newParameterCount: 1
+      sensorType: {
+        name: '',
+        description: '',
+        metadata: [{ name: '', data_type: '', unit: '' }],
+        parameters: [{ name: '', data_type: '', unit: '' }]
+      }
     }
   },
   methods: {
     addNewMetadata () {
-      this.newMetadataCount++
+      let metadata = this.$_.concat(this.sensorType.metadata, [{ name: '', data_type: '', unit: '' }])
+      this.sensorType = this.$_.assign(this.sensorType, { metadata: metadata })
     },
     addNewParameter () {
-      this.newParameterCount++
+      let parameters = this.$_.concat(this.sensorType.parameters, [{ name: '', data_type: '', unit: '' }])
+      this.sensorType = this.$_.assign(this.sensorType, { parameters: parameters })
+    },
+    getSensorTypeData () {
+      return this.sensorType
+    }
+  },
+  mounted () {
+    if (this.sensorTypeData) {
+      this.sensorType = {
+        name: this.sensorTypeData.name || '',
+        description: this.sensorTypeData.description || '',
+        metadata: this.$_.size(this.sensorTypeData.metadata) ? this.sensorTypeData.metadata : [{ name: '', data_type: '', unit: '' }],
+        parameters: this.$_.size(this.sensorTypeData.parameters) ? this.sensorTypeData.parameters : [{ name: '', data_type: '', unit: '' }]
+      }
+    } else {
+      this.sensorType = {
+        name: '',
+        description: '',
+        metadata: [{ name: '', data_type: '', unit: '' }],
+        parameters: [{ name: '', data_type: '', unit: '' }]
+      }
     }
   }
 }
@@ -92,11 +119,6 @@ export default {
 <style lang="scss" scoped>
   h3 {
     margin-bottom: 20px;
-  }
-  .details {
-    .description {
-      // height: 225px;
-    }
   }
   .metadata-group {
     margin-bottom: 45px;
