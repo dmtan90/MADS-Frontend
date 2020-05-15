@@ -26,10 +26,11 @@ import VueEasyCm from 'vue-easycm'
 import _ from 'lodash'
 import Multiselect from 'vue-multiselect'
 import * as moment from 'moment-timezone'
+import Vue2OrgTree from 'vue2-org-tree'
 
 import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 import VTree from 'vue-tree-halower'
-import 'vue-multiselect/dist/vue-multiselect.min.css'  
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 /* SERVICE -begin */
 import ApiService from '@/services/api.service'
@@ -51,8 +52,8 @@ Vue.use(VTooltip)
 Vue.use(VueEasyCm)
 Vue.use(ToggleButton)
 Vue.component('multiselect', Multiselect)
-
 Vue.use(VTree)
+Vue.use(Vue2OrgTree)
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })

@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import EntityManagerBus from '../entityManager/entityManagerBus'
+
 export default {
   props: {
     modalID: {
@@ -59,6 +61,11 @@ export default {
       this.$emit('on-save')
       this.$refs[this.modalRef].hide()
     }
+  },
+  mounted () {
+    EntityManagerBus.$on('open-mads-modal', (modalRef) => {
+      this.$refs[modalRef] && this.$refs[modalRef].show()
+    })
   }
 }
 </script>
