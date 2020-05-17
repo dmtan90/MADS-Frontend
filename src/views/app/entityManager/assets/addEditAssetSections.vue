@@ -4,13 +4,13 @@
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
         <b-form-group label="Asset Type" label-for="asset-type">
-          <multiselect :options="[{name: 'Asset Type 1'}, {name: 'Asset Type 2'}, {name: 'Asset Type 3'}, {name: 'Asset Type 4'}, {name: 'Asset Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
+          <multiselect v-model="asset.asset_type" :options="[{name: 'Asset Type 1'}, {name: 'Asset Type 2'}, {name: 'Asset Type 3'}, {name: 'Asset Type 4'}, {name: 'Asset Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Asset Name" label-for="asset-name">
-          <b-form-input type="text" id="asset-name"></b-form-input>
+          <b-form-input v-model="asset.name" type="text" id="asset-name"></b-form-input>
         </b-form-group>
         <b-form-group label="Asset Description" label-for="asset-description" class="description">
-          <b-form-textarea id="sensor-type-description" rows="6" max-rows="6"></b-form-textarea>
+          <b-form-textarea v-model="asset.description" id="asset-description" rows="6" max-rows="6"></b-form-textarea>
         </b-form-group>
       </b-form>
     </section>
@@ -27,88 +27,19 @@
     </section>
     <section v-if="selectedSectionIndex === 3" class="metadata">
       <div class="metadata-group">
-        <b-form class="horizontal-form">
-          <b-form-group label="Metadata Name(key)" disabled class="name">
-            <b-form-input type="text" value="Brand 1"></b-form-input>
+        <b-form class="horizontal-form" v-for="(metadata, index) in asset.metadata" :key="index">
+          <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
+            <b-form-input v-model="metadata.name" type="text"></b-form-input>
           </b-form-group>
-          <b-form-group label="Data Type" disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
+          <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
+            <multiselect v-model="metadata.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
+            </multiselect>
           </b-form-group>
-          <b-form-group label="Unit" disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
+          <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
+            <b-form-input v-model="metadata.unit"></b-form-input>
           </b-form-group>
-          <b-form-group label="Value" class="value">
-            <b-form-input type="text"></b-form-input>
-          </b-form-group>
-        </b-form>
-        <b-form class="horizontal-form">
-          <b-form-group disabled class="name">
-            <b-form-input type="text" value="Brand 2"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
-          </b-form-group>
-          <b-form-group class="value">
-            <b-form-input type="text"></b-form-input>
-          </b-form-group>
-        </b-form>
-        <b-form class="horizontal-form">
-          <b-form-group disabled class="name">
-            <b-form-input type="text" value="Brand 3"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
-          </b-form-group>
-          <b-form-group class="value">
-            <b-form-input type="text"></b-form-input>
-          </b-form-group>
-        </b-form>
-        <b-form class="horizontal-form">
-          <b-form-group disabled class="name">
-            <b-form-input type="text" value="Brand 4"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
-          </b-form-group>
-          <b-form-group class="value">
-            <b-form-input type="text"></b-form-input>
-          </b-form-group>
-        </b-form>
-        <b-form class="horizontal-form">
-          <b-form-group disabled class="name">
-            <b-form-input type="text" value="Brand 5"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
-          </b-form-group>
-          <b-form-group class="value">
-            <b-form-input type="text"></b-form-input>
-          </b-form-group>
-        </b-form>
-        <b-form class="horizontal-form">
-          <b-form-group disabled class="name">
-            <b-form-input type="text" value="Brand 5"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="data-type">
-            <b-form-input type="text" value="String"></b-form-input>
-          </b-form-group>
-          <b-form-group disabled class="unit">
-            <b-form-input type="text" value="N/A"></b-form-input>
-          </b-form-group>
-          <b-form-group class="value">
-            <b-form-input type="text"></b-form-input>
+          <b-form-group :label="(index === 0) ? 'Value' : ''" class="value">
+            <b-form-input v-model="metadata.value"></b-form-input>
           </b-form-group>
         </b-form>
       </div>
@@ -130,18 +61,17 @@ export default {
   },
   data () {
     return {
-      name: '',
-      description: '',
-      newMetadataCount: 1,
-      newParameterCount: 1
+      asset: {
+        asset_type: null,
+        name: '',
+        description: '',
+        metadata: [{ name: 'Metadata 1', data_type: 'String', unit: 'unit1', value: '' }]
+      }
     }
   },
   methods: {
-    addNewMetadata () {
-      this.newMetadataCount++
-    },
-    addNewParameter () {
-      this.newParameterCount++
+    getAssetData () {
+      return this.asset
     }
   }
 }

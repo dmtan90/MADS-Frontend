@@ -4,7 +4,7 @@ const renderCollapsExpandIcon = (h, node, context) => {
   const { listeners } = context
   const clickHandler = listeners['on-expand-collapse-click']
 
-  let icon = node.expanded ? 'collapse-expand' : 'collapse-expand'
+  let icon = 'collapse-expand'
 
   return h(
     'div', {
@@ -21,8 +21,8 @@ const renderCollapsExpandIcon = (h, node, context) => {
         {
           class: {
             'icon': true,
-            'expanded': node.expanded,
-            'collapsed': !node.expanded
+            'expanded': node.options ? node.options.expanded : false,
+            'collapsed': node.options ? !node.options.expanded : true
           }
         },
         [
@@ -40,7 +40,7 @@ const renderCollapsExpandIcon = (h, node, context) => {
   )
 }
 
-const renderAddSiblingNodeOption = (h, node, context) => {
+const renderAddSiblingNodeOption = (h, node, context, parentNode) => {
   const { listeners } = context
   const clickHandler = listeners['on-add-sibling-entity']
 
@@ -54,7 +54,7 @@ const renderAddSiblingNodeOption = (h, node, context) => {
         'add-sibling-node': true
       },
       on: {
-        click: e => clickHandler && clickHandler(e, node)
+        click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode })
       }
     }, [
       h(
@@ -85,7 +85,7 @@ const renderAddSiblingNodeOption = (h, node, context) => {
   ])
 }
 
-const renderAddChildNodeOption = (h, node, context) => {
+const renderAddChildNodeOption = (h, node, context, parentNode) => {
   const { listeners } = context
   const clickHandler = listeners['on-add-child-entity']
 
@@ -99,7 +99,7 @@ const renderAddChildNodeOption = (h, node, context) => {
         'add-child-node': true
       },
       on: {
-        click: e => clickHandler && clickHandler(e, node)
+        click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode })
       }
     }, [
       h(
@@ -130,16 +130,20 @@ const renderAddChildNodeOption = (h, node, context) => {
   ])
 }
 
-const renderLeafNodeLabel = (h, node, context) => {
-  let isSensorTypeNode = (node.type === 'Sensor')
+const renderLeafNodeLabel = (h, node, context, parentNode) => {
+  let isHoverSiblingOption = node.options ? node.options.hoverOptions.sibling : false
+  let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
   let children = [
-    h('span', node.label),
-    renderAddSiblingNodeOption(h, node, context)
+    h('span', node.options ? node.options.label : '')
   ]
 
-  if (!isSensorTypeNode) {
-    children = _.concat(children, renderAddChildNodeOption(h, node, context))
+  if (isHoverSiblingOption) {
+    children = _.concat(children, renderAddSiblingNodeOption(h, node, context, parentNode))
+  }
+
+  if (isHoverChildOption) {
+    children = _.concat(children, renderAddChildNodeOption(h, node, context, parentNode))
   }
 
   return h(
@@ -159,7 +163,22 @@ const renderLeafNodeLabel = (h, node, context) => {
   )
 }
 
-const renderNodeLabel = (h, node, context) => {
+const renderNodeLabel = (h, node, context, parentNode) => {
+  let isHoverSiblingOption = node.options ? node.options.hoverOptions.sibling : false
+  let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
+
+  let children = [
+    h('span', node.options ? node.options.label : '')
+  ]
+
+  if (isHoverSiblingOption) {
+    children = _.concat(children, renderAddSiblingNodeOption(h, node, context, parentNode))
+  }
+
+  if (isHoverChildOption) {
+    children = _.concat(children, renderAddChildNodeOption(h, node, context, parentNode))
+  }
+
   return h(
     'div',
     {
@@ -172,18 +191,14 @@ const renderNodeLabel = (h, node, context) => {
         class: {
           'tree-node-text': true
         }
-      }, [
-        h('span', node.label),
-        renderAddSiblingNodeOption(h, node, context),
-        renderAddChildNodeOption(h, node, context)
-      ]),
+      }, children),
       renderCollapsExpandIcon(h, node, context)
     ]
   )
 }
 
-const renderLeafNode = (h, node, context) => {
-  let nodeClasses = node.classes
+const renderLeafNode = (h, node, context, parentNode) => {
+  let nodeClasses = node.options ? node.options.classes : []
 
   nodeClasses = _.reduce(nodeClasses, (nodeClassObj, nodeClass) => {
     nodeClassObj[_.lowerCase(nodeClass)] = true
@@ -199,13 +214,13 @@ const renderLeafNode = (h, node, context) => {
       }, nodeClasses)
     },
     [
-      renderLeafNodeLabel(h, node, context)
+      renderLeafNodeLabel(h, node, context, parentNode)
     ]
   )
 }
 
-const renderNode = (h, node, context) => {
-  let nodeClasses = node.classes
+const renderNode = (h, node, context, parentNode = null) => {
+  let nodeClasses = node.options ? node.options.classes : []
 
   nodeClasses = _.reduce(nodeClasses, (nodeClassObj, nodeClass) => {
     nodeClassObj[_.lowerCase(nodeClass)] = true
@@ -217,12 +232,12 @@ const renderNode = (h, node, context) => {
     {
       class: _.merge({
         'tree-node': true,
-        'expanded': node.expanded,
-        'collapsed': !node.expanded
+        'expanded': node.options ? node.options.expanded : false,
+        'collapsed': node.options ? !node.options.expanded : true
       }, nodeClasses)
     },
     [
-      renderNodeLabel(h, node, context),
+      renderNodeLabel(h, node, context, parentNode),
       h(
         'div',
         {
@@ -230,20 +245,18 @@ const renderNode = (h, node, context) => {
             'tree-node-children': true
           }
         },
-        renderChildren(h, node.children, context)
+        renderChildren(h, node.children, context, node)
       )
     ]
   )
 }
 
-const renderChildren = (h, children, context) => {
+const renderChildren = (h, children, context, parentNode) => {
   return _.map(children, (node) => {
-    let isLeafNode = node.isLeaf
-
-    if (isLeafNode) {
-      return renderLeafNode(h, node, context)
+    if (node.children) {
+      return renderNode(h, node, context, parentNode)
     } else {
-      return renderNode(h, node, context)
+      return renderLeafNode(h, node, context, parentNode)
     }
   })
 }
@@ -252,6 +265,8 @@ export default {
   functional: true,
   render (createElement, context) {
     const { props } = context
-    return renderNode(createElement, props.data, context)
+    if (!_.isEmpty(props.data)) {
+      return renderNode(createElement, props.data, context)
+    }
   }
 }

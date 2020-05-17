@@ -11,7 +11,7 @@
     @on-cancel="onCancel()"
     @on-save="saveAsset()">
     <template v-slot:right-panel>
-      <sections :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
     </template>
   </mads-modal>
 </template>
@@ -60,6 +60,8 @@ export default {
     saveAsset () {
       this.selectedSectionIndex = 1
       this.allSectionsVisited = false
+      let assetData = this.$refs.sections.getAssetData()
+      this.$emit('save-asset', assetData)
     },
     onCancel () {
       this.selectedSectionIndex = 1

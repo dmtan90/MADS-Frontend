@@ -11,7 +11,7 @@
     @on-cancel="onCancel()"
     @on-save="saveSensor()">
     <template v-slot:right-panel>
-      <sections :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
     </template>
   </mads-modal>
 </template>
@@ -60,6 +60,8 @@ export default {
     saveSensor () {
       this.selectedSectionIndex = 1
       this.allSectionsVisited = false
+      let sensorData = this.$refs.sections.getSensorData()
+      this.$emit('save-sensor', sensorData)
     },
     onCancel () {
       this.selectedSectionIndex = 1

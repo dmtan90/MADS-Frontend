@@ -2,7 +2,7 @@
   <div>
     <b-modal id="entity-modal" ref="entityModal" size="md" hide-footer>
       <div class="entity-modal-body">
-        <h3>Add {{newEntityType}} Entity</h3>
+        <h3>Add {{entityType}} Entity</h3>
         <div class="entity-types">
           <div class="entity asset" @click="addAsset()">
             <svg class="icon">
@@ -23,13 +23,14 @@
       </div>
     </b-modal>
 
-    <add-asset ref="addAsset"></add-asset>
-    <add-sensor ref="addSensor"></add-sensor>
+    <add-asset ref="addAsset" @save-asset="onSaveAsset($event)"></add-asset>
+    <add-sensor ref="addSensor" @save-sensor="onSaveSensor($event)"></add-sensor>
   </div>
 </template>
 
 <script>
 import EntityManagerBus from '../entityManagerBus'
+import EntityMapBus from './entityMapBus'
 import addAsset from '../assets/addEditAsset'
 import addSensor from '../sensors/addEditSensor'
 
@@ -39,11 +40,7 @@ export default {
     addSensor
   },
   props: {
-    relativeEntity: {
-      type: Object,
-      required: true
-    },
-    newEntityType: {
+    entityType: {
       type: String,
       required: true
     }
@@ -56,6 +53,12 @@ export default {
     addSensor () {
       this.$refs.entityModal.hide()
       EntityManagerBus.$emit('open-mads-modal', 'createSensorModal')
+    },
+    onSaveAsset (data) {
+      EntityMapBus.$emit('add-entity', { entity: data, type: 'Asset' })
+    },
+    onSaveSensor (data) {
+      EntityMapBus.$emit('add-entity', { entity: data, type: 'Sensor' })
     },
     onCancel () {
       this.$refs.entityModal.hide()

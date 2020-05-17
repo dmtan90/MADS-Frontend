@@ -348,6 +348,9 @@
   // mads-vue-tree
   .vue-tree-container {
     .vue-tree {
+      width: 100%;
+      height: calc(100% - 45px);
+      overflow: auto;
       display: flex;
       align-items: flex-start;
       .tree-node {
@@ -360,12 +363,12 @@
           min-width: 90px;
           margin: 0 10px;
           text-align: center;
-          // border: 1px solid #ddd;
           border-radius: 4px;
           box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
           cursor: pointer;
           white-space: nowrap;
           position: relative;
+          text-transform: capitalize;
           .icon-container {
             width: 21px;
             height: 21px;
@@ -499,13 +502,13 @@
             }
             &::after {
               left: 50%;
-              border-left: 1px solid #FA8072;
+              border-left: 1px solid #FFA07A;
             }
             &:not(:first-child)::before {
-              border-top: 1px solid #FA8072;
+              border-top: 1px solid #FFA07A;
             }
             &:not(:last-child)::after {
-              border-top: 1px solid #FA8072;
+              border-top: 1px solid #FFA07A;
             }
           }
         }
@@ -515,10 +518,16 @@
           }
         }
         &.organisation {
-          margin: auto;
           .tree-node-label {
             .tree-node-text {
               background-color: #ff692e;
+            }
+          }
+        }
+        &.project {
+          .tree-node-label {
+            .tree-node-text {
+              background-color: #e1d276;
             }
           }
         }
