@@ -1,7 +1,7 @@
 <template>
   <div class="properties-container">
     <ul class="properties">
-      <li class="property" v-for="(value, key) in properties" :key="key">
+      <li class="property" v-for="key in propertyKeys" :key="key">
         <div class="header">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
@@ -14,12 +14,12 @@
           </svg>
         </div>
         <div class="body">
-          <span>Reliance Corp</span>
+          <span>{{entity[key]}}</span>
         </div>
       </li>
     </ul>
     <div class="footer">
-      <b-button class="delete-btn">Delete</b-button>
+      <b-button class="delete-btn" @click="onDelete()">Delete</b-button>
       <b-button class="save-btn">Save</b-button>
     </div>
   </div>
@@ -27,20 +27,15 @@
 
 <script>
 export default {
+  props: ['entity'],
   data () {
     return {
-      properties: {
-        name: 'Reliance Corp',
-        entity: 'Organization',
-        type: '',
-        description: 'Indian MNC, with HQ in Mumbai',
-        metadata: [
-          { name: 'Incorporated', value: '1973' },
-          { name: 'Employees', value: '194,056' },
-          { name: 'Website', value: 'www.ril.com' }
-        ],
-        parameters: []
-      }
+      propertyKeys: ['name', 'entity', 'type', 'description', 'metadata', 'parameters']
+    }
+  },
+  methods: {
+    onDelete () {
+      this.$emit('delete-entity')
     }
   }
 }
@@ -77,9 +72,6 @@ export default {
       }
     }
     .footer {
-      position: absolute;
-      bottom: 0;
-      right: 0;
       padding: 10px;
       .delete-btn {
         background-color: #F32013 !important;

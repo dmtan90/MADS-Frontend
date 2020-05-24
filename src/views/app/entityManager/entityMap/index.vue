@@ -9,6 +9,7 @@
             @on-expand-collapse-click="onExpandCollapseClick"
             @on-add-sibling-entity="onAddSiblingEntity"
             @on-add-child-entity="onAddChildEntity"
+            @on-node-click="selectEntity"
           >
           </mads-org-tree>
         </div>
@@ -18,8 +19,10 @@
           <li :class="{active: selectedTab === 'properties'}" @click="selectedTab = 'properties'">Properties</li>
           <li :class="{active: selectedTab === 'settings'}" @click="selectedTab = 'settings'">Settings</li>
         </ul>
-        <entity-properties v-if="selectedTab === 'properties'"></entity-properties>
-        <entity-settings v-else></entity-settings>
+        <div v-if="selectedEntity">
+          <entity-properties v-if="selectedTab === 'properties'" :entity="selectedEntity" @delete-entity="deleteEntity()"></entity-properties>
+          <entity-settings v-else></entity-settings>
+        </div>
       </div>
       <entity-modal ref="addEntityModal" :entityType="entityType"></entity-modal>
     </div>
@@ -52,13 +55,14 @@ export default {
       relativeEntity: {},
       entityType: '',
       selectedTab: 'properties',
+      selectedEntity: null,
+      selectedParentEntity: null,
       isDataLoading: false
     }
   },
   methods: {
     loadProjectEntities () {
       this.isDataLoading = true
-
       let config = { orgId: this.currentUser.org.id, projectId: 1 }
       entityService
         .read(config)
@@ -100,7 +104,8 @@ export default {
             label: entity.name,
             classes: [entity.type],
             expanded: true,
-            hoverOptions: this.getHoverOptions(entity.type)
+            hoverOptions: this.getHoverOptions(entity.type),
+            visible: true
           }
         },
         {
@@ -113,10 +118,15 @@ export default {
           options: {
             label: entity.name,
             classes: [entity.type],
-            hoverOptions: this.getHoverOptions(entity.type)
+            hoverOptions: this.getHoverOptions(entity.type),
+            visible: true
           }
         }))
       }
+    },
+    selectEntity (e, data) {
+      this.selectedEntity = data.node
+      this.selectedParentEntity = data.parentNode
     },
     onExpandCollapseClick (e, data) {
       this.$set(data.options, 'expanded', !data.options.expanded)
@@ -140,7 +150,8 @@ export default {
         options: {
           label: entity.name,
           classes: [data.type],
-          hoverOptions: this.getHoverOptions(data.type)
+          hoverOptions: this.getHoverOptions(data.type),
+          visible: true
         }
       })
       let children = this.$_.concat(parentNode.children || [], node)
@@ -149,6 +160,12 @@ export default {
       this.$set(parentNode, 'children', children)
       this.$set(parentNode, 'entities', entities)
       this.$set(parentNode.options, 'expanded', true)
+
+      this.treeData = this.$_.assign({}, this.treeData)
+    },
+    deleteEntity () {
+      this.$set(this.selectedEntity.options, 'visible', false)
+      this.$set(this.selectEntity, 'action', 'delete')
 
       this.treeData = this.$_.assign({}, this.treeData)
     },

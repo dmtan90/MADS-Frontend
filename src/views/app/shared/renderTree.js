@@ -131,6 +131,9 @@ const renderAddChildNodeOption = (h, node, context, parentNode) => {
 }
 
 const renderLeafNodeLabel = (h, node, context, parentNode) => {
+  const { listeners } = context
+  const clickHandler = listeners['on-node-click']
+
   let isHoverSiblingOption = node.options ? node.options.hoverOptions.sibling : false
   let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
@@ -157,6 +160,9 @@ const renderLeafNodeLabel = (h, node, context, parentNode) => {
       h('div', {
         class: {
           'tree-node-text': true
+        },
+        on: {
+          click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode })
         }
       }, children)
     ]
@@ -164,6 +170,9 @@ const renderLeafNodeLabel = (h, node, context, parentNode) => {
 }
 
 const renderNodeLabel = (h, node, context, parentNode) => {
+  const { listeners } = context
+  const clickHandler = listeners['on-node-click']
+
   let isHoverSiblingOption = node.options ? node.options.hoverOptions.sibling : false
   let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
@@ -190,6 +199,9 @@ const renderNodeLabel = (h, node, context, parentNode) => {
       h('div', {
         class: {
           'tree-node-text': true
+        },
+        on: {
+          click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode })
         }
       }, children),
       renderCollapsExpandIcon(h, node, context)
