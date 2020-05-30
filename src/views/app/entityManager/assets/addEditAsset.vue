@@ -11,14 +11,17 @@
     @on-cancel="onCancel()"
     @on-save="saveAsset()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :assetData="asset"></sections>
     </template>
   </mads-modal>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditAssetSections'
+import assetService from '@/services/asset.service'
+import AssetEventBus from './assetEventBus'
 
 export default {
   props: {
@@ -40,13 +43,20 @@ export default {
         index: 3,
         name: 'Metadata <br> (Fixed Data)'
       }],
-      selectedSectionIndex: 1
+      selectedSectionIndex: 1,
+      asset: null
     }
   },
   methods: {
+    add (asset) {
+      this.editMode = false
+      this.$refs.madsModal.$refs.createAssetModal.show()
+      this.asset = null
+    },
     edit (asset) {
       this.editMode = true
       this.$refs.madsModal.$refs.createAssetModal.show()
+      this.asset = asset
     },
     selectSection (index) {
       this.selectedSectionIndex = index
@@ -58,15 +68,32 @@ export default {
       }
     },
     saveAsset () {
-      this.selectedSectionIndex = 1
-      this.allSectionsVisited = false
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
       let assetData = this.$refs.sections.getAssetData()
-      this.$emit('save-asset', assetData)
+
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.asset.id })
+        assetService.update(config, assetData)
+          .then((response) => {
+            AssetEventBus.$emit('reload-assets')
+          })
+      } else {
+        assetService.create(config, assetData)
+          .then((response) => {
+            AssetEventBus.$emit('reload-assets')
+          })
+      }
+
+      // this.$emit('save-asset', assetData)
+      this.selectedSectionIndex = 1
     },
     onCancel () {
       this.selectedSectionIndex = 1
       this.allSectionsVisited = false
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

@@ -34,7 +34,9 @@
               Asset Properties
             </div>
           </div>
-          <tree-view :treeData="treeData" v-if="treeData"></tree-view>
+          <div class="vue-tree-container">
+            <mads-tree ref="tree" :treeData="treeData" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
+          </div>
         </div>
         <div v-if="leftPanelSection === 'functions'">Functions</div>
         <div v-if="leftPanelSection === 'widgets'">Widgets</div>
@@ -90,17 +92,20 @@ import "jointjs/dist/joint.core.css"
 import * as joint from "jointjs"
 import _ from "lodash"
 import { mapGetters, mapActions } from 'vuex'
-import treeView from "../shared/outlineTreeView"
-import organizationService from "@/services/organization.service"
+import entityService from '@/services/entity.service'
+import treeService from '@/services/tree.service'
+import madsTree from './../../shared/madsTree/madsTree'
 
 export default {
   components: {
-    treeView
+    madsTree
   },
   data() {
     return {
+      isDataLoading: false,
       orgData: null,
       treeData: null,
+      treeOptions: {},
       leftPanelSection: "data",
       treeSection: "sensor_parameters",
       selectedRow: null,
@@ -131,13 +136,16 @@ export default {
     }
   },
   methods: {
-    loadOrganization() {
-      let config = {orgId: this.currentUser.org.id}
-      organizationService
+    loadProjectEntities () {
+      this.isDataLoading = true
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      entityService
         .read(config)
         .then(response => {
-          this.orgData = response;
-          this.makeTreeData();
+          this.orgData = response
+          this.treeOptions = treeService.initOptions({ selectable: true })
+          this.treeData = treeService.initData(this.orgData)
+          this.isDataLoading = false
         })
     },
     jointjsDemo() {
@@ -236,11 +244,8 @@ export default {
         }
       }
     },
-    makeTreeData() {
-      let entity = this.orgData;
-      this.sensorParameterData = [this.formatSensorParameterData(entity)];
-      this.treeData = this.sensorParameterData;
-      this.assetPropertyData = [this.formatAssetPropertyData(entity)];
+    getCheckedNodes() {
+      let checkedNodes = this.$refs.tree.getCheckedNodes()
     }
   },
   computed: {
@@ -248,7 +253,7 @@ export default {
   },
   mounted() {
     this.jointjsDemo()
-    this.loadOrganization()
+    this.loadProjectEntities()
   }
 }
 </script>

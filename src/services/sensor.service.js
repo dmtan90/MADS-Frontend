@@ -1,6 +1,6 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/sensor'
+const resource = '/sensors'
 
 const sensorService = {
   create: async function (config, payload) {
@@ -12,9 +12,9 @@ const sensorService = {
       return error.response.data
     }
   },
-  read: async function (params) {
+  read: async function (config) {
     try {
-      const response = await ApiService.get(resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.id + resource)
 
       return response.data
     } catch (error) {
@@ -43,14 +43,6 @@ const sensorService = {
     try {
       const response = await ApiService.get(resource + '/' + id)
 
-      return response.data
-    } catch (error) {
-      return error.response.data
-    }
-  },
-  getDeviceSensors: async function (id) {
-    try {
-      const response = await ApiService.get('/sensor-criteria/' + id)
       return response.data
     } catch (error) {
       return error.response.data

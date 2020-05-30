@@ -18,6 +18,6 @@ export default [
   },
   {
     name: '__slot:actions',
-    title: ''
+    title: 'Actions'
   }
 ]

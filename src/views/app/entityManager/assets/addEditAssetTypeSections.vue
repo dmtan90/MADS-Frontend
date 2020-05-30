@@ -3,29 +3,29 @@
     <h3>{{editMode ? 'Edit' : 'Add'}} Asset Type</h3>
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
-        <b-form-group label="Sensor Type Name" label-for="sensor-type-name">
-          <b-form-input id="sensor-type-name" type="text" required></b-form-input>
+        <b-form-group label="Asset Type Name" label-for="asset-type-name">
+          <b-form-input id="asset-type-name" type="text" v-model="assetType.name" required></b-form-input>
         </b-form-group>
-        <b-form-group label="Sensor Type Description" label-for="sensor-type-description" class="description">
-          <b-form-textarea id="sensor-type-description" rows="6" max-rows="6"></b-form-textarea>
+        <b-form-group label="Asset Type Description" label-for="asset-type-description" class="description">
+          <b-form-textarea id="asset-type-description" v-model="assetType.description" rows="6" max-rows="6"></b-form-textarea>
         </b-form-group>
         <b-form-group>
-          <b-form-checkbox v-model="inbuiltSensorsPresent">Asset type has inbuilt sensors streaming data</b-form-checkbox>
+          <b-form-checkbox v-model="assetType.sensor_type_present">Asset type has inbuilt sensors streaming data</b-form-checkbox>
         </b-form-group>
       </b-form>
     </section>
     <section v-if="selectedSectionIndex === 2" class="metadata">
-      <div class="metadata-group">
-        <b-form class="horizontal-form" v-for="count in newMetadataCount" :key="count">
-          <b-form-group :label="count === 1  ? 'Metadata Name(key)' : ''" class="name">
-            <b-form-input type="text"></b-form-input>
+       <div class="metadata-group">
+        <b-form class="horizontal-form" v-for="(metadata, index) in assetType.metadata" :key="index">
+          <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
+            <b-form-input v-model="metadata.name" type="text"></b-form-input>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Data Type' : ''" class="data-type">
-            <multiselect :options="[{name: 'Type 1'}, {name: 'Type 2'}, {name: 'Type 3'}, {name: 'Type 4'}, {name: 'Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="id">
+          <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
+            <multiselect v-model="metadata.data_type" :options="dataTypes" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Unit' : ''" class="unit">
-            <b-form-input></b-form-input>
+          <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
+            <b-form-input v-model="metadata.unit"></b-form-input>
           </b-form-group>
         </b-form>
         <b-button class="add-new-row" @click="addNewMetadata()">
@@ -37,17 +37,17 @@
       </div>
     </section>
     <section v-if="selectedSectionIndex ===3" class="parameters">
-      <div class="metadata-group" v-if="inbuiltSensorsPresent">
-        <b-form class="horizontal-form" v-for="count in newParameterCount" :key="count">
-          <b-form-group :label="count === 1  ? 'Parameter Name(key)' : ''" class="name">
-            <b-form-input type="text"></b-form-input>
+      <div class="metadata-group" v-if="assetType.sensor_type_present">
+        <b-form class="horizontal-form" v-for="(parameter, index) in assetType.parameters" :key="index">
+          <b-form-group :label="(index === 0)  ? 'Parameter Name(key)' : ''" class="name">
+            <b-form-input v-model="parameter.name" type="text"></b-form-input>
           </b-form-group>
-          <b-form-group :label="count === 1  ? 'Data Type' : ''" class="data-type">
-            <multiselect :options="[{name: 'Type 1'}, {name: 'Type 2'}, {name: 'Type 3'}, {name: 'Type 4'}, {name: 'Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="id">
+          <b-form-group :label="(index === 0)  ? 'Data Type' : ''" class="data-type">
+            <multiselect v-model="parameter.data_type" :options="dataTypes" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
-          <b-form-group :label=" count === 1  ? 'Unit' : ''" class="unit">
-            <b-form-input></b-form-input>
+          <b-form-group :label=" (index === 0)  ? 'Unit' : ''" class="unit">
+            <b-form-input v-model="parameter.unit"></b-form-input>
           </b-form-group>
         </b-form>
         <b-button class="add-new-row" @click="addNewParameter()">
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import dataTypeService from '@/services/dataType.service'
+
 export default {
   props: {
     selectedSectionIndex: {
@@ -75,23 +77,57 @@ export default {
     editMode: {
       type: Boolean,
       default: false
+    },
+    assetTypeData: {
+      type: Object
     }
   },
   data () {
     return {
-      name: '',
-      description: '',
-      newMetadataCount: 1,
-      newParameterCount: 1,
-      inbuiltSensorsPresent: false
+      dataTypes: [],
+      assetType: {}
     }
   },
   methods: {
+    loadDataTypes () {
+      this.dataTypes = dataTypeService.read()
+    },
     addNewMetadata () {
-      this.newMetadataCount++
+      let metadata = this.$_.concat(this.assetType.metadata, [{ name: '', data_type: '', unit: '' }])
+      this.assetType = this.$_.assign(this.assetType, { metadata: metadata })
     },
     addNewParameter () {
-      this.newParameterCount++
+      let parameters = this.$_.concat(this.assetType.parameters, [{ name: '', data_type: '', unit: '' }])
+      this.assetType = this.$_.assign(this.assetType, { parameters: parameters })
+    },
+    getAssetTypeData () {
+      if (!this.assetType.sensor_type_present) {
+        delete this.assetType.parameters
+      }
+      return this.assetType
+    }
+  },
+  mounted () {
+    this.loadDataTypes()
+
+    if (this.assetTypeData) {
+      this.assetType = {
+        name: this.assetTypeData.name || '',
+        description: this.assetTypeData.description || '',
+        metadata: this.$_.size(this.assetTypeData.metadata) ? this.assetTypeData.metadata : [{ name: '', data_type: '', unit: '' }],
+        parameters: this.$_.size(this.assetTypeData.parameters) ? this.assetTypeData.parameters : [{ name: '', data_type: '', unit: '' }],
+        generated_by: 'user',
+        sensor_type_present: this.assetTypeData.sensor_type_present
+      }
+    } else {
+      this.assetType = {
+        name: '',
+        description: '',
+        metadata: [{ name: '', data_type: '', unit: '' }],
+        parameters: [{ name: '', data_type: '', unit: '' }],
+        generated_by: 'user',
+        sensor_type_present: false
+      }
     }
   }
 }

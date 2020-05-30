@@ -44,6 +44,11 @@ export default {
     }
   },
   methods: {
+    add () {
+      this.editMode = false
+      this.$refs.madsModal.$refs.createSensorModal.show()
+      this.sensorType = null
+    },
     edit (sensor) {
       this.editMode = true
       this.$refs.madsModal.$refs.createSensorModal.show()

@@ -2,17 +2,15 @@
   <div class="h-100">
     <div class="entity-map" v-if="!isDataLoading">
       <div class="vue-tree-container">
-        <tree-header :projectName="getProjectName()" @save-tree-data="saveTreeData()"></tree-header>
-        <div class="vue-tree">
-          <mads-org-tree
-            :data="treeData"
-            @on-expand-collapse-click="onExpandCollapseClick"
-            @on-add-sibling-entity="onAddSiblingEntity"
-            @on-add-child-entity="onAddChildEntity"
-            @on-node-click="selectEntity"
-          >
-          </mads-org-tree>
-        </div>
+        <tree-header :projectName="getProjectName()" @save-tree-data="saveTreeData()" :selectedView="selectedView" @change-view="changeView($event)"></tree-header>
+        <mads-tree
+          :treeData="treeData"
+          :treeView="selectedView"
+          :treeOptions="treeOptions"
+          @on-node-click="onNodeClick"
+          @on-add-sibling-node="onAddSiblingNode"
+          @on-add-child-node="onAddChildNode"
+        ></mads-tree>
       </div>
       <div class="properties-settings">
         <ul class="nav">
@@ -34,7 +32,8 @@
 import EntityMapBus from './entityMapBus'
 import { mapGetters } from 'vuex'
 import entityService from '@/services/entity.service'
-import madsOrgTree from './../../shared/renderTree.js'
+import treeService from '@/services/tree.service'
+import madsTree from './../../shared/madsTree/madsTree'
 import entityModal from './newEntityModal'
 import entityProperties from './entityProperties'
 import entitySettings from './entitySettings'
@@ -42,7 +41,7 @@ import treeHeader from './vueTreeHeader'
 
 export default {
   components: {
-    madsOrgTree,
+    madsTree,
     entityModal,
     entityProperties,
     entitySettings,
@@ -52,12 +51,14 @@ export default {
     return {
       orgData: {},
       treeData: {},
+      treeOptions: {},
       relativeEntity: {},
       entityType: '',
       selectedTab: 'properties',
       selectedEntity: null,
       selectedParentEntity: null,
-      isDataLoading: false
+      isDataLoading: false,
+      selectedView: 'map'
     }
   },
   methods: {
@@ -68,79 +69,13 @@ export default {
         .read(config)
         .then(response => {
           this.orgData = response
-          this.treeData = this.makeTreeData(this.orgData)
+          this.treeOptions = treeService.initOptions({ showHoverOptions: true })
+          this.treeData = treeService.initData(this.orgData)
           this.isDataLoading = false
         })
     },
     getProjectName () {
       return this.orgData.entities ? this.orgData.entities[0].name : ''
-    },
-    getHoverOptions (type) {
-      let hoverOptions = {
-        sibling: false,
-        child: false
-      }
-
-      switch (type) {
-        case 'Project':
-          hoverOptions = this.$_.merge(hoverOptions, { child: true })
-          break
-        case 'Asset':
-          hoverOptions = this.$_.merge(hoverOptions, { sibling: true, child: true })
-          break
-        case 'Sensor':
-          hoverOptions = this.$_.merge(hoverOptions, { sibling: true })
-          break
-      }
-
-      return hoverOptions
-    },
-    makeTreeData (entity) {
-      let childrenPresent = (entity.type !== 'Sensor' && entity.entities && this.$_.size(entity.entities)) > 0
-      let that = this
-      if (childrenPresent) {
-        return this.$_.assign(entity, {
-          options: {
-            label: entity.name,
-            classes: [entity.type],
-            expanded: true,
-            hoverOptions: this.getHoverOptions(entity.type),
-            visible: true
-          }
-        },
-        {
-          children: this.$_.map(entity.entities, function (entity) {
-            return that.makeTreeData(entity)
-          })
-        })
-      } else {
-        return this.$_.assign((entity, {
-          options: {
-            label: entity.name,
-            classes: [entity.type],
-            hoverOptions: this.getHoverOptions(entity.type),
-            visible: true
-          }
-        }))
-      }
-    },
-    selectEntity (e, data) {
-      this.selectedEntity = data.node
-      this.selectedParentEntity = data.parentNode
-    },
-    onExpandCollapseClick (e, data) {
-      this.$set(data.options, 'expanded', !data.options.expanded)
-      this.treeData = this.$_.assign({}, this.treeData)
-    },
-    onAddSiblingEntity (e, data) {
-      this.entityType = 'sibling'
-      this.relativeEntity = data
-      this.$refs.addEntityModal.$refs.entityModal.show()
-    },
-    onAddChildEntity (e, data) {
-      this.entityType = 'child'
-      this.relativeEntity = data
-      this.$refs.addEntityModal.$refs.entityModal.show()
     },
     addEntity (data) {
       let parentNode = (this.entityType === 'sibling') ? this.relativeEntity.parentNode : this.relativeEntity.node
@@ -190,6 +125,23 @@ export default {
         .then(response => {
           this.loadProjectEntities()
         })
+    },
+    changeView (view) {
+      this.selectedView = view
+    },
+
+    // Event Emitter Functions
+    onNodeClick (e, data) {
+    },
+    onAddSiblingNode (e, data) {
+      this.entityType = 'sibling'
+      this.relativeEntity = data
+      this.$refs.addEntityModal.$refs.entityModal.show()
+    },
+    onAddChildNode (e, data) {
+      this.entityType = 'child'
+      this.relativeEntity = data
+      this.$refs.addEntityModal.$refs.entityModal.show()
     }
   },
   computed: {

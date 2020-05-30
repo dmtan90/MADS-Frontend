@@ -13,8 +13,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import assetTypeService from '@/services/assetType.service'
+import assetService from '@/services/asset.service'
 import assetList from './assetList'
 import assetTypeList from './assetTypeList'
+import AssetEventBus from './assetEventBus'
 
 export default {
   components: {
@@ -30,66 +34,35 @@ export default {
   },
   methods: {
     loadAsets () {
-      this.assets = [
-        {
-          name: 'Asset 1',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Asset 2',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Asset 3',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Asset 4',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        }
-      ]
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      assetService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.assets = response.assets
+        })
     },
     loadAssetTypes () {
-      this.assetTypes = [
-        {
-          name: 'Asset Type 1',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Asset Type 2',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Asset Type 3',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        },
-        {
-          name: 'Assset Type 4',
-          metadata: 'metadata1, metadata2, metadata3',
-          parent: '',
-          creator: 'creator name'
-        }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
 
-      ]
+      assetTypeService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.assetTypes = response.asset_types
+        })
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   },
   mounted () {
     this.loadAsets()
     this.loadAssetTypes()
+
+    AssetEventBus.$on('reload-assets', () => {
+      this.loadAsets()
+    })
+
+    AssetEventBus.$on('reload-asset-types', () => {
+      this.loadAssetTypes()
+    })
   }
 }
 </script>

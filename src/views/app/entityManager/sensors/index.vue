@@ -16,6 +16,7 @@
 import { mapGetters } from 'vuex'
 import sensorList from './sensorList'
 import sensorTypeList from './sensorTypeList'
+import sensorService from '@/services/sensor.service'
 import sensorTypeService from '@/services/sensorType.service'
 import SensorEventBus from './sensorEventBus'
 
@@ -27,10 +28,18 @@ export default {
   data () {
     return {
       selectedTab: 'sensors',
+      sensors: [],
       sensorTypes: []
     }
   },
   methods: {
+    loadSensors () {
+      let config = { orgId: this.currentUser.org.id, id: 1 }
+      sensorService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.sensors = response.sensors
+        })
+    },
     loadSensorTypes () {
       let config = { orgId: this.currentUser.org.id }
       sensorTypeService.read(config, { page_number: 1, page_size: 10 })
@@ -43,6 +52,7 @@ export default {
     ...mapGetters(['currentUser'])
   },
   mounted () {
+    this.loadSensors()
     this.loadSensorTypes()
 
     SensorEventBus.$on('reload-sensor-types', () => {

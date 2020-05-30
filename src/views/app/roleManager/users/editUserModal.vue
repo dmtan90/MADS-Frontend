@@ -19,17 +19,6 @@
               <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
               </multiselect>
             </b-form-group>
-            <b-form-group label="Select Teams">
-              <multiselect v-model="selectedTeams" :options="teams" :multiple="true" :close-on-select="false" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Search teams" label="name" track-by="id">
-                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} teams selected</span></template>
-                <template slot="option" slot-scope="props">
-                  <div class="multiple-select-options">
-                    <span>{{props.option.name}}</span>
-                    <b-form-checkbox :checked="isTeamSelected(props.option.id)" class="option-checkbox"></b-form-checkbox>
-                  </div>
-                </template>
-              </multiselect>
-            </b-form-group>
             <b-form-group label="Activity Tracking">
               <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
             </b-form-group>
@@ -38,7 +27,7 @@
         <section v-if="section === 2" class="assets">
           <h3>Edit User Assets</h3>
           <div class="assets-container">
-            <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
+            <mads-tree ref="tree" :treeData="treeData" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
           </div>
         </section>
         <section v-if="section === 3" class="apps">
@@ -56,16 +45,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import organizationService from '@/services/organization.service'
+import entityService from '@/services/entity.service'
 import userService from '@/services/user.service'
-import treeView from '../../shared/outlineTreeView'
+import treeService from '@/services/tree.service'
+import madsTree from '../../shared/madsTree/madsTree'
 import appsList from '../../shared/modalAppsList'
 import EventBus from '../eventBus'
 
 export default {
   props: ['roles', 'user'],
   components: {
-    treeView,
+    madsTree,
     appsList
   },
   data () {
@@ -73,25 +63,22 @@ export default {
       section: 1,
       selectedRole: null,
       userEmail: '',
-      selectedTeams: [],
-      teams: [
-        { name: 'Datakrew', id: 1 },
-        { name: 'Dailploy', id: 2 },
-        { name: 'Aviabird', id: 3 },
-        { name: 'Stackavenue', id: 4 },
-        { name: 'Aviahire', id: 5 }
-      ],
-      treeData: null
+      orgData: null,
+      treeData: null,
+      treeOptions: {}
     }
   },
   methods: {
-    loadOrganization () {
-      let config = { orgId: this.currentUser.org.id }
-      organizationService
+    loadProjectEntities () {
+      this.isDataLoading = true
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      entityService
         .read(config)
         .then(response => {
           this.orgData = response
-          this.makeTreeData()
+          this.treeOptions = treeService.initOptions({ selectable: true })
+          this.treeData = treeService.initData(this.orgData)
+          this.isDataLoading = false
         })
     },
     formatSensorParameterData (entity) {
@@ -157,10 +144,6 @@ export default {
         this.updateUserDetails()
       }
     },
-    isTeamSelected (teamId) {
-      let selectedIds = this.$_.map(this.selectedTeams, (team) => team.id)
-      return this.$_.includes(selectedIds, teamId)
-    },
     updateUserDetails () {
       let config = { orgId: this.currentUser.org.id, userId: this.user.id }
       let payload = {
@@ -182,7 +165,7 @@ export default {
     }
   },
   mounted () {
-    this.loadOrganization()
+    this.loadProjectEntities()
   }
 }
 </script>

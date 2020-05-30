@@ -14,10 +14,6 @@ export default [
     dataClass: 'user-role'
   },
   {
-    name: '__slot:teams',
-    title: 'Teams'
-  },
-  {
     name: '__slot:assets',
     title: 'Assets'
   },

@@ -9,16 +9,14 @@ export default [
     sortField: 'name'
   },
   {
-    name: 'metadata',
+    name: '__slot:metadata',
+    title: 'Metadata',
     sortField: 'metadata'
   },
   {
-    name: 'parent',
-    title: 'Parent'
-  },
-  {
-    name: 'creator',
-    title: 'Creator'
+    name: '__slot:mapped_parameters',
+    title: 'Mapped Parameters',
+    sortField: 'mapped_parameters'
   },
   {
     name: '__slot:actions',

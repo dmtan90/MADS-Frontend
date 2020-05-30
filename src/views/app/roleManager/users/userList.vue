@@ -9,11 +9,6 @@
       <template v-slot:checkbox>
         <b-form-checkbox></b-form-checkbox>
       </template>
-      <template v-slot:teams="props">
-        <span>
-          {{renderList(props.rowData.teams)}}
-        </span>
-      </template>
       <template v-slot:assets="props">
         <span>
           {{renderList(props.rowData.assets)}}

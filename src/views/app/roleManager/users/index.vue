@@ -68,7 +68,6 @@ export default {
               user: user.first_name + ' ' + user.last_name,
               originialRole: user.role,
               role: user.role.name,
-              teams: [],
               assets: [],
               apps: []
             }
@@ -95,7 +94,6 @@ export default {
                 user: user.first_name + ' ' + user.last_name,
                 originialRole: user.role,
                 role: user.role.name,
-                teams: [],
                 assets: [],
                 apps: []
               }

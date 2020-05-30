@@ -5,7 +5,7 @@
         <b-form-input v-model="searchText" placeholder="Search asset types"></b-form-input>
       </div>
       <div class="add-asset-type">
-        <b-button v-b-modal.add-edit-asset-type-modal>Add asset type</b-button>
+        <b-button @click="addAssetType()">Add asset type</b-button>
       </div>
     </div>
     <div class="lists-table assets-type-table">
@@ -20,7 +20,13 @@
         </template>
         <template v-slot:actions="props">
           <span class="edit-asset-type" @click="editAssetType(props.rowData)">Edit</span>
-          <span class="delete-asset-type">Delete</span>
+          <span class="delete-asset-type" @click="deleteAssetType(props.rowData)">Delete</span>
+        </template>
+        <template v-slot:metadata="props">
+          <span>{{props.rowData.metadata.length}}</span>
+        </template>
+        <template v-slot:parameters="props">
+          <span>{{props.rowData.parameters.length}}</span>
         </template>
       </vuetable>
     </div>
@@ -31,9 +37,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import fieldsDef from './assetTypeFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditAssetType from './addEditAssetType'
+import assetTypeService from '@/services/assetType.service'
+import AssetEventBus from './assetEventBus'
 
 export default {
   props: ['assetTypes'],
@@ -48,9 +57,22 @@ export default {
     }
   },
   methods: {
+    addAssetType (assetType) {
+      this.$refs.addEditAssetType.add()
+    },
     editAssetType (assetType) {
-      this.$refs.addEditAssetType.edit()
+      this.$refs.addEditAssetType.edit(assetType)
+    },
+    deleteAssetType (assetType) {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: assetType.id }
+      assetTypeService.delete(config)
+        .then((response) => {
+          AssetEventBus.$emit('reload-asset-types')
+        })
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

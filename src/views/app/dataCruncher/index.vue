@@ -10,7 +10,7 @@
 <script>
 import appWindow from './../appWindow'
 import dataCruncher from './dataCruncher'
-import workspace from './workspace'
+import workspace from './workspace/index'
 
 export default {
   components: {

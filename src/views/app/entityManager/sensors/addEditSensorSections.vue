@@ -20,7 +20,8 @@
           <multiselect :options="[{name: 'Caretaker 1'}, {name: 'Caretaker 2'}, {name: 'Caretaker 3'}, {name: 'Caretaker 4'}, {name: 'Caretaker 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Sensor's Hierarchy" class="hierarchy">
-          <b-form-radio value="project_parent">Place under project</b-form-radio>
+          <b-form-radio value="Project" v-model="sensor.parent_type">Place under project</b-form-radio>
+          <b-form-radio value="Asset" v-model="sensor.parent_type">Place under an asset in project</b-form-radio>
         </b-form-group>
       </b-form>
     </section>
@@ -56,14 +57,19 @@ export default {
     editMode: {
       type: Boolean,
       default: false
+    },
+    sensorData: {
+      type: Object
     }
   },
   data () {
     return {
       sensor: {
-        sensor_type: null,
         name: '',
         description: '',
+        sensor_type: null,
+        parent_type: '',
+        parent_id: null,
         metadata: [{ name: 'Metadata 1', data_type: 'String', unit: 'unit1', value: '' }]
       }
     }
@@ -71,6 +77,27 @@ export default {
   methods: {
     getSensorData () {
       return this.sensor
+    }
+  },
+  mounted () {
+    if (this.sensorData) {
+      this.sensor = {
+        name: this.sensorData.name || '',
+        description: this.sensorData.description || '',
+        sensor_type: this.sensorData.sensor_type || null,
+        parent_type: this.sensorData.parent_type || 'Project',
+        parent_id: this.sensorData.parent_id || null,
+        metadata: this.$_.size(this.sensorData.metadata) ? this.sensorData.metadata : [{ name: '', data_type: '', unit: '' }]
+      }
+    } else {
+      this.sensor = {
+        name: '',
+        description: '',
+        sensor_type: null,
+        parent_type: '',
+        parent_id: null,
+        metadata: [{ name: 'Metadata 1', data_type: 'String', unit: 'unit1', value: '' }]
+      }
     }
   }
 }

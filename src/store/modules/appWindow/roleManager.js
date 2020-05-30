@@ -10,11 +10,6 @@ const appSections = [
     iconId: 'users'
   },
   {
-    key: 'teams',
-    name: 'Teams',
-    iconId: 'teams'
-  },
-  {
     key: 'projects',
     name: 'Projects',
     iconId: 'projects'

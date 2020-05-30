@@ -20,17 +20,6 @@
           <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
           </multiselect>
         </b-form-group>
-        <b-form-group label="Select Teams">
-          <multiselect v-model="selectedTeams" :options="teams" :multiple="true" :close-on-select="false" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Search teams" label="name" track-by="id">
-            <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} teams selected</span></template>
-            <template slot="option" slot-scope="props">
-              <div class="multiple-select-options">
-                <span>{{props.option.name}}</span>
-                <b-form-checkbox :checked="isTeamSelected(props.option.id)" class="option-checkbox"></b-form-checkbox>
-              </div>
-            </template>
-          </multiselect>
-        </b-form-group>
         <b-form-group label="Activity Tracking">
           <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}"/>
         </b-form-group>
@@ -39,7 +28,7 @@
     <section v-if="currentStep === 2" class="assets">
       <h5>Select Assets</h5>
       <div class="assets-container">
-        <tree-view ref="treeView" :treeData="treeData" :multiple="true" :halfcheck="true" v-if="treeData"></tree-view>
+        <mads-tree ref="tree" :treeData="treeData" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
       </div>
     </section>
     <section v-if="currentStep === 3" class="apps">
@@ -56,9 +45,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import organizationService from '@/services/organization.service'
+import entityService from '@/services/entity.service'
+import treeService from '@/services/tree.service'
 import invitationService from '@/services/invitation.service'
-import treeView from '../../shared/outlineTreeView'
+import madsTree from '../../shared/madsTree/madsTree'
 import appsList from '../../shared/modalAppsList'
 import EventBus from '../eventBus'
 
@@ -77,36 +67,32 @@ export default {
     }
   },
   components: {
-    treeView,
+    madsTree,
     appsList
   },
   data () {
     return {
       inviteEmail: '',
-      selectedTeams: [],
-      teams: [
-        { name: 'Datakrew', id: 1 },
-        { name: 'Dailploy', id: 2 },
-        { name: 'Aviabird', id: 3 },
-        { name: 'Stackavenue', id: 4 },
-        { name: 'Aviahire', id: 5 }
-      ],
       currentStep: 1,
       selectedRole: null,
-      selectedTeam: [],
-      treeData: null,
       selectedAssets: [],
-      selectedApps: []
+      selectedApps: [],
+      orgData: null,
+      treeData: null,
+      treeOptions: {}
     }
   },
   methods: {
-    loadOrganization () {
-      let config = { orgId: this.currentUser.org.id }
-      organizationService
+    loadProjectEntities () {
+      this.isDataLoading = true
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      entityService
         .read(config)
         .then(response => {
           this.orgData = response
-          this.makeTreeData()
+          this.treeOptions = treeService.initOptions({ selectable: true })
+          this.treeData = treeService.initData(this.orgData)
+          this.isDataLoading = false
         })
     },
     formatSensorParameterData (entity) {
@@ -196,10 +182,6 @@ export default {
         })
       }
       this.currentStep = this.currentStep + 1
-    },
-    isTeamSelected (teamId) {
-      let selectedIds = this.$_.map(this.selectedTeams, (team) => team.id)
-      return this.$_.includes(selectedIds, teamId)
     }
   },
   computed: {
@@ -212,7 +194,7 @@ export default {
     }
   },
   mounted () {
-    this.loadOrganization()
+    this.loadProjectEntities()
   }
 }
 </script>
@@ -276,48 +258,6 @@ export default {
   #invite-user-modal {
     .modal-content {
       min-height: 600px;
-    }
-  }
-  .team-section {
-    padding-left: 0;
-    padding-right: 0;
-    background-color: #ffffff !important;
-    color: #333 !important;
-    border-color: #e4e9ef !important;
-    border-radius: 4px;
-    .dropdown-toggle {
-      border: none;
-      padding-right: 0;
-      padding-bottom: 0;
-      padding-top: 0;
-    }
-    ul.list-inline {
-      padding-left: 1rem;
-      .list-inline-item {
-        .badge-info {
-          font-size: 14px;
-          background-color: #f8f8f8;
-          border: 1px solid #f3f3f3;
-          color: #333;
-          font-weight: initial;
-          .close {
-            background-color: transparent !important;
-            font-size: 18px;
-          }
-        }
-      }
-    }
-    .b-dropdown {
-      ul.dropdown-menu {
-        padding: 0;
-        top: 12px !important;
-        li > .dropdown-item {
-          cursor: pointer;
-          &:hover {
-            background-color: #f8f8f8 !important;
-          }
-        }
-      }
     }
   }
   .multiple-select-options {

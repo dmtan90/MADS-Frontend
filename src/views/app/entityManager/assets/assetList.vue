@@ -5,7 +5,7 @@
         <b-form-input v-model="searchText" placeholder="Search asset"></b-form-input>
       </div>
       <div class="add-asset">
-        <b-button v-b-modal.add-edit-asset-modal>Add asset</b-button>
+        <b-button @click="addAsset()">Add asset</b-button>
       </div>
     </div>
     <div class="lists-table assets-table">
@@ -18,9 +18,15 @@
         <template v-slot:checkbox>
           <b-form-checkbox></b-form-checkbox>
         </template>
+        <template v-slot:metadata="props">
+          <span>{{props.rowData.metadata.length}}</span>
+        </template>
+        <template v-slot:mapped_parameters="props">
+          <span>{{props.rowData.mapped_parameters.length}}</span>
+        </template>
         <template v-slot:actions="props">
           <span class="edit-asset" @click="editAsset(props.rowData)">Edit</span>
-          <span class="delete-asset">Delete</span>
+          <span class="delete-asset" @click="deleteAsset(props.rowData)">Delete</span>
         </template>
       </vuetable>
     </div>
@@ -31,9 +37,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import fieldsDef from './assetFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditAsset from './addEditAsset'
+import assetService from '@/services/asset.service'
+import AssetEventBus from './assetEventBus'
 
 export default {
   props: ['assets'],
@@ -48,9 +57,22 @@ export default {
     }
   },
   methods: {
+    addAsset (asset) {
+      this.$refs.addEditAsset.add()
+    },
     editAsset (asset) {
-      this.$refs.addEditAsset.edit()
+      this.$refs.addEditAsset.edit(asset)
+    },
+    deleteAsset (asset) {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: asset.id }
+      assetService.delete(config)
+        .then((response) => {
+          AssetEventBus.$emit('reload-assets')
+        })
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>
