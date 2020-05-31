@@ -65,7 +65,7 @@ export default {
       }
     },
     saveSensorType () {
-      let config = { orgId: this.currentUser.org.id }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
       let sensorType = this.$refs.sections.getSensorTypeData()
 
       if (this.editMode) {

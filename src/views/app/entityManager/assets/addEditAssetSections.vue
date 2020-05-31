@@ -100,13 +100,14 @@ export default {
     },
     loadAssetTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: 1 }
-      let that = this
       assetTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
-          console.log('that', that)
           this.assetTypes = response.asset_types
-          this.selectedAssetType = this.$_.find(this.assetTypes, (assetType) => { return assetType.id === this.asset.asset_type_id })
-          this.onSelectAssetType(this.selectedAssetType)
+
+          if (this.editMode) {
+            this.selectedAssetType = this.$_.find(this.assetTypes, (assetType) => { return assetType.id === this.asset.asset_type_id })
+            this.onSelectAssetType(this.selectedAssetType)
+          }
         })
     },
     onSelectAssetType (assetType) {

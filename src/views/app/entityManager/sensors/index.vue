@@ -34,14 +34,14 @@ export default {
   },
   methods: {
     loadSensors () {
-      let config = { orgId: this.currentUser.org.id, id: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
       sensorService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensors = response.sensors
         })
     },
     loadSensorTypes () {
-      let config = { orgId: this.currentUser.org.id }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
       sensorTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensorTypes = response.sensors_type

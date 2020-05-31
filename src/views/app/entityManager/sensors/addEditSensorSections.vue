@@ -4,7 +4,7 @@
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
         <b-form-group label="Sensor Type" label-for="sensor-type">
-          <multiselect v-model="sensor.sensor_type" :options="[{name: 'Sensor Type 1'}, {name: 'Sensor Type 2'}, {name: 'Sensor Type 3'}, {name: 'Sensor Type 4'}, {name: 'Sensor Type 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
+          <multiselect v-model="selectedSensorType" :options="sensorTypes" @select="onSelectSensorType" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Sensor Name" label-for="sensor-name">
           <b-form-input v-model="sensor.name" type="text" id="sensor-name"></b-form-input>
@@ -17,13 +17,18 @@
     <section v-if="selectedSectionIndex === 2" class="position">
       <b-form>
         <b-form-group label="Sensor's Caretaker(s)">
-          <multiselect :options="[{name: 'Caretaker 1'}, {name: 'Caretaker 2'}, {name: 'Caretaker 3'}, {name: 'Caretaker 4'}, {name: 'Caretaker 5'}]" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
+          <multiselect v-model="selectedCaretaker" :options="caretakers" @select="onSelectCaretaker" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Sensor's Hierarchy" class="hierarchy">
           <b-form-radio value="Project" v-model="sensor.parent_type">Place under project</b-form-radio>
           <b-form-radio value="Asset" v-model="sensor.parent_type">Place under an asset in project</b-form-radio>
         </b-form-group>
       </b-form>
+      <div v-if="sensor.parent_type === 'Asset'" class="select-asset">
+        <div class="vue-tree-container">
+          <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree>
+        </div>
+      </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="metadata">
       <div class="metadata-group">
@@ -32,8 +37,7 @@
             <b-form-input v-model="metadata.name" type="text"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
-            <multiselect v-model="metadata.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
-            </multiselect>
+            <b-form-input v-model="metadata.data_type"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
             <b-form-input v-model="metadata.unit"></b-form-input>
@@ -48,7 +52,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import sensorTypeService from '@/services/sensorType.service'
+import madsTree from './../../shared/madsTree/index'
+import userService from '@/services/user.service'
+
 export default {
+  components: {
+    madsTree
+  },
   props: {
     selectedSectionIndex: {
       type: Number,
@@ -64,39 +76,93 @@ export default {
   },
   data () {
     return {
-      sensor: {
-        name: '',
-        description: '',
-        sensor_type: null,
-        parent_type: '',
-        parent_id: null,
-        metadata: [{ name: 'Metadata 1', data_type: 'String', unit: 'unit1', value: '' }]
-      }
+      selectedSensorType: null,
+      sensorTypes: [],
+      selectedCaretaker: null,
+      caretakers: [],
+      sensor: {},
+      orgData: null,
+      treeData: null,
+      treeOptions: {
+        selectable: true,
+        singleSelect: true
+      },
+      isAnyNodeSelected: false
     }
   },
   methods: {
+    loadUsers () {
+      let config = { orgId: this.currentUser.org.id }
+      userService.read(config, { page_size: 10 })
+        .then((response) => {
+          this.caretakers = response.users
+        })
+    },
+    loadSensorTypes () {
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      sensorTypeService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.sensorTypes = response.sensors_type
+
+          if (this.editMode) {
+            this.selectedSensorType = this.$_.find(this.sensorTypes, (sensorType) => { return sensorType.id === this.sensor.sensor_type_id })
+            this.onSelectSensorType(this.selectedSensorType)
+          }
+        })
+    },
+    onSelectSensorType (sensorType) {
+      this.sensor.sensor_type_id = sensorType.id
+
+      let metadata = this.$_.map(sensorType.metadata, (metadata) => {
+        if (!this.editMode) {
+          metadata = this.$_.pick(metadata, ['name', 'data_type', 'unit'])
+        }
+        return this.$_.merge(metadata, { value: '' })
+      })
+
+      this.sensor = this.$_.merge(this.sensor, {
+        metadata: metadata
+      })
+    },
+    onSelectCaretaker (caretaker) {
+    },
+    onSelectEntity (event, entity) {
+      this.sensor.parent_id = event ? entity.id : 1
+    },
     getSensorData () {
       return this.sensor
+    },
+    getCaretakerName (caretaker) {
+      return caretaker.first_name + ' ' + (caretaker.last_name || '')
+    },
+    getSelectedEntity () {
+      return [{ id: this.sensor.parent_id, type: this.sensor.parent_type }]
     }
   },
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
   mounted () {
+    this.loadSensorTypes()
+    this.loadUsers()
+
     if (this.sensorData) {
       this.sensor = {
         name: this.sensorData.name || '',
         description: this.sensorData.description || '',
-        sensor_type: this.sensorData.sensor_type || null,
+        sensor_type_id: this.sensorData.sensor_type || null,
         parent_type: this.sensorData.parent_type || 'Project',
-        parent_id: this.sensorData.parent_id || null,
-        metadata: this.$_.size(this.sensorData.metadata) ? this.sensorData.metadata : [{ name: '', data_type: '', unit: '' }]
+        parent_id: this.sensorData.parent_id || 1,
+        metadata: []
       }
     } else {
       this.sensor = {
         name: '',
         description: '',
-        sensor_type: null,
-        parent_type: '',
-        parent_id: null,
-        metadata: [{ name: 'Metadata 1', data_type: 'String', unit: 'unit1', value: '' }]
+        sensor_type_id: null,
+        parent_type: 'Project',
+        parent_id: 1,
+        metadata: []
       }
     }
   }
@@ -117,6 +183,16 @@ export default {
       .custom-radio {
         width: 48%;
         display: inline-block;
+      }
+    }
+    .select-asset {
+      height: 320px;
+      .vue-tree-container {
+        border: 1px solid #e2e2e2;
+        height: 250px;
+        border-radius: 4px;
+        padding-bottom: 20px;
+        overflow: auto;
       }
     }
   }

@@ -18,7 +18,7 @@
             <b-form-input v-model="metadata.name" type="text"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
-            <multiselect v-model="metadata.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
+            <multiselect v-model="metadata.data_type" :options="dataTypes" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
@@ -40,7 +40,7 @@
             <b-form-input v-model="parameter.name" type="text"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0)  ? 'Data Type' : ''" class="data-type">
-            <multiselect v-model="parameter.data_type" :options="['Type 1', 'Type 2', 'Type 3', 'Type 4', 'Type 5']" :select-label="''" :selected-label="''" :deselect-label="''">
+            <multiselect v-model="parameter.data_type" :options="dataTypes" :select-label="''" :selected-label="''" :deselect-label="''">
             </multiselect>
           </b-form-group>
           <b-form-group :label=" (index === 0)  ? 'Unit' : ''" class="unit">
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import dataTypeService from '@/services/dataType.service'
+
 export default {
   props: {
     selectedSectionIndex: {
@@ -75,15 +77,14 @@ export default {
   },
   data () {
     return {
-      sensorType: {
-        name: '',
-        description: '',
-        metadata: [{ name: '', data_type: '', unit: '' }],
-        parameters: [{ name: '', data_type: '', unit: '' }]
-      }
+      dataTypes: [],
+      sensorType: {}
     }
   },
   methods: {
+    loadDataTypes () {
+      this.dataTypes = dataTypeService.read()
+    },
     addNewMetadata () {
       let metadata = this.$_.concat(this.sensorType.metadata, [{ name: '', data_type: '', unit: '' }])
       this.sensorType = this.$_.assign(this.sensorType, { metadata: metadata })
@@ -97,6 +98,8 @@ export default {
     }
   },
   mounted () {
+    this.loadDataTypes()
+
     if (this.sensorTypeData) {
       this.sensorType = {
         name: this.sensorTypeData.name || '',

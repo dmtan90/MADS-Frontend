@@ -11,14 +11,17 @@
     @on-cancel="onCancel()"
     @on-save="saveSensor()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :sensorData="sensor"></sections>
     </template>
   </mads-modal>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditSensorSections'
+import sensorService from '@/services/sensor.service'
+import SensorEventBus from './sensorEventBus'
 
 export default {
   props: {
@@ -40,18 +43,20 @@ export default {
         index: 3,
         name: 'Metadata <br> (Fixed Data)'
       }],
-      selectedSectionIndex: 1
+      selectedSectionIndex: 1,
+      sensor: null
     }
   },
   methods: {
     add () {
       this.editMode = false
       this.$refs.madsModal.$refs.createSensorModal.show()
-      this.sensorType = null
+      this.sensor = null
     },
     edit (sensor) {
       this.editMode = true
       this.$refs.madsModal.$refs.createSensorModal.show()
+      this.sensor = sensor
     },
     selectSection (index) {
       this.selectedSectionIndex = index
@@ -63,15 +68,30 @@ export default {
       }
     },
     saveSensor () {
-      this.selectedSectionIndex = 1
-      this.allSectionsVisited = false
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
       let sensorData = this.$refs.sections.getSensorData()
-      this.$emit('save-sensor', sensorData)
+
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.sensor.id })
+        sensorService.update(config, sensorData)
+          .then((response) => {
+            SensorEventBus.$emit('reload-sensors')
+          })
+      } else {
+        sensorService.create(config, sensorData)
+          .then((response) => {
+            SensorEventBus.$emit('reload-sensors')
+          })
+      }
+      // this.$emit('save-sensor', sensorData)
     },
     onCancel () {
       this.selectedSectionIndex = 1
       this.allSectionsVisited = false
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

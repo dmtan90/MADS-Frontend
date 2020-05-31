@@ -5,7 +5,7 @@ const resource = '/sensor_type'
 const sensorTypeService = {
   create: async function (config, payload) {
     try {
-      const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + '/projects/' + config.projectId + resource, payload)
 
       return response.data
     } catch (error) {
@@ -14,7 +14,7 @@ const sensorTypeService = {
   },
   read: async function (config, params) {
     try {
-      const response = await ApiService.get('/orgs/' + config.orgId + resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.projectId + resource, { params })
 
       return response.data
     } catch (error) {
@@ -23,7 +23,7 @@ const sensorTypeService = {
   },
   update: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + '/projects/' + config.projectId + resource + '/' + config.id, payload)
 
       return response.data
     } catch (error) {
@@ -32,16 +32,7 @@ const sensorTypeService = {
   },
   delete: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.id)
-
-      return response.data
-    } catch (error) {
-      return error.response.data
-    }
-  },
-  readId: async function (id) {
-    try {
-      const response = await ApiService.get(resource + '/' + id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/projects/' + config.projectId + resource + '/' + config.id)
 
       return response.data
     } catch (error) {
