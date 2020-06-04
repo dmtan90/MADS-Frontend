@@ -19,12 +19,15 @@
         <b-form-group label="Sensor's Caretaker(s)">
           <multiselect v-model="selectedCaretaker" :options="caretakers" @select="onSelectCaretaker" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
         </b-form-group>
-        <b-form-group label="Sensor's Hierarchy" class="hierarchy">
-          <b-form-radio value="Project" v-model="sensor.parent_type">Place under project</b-form-radio>
+        <b-form-group label="Sensor's Hierarchy" class="hierarchy" v-if="source === 'sensors-list'">
+          <b-form-radio value="Project" v-model="sensor.parent_type">Place under project {{selectedProject && selectedProject.name}}</b-form-radio>
           <b-form-radio value="Asset" v-model="sensor.parent_type">Place under an asset in project</b-form-radio>
         </b-form-group>
+        <b-form-group v-else>
+          <b-form-radio :value="entityMapParentNode.type" v-model="sensor.parent_type">Place under <b>{{entityMapParentNode.type}} {{entityMapParentNode.name}}</b></b-form-radio>
+        </b-form-group>
       </b-form>
-      <div v-if="sensor.parent_type === 'Asset'" class="select-asset">
+      <div v-if="source === 'sensors-list' &&  sensor.parent_type === 'Asset'" class="select-asset">
         <div class="vue-tree-container">
           <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree>
         </div>
@@ -72,6 +75,13 @@ export default {
     },
     sensorData: {
       type: Object
+    },
+    source: {
+      type: String,
+      required: true
+    },
+    entityMapParentNode: {
+      default: null
     }
   },
   data () {
@@ -99,7 +109,7 @@ export default {
         })
     },
     loadSensorTypes () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       sensorTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensorTypes = response.sensors_type
@@ -140,7 +150,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadSensorTypes()
@@ -160,7 +170,7 @@ export default {
         name: '',
         description: '',
         sensor_type_id: null,
-        parent_type: 'Project',
+        parent_type: this.entityMapParentNode ? this.entityMapParentNode.type : 'Project',
         parent_id: 1,
         metadata: []
       }

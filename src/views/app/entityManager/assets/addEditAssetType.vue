@@ -63,12 +63,9 @@ export default {
     },
     nextSection () {
       this.selectedSectionIndex++
-      if (this.selectedSectionIndex === 3) {
-        this.allSectionsVisited = true
-      }
     },
     saveAssetType () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       let assetType = this.$refs.sections.getAssetTypeData()
 
       if (this.editMode) {
@@ -92,7 +89,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   }
 }
 </script>

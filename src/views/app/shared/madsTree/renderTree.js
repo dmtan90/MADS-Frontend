@@ -174,7 +174,22 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
   let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
   let children = [
-    createElement('span', { class: { 'label': true } }, [node.options.label])
+    createElement('span', { class: { 'label': true } },
+      [
+        createElement('svg', {
+          class: {
+            'icon': true
+          }
+        },
+        [
+          createElement('use', {
+            attrs: {
+              'xlink:href': node.options.icon
+            }
+          })
+        ]),
+        node.options.label
+      ])
   ]
 
   if (options.showHoverOptions) {

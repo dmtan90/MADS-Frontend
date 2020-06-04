@@ -64,7 +64,7 @@ export default {
       this.$refs.addEditAsset.edit(asset)
     },
     deleteAsset (asset) {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: asset.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: asset.id }
       assetService.delete(config)
         .then((response) => {
           AssetEventBus.$emit('reload-assets')
@@ -72,7 +72,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   }
 }
 </script>

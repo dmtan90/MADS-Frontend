@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import assetTypeService from '@/services/assetType.service'
 import assetService from '@/services/asset.service'
 import assetList from './assetList'
@@ -33,15 +33,16 @@ export default {
     }
   },
   methods: {
-    loadAsets () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+    ...mapActions(['selectProject']),
+    loadAssets () {
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       assetService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.assets = response.assets
         })
     },
     loadAssetTypes () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
 
       assetTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
@@ -50,19 +51,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
-    this.loadAsets()
+    this.loadAssets()
     this.loadAssetTypes()
 
     AssetEventBus.$on('reload-assets', () => {
-      this.loadAsets()
+      this.loadAssets()
     })
 
     AssetEventBus.$on('reload-asset-types', () => {
       this.loadAssetTypes()
     })
+  },
+  beforeDestroy () {
+    this.selectProject(null)
   }
 }
 </script>

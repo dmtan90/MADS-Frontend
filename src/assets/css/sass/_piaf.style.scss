@@ -125,7 +125,7 @@ html {
 }
 
 body {
-  font-family: "Nunito", sans-serif;
+  // font-family: "Nunito", sans-serif;
   font-size: 0.8rem;
   font-weight: 400;
   color: $primary-color;
@@ -373,7 +373,7 @@ a {
 p {
   font-size: 0.85rem;
   line-height: 1.3rem;
-  font-family: "Nunito", sans-serif;
+  // font-family: "Nunito", sans-serif;
 }
 
 .text-large {
@@ -3963,7 +3963,7 @@ select.form-control:not([size]):not([multiple]) {
   font-size: 0.8rem;
   width: 100% !important;
   outline: initial;
-  font-family: "Nunito", sans-serif !important;
+  // font-family: "Nunito", sans-serif !important;
   box-shadow: initial !important;
   border-width: 0 0 0 0 !important;
 }
@@ -3973,7 +3973,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 
 .c-pane-container {
-  font-family: "Nunito", sans-serif !important;
+  // font-family: "Nunito", sans-serif !important;
   font-weight: 400 !important;
   background-color: $input-background !important;
   font-size: 0.8rem !important;
@@ -5611,7 +5611,7 @@ input:-webkit-autofill {
 .RichEditor-root {
   background: $foreground-color;
   border: 1px solid $separator-color;
-  font-family: "Nunito", sans-serif;
+  // font-family: "Nunito", sans-serif;
   font-size: 14px;
   padding: 15px;
 }
@@ -5654,7 +5654,7 @@ input:-webkit-autofill {
 }
 
 .RichEditor-controls {
-  font-family: "Nunito", sans-serif;
+  // font-family: "Nunito", sans-serif;
   font-size: 12px;
   margin-bottom: 5px;
   user-select: none;
@@ -6133,7 +6133,7 @@ input:-webkit-autofill {
     }
 
     span {
-      font-family: "Nunito", sans-serif;
+      // font-family: "Nunito", sans-serif;
       font-size: 0.8rem;
       font-weight: 400;
       margin-left: 0.5rem;

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import sensorList from './sensorList'
 import sensorTypeList from './sensorTypeList'
 import sensorService from '@/services/sensor.service'
@@ -33,15 +33,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['selectProject']),
     loadSensors () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       sensorService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensors = response.sensors
         })
     },
     loadSensorTypes () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       sensorTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensorTypes = response.sensors_type
@@ -49,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadSensors()
@@ -58,6 +59,9 @@ export default {
     SensorEventBus.$on('reload-sensor-types', () => {
       this.loadSensorTypes()
     })
+  },
+  beforeDestroy () {
+    this.selectProject(null)
   }
 }
 </script>

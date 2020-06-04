@@ -3,6 +3,7 @@
     <template v-slot:content>
       <role-manager v-if="appVuexState.currentSection === 'roleManager'"></role-manager>
       <users v-if="appVuexState.currentSection === 'users'"></users>
+      <projects v-if="appVuexState.currentSection === 'projects'"></projects>
     </template>
   </app-window>
 </template>
@@ -11,12 +12,14 @@
 import appWindow from './../appWindow'
 import roleManager from './roleManager'
 import users from './users/index'
+import projects from './projects/index'
 
 export default {
   components: {
     appWindow,
     roleManager,
-    users
+    users,
+    projects
   },
   computed: {
     appVuexState () {

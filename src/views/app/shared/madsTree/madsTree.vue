@@ -113,22 +113,32 @@ export default {
         .label {
           padding: 10px 20px;
           display: inline-block;
-          border: 1px solid #e2e2e2;
+          // border: 1px solid #FF5733;
+          border-radius: 4px;
+          min-width: 100px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          .icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+          }
         }
         .add-sibling-node-container {
           display: none;
           position: absolute;
-          right: -121px;
+          right: -127px;
           top: 50%;
           transform: translateY(-50%);
           z-index: 999;
           padding-left: 7px;
           .add-sibling-node {
-            border: 1px solid #4c92c3;
+            border: 1px solid #FF5733;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
             padding: 5px 10px;
-            background-color: #4c92c3;
+            background-color: #FF5733;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -150,7 +160,7 @@ export default {
               height: 0;
               border-top: 7px solid transparent;
               border-bottom: 7px solid transparent;
-              border-right: 7px solid #4c92c3;
+              border-right: 7px solid #FF5733;
             }
           }
         }
@@ -165,11 +175,11 @@ export default {
           width: 120px;
           justify-content: center;
           .add-child-node {
-            border: 1px solid #4c92c3;
+            border: 1px solid #FF5733;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
             padding: 5px 10px;
-            background-color: #4c92c3;
+            background-color: #FF5733;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -191,7 +201,7 @@ export default {
               height: 0;
               border-left: 7px solid transparent;
               border-right: 7px solid transparent;
-              border-bottom: 7px solid #4c92c3;
+              border-bottom: 7px solid #FF5733;
             }
           }
         }
@@ -214,7 +224,7 @@ export default {
         .icon {
           width: 20px;
           height: 20px;
-          fill: #e2e2e2;
+          fill: #FF5733;
           &.expanded {
             transform:  rotate(-90deg);
           }
@@ -232,7 +242,7 @@ export default {
         &::after {
           content: '';
           position: absolute;
-          border-left: 1px solid #e2e2e2;
+          border-left: 1px solid #FF5733;
           left: 50%;
           bottom: -20px;
           height: 20px;
@@ -242,10 +252,11 @@ export default {
     .tree-node-children {
       display: flex;
       padding-top: 20px;
+      justify-content: center;
       .tree-node-container:not(.single) {
         &::before {
           content: '';
-          border-top: 1px solid #e2e2e2;
+          border-top: 1px solid #FF5733;
           top: -20px;
           position: absolute;
           width: 100%;
@@ -267,7 +278,7 @@ export default {
         &::after {
           content: '';
           position: absolute;
-          border-left: 1px solid #e2e2e2;
+          border-left: 1px solid #FF5733;
           left: 50%;
           top: -20px;
           height: 20px;
@@ -280,6 +291,8 @@ export default {
 .vue-tree.outline {
   margin-top: 30px;
   margin-left: 60px;
+  display: flex;
+  justify-content: center;
   .tree-node-container {
     position: relative;
     .tree-node {
@@ -292,23 +305,33 @@ export default {
         .label {
           padding: 10px 20px;
           display: inline-block;
-          border: 1px solid #e2e2e2;
+          // border: 1px solid #FF5733;
+          border-radius: 4px;
           height: 40px;
+          min-width: 100px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          .icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+          }
         }
         .add-sibling-node-container {
           display: none;
           position: absolute;
-          right: -121px;
+          right: -127px;
           top: 50%;
           transform: translateY(-50%);
           z-index: 999;
           padding-left: 7px;
           .add-sibling-node {
-            border: 1px solid #4c92c3;
+            border: 1px solid #FF5733;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
             padding: 5px 10px;
-            background-color: #4c92c3;
+            background-color: #FF5733;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -330,7 +353,7 @@ export default {
               height: 0;
               border-top: 7px solid transparent;
               border-bottom: 7px solid transparent;
-              border-right: 7px solid #4c92c3;
+              border-right: 7px solid #FF5733;
             }
           }
         }
@@ -345,11 +368,11 @@ export default {
           width: 120px;
           justify-content: center;
           .add-child-node {
-            border: 1px solid #4c92c3;
+            border: 1px solid #FF5733;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, .15);
             padding: 5px 10px;
-            background-color: #4c92c3;
+            background-color: #FF5733;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -371,7 +394,7 @@ export default {
               height: 0;
               border-left: 7px solid transparent;
               border-right: 7px solid transparent;
-              border-bottom: 7px solid #4c92c3;
+              border-bottom: 7px solid #FF5733;
             }
           }
         }
@@ -395,7 +418,7 @@ export default {
         .icon {
           width: 20px;
           height: 20px;
-          fill: #e2e2e2;
+          fill: #FF5733;
           &.expanded {
             transform: rotate(90deg);
           }
@@ -415,7 +438,7 @@ export default {
         &:first-child {
           &::after {
             content: '';
-            border-left: 1px solid #e2e2e2;
+            border-left: 1px solid #FF5733;
             position: absolute;
             height: 30px;
             left: -10px;
@@ -425,7 +448,7 @@ export default {
         &:not(:last-child) {
           &::before {
             content: '';
-            border-left: 1px solid #e2e2e2;
+            border-left: 1px solid #FF5733;
             position: absolute;
             height: 100%;
             left: -10px;
@@ -435,7 +458,7 @@ export default {
         .tree-node {
           &::before {
             content: '';
-            border-top: 1px solid #e2e2e2;
+            border-top: 1px solid #FF5733;
             position: absolute;
             width: 30px;
             left: -30px;
@@ -459,9 +482,15 @@ export default {
       align-items: center;
       height: 20px;
       padding-top: 3px;
-      span {
-        display: inline-block;
+      .label {
+        display: flex;
         padding-left: 3px;
+        align-items: center;
+        .icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+          }
       }
       .icon-container {
         width: 16px;
@@ -494,7 +523,7 @@ export default {
         &:first-child {
           &::after {
             content: '';
-            border-left: 1px solid #e2e2e2;
+            border-left: 1px solid #FF5733;
             position: absolute;
             height: 30px;
             left: -10px;
@@ -504,7 +533,7 @@ export default {
         &:not(:last-child) {
           &::before {
             content: '';
-            border-left: 1px solid #e2e2e2;
+            border-left: 1px solid #FF5733;
             position: absolute;
             height: 100%;
             left: -10px;
@@ -514,7 +543,7 @@ export default {
         .tree-node {
           &::before {
             content: '';
-            border-top: 1px solid #e2e2e2;
+            border-top: 1px solid #FF5733;
             position: absolute;
             width: 28px;
             left: -30px;
@@ -525,6 +554,44 @@ export default {
     }
   }
 }
+
+.vue-tree.map, .vue-tree.outline {
+  .tree-node {
+    &.organisation {
+      span.label {
+        background-color: #feae93;
+      }
+    }
+    &.project {
+      span.label {
+        background-color: #ffe162;
+      }
+    }
+    &.asset {
+      span.label {
+        background-color: #ffa07a;
+      }
+    }
+    &.sensor {
+      span.label {
+        background-color: #7ad9ff;
+      }
+    }
+  }
+}
+
+.vue-tree {
+  .tree-node {
+    &.sensor {
+      span.label {
+        .icon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
 </style>
 
 <style lang="scss">

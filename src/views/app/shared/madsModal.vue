@@ -3,7 +3,10 @@
     <div class="row">
       <div class="left-panel col col-3">
         <ul class="sections">
-          <li v-for="section in modalSections" :key="section.index" @click="selectSection(section)" class="item" :class="{'active': section.index === selectedSectionIndex}">
+          <li v-for="section in modalSections"
+          :key="section.index" @click="selectSection(section)"
+          class="item"
+          :class="{'active': section.index === selectedSectionIndex, 'visible': canSelectSection(section.index)}">
             <span v-html="section.name"></span>
           </li>
         </ul>
@@ -12,8 +15,8 @@
         <slot name="right-panel"></slot>
         <div class="footer">
           <b-button @click="onCancel()">Cancel</b-button>
-          <b-button @click="nextSection()" v-if="selectedSectionIndex < modalSections.length" class="next-btn">Next</b-button>
-          <b-button @click="onSave()" v-if="selectedSectionIndex === modalSections.length" class="save-btn">Save</b-button>
+          <b-button @click="nextSection()" v-if="!editMode && selectedSectionIndex < modalSections.length" class="next-btn">Next</b-button>
+          <b-button @click="onSave()" v-if="editMode || selectedSectionIndex === modalSections.length" class="save-btn">Save</b-button>
         </div>
       </div>
     </div>
@@ -40,20 +43,31 @@ export default {
     selectedSectionIndex: {
       type: Number,
       required: true
+    },
+    editMode: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
+      visitedSections: {}
     }
   },
   methods: {
+    canSelectSection (sectionIndex) {
+      return this.editMode || this.visitedSections[sectionIndex]
+    },
     selectSection (section) {
-      this.$emit('select-section', section.index)
+      if (this.canSelectSection(section.index)) {
+        this.$emit('select-section', section.index)
+      }
     },
     nextSection () {
       this.$emit('next-section')
     },
     onCancel () {
+      this.visitedSections = {}
       this.$emit('on-cancel')
       this.$refs[this.modalRef].hide()
     },
@@ -62,7 +76,14 @@ export default {
       this.$refs[this.modalRef].hide()
     }
   },
+  watch: {
+    selectedSectionIndex (index) {
+      this.visitedSections[index] = true
+    }
+  },
   mounted () {
+    this.visitedSections[this.selectedSectionIndex] = true
+
     EntityManagerBus.$on('open-mads-modal', (modalRef) => {
       this.$refs[modalRef] && this.$refs[modalRef].show()
     })
@@ -85,16 +106,19 @@ export default {
       li.item {
         list-style: none;
         font-size: 18px;
-        cursor: pointer;
         height: 60px;
         display: flex;
         align-items: center;
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
         margin-bottom: 20px;
-        color: black;
+        color: #4d5156;
         &.active {
           font-weight: 700;
+          color: black;
+        }
+        &.visible {
+          cursor: pointer;
         }
       }
     }

@@ -5,6 +5,16 @@
 </template>
 
 <style lang="scss">
+  @import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+  html, body {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  #app {
+    font-family: 'Roboto', sans-serif;
+  }
+
   body {
     height: 100%;
   }
@@ -325,7 +335,7 @@
     border-color: #e4e9ef !important;
     border-radius: 4px !important;
   }
-  input, textarea {
+  input, textarea, .multiselect > .multiselect__tags {
     border-color: #3172A8 !important;
     border-radius: 4px !important;
   }
@@ -343,5 +353,8 @@
         top: 50%;
       }
     }
+  }
+  .pac-container {
+    z-index: 1051;
   }
 </style>

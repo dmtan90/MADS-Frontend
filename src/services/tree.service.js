@@ -21,7 +21,8 @@ const treeService = {
           selected: isEntitySelected ? true : false,
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
-          selectable: entity.type !== 'Organisation'
+          selectable: entity.type !== 'Organisation',
+          icon: this._entityTypeIcon(entity.type)
         }
       })
     } else {
@@ -32,7 +33,8 @@ const treeService = {
           selected: isEntitySelected ? true:  false,
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
-          selectable: entity.type !== 'Organisation'
+          selectable: entity.type !== 'Organisation',
+          icon: this._entityTypeIcon(entity.type)
         }
       })
     }
@@ -108,6 +110,26 @@ const treeService = {
     }
 
     return hoverOptions
+  },
+
+  _entityTypeIcon (type) {
+    let icon = ''
+    switch (type) {
+      case 'Organisation':
+        icon = '/assets/img/mads-common-icons.svg#globe'
+        break
+      case 'Project':
+        icon = '/assets/img/mads-role-manager-icons.svg#projects'
+        break
+      case 'Asset':
+        icon = '/assets/img/mads-entity-manager-icons.svg#assets'
+        break
+      case 'Sensor':
+        icon = '/assets/img/mads-entity-manager-icons.svg#sensors'
+        break
+    }
+
+    return icon
   },
 
   initData: function (entity, type = 'sensor-parameter', selectedNodes) {

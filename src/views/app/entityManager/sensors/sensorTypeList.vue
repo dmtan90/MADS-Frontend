@@ -69,7 +69,7 @@ export default {
       this.$refs.addEditSensorType.edit(sensorType)
     },
     deleteSensorType (sensorType) {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: sensorType.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: sensorType.id }
       sensorTypeService.delete(config)
         .then((response) => {
           SensorEventBus.$emit('reload-sensor-types')
@@ -77,7 +77,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   }
 }
 </script>

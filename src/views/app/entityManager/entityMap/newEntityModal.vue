@@ -23,8 +23,8 @@
       </div>
     </b-modal>
 
-    <add-asset ref="addAsset" @save-asset="onSaveAsset($event)"></add-asset>
-    <add-sensor ref="addSensor" @save-sensor="onSaveSensor($event)"></add-sensor>
+    <add-asset ref="addAsset" @save-asset="onSaveAsset($event)" :source="'entity-map'" :entityMapParentNode="entityMapParentNode"></add-asset>
+    <add-sensor ref="addSensor" @save-sensor="onSaveSensor($event)" :source="'entity-map'" :entityMapParentNode="entityMapParentNode"></add-sensor>
   </div>
 </template>
 
@@ -43,6 +43,9 @@ export default {
     entityType: {
       type: String,
       required: true
+    },
+    entityMapParentNode: {
+      default: null
     }
   },
   methods: {

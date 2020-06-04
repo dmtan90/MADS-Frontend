@@ -1,16 +1,17 @@
 <template>
-  <mads-tree
-    v-if="!isDataLoading"
-    ref="tree"
-    :treeData="treeData"
-    :treeView="treeView"
-    :treeOptions="options"
-    :isAnyNodeSelected="isAnyNodeSelected"
-    @on-add-sibling-node="onAddSiblingNode"
-    @on-add-child-node="onAddChildNode"
-    @on-node-click="onNodeClick"
-    @on-node-select="onNodeSelect" 
-  ></mads-tree>
+  <div v-if="!isDataLoading">
+    <mads-tree
+      ref="tree"
+      :treeData="treeData"
+      :treeView="treeView"
+      :treeOptions="options"
+      :isAnyNodeSelected="isAnyNodeSelected"
+      @on-add-sibling-node="onAddSiblingNode"
+      @on-add-child-node="onAddChildNode"
+      @on-node-click="onNodeClick"
+      @on-node-select="onNodeSelect"
+    ></mads-tree>
+  </div>
   <div v-else class="loading"></div>
 </template>
 
@@ -19,6 +20,7 @@ import { mapGetters } from 'vuex'
 import madsTree from './../../shared/madsTree/madsTree'
 import treeService from '@/services/tree.service'
 import entityService from '@/services/entity.service'
+import TreeEventBus from './treeEventBus'
 
 export default {
   components: {
@@ -29,6 +31,8 @@ export default {
       isDataLoading: false,
       orgData: null,
       treeData: null,
+      relativeEntity: {},
+      entityRelation: '',
       options: {
         childrenKey: 'entities',
         selectable: false,
@@ -61,7 +65,7 @@ export default {
   methods: {
     loadProjectEntities () {
       this.isDataLoading = true
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       entityService
         .read(config)
         .then(response => {
@@ -69,6 +73,9 @@ export default {
           this.treeData = treeService.initData(this.orgData, 'sensor-parameter', this.selectedNodes)
           this.isDataLoading = false
         })
+    },
+    getTreeData () {
+      return this.treeData
     },
     getSelectedNodes () {
       return this.$refs.tree.getCheckedNodes()
@@ -78,31 +85,62 @@ export default {
       let selectedNodes = this.getSelectedNodes()
       return (this.$_.size(selectedNodes) > 0) ? selectedNodes[0] : null
     },
+    getParentNode () {
+      return (this.entityRelation === 'sibling') ? this.relativeEntity.parentNode : this.relativeEntity.node
+    },
 
     // Event Emitter Functions
     onNodeClick (event, data) {
       this.$emit('on-node-click', event, data)
     },
     onAddSiblingNode (event, data) {
-      this.$emit('on-add-sibling-node', event, data)
+      // this.$emit('on-add-sibling-node', event, data)
+      this.entityRelation = 'sibling'
+      this.relativeEntity = data
+      TreeEventBus.$emit('show-entity-modal', 'sibling')
     },
     onAddChildNode (event, data) {
-      this.$emit('on-add-child-node', event, data)
+      // this.$emit('on-add-child-node', event, data)
+      this.entityRelation = 'child'
+      this.relativeEntity = data
+      TreeEventBus.$emit('show-entity-modal', 'child')
     },
     onNodeSelect (event, data) {
       this.$emit('on-node-select', event, data)
+    },
+
+    // Tree Event Bus Functions
+    addEntity (entityData, entityType) {
+      let parentNode = (this.entityRelation === 'sibling') ? this.relativeEntity.parentNode : this.relativeEntity.node
+      let node = this.$_.assign(entityData, { action: 'create', type: entityType, parent_id: parentNode.id || null }, {
+        options: {
+          label: entityData.name,
+          classes: [entityType],
+          expanded: false,
+          selected: false,
+          hoverOptions: { sibling: true, child: entityType === 'Asset' },
+          visible: true,
+          selectable: false,
+          icon: entityType === 'Asset' ? '/assets/img/mads-entity-manager-icons.svg#assets' : '/assets/img/mads-entity-manager-icons.svg#sensors'
+        }
+      })
+      let entities = this.$_.concat(parentNode.entities || [], node)
+      this.$set(parentNode, 'entities', entities)
+      this.$set(parentNode.options, 'expanded', true)
+
+      this.treeData = this.$_.assign({}, this.treeData)
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.options = this.$_.merge(this.options, this.treeOptions)
     this.loadProjectEntities()
+
+    TreeEventBus.$on('add-entity', (entityData, entityType) => {
+      this.addEntity(entityData, entityType)
+    })
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

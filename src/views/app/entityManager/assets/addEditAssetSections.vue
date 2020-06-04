@@ -19,14 +19,24 @@
         <b-form-group label="Asset's Caretaker(s)">
           <multiselect v-model="selectedCaretaker" :options="caretakers" @select="onSelectCaretaker" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
         </b-form-group>
-        <b-form-group label="Asset's Hierarchy" class="hierarchy">
-          <b-form-radio value="Project" v-model="asset.parent_type">Place under project</b-form-radio>
+        <b-form-group label="Asset's Hierarchy" class="hierarchy" v-if="source === 'assets-list'">
+          <b-form-radio value="Project" v-model="asset.parent_type">Place under project {{selectedProject && selectedProject.name}}</b-form-radio>
           <b-form-radio value="Asset" v-model="asset.parent_type">Place under an asset in project</b-form-radio>
         </b-form-group>
+        <b-form-group v-else>
+          <b-form-radio :value="entityMapParentNode.type" v-model="asset.parent_type">Place under <b>{{entityMapParentNode.type}} {{entityMapParentNode.name}}</b></b-form-radio>
+        </b-form-group>
       </b-form>
-      <div v-if="asset.parent_type === 'Asset'" class="select-asset">
+      <div v-if="source === 'assets-list' && asset.parent_type === 'Asset'" class="select-asset">
         <div class="vue-tree-container">
-          <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree>
+          <mads-tree
+            ref="tree"
+            :treeView="'file'"
+            :treeOptions="treeOptions"
+            @on-node-select="onSelectEntity"
+            :selectedNodes="getSelectedEntity()"
+            :isAnyNodeSelected="isAnyNodeSelected"
+          ></mads-tree>
         </div>
       </div>
     </section>
@@ -72,6 +82,13 @@ export default {
     },
     assetData: {
       type: Object
+    },
+    source: {
+      type: String,
+      required: true
+    },
+    entityMapParentNode: {
+      default: null
     }
   },
   data () {
@@ -99,7 +116,7 @@ export default {
         })
     },
     loadAssetTypes () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       assetTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.assetTypes = response.asset_types
@@ -140,7 +157,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadAssetTypes()
@@ -165,7 +182,7 @@ export default {
         name: '',
         description: '',
         metadata: [],
-        parent_type: 'Project',
+        parent_type: this.entityMapParentNode ? this.entityMapParentNode.type : 'Project',
         parent_id: null,
         asset_type_id: null,
         creator_id: this.currentUser.id
