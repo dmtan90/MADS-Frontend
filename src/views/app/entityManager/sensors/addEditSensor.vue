@@ -28,7 +28,7 @@ export default {
   props: {
     source: {
       type: String,
-      default: 'assets-list'
+      default: 'sensors-list'
     },
     entityMapParentNode: {
       default: null

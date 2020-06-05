@@ -17,7 +17,7 @@
     <section v-if="selectedSectionIndex === 2" class="position">
       <b-form>
         <b-form-group label="Sensor's Caretaker(s)">
-          <multiselect v-model="selectedCaretaker" :options="caretakers" @select="onSelectCaretaker" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
+          <multiselect v-model="sensor.caretakers" :options="caretakers" @select="onSelectCaretaker" :multiple="true" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Sensor's Hierarchy" class="hierarchy" v-if="source === 'sensors-list'">
           <b-form-radio value="Project" v-model="sensor.parent_type">Place under project {{selectedProject && selectedProject.name}}</b-form-radio>
@@ -88,7 +88,6 @@ export default {
     return {
       selectedSensorType: null,
       sensorTypes: [],
-      selectedCaretaker: null,
       caretakers: [],
       sensor: {},
       orgData: null,
@@ -97,7 +96,8 @@ export default {
         selectable: true,
         singleSelect: true
       },
-      isAnyNodeSelected: false
+      isAnyNodeSelected: false,
+      selectedParentEntityId: null
     }
   },
   methods: {
@@ -137,7 +137,8 @@ export default {
     onSelectCaretaker (caretaker) {
     },
     onSelectEntity (event, entity) {
-      this.sensor.parent_id = event ? entity.id : 1
+      this.sensor.parent_id = event ? entity.id : this.selectedProject.id
+      this.selectedParentEntityId = event ? entity.id : null
     },
     getSensorData () {
       return this.sensor
@@ -146,7 +147,7 @@ export default {
       return caretaker.first_name + ' ' + (caretaker.last_name || '')
     },
     getSelectedEntity () {
-      return [{ id: this.sensor.parent_id, type: this.sensor.parent_type }]
+      return [{ id: this.selectedParentEntityId, type: this.sensor.parent_type }]
     }
   },
   computed: {
@@ -162,8 +163,16 @@ export default {
         description: this.sensorData.description || '',
         sensor_type_id: this.sensorData.sensor_type || null,
         parent_type: this.sensorData.parent_type || 'Project',
-        parent_id: this.sensorData.parent_id || 1,
+        parent_id: this.sensorData.parent_id || this.selectedProject.id,
         metadata: []
+      }
+
+      if (this.sensorData.parent_id) {
+        this.isAnyNodeSelected = true
+      }
+
+      if (this.sensor.parent_type === 'Asset') {
+        this.selectedParentEntityId = this.sensorData.parent_id
       }
     } else {
       this.sensor = {
@@ -171,7 +180,7 @@ export default {
         description: '',
         sensor_type_id: null,
         parent_type: this.entityMapParentNode ? this.entityMapParentNode.type : 'Project',
-        parent_id: 1,
+        parent_id: this.selectedProject.id,
         metadata: []
       }
     }

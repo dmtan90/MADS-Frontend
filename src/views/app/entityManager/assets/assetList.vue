@@ -22,7 +22,7 @@
           <span>{{props.rowData.metadata.length}}</span>
         </template>
         <template v-slot:mapped_parameters="props">
-          <span>{{props.rowData.mapped_parameters.length}}</span>
+          <span>{{(props.rowData.mapped_parameters || []).length}}</span>
         </template>
         <template v-slot:actions="props">
           <span class="edit-asset" @click="editAsset(props.rowData)">Edit</span>

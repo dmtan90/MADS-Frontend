@@ -3,11 +3,11 @@
     <h2 class="page-heading">Sensors</h2>
     <div>
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors (0)</li>
+        <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors ({{sensors.length}})</li>
         <li :class="{'active': selectedTab === 'sensorTypes'}" @click="selectedTab = 'sensorTypes'">Sensor Types ({{sensorTypes.length}})</li>
       </ul>
     </div>
-    <sensor-list v-if="selectedTab === 'sensors'"></sensor-list>
+    <sensor-list v-if="selectedTab === 'sensors'" :sensors="sensors"></sensor-list>
     <sensor-type-list v-if="selectedTab === 'sensorTypes'" :sensorTypes="sensorTypes"></sensor-type-list>
   </div>
 </template>

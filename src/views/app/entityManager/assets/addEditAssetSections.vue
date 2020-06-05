@@ -17,7 +17,7 @@
     <section v-if="selectedSectionIndex === 2" class="position">
       <b-form>
         <b-form-group label="Asset's Caretaker(s)">
-          <multiselect v-model="selectedCaretaker" :options="caretakers" @select="onSelectCaretaker" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
+          <multiselect v-model="asset.caretakers" :options="caretakers" @select="onSelectCaretaker" :multiple="true" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="getCaretakerName" track-by="name"></multiselect>
         </b-form-group>
         <b-form-group label="Asset's Hierarchy" class="hierarchy" v-if="source === 'assets-list'">
           <b-form-radio value="Project" v-model="asset.parent_type">Place under project {{selectedProject && selectedProject.name}}</b-form-radio>
@@ -95,7 +95,6 @@ export default {
     return {
       selectedAssetType: null,
       assetTypes: [],
-      selectedCaretaker: null,
       caretakers: [],
       asset: {},
       orgData: null,
@@ -104,7 +103,8 @@ export default {
         selectable: true,
         singleSelect: true
       },
-      isAnyNodeSelected: false
+      isAnyNodeSelected: false,
+      selectedParentEntityId: null
     }
   },
   methods: {
@@ -144,7 +144,8 @@ export default {
     onSelectCaretaker (caretaker) {
     },
     onSelectEntity (event, entity) {
-      this.asset.parent_id = event ? entity.id : null
+      this.asset.parent_id = event ? entity.id : this.selectedProject.id
+      this.selectedParentEntityId = event ? entity.id : null
     },
     getAssetData () {
       return this.asset
@@ -153,7 +154,7 @@ export default {
       return caretaker.first_name + ' ' + (caretaker.last_name || '')
     },
     getSelectedEntity () {
-      return [{ id: this.asset.parent_id, type: this.asset.parent_type }]
+      return [{ id: this.selectedParentEntityId, type: this.asset.parent_type }]
     }
   },
   computed: {
@@ -176,6 +177,10 @@ export default {
 
       if (this.assetData.parent_id) {
         this.isAnyNodeSelected = true
+      }
+
+      if (this.asset.parent_type === 'Asset') {
+        this.selectedParentEntityId = this.assetData.parent_id
       }
     } else {
       this.asset = {
