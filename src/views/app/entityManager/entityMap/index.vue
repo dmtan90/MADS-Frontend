@@ -6,17 +6,17 @@
         ref="tree"
         :treeView="selectedView"
         :treeOptions="{showHoverOptions: true}"
-        @on-node-select="onSelectEntity"
+        @on-node-click="onSelectEntity"
         >
       </mads-tree>
     </div>
-    <div class="properties-settings">
+    <div class="right-section">
       <ul class="nav">
         <li :class="{active: selectedTab === 'properties'}" @click="selectedTab = 'properties'">Properties</li>
         <li :class="{active: selectedTab === 'settings'}" @click="selectedTab = 'settings'">Settings</li>
       </ul>
-      <div v-if="selectedEntity">
-        <entity-properties v-if="selectedTab === 'properties'" :entity="selectedEntity" @delete-entity="deleteEntity()"></entity-properties>
+      <div v-if="selectedEntity" class="properties">
+        <entity-properties v-if="selectedTab === 'properties'" :entityData="selectedEntity" @entity-deleted="onEntityDeleted()"></entity-properties>
         <entity-settings v-else></entity-settings>
       </div>
     </div>
@@ -56,9 +56,8 @@ export default {
   },
   methods: {
     ...mapActions(['selectProject']),
-    deleteEntity () {
-      this.$set(this.selectedEntity.options, 'visible', false)
-      this.$set(this.selectEntity, 'action', 'delete')
+    onEntityDeleted () {
+      this.selectedEntity = null
     },
     saveTreeData () {
       this.isDataLoading = true
@@ -76,6 +75,7 @@ export default {
 
     // Event Emitter Functions
     onSelectEntity (e, data) {
+      this.selectedEntity = data.node
     }
   },
   computed: {
@@ -103,15 +103,15 @@ export default {
       border-right: 1px solid #c8cbce;
       overflow: auto;
     }
-    .properties-settings {
+    .right-section {
       border-left: 1px solid #c8cbce;
       width: 20%;
       margin-left: 5px;
       background-color: #f8f8f8;
       ul.nav {
+        height: 45px;
         li {
           width: 50%;
-          height: 45px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -131,6 +131,9 @@ export default {
             }
           }
         }
+      }
+      .properties {
+        height: calc(100% - 45px);
       }
     }
   }
