@@ -1,16 +1,19 @@
 import _ from 'lodash'
 
 const treeService = {
-  _initSensorParameterData: function (entity, selectedNodes) {
+  _initSensorParameterData: function (entity, selectedNodes, editingEntity) {
     let that = this
     let childrenPresent = (entity.type !== 'Sensor' && entity.entities && _.size(entity.entities)) > 0
     let isEntitySelected = _.find(selectedNodes, (node) => {
       return (node.id === entity.id) && (node.type === entity.type)
     })
 
+    let isSelectable = !_.includes(['Organisation', 'Sensor'], entity.type) &&
+      !(editingEntity && editingEntity.id === entity.id && editingEntity.type === entity.type)
+
     if (childrenPresent) {
       _.map(entity.entities, function (childEntity) {
-        return that._initSensorParameterData(childEntity, selectedNodes)
+        return that._initSensorParameterData(childEntity, selectedNodes, editingEntity)
       })
 
       return _.assign(entity, {
@@ -21,7 +24,7 @@ const treeService = {
           selected: isEntitySelected ? true : false,
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
-          selectable: entity.type !== 'Organisation',
+          selectable: isSelectable,
           icon: this._entityTypeIcon(entity.type)
         }
       })
@@ -33,7 +36,7 @@ const treeService = {
           selected: isEntitySelected ? true:  false,
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
-          selectable: entity.type !== 'Organisation',
+          selectable: isSelectable,
           icon: this._entityTypeIcon(entity.type)
         }
       })
@@ -132,9 +135,9 @@ const treeService = {
     return icon
   },
 
-  initData: function (entity, type = 'sensor-parameter', selectedNodes) {
+  initData: function (entity, type = 'sensor-parameter', selectedNodes = [], editingEntity = null) {
     if (type === 'sensor-parameter') {
-      return this._initSensorParameterData(entity, selectedNodes)
+      return this._initSensorParameterData(entity, selectedNodes, editingEntity)
     } else {
       return this._initAssetPropertyData(entity)
     }

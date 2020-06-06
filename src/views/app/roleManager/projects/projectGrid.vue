@@ -4,7 +4,7 @@
       <div class="search-box">
         <b-form-input v-model="searchText" placeholder="Search project"></b-form-input>
       </div>
-      <div class="add-project" v-if="!parentCmp">
+      <div class="add-project" v-if="!source">
         <b-button @click="addProject()">Add project</b-button>
       </div>
     </div>
@@ -12,7 +12,7 @@
       <div class="col-md-4 grid-item" v-for="(project, index) in projects" :key="index">
         <div class="header">
           <span class="name">{{project.name}}</span>
-          <span class="actions" v-if="!parentCmp">
+          <span class="actions" v-if="!source">
             <svg class="icon" @click="editProject(project)">
               <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
             </svg>
@@ -55,7 +55,18 @@ import addEditProject from './addEditProject'
 import ProjectEventBus from './projectEventBus'
 
 export default {
-  props: ['projects', 'parentCmp'],
+  props: {
+    projects: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    source: {
+      type: String,
+      default: null
+    }
+  },
   components: {
     addEditProject
   },
@@ -65,7 +76,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectProject']),
+    ...mapActions(['selectProject', 'setEntityManagerCurrentPage']),
     renderUserName (users) {
       users = this.$_.map(users, (user) => {
         return user.first_name
@@ -87,6 +98,7 @@ export default {
     },
     onSelectProject (project) {
       this.selectProject(project)
+      this.setEntityManagerCurrentPage(this.source)
     }
   },
   computed: {

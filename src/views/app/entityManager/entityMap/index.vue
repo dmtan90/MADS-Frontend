@@ -67,7 +67,7 @@ export default {
 
       entityService.create(config, payload)
         .then(response => {
-          this.loadProjectEntities()
+          TreeEventBus.$emit('reload-entities')
         })
     },
     changeView (view) {
@@ -84,8 +84,8 @@ export default {
   mounted () {
     TreeEventBus.$on('show-entity-modal', (entityRelation) => {
       this.entityRelation = entityRelation
-      this.entityMapParentNode = this.$refs.tree.getParentNode()
-      this.$refs.addEntityModal.$refs.entityModal.show()
+      this.entityMapParentNode = this.$refs.tree && this.$refs.tree.getParentNode()
+      this.$refs.addEntityModal && this.$refs.addEntityModal.$refs.entityModal.show()
     })
   },
   beforeDestroy () {

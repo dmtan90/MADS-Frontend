@@ -4,8 +4,8 @@ import router from '@/router'
 
 const ApiService = {
 
-  // Stores the 401 interceptor position so that it can be later ejected when needed
-  _401interceptor: null,
+  // Stores the interceptor so that it can be later ejected when needed
+  _interceptor: null,
 
   init (baseURL) {
     axios.defaults.baseURL = baseURL
@@ -51,8 +51,8 @@ const ApiService = {
     return axios(data)
   },
 
-  mount401Interceptor () {
-    this._401interceptor = axios.interceptors.response.use(
+  mountInterceptor () {
+    this._interceptor = axios.interceptors.response.use(
       (response) => {
         return response
       },
@@ -62,6 +62,8 @@ const ApiService = {
           TokenService.removeRefreshToken()
           localStorage.removeItem('user_id')
           router.push('/user/login')
+        } else if (error.request.status === 500) {
+          console.log(error)
         }
 
         // If error was not 401 just reject as is
@@ -72,7 +74,7 @@ const ApiService = {
 
   unmount401Interceptor () {
     // Eject the interceptor
-    axios.interceptors.response.eject(this._401interceptor)
+    axios.interceptors.response.eject(this._interceptor)
   }
 }
 

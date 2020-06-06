@@ -4,9 +4,9 @@
     <div class="view-header">
       <ul class="nav nav-tabs">
         <li class="active">Active ({{projects.length}})</li>
-        <li class="" v-if="!parentCmp">Archived (0)</li>
+        <li class="" v-if="!source">Archived (0)</li>
       </ul>
-      <div class="project-view" v-if="parentCmp">
+      <div class="project-view" v-if="source">
         <svg class="icon grid" :class="{'active': viewType === 'grid'}" @click="viewType = 'grid'">
           <use xlink:href="/assets/img/mads-common-icons.svg#grid"></use>
         </svg>
@@ -15,8 +15,8 @@
         </svg>
       </div>
     </div>
-    <project-list :projects="projects" v-if="viewType === 'list'" :parentCmp="parentCmp"></project-list>
-    <project-grid :projects="projects" v-if="viewType === 'grid'" :parentCmp="parentCmp"></project-grid>
+    <project-list :projects="projects" v-if="viewType === 'list'" :source="source"></project-list>
+    <project-grid :projects="projects" v-if="viewType === 'grid'" :source="source"></project-grid>
   </div>
 </template>
 
@@ -33,14 +33,14 @@ export default {
     projectGrid
   },
   props: {
-    parentCmp: {
+    source: {
       default: null
     }
   },
   data () {
     return {
       projects: [],
-      viewType: this.parentCmp ? 'grid' : 'list'
+      viewType: this.source ? 'grid' : 'list'
     }
   },
   methods: {

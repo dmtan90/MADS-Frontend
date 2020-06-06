@@ -45,7 +45,7 @@ export default {
         TokenService.saveRefreshToken(payload.refresh_token)
       }
       ApiService.setHeader(payload.access_token)
-      ApiService.mount401Interceptor()
+      ApiService.mountInterceptor()
       commit('setUserLoggedIn', true)
       router.push('/')
     },

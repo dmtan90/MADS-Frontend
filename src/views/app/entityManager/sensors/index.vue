@@ -59,6 +59,10 @@ export default {
     SensorEventBus.$on('reload-sensor-types', () => {
       this.loadSensorTypes()
     })
+
+    SensorEventBus.$on('reload-sensors', () => {
+      this.loadSensors()
+    })
   },
   beforeDestroy () {
     this.selectProject(null)

@@ -36,6 +36,7 @@
             @on-node-select="onSelectEntity"
             :selectedNodes="getSelectedEntity()"
             :isAnyNodeSelected="isAnyNodeSelected"
+            :editingEntity="assetData"
           ></mads-tree>
         </div>
       </div>
@@ -123,7 +124,6 @@ export default {
 
           if (this.editMode) {
             this.selectedAssetType = this.$_.find(this.assetTypes, (assetType) => { return assetType.id === this.asset.asset_type_id })
-            this.onSelectAssetType(this.selectedAssetType)
           }
         })
     },
@@ -144,7 +144,12 @@ export default {
     onSelectCaretaker (caretaker) {
     },
     onSelectEntity (event, entity) {
-      this.asset.parent_id = event ? entity.id : this.selectedProject.id
+      if (event) {
+        this.asset.parent_type = entity.type
+        this.asset.parent_id = (entity.type === 'Project') ? null : entity.id
+      } else {
+        this.asset.parent_id = null
+      }
       this.selectedParentEntityId = event ? entity.id : null
     },
     getAssetData () {
@@ -168,7 +173,7 @@ export default {
       this.asset = {
         name: this.assetData.name || '',
         description: this.assetData.description || '',
-        metadata: [],
+        metadata: this.assetData.metadata,
         parent_type: this.assetData.parent_id ? 'Asset' : 'Project',
         parent_id: this.assetData.parent_id || null,
         asset_type_id: this.assetData.asset_type_id,

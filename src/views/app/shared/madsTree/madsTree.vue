@@ -1,9 +1,9 @@
 <template>
   <tree
-    :data="treeData"
+    :data="data"
     :options="treeOptions"
     :treeView="treeView"
-    :isAnyNodeSelected="isAnyNodeSelected"
+    :isAnyNodeChecked="isAnyNodeChecked"
     @on-expand-collapse-click="onNodeExpandCollapse"
     @on-add-sibling-node="onAddSiblingNode"
     @on-add-child-node="onAddChildNode"
@@ -45,8 +45,10 @@ export default {
   },
   data () {
     return {
+      data: {},
       selectedNodes: [],
-      childrenKey: 'children'
+      childrenKey: 'children',
+      isAnyNodeChecked: false
     }
   },
   methods: {
@@ -55,7 +57,7 @@ export default {
     },
     onNodeExpandCollapse (event, data) {
       this.$set(data.options, 'expanded', !data.options.expanded)
-      this.treeData = this.$_.assign({}, this.treeData)
+      this.data = this.$_.assign({}, this.data)
     },
     onAddSiblingNode (event, data) {
       this.$emit('on-add-sibling-node', event, data)
@@ -66,8 +68,8 @@ export default {
     onNodeSelect (event, data) {
       this.$set(data.options, 'selected', event)
       if (this.treeOptions.singleSelect) {
-        this.isAnyNodeSelected = event
-        this.treeData = this.$_.assign({}, this.treeData)
+        this.isAnyNodeChecked = event
+        this.data = this.$_.assign({}, this.data)
       }
 
       this.$emit('on-node-select', event, data)
@@ -87,9 +89,13 @@ export default {
     getCheckedNodes () {
       this.selectedNodes = []
       this.childrenKey = this.treeOptions.childrenKey
-      this.getNodes(this.treeData)
+      this.getNodes(this.data)
       return this.selectedNodes
     }
+  },
+  mounted () {
+    this.data = this.treeData
+    this.isAnyNodeChecked = this.isAnyNodeSelected
   }
 }
 </script>
@@ -119,6 +125,7 @@ export default {
           text-align: center;
           display: flex;
           align-items: center;
+          white-space: nowrap;
           .icon {
             width: 18px;
             height: 18px;
@@ -312,6 +319,7 @@ export default {
           text-align: center;
           display: flex;
           align-items: center;
+          white-space: nowrap;
           .icon {
             width: 18px;
             height: 18px;
@@ -559,7 +567,8 @@ export default {
   .tree-node {
     &.organisation {
       span.label {
-        background-color: #feae93;
+        // background-color: #feae93;
+        border: 1px solid;
       }
     }
     &.project {

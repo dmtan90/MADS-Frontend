@@ -60,6 +60,9 @@ export default {
     isAnyNodeSelected: {
       type: Boolean,
       default: false
+    },
+    editingEntity: {
+      default: null
     }
   },
   methods: {
@@ -70,7 +73,7 @@ export default {
         .read(config)
         .then(response => {
           this.orgData = response
-          this.treeData = treeService.initData(this.orgData, 'sensor-parameter', this.selectedNodes)
+          this.treeData = treeService.initData(this.orgData, 'sensor-parameter', this.selectedNodes, this.editingEntity)
           this.isDataLoading = false
         })
     },
@@ -140,6 +143,10 @@ export default {
 
     TreeEventBus.$on('add-entity', (entityData, entityType) => {
       this.addEntity(entityData, entityType)
+    })
+
+    TreeEventBus.$on('reload-entities', () => {
+      this.loadProjectEntities()
     })
   }
 }

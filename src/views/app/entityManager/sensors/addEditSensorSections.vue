@@ -113,11 +113,6 @@ export default {
       sensorTypeService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.sensorTypes = response.sensors_type
-
-          if (this.editMode) {
-            this.selectedSensorType = this.$_.find(this.sensorTypes, (sensorType) => { return sensorType.id === this.sensor.sensor_type_id })
-            this.onSelectSensorType(this.selectedSensorType)
-          }
         })
     },
     onSelectSensorType (sensorType) {
@@ -137,7 +132,13 @@ export default {
     onSelectCaretaker (caretaker) {
     },
     onSelectEntity (event, entity) {
-      this.sensor.parent_id = event ? entity.id : this.selectedProject.id
+      if (event) {
+        this.sensor.parent_id = entity.id
+        this.sensor.parent_type = entity.type
+      } else {
+        this.sensor.parent_id = this.selectedProject.id
+      }
+
       this.selectedParentEntityId = event ? entity.id : null
     },
     getSensorData () {
@@ -161,13 +162,16 @@ export default {
       this.sensor = {
         name: this.sensorData.name || '',
         description: this.sensorData.description || '',
-        sensor_type_id: this.sensorData.sensor_type || null,
-        parent_type: this.sensorData.parent_type || 'Project',
-        parent_id: this.sensorData.parent_id || this.selectedProject.id,
-        metadata: []
+        sensor_type_id: this.sensorData.sensor_type.id || null,
+        parent_type: this.sensorData.parent_type,
+        parent_id: this.sensorData.parent_id,
+        metadata: this.sensorData.metadata,
+        creator_id: this.sensorData.creator_id
       }
 
-      if (this.sensorData.parent_id) {
+      this.selectedSensorType = this.sensorData.sensor_type
+
+      if (this.sensorData.parent_type === 'Asset') {
         this.isAnyNodeSelected = true
       }
 
@@ -181,7 +185,8 @@ export default {
         sensor_type_id: null,
         parent_type: this.entityMapParentNode ? this.entityMapParentNode.type : 'Project',
         parent_id: this.selectedProject.id,
-        metadata: []
+        metadata: [],
+        creator_id: this.currentUser.id
       }
     }
   }

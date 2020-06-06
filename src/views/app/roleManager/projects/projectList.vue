@@ -4,7 +4,7 @@
       <div class="search-box">
         <b-form-input v-model="searchText" placeholder="Search project"></b-form-input>
       </div>
-      <div class="add-project" v-if="!parentCmp">
+      <div class="add-project" v-if="!source">
         <b-button @click="addProject()">Add project</b-button>
       </div>
     </div>
@@ -35,7 +35,7 @@
             {{props.rowData.location && props.rowData.location.name}}
           </a>
         </template>
-        <template v-slot:actions="props" v-if="!parentCmp">
+        <template v-slot:actions="props" v-if="!source">
           <span class="edit-project" @click="editProject(props.rowData)">Edit</span>
           <span class="delete-project" @click="deleteProject(props.rowData)">Delete</span>
         </template>
@@ -56,7 +56,18 @@ import addEditProject from './addEditProject'
 import ProjectEventBus from './projectEventBus'
 
 export default {
-  props: ['projects', 'parentCmp'],
+  props: {
+    projects: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    source: {
+      type: String,
+      default: null
+    }
+  },
   components: {
     Vuetable,
     addEditProject
@@ -68,7 +79,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectProject']),
+    ...mapActions(['selectProject', 'setEntityManagerCurrentPage']),
     addProject (project) {
       this.$refs.addEditProject.add()
     },
@@ -84,6 +95,7 @@ export default {
     },
     onSelectProject (project) {
       this.selectProject(project)
+      this.setEntityManagerCurrentPage(this.source)
     },
     getProjectLocationUrl (project) {
       return project.location ? project.location.url : ''

@@ -146,7 +146,7 @@ const renderCollapsExpandIcon = (createElement, node, context) => {
 
 const renderNodeCheckBox = (createElement, node, context) => {
   const { listeners, props } = context
-  const { options, isAnyNodeSelected } = props
+  const { options, isAnyNodeChecked } = props
   const { singleSelect } = options
 
   const changeHandler = listeners['on-node-select']
@@ -156,7 +156,7 @@ const renderNodeCheckBox = (createElement, node, context) => {
     {
       attrs: {
         checked: node.options.selected,
-        disabled: singleSelect && isAnyNodeSelected && !node.options.selected
+        disabled: singleSelect && isAnyNodeChecked && !node.options.selected
       },
       on: {
         change: e => changeHandler && changeHandler(e, node)
