@@ -40,7 +40,7 @@ const appSections = [
 export default {
   state: {
     appName: 'Entity Manager',
-    appKey: 'entityManager',
+    appKey: 'Entity_Manager',
     appIcon: 'mads-entity-manager',
     appSections: appSections,
     appSectionsIconFile: 'mads-entity-manager-icons.svg',

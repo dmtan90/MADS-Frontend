@@ -1,8 +1,8 @@
 import _ from 'lodash'
-import roleManager from './roleManager'
-import widgetManager from './widgetManager'
-import dataCruncher from './dataCruncher'
-import entityManager from './entityManager'
+import Role_Manager from './roleManager'
+import Widget_Manager from './widgetManager'
+import Data_Cruncher from './dataCruncher'
+import Entity_Manager from './entityManager'
 
 export default {
   state: {
@@ -48,9 +48,9 @@ export default {
     }
   },
   modules: {
-    roleManager,
-    widgetManager,
-    dataCruncher,
-    entityManager
+    Role_Manager,
+    Widget_Manager,
+    Data_Cruncher,
+    Entity_Manager
   }
 }

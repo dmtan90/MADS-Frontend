@@ -1,5 +1,5 @@
 <template>
-  <app-window :appName="'widgetManager'">
+  <app-window :appName="'Widget_Manager'">
     <template v-slot:content>
       <widget-manager v-if="appVuexState.currentSection === 'widgetManager'"></widget-manager>
       <widget-store :appVuexState="appVuexState" v-if="appVuexState.currentSection === 'widgetStore'"></widget-store>
@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     appVuexState () {
-      return this.$store.state.appWindow['widgetManager']
+      return this.$store.state.appWindow['Widget_Manager']
     }
   }
 }

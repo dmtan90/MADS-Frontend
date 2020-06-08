@@ -1,5 +1,5 @@
 <template>
-  <app-window :appName="'dataCruncher'">
+  <app-window :appName="'Data_Cruncher'">
     <template v-slot:content>
       <data-cruncher v-if="appVuexState.currentSection === 'dataCruncher'"></data-cruncher>
       <workspace v-if="appVuexState.currentSection === 'workspace'"></workspace>
@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     appVuexState () {
-      return this.$store.state.appWindow['dataCruncher']
+      return this.$store.state.appWindow['Data_Cruncher']
     }
   }
 }

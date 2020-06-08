@@ -34,7 +34,7 @@ const appSections = [
 export default {
   state: {
     appName: 'Role Manager',
-    appKey: 'roleManager',
+    appKey: 'Role_Manager',
     appIcon: 'mads-role-manager',
     appSections: appSections,
     appSectionsIconFile: 'mads-role-manager-icons.svg',

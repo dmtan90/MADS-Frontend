@@ -24,7 +24,7 @@ const appSections = [
 export default {
   state: {
     appName: 'Widget Manager',
-    appKey: 'widgetManager',
+    appKey: 'Widget_Manager',
     appIcon: 'mads-widget-manager',
     appSections: appSections,
     appSectionsIconFile: 'mads-widget-manager-icons.svg',

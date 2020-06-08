@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div class="app-container" :class="{'maximized': getAppState('widgetManager') === 'maximize'}" :style="{'z-index': getAppZIndex('widgetManager')}">
-      <widget-manager v-if="getAppState('widgetManager') !== 'closed'"></widget-manager>
+    <div class="app-container" :class="{'maximized': getAppState('Widget_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('Widget_Manager')}">
+      <widget-manager v-if="getAppState('Widget_Manager') !== 'closed'"></widget-manager>
     </div>
-    <div class="app-container" :class="{'maximized': getAppState('dataCruncher') === 'maximize'}" :style="{'z-index': getAppZIndex('dataCruncher')}">
-      <data-cruncher v-if="getAppState('dataCruncher') !== 'closed'"></data-cruncher>
+    <div class="app-container" :class="{'maximized': getAppState('Data_Cruncher') === 'maximize'}" :style="{'z-index': getAppZIndex('Data_Cruncher')}">
+      <data-cruncher v-if="getAppState('Data_Cruncher') !== 'closed'"></data-cruncher>
     </div>
-    <div class="app-container" :class="{'maximized': getAppState('roleManager') === 'maximize'}" :style="{'z-index': getAppZIndex('roleManager')}">
-      <role-manager v-if="getAppState('roleManager') !== 'closed'"></role-manager>
+    <div class="app-container" :class="{'maximized': getAppState('Role_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('Role_Manager')}">
+      <role-manager v-if="getAppState('Role_Manager') !== 'closed'"></role-manager>
     </div>
-    <div class="app-container" :class="{'maximized': getAppState('entityManager') === 'maximize'}" :style="{'z-index': getAppZIndex('entityManager')}">
-      <entity-manager v-if="getAppState('entityManager') !== 'closed'"></entity-manager>
+    <div class="app-container" :class="{'maximized': getAppState('Entity_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('Entity_Manager')}">
+      <entity-manager v-if="getAppState('Entity_Manager') !== 'closed'"></entity-manager>
     </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
