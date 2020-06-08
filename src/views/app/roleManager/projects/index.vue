@@ -22,7 +22,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import projectService from '@/services/project.service'
+import projectService from '@/services/project.service'
 import projectList from './projectList'
 import projectGrid from './projectGrid'
 import ProjectEventBus from './projectEventBus'
@@ -45,50 +45,27 @@ export default {
   },
   methods: {
     loadProjects () {
-      this.projects = [
-        {
-          id: 1,
-          name: 'Power Plant',
-          description: 'This is project descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          location: {
-            name: 'Cluny Road, Singapore Botanic Gardens, Singapore',
-            place_id: 'ChIJvWDbfRwa2jERgNnTOpAU3-o',
-            url: 'https://maps.google.com/?cid=16924268534376421760'
-          },
-          project_image: 'https://www.gtreview.com/wp-content/uploads/2014/10/Power-Plant-Factory.jpg'
-        },
-        {
-          id: 1,
-          name: 'Rubber Factory',
-          description: 'This is project descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          location: {
-            name: 'Cluny Road, Singapore Botanic Gardens, Singapore',
-            place_id: 'ChIJvWDbfRwa2jERgNnTOpAU3-o',
-            url: 'https://maps.google.com/?cid=16924268534376421760'
-          },
-          project_image: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Wolfsburg_VW-Werk.jpg'
-        },
-        {
-          id: 1,
-          name: 'Smart Building',
-          description: 'This is project descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          location: {
-            name: 'Cluny Road, Singapore Botanic Gardens, Singapore',
-            place_id: 'ChIJvWDbfRwa2jERgNnTOpAU3-o',
-            url: 'https://maps.google.com/?cid=16924268534376421760'
-          },
-          project_image: 'https://s27389.pcdn.co/wp-content/uploads/2016/10/AdobeStock_114525500.jpeg'
-        }
-      ]
+      // this.projects = [
+      //   {
+      //     id: 1,
+      //     name: 'Power Plant',
+      //     description: 'This is project descrption',
+      //     users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
+      //     leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
+      //     metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
+      //     location: {
+      //       name: 'Cluny Road, Singapore Botanic Gardens, Singapore',
+      //       place_id: 'ChIJvWDbfRwa2jERgNnTOpAU3-o',
+      //       url: 'https://maps.google.com/?cid=16924268534376421760'
+      //     },
+      //     project_image: 'https://www.gtreview.com/wp-content/uploads/2014/10/Power-Plant-Factory.jpg'
+      //   }
+      // ]
+      let config = { orgId: this.currentUser.org.id }
+      projectService.read(config, { page_number: 1, page_size: 10 })
+        .then((response) => {
+          this.projects = response.projects
+        })
     }
   },
   computed: {

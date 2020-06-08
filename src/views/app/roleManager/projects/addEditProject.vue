@@ -20,7 +20,7 @@
 import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditProjectSections'
-// import projectService from '@/services/project.service'
+import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
 
 export default {
@@ -65,24 +65,22 @@ export default {
       this.selectedSectionIndex++
     },
     saveProject () {
-      // let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
+      let config = { orgId: this.currentUser.org.id }
       let projectData = this.$refs.sections.getProjectData()
 
-      // if (this.editMode) {
-      //   config = this.$_.assign(config, { id: this.project.id })
-      //   projectService.update(config, projectData)
-      //     .then((response) => {
-      //       ProjectEventBus.$emit('reload-projects')
-      //     })
-      // } else {
-      //   projectService.create(config, projectData)
-      //     .then((response) => {
-      //       ProjectEventBus.$emit('reload-projects')
-      //     })
-      // }
-
-      // // this.$emit('save-project', projectData)
-      // this.selectedSectionIndex = 1
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.project.id })
+        projectService.update(config, projectData)
+          .then((response) => {
+            ProjectEventBus.$emit('reload-projects')
+          })
+      } else {
+        projectService.create(config, projectData)
+          .then((response) => {
+            ProjectEventBus.$emit('reload-projects')
+          })
+      }
+      this.selectedSectionIndex = 1
     },
     onCancel () {
       this.selectedSectionIndex = 1
