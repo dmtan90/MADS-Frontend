@@ -12,6 +12,9 @@
     <div class="app-container" :class="{'maximized': getAppState('Entity_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('Entity_Manager')}">
       <entity-manager v-if="getAppState('Entity_Manager') !== 'closed'"></entity-manager>
     </div>
+    <div class="app-container" :class="{'maximized': getAppState('Dashboards') === 'maximize'}" :style="{'z-index': getAppZIndex('Dashboards')}">
+      <dashboard v-if="getAppState('Dashboards') !== 'closed'"></dashboard>
+    </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
     </div>
@@ -25,13 +28,15 @@ import widgetManager from './../widgetManager'
 import dataCruncher from './../dataCruncher'
 import roleManager from './../roleManager'
 import entityManager from './../entityManager'
+import dashboard from './../dashboard'
 
 export default {
   components: {
     widgetManager,
     dataCruncher,
     roleManager,
-    entityManager
+    entityManager,
+    dashboard
   },
   data () {
     return {

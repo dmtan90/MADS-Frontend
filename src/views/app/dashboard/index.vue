@@ -1,48 +1,34 @@
 <template>
-  <div>
-    <b-row>
-      <b-colxx xxs="12">
-        <piaf-breadcrumb :heading="$t('menu.dashboard')" />
-        <div class="separator mb-5"></div>
-      </b-colxx>
-    </b-row>
-    <b-row>
-      <b-colxx xxs="12">
-        <div class="layout-container">
-          <menubar></menubar>
-          <div class="draw-container"></div>
-        </div>
-      </b-colxx>
-    </b-row>
-  </div>
+  <app-window :appName="'Dashboards'">
+    <template v-slot:content>
+      <dashboards v-if="appVuexState.currentSection === 'dashboards'"></dashboards>
+      <new-section v-if="appVuexState.currentSection === 'new'"></new-section>
+      <open-section v-if="appVuexState.currentSection === 'open'"></open-section>
+    </template>
+  </app-window>
 </template>
 
 <script>
-import Menubar from './Menubar'
+import appWindow from './../appWindow'
+import dashboards from './dashboard.vue'
+import newSection from './new/index.vue'
+import openSection from './open/index.vue'
 
 export default {
   components: {
-    Menubar
+    appWindow,
+    dashboards,
+    newSection,
+    openSection
   },
   data () {
-    return {}
+    return {
+    }
   },
-  methods: {
+  computed: {
+    appVuexState () {
+      return this.$store.state.appWindow['Dashboards']
+    }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .layout-container {
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-template-rows: auto auto;
-  }
-
-  .draw-container {
-    display: flex;
-    flex-wrap: wrap;
-    min-height: 800px;
-    background: #eee;
-  }
-</style>

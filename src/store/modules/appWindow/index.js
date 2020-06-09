@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
 import _ from 'lodash'
 import Role_Manager from './roleManager'
 import Widget_Manager from './widgetManager'
 import Data_Cruncher from './dataCruncher'
 import Entity_Manager from './entityManager'
+import Dashboards from './dashboad'
 
 export default {
   state: {
@@ -51,6 +53,7 @@ export default {
     Role_Manager,
     Widget_Manager,
     Data_Cruncher,
-    Entity_Manager
+    Entity_Manager,
+    Dashboards
   }
 }

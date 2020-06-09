@@ -27,10 +27,11 @@
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
           </svg>
         </div>
-        <div class="taskbar-icons app-icon" v-tooltip="'Dashboard'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Dashboards') !== 'closed'}" @click="openAppWindow('Dashboards')" v-tooltip="'Dashboard'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
+          <div class="active"></div>
         </div>
         <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Widget_Manager') !== 'closed'}" @click="openAppWindow('Widget_Manager')" v-tooltip="'Widget Manager'">
           <svg class="icon">
