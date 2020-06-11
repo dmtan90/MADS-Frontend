@@ -11,9 +11,9 @@
           </div>
         </b-colxx>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
-          <div class="theme-container">
-            <div class="theme-image">
-              <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+          <div class="theme-container" @click="selectedTheme = theme.name; hideAppSidebar('Dashboards')">
+            <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
+              <!-- <img src="/assets/img/hevea.png" alt=""> -->
             </div>
             <div class="theme-info">
               <h3>
@@ -25,7 +25,8 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template></shea-template>
+      <shea-template v-if="selectedTheme === 'Shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
+      <hevea-template v-if="selectedTheme === 'Hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
     </div>
   </div>
 </template>
@@ -33,74 +34,95 @@
 <script>
 import { mapActions } from 'vuex'
 import sheaTemplate from './../sheaTemplate'
+import heveaTemplate from './../heveaTemplate'
 
 export default {
   components: {
-    sheaTemplate
+    sheaTemplate,
+    heveaTemplate
   },
   data () {
     return {
-      selectedTheme: 'shea',
+      selectedTheme: null,
       dashboardThemes: [
         {
-          name: 'smpl'
+          name: 'Shea',
+          imageUrl: '/assets/img/shea.png'
         },
         {
-          name: 'db'
+          name: 'Hevea',
+          imageUrl: '/assets/img/hevea.png'
         },
         {
-          name: '538'
+          name: '538',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'alone'
+          name: 'alone',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'bloom'
+          name: 'bloom',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'economist'
+          name: 'economist',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'elementary'
+          name: 'elementary',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'ffx'
+          name: 'ffx',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'flat'
+          name: 'flat',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'flatdark'
+          name: 'flatdark',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'ft'
+          name: 'ft',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'ggplot2'
+          name: 'ggplot2',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'google'
+          name: 'google',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'monokai'
+          name: 'monokai',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'null'
+          name: 'null',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'superheroes'
+          name: 'superheroes',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         },
         {
-          name: 'tufte'
+          name: 'tufte',
+          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
         }
       ]
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar'])
+    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    getBackgroundUrl (url) {
+      return 'url(' + url + ')'
+    }
   },
   mounted () {
-    this.hideAppSidebar('Dashboards')
   }
 }
 </script>
@@ -118,10 +140,8 @@ export default {
         max-height: 180px;
         background-color: #fff;
         cursor: pointer;
-        img {
-          width: 100%;
-          height: 100%;
-        }
+        background-size: cover !important;
+        background-position: center !important;
       }
       .theme-info {
         border-top: 1px solid #EDEDED;

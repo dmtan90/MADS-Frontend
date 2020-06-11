@@ -1,6 +1,7 @@
 <template>
   <div class="theme-container">
     <div class="sidebar">
+      <button class="btn back-btn" @click="goBack()">All Themes</button>
       <ul>
         <li :class="{'active': selectedTab === 'energy'}" @click="selectedTab = 'energy'">
           Energy
@@ -42,6 +43,11 @@ export default {
     return {
       selectedTab: 'energy'
     }
+  },
+  methods: {
+    goBack () {
+      this.$emit('show-all')
+    }
   }
 }
 </script>
@@ -80,5 +86,12 @@ export default {
       overflow: auto;
       padding: 40px 40px 60px;
     }
+  }
+  .btn.back-btn {
+    margin: 20px;
+    width: 105px;
+    height: 10px;
+    display: flex;
+    align-items: center;
   }
 </style>

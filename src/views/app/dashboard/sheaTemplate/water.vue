@@ -317,13 +317,12 @@ export default {
         border-bottom-left-radius: 12px;
         position: absolute;
         border: 1px solid white;
-        background-color: #74ccf4;
         left: 0;
         top: 0;
         z-index: 99;
-        // background: url("https://www.weisradio.com/wp-content/uploads/2019/11/WATER-YALL.jpg");
-        // background-size: cover !important;
-        // background-position: center !important;
+        background: url("https://cdn.pixabay.com/photo/2016/04/15/04/02/water-1330252_1280.jpg");
+        background-size: cover !important;
+        background-position: center !important;
       }
     }
   }
@@ -336,4 +335,3 @@ export default {
     }
   }
 </style>
-
