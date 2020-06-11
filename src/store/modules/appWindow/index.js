@@ -43,6 +43,10 @@ export default {
       appState = _.merge(state[appKey], { appZindex: 0 })
       commit('updateAppState', appState)
     },
+    async hideAppSidebar ({ commit, state }, appKey) {
+      let appState = _.merge(state[appKey], { sidebarHidden: true })
+      commit('updateAppState', appState)
+    },
     async setCurrentSection ({ commit, state }, data) {
       let appKey = data.appKey
       let appState = _.merge(state[appKey], { currentSection: data.section })
