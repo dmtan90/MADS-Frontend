@@ -68,7 +68,7 @@ export default {
   methods: {
     loadProjectEntities () {
       this.isDataLoading = true
-      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
+      let config = { orgId: this.currentUser.org.id, projectId: (this.selectedProject ? this.selectedProject.id : 1) }
       entityService
         .read(config)
         .then(response => {

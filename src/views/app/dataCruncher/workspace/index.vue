@@ -35,7 +35,11 @@
             </div>
           </div>
           <div class="vue-tree-container">
-            <mads-tree ref="tree" :treeData="treeData" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
+            <mads-tree
+              ref="tree"
+              :treeView="'file'"
+              :treeOptions="treeOptions"
+            ></mads-tree>
           </div>
         </div>
         <div v-if="leftPanelSection === 'functions'">Functions</div>
@@ -94,7 +98,7 @@ import _ from "lodash"
 import { mapGetters, mapActions } from 'vuex'
 import entityService from '@/services/entity.service'
 import treeService from '@/services/tree.service'
-import madsTree from './../../shared/madsTree/madsTree'
+import madsTree from './../../shared/madsTree/index'
 
 export default {
   components: {
@@ -102,10 +106,9 @@ export default {
   },
   data() {
     return {
-      isDataLoading: false,
-      orgData: null,
       treeData: null,
-      treeOptions: {},
+      treeOptions: {
+      },
       leftPanelSection: "data",
       treeSection: "sensor_parameters",
       selectedRow: null,
@@ -136,18 +139,6 @@ export default {
     }
   },
   methods: {
-    loadProjectEntities () {
-      this.isDataLoading = true
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
-      entityService
-        .read(config)
-        .then(response => {
-          this.orgData = response
-          this.treeOptions = treeService.initOptions({ selectable: true })
-          this.treeData = treeService.initData(this.orgData)
-          this.isDataLoading = false
-        })
-    },
     jointjsDemo() {
       this.diagramGraph = new joint.dia.Graph()
       this.diagramPaper = new joint.dia.Paper({
@@ -253,7 +244,6 @@ export default {
   },
   mounted() {
     this.jointjsDemo()
-    this.loadProjectEntities()
   }
 }
 </script>
