@@ -1,5 +1,5 @@
 <template v-slot:sidebar>
-  <div class="app-sidebar">
+  <div class="app-sidebar" v-if="!appVuexState.sidebarHidden">
     <div v-for="(section, index) in appVuexState.appSections" :key="index">
       <div class="section" @click="openSection(section)">
         <div class="section-content">

@@ -39,12 +39,13 @@ const appSections = [
 export default {
   state: {
     appName: 'Data Cruncher',
-    appKey: 'dataCruncher',
+    appKey: 'Data_Cruncher',
     appIcon: 'mads-data-cruncher',
     appSections: appSections,
     appSectionsIconFile: 'mads-data-cruncher-icons.svg',
     currentSection: 'dataCruncher',
     appState: 'closed',
+    sidebarHidden: false,
     appZindex: 0
   }
 }

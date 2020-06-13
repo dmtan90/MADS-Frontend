@@ -1,5 +1,5 @@
 <template>
-  <app-window :appName="'roleManager'">
+  <app-window :appName="'Role_Manager'">
     <template v-slot:content>
       <role-manager v-if="appVuexState.currentSection === 'roleManager'"></role-manager>
       <users v-if="appVuexState.currentSection === 'users'"></users>
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     appVuexState () {
-      return this.$store.state.appWindow['roleManager']
+      return this.$store.state.appWindow['Role_Manager']
     }
   }
 }

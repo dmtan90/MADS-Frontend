@@ -14,14 +14,14 @@
           </b-form>
         </div>
         <div class="break"></div>
-        <div class="recent-apps">
+        <!-- <div class="recent-apps">
           <div class="recent" v-for="(app, index) in visualSettings.recently_visited_apps" :key="index">
             <svg class="icon">
-              <use :xlink:href="'/assets/img/mads-app-icons.svg#' + allAppsMap[app].iconId"></use>
+              <use :xlink:href="'/assets/img/mads-app-icons.svg#' + apps[app].iconId"></use>
             </svg>
-            <span>{{allAppsMap[app].displayName}}</span>
+            <span>{{apps[app].displayName}}</span>
           </div>
-        </div>
+        </div> -->
         <div class="break"></div>
         <div class="all-apps">
           <div class="screen" :class="{'active': screen === 0}">

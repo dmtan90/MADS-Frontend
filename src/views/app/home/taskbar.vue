@@ -27,30 +27,31 @@
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
           </svg>
         </div>
-        <div class="taskbar-icons app-icon" v-tooltip="'Dashboard'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Dashboards') !== 'closed'}" @click="openAppWindow('Dashboards')" v-tooltip="'Dashboard'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
+          <div class="active"></div>
         </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('widgetManager') !== 'closed'}" @click="openAppWindow('widgetManager')" v-tooltip="'Widget Manager'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Widget_Manager') !== 'closed'}" @click="openAppWindow('Widget_Manager')" v-tooltip="'Widget Manager'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-widget-manager"></use>
           </svg>
           <div class="active"></div>
         </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('dataCruncher') !== 'closed'}" @click="openAppWindow('dataCruncher')" v-tooltip="'Data Cruncher'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Data_Cruncher') !== 'closed'}" @click="openAppWindow('Data_Cruncher')" v-tooltip="'Data Cruncher'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-cruncher"></use>
           </svg>
           <div class="active"></div>
         </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('roleManager') !== 'closed'}" @click="openAppWindow('roleManager')" v-tooltip="'Role Manager'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Role_Manager') !== 'closed'}" @click="openAppWindow('Role_Manager')" v-tooltip="'Role Manager'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-role-manager"></use>
           </svg>
           <div class="active"></div>
         </div>
-        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('entityManager') !== 'closed'}" @click="openAppWindow('entityManager')" v-tooltip="'Entity Manager'">
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Entity_Manager') !== 'closed'}" @click="openAppWindow('Entity_Manager')" v-tooltip="'Entity Manager'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-entity-manager"></use>
           </svg>

@@ -1,5 +1,5 @@
 <template>
-  <app-window :appName="'entityManager'">
+  <app-window :appName="'Entity_Manager'">
     <template v-slot:content>
       <entity-manager v-if="appVuexState.currentSection === 'entityManager'"></entity-manager>
       <div v-if="appVuexState.currentSection === 'entityMap'" class="h-100">
@@ -43,7 +43,7 @@ export default {
   computed: {
     ...mapGetters(['selectedProject', 'entityManagerCurrentPage']),
     appVuexState () {
-      return this.$store.state.appWindow['entityManager']
+      return this.$store.state.appWindow['Entity_Manager']
     }
   }
 }

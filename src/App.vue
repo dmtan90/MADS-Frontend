@@ -329,7 +329,7 @@
       top: -2px;
     }
   }
-  input, button:not(.btn-login):not(.btn-register) {
+  input, button:not(.btn-login):not(.btn-register):not(.VueCarousel-dot) {
     background-color: #ffffff !important;
     color: #333 !important;
     border-color: #e4e9ef !important;

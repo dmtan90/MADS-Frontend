@@ -3,7 +3,7 @@
     <app-header :appVuexState="appVuexState"></app-header>
     <div class="break"></div>
     <app-sidebar :appVuexState="appVuexState"></app-sidebar>
-    <div class="app-content">
+    <div class="app-content" :class="{'full-width': appVuexState.sidebarHidden}">
       <slot name="content"></slot>
     </div>
   </div>
@@ -41,6 +41,10 @@ export default {
       margin-left: 100px;
       margin-top: 40px;
       overflow: auto;
+      &.full-width {
+        margin-left: 0;
+        width: 100%;
+      }
     }
     &.minimized {
       .app-header {

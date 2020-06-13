@@ -27,9 +27,11 @@ import _ from 'lodash'
 import Multiselect from 'vue-multiselect'
 import * as moment from 'moment-timezone'
 import Vue2OrgTree from 'vue2-org-tree'
+import HighchartsVue from 'highcharts-vue'
+import VueCarousel from 'vue-carousel';
 
-import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
-import VTree from 'vue-tree-halower'
+// import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
+// import VTree from 'vue-tree-halower'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 /* SERVICE -begin */
@@ -52,8 +54,10 @@ Vue.use(VTooltip)
 Vue.use(VueEasyCm)
 Vue.use(ToggleButton)
 Vue.component('multiselect', Multiselect)
-Vue.use(VTree)
+// Vue.use(VTree)
 Vue.use(Vue2OrgTree)
+Vue.use(HighchartsVue)
+Vue.use(VueCarousel)
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
