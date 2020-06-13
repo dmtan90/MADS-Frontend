@@ -2,6 +2,9 @@
   <div class="energy-container">
     <div class="left-section">
       <h3>Live Status</h3>
+      <div class="img-container">
+        <img src="/assets/img/live_status.png" alt="">
+      </div>
     </div>
     <div class="right-section">
       <h3>Customer Profile</h3>
@@ -104,6 +107,11 @@ export default {
     display: flex;
     .left-section {
       width: 400px;
+      .img-container {
+        img {
+          width: 90%;
+        }
+      }
     }
     .right-section {
       width: 800px;

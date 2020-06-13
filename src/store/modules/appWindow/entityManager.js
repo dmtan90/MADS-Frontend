@@ -46,6 +46,7 @@ export default {
     appSectionsIconFile: 'mads-entity-manager-icons.svg',
     currentSection: 'entityManager',
     appState: 'closed',
+    sidebarHidden: false,
     appZindex: 0
   }
 }

@@ -11,9 +11,8 @@
           </div>
         </b-colxx>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
-          <div class="theme-container" @click="selectedTheme = theme.name; hideAppSidebar('Dashboards')">
+          <div class="theme-container" @click="selectedTheme = theme.key; hideAppSidebar('Dashboards')">
             <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
-              <!-- <img src="/assets/img/hevea.png" alt=""> -->
             </div>
             <div class="theme-info">
               <h3>
@@ -25,8 +24,9 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedTheme === 'Shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
-      <hevea-template v-if="selectedTheme === 'Hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
+      <shea-template v-if="selectedTheme === 'shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
+      <hevea-template v-if="selectedTheme === 'hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
+      <smart-agriculture-template v-if="selectedTheme === 'smart_agriculture'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></smart-agriculture-template>
     </div>
   </div>
 </template>
@@ -35,11 +35,13 @@
 import { mapActions } from 'vuex'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
+import smartAgricultureTemplate from './../smartAgricultureTemplate'
 
 export default {
   components: {
     sheaTemplate,
-    heveaTemplate
+    heveaTemplate,
+    smartAgricultureTemplate
   },
   data () {
     return {
@@ -47,71 +49,74 @@ export default {
       dashboardThemes: [
         {
           name: 'Shea',
+          key: 'shea',
           imageUrl: '/assets/img/shea.png'
         },
         {
           name: 'Hevea',
+          key: 'hevea',
           imageUrl: '/assets/img/hevea.png'
         },
         {
-          name: '538',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          name: 'Smart Agriculture',
+          key: 'smart_agriculture',
+          imageUrl: '/assets/img/smart_agriculture.png'
         },
         {
           name: 'alone',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_1.jpeg'
         },
         {
           name: 'bloom',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_2.jpeg'
         },
         {
           name: 'economist',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_3.jpeg'
         },
         {
           name: 'elementary',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_4.jpeg'
         },
         {
           name: 'ffx',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_5.jpeg'
         },
         {
           name: 'flat',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_6.jpeg'
         },
         {
           name: 'flatdark',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_7.jpeg'
         },
         {
           name: 'ft',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_1.jpeg'
         },
         {
           name: 'ggplot2',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_2.jpeg'
         },
         {
           name: 'google',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_3.jpeg'
         },
         {
           name: 'monokai',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_4.jpeg'
         },
         {
           name: 'null',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_5.jpeg'
         },
         {
           name: 'superheroes',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_6.jpeg'
         },
         {
           name: 'tufte',
-          imageUrl: 'https://picsum.photos/seed/picsum/200/300'
+          imageUrl: '/assets/img/seascapes_7.jpeg'
         }
       ]
     }
@@ -141,7 +146,6 @@ export default {
         background-color: #fff;
         cursor: pointer;
         background-size: cover !important;
-        background-position: center !important;
       }
       .theme-info {
         border-top: 1px solid #EDEDED;

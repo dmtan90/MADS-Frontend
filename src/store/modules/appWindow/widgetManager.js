@@ -30,6 +30,7 @@ export default {
     appSectionsIconFile: 'mads-widget-manager-icons.svg',
     currentSection: 'widgetManager',
     appState: 'closed',
+    sidebarHidden: false,
     appZindex: 0
   }
 }

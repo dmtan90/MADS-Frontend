@@ -461,7 +461,7 @@ export default {
 
       yAxis: {
         title: {
-          text: 'State Of Charge(SOC)'
+          text: 'Temperature'
         }
       },
 
@@ -507,7 +507,7 @@ export default {
 
       yAxis: {
         title: {
-          text: 'State Of Charge(SOC)'
+          text: 'Humidity'
         }
       },
 
@@ -553,7 +553,7 @@ export default {
 
       yAxis: {
         title: {
-          text: 'State Of Charge(SOC)'
+          text: 'Pressure'
         }
       },
 

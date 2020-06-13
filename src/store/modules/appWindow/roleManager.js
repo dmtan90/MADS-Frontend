@@ -40,6 +40,7 @@ export default {
     appSectionsIconFile: 'mads-role-manager-icons.svg',
     currentSection: 'roleManager',
     appState: 'closed',
+    sidebarHidden: false,
     appZindex: 0
   }
 }
