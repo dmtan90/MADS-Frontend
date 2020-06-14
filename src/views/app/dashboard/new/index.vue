@@ -63,60 +63,52 @@ export default {
           imageUrl: '/assets/img/smart_agriculture.png'
         },
         {
-          name: 'alone',
-          imageUrl: '/assets/img/seascapes_1.jpeg'
+          name: 'Amsterdam',
+          imageUrl: '/assets/img/amsterdam.jpg'
         },
         {
-          name: 'bloom',
-          imageUrl: '/assets/img/seascapes_2.jpeg'
+          name: 'Bangkok',
+          imageUrl: '/assets/img/bangkok.jpg'
         },
         {
-          name: 'economist',
-          imageUrl: '/assets/img/seascapes_3.jpeg'
+          name: 'Cairo',
+          imageUrl: '/assets/img/cairo.jpg'
         },
         {
-          name: 'elementary',
-          imageUrl: '/assets/img/seascapes_4.jpeg'
+          name: 'Dublin',
+          imageUrl: '/assets/img/dublin.jpg'
         },
         {
-          name: 'ffx',
-          imageUrl: '/assets/img/seascapes_5.jpeg'
+          name: 'Episkopi',
+          imageUrl: '/assets/img/episkopi.jpg'
         },
         {
-          name: 'flat',
-          imageUrl: '/assets/img/seascapes_6.jpeg'
+          name: 'Freetown',
+          imageUrl: '/assets/img/freetown.jpg'
         },
         {
-          name: 'flatdark',
-          imageUrl: '/assets/img/seascapes_7.jpeg'
+          name: 'Gustavia',
+          imageUrl: '/assets/img/gustavia.jpg'
         },
         {
-          name: 'ft',
-          imageUrl: '/assets/img/seascapes_1.jpeg'
+          name: 'Hamiltion',
+          imageUrl: '/assets/img/hamilton.jpg'
         },
         {
-          name: 'ggplot2',
-          imageUrl: '/assets/img/seascapes_2.jpeg'
+          name: 'Idaho',
+          imageUrl: '/assets/img/idaho.jpg'
         },
         {
-          name: 'google',
-          imageUrl: '/assets/img/seascapes_3.jpeg'
+          name: 'Jakarta',
+          imageUrl: '/assets/img/jakarta.jpg'
         },
         {
-          name: 'monokai',
-          imageUrl: '/assets/img/seascapes_4.jpeg'
+          name: 'Kathmandu',
+          imageUrl: '/assets/img/kathmandu.jpg'
         },
         {
-          name: 'null',
-          imageUrl: '/assets/img/seascapes_5.jpeg'
-        },
-        {
-          name: 'superheroes',
-          imageUrl: '/assets/img/seascapes_6.jpeg'
-        },
-        {
-          name: 'tufte',
-          imageUrl: '/assets/img/seascapes_7.jpeg'
+          name: 'London',
+          imageUrl: '/assets/img/london.jpg'
         }
       ]
     }

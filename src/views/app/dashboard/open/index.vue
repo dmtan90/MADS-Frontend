@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="templates" v-if="!selectedTheme">
-      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} templates</h2>
+      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
           <li class="active">Active ({{templates.length}})</li>
