@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="image-container">
-          <img src="https://www.opengovasia.com/wp-content/uploads/2018/09/5a8d10421129d8000136e397_The-Arc_NTU-smart-campus.jpg" alt="">
+          <img src="/assets/img/ntmu_site.jpeg" alt="">
         </div>
       </div>
       <div class="readings-container">

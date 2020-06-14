@@ -169,12 +169,15 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
   const { listeners, props } = context
   const { options } = props
   const clickHandler = listeners['on-node-click']
+  const mouseOverHandler = listeners['on-node-mouse-over']
+  const mouseLeaveHandler = listeners['on-node-mouse-leave']
+  const dragStartHandler = listeners['on-node-drag-start']
 
   let isHoverSiblingOption = node.options ? node.options.hoverOptions.sibling : false
   let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
   let children = [
-    createElement('span', { class: { 'label': true } },
+    createElement('span', { class: { 'label': true }, attrs: { draggable: true } },
       [
         createElement('svg', {
           class: {
@@ -209,7 +212,10 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
         'tree-node-label': true
       },
       on: {
-        click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode })
+        click: e => clickHandler && clickHandler(e, { node: node, parentNode: parentNode }),
+        mouseover: e => mouseOverHandler && mouseOverHandler(e, { node: node, parentNode: parentNode }),
+        mouseleave: e => mouseLeaveHandler && mouseLeaveHandler(e, { node: node, parentNode: parentNode }),
+        dragstart: e => dragStartHandler && dragStartHandler(e, { node: node, parentNode: parentNode })
       }
     },
     [

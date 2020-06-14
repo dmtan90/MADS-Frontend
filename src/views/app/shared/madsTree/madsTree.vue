@@ -9,6 +9,9 @@
     @on-add-child-node="onAddChildNode"
     @on-node-click="onNodeClick"
     @on-node-select="onNodeSelect"
+    @on-node-mouse-over="onNodeMouseOver"
+    @on-node-mouse-leave="onNodeMouseLeave"
+    @on-node-drag-start="onNodeDragStart"
   >
   </tree>
 </template>
@@ -73,6 +76,15 @@ export default {
       }
 
       this.$emit('on-node-select', event, data)
+    },
+    onNodeMouseOver (event, data) {
+      this.$emit('on-node-mouse-over', event, data)
+    },
+    onNodeMouseLeave (event, data) {
+      this.$emit('on-node-mouse-leave', event, data)
+    },
+    onNodeDragStart (event, data) {
+      this.$emit('on-node-drag-start', event, data)
     },
     getNodes (data) {
       if (data.options.selected) {

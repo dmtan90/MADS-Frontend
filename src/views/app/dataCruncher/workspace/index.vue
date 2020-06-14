@@ -39,17 +39,86 @@
               ref="tree"
               :treeView="'file'"
               :treeOptions="treeOptions"
+              @on-node-click="onNodeClick"
+              @on-node-drag-start="onNodeDragStart"
             ></mads-tree>
           </div>
         </div>
-        <div v-if="leftPanelSection === 'functions'">Functions</div>
-        <div v-if="leftPanelSection === 'widgets'">Widgets</div>
+        <div v-if="leftPanelSection === 'functions'">
+          <functions @set-dragged-entity-text="setDraggedEntity"></functions>
+        </div>
+        <div v-if="leftPanelSection === 'widgets'">
+          <widgets @set-dragged-entity-text="setDraggedEntity"></widgets>
+        </div>
       </b-colxx>
-      <b-colxx xxs="9" class="right-panel">
+      <b-colxx xxs="7" class="right-panel">
+        <div class="canvas-header">
+          <ul>
+            <li>Data Canvas</li>
+            <li class="widget-canvas">Widget Canvas</li>
+          </ul>
+          <div class="canvas-actions">
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#debug"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
+              </svg>
+            </div>
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#zoom-out"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#undo"></use>
+              </svg>
+            </div>
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#redo"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
+              </svg>
+            </div>
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+              </svg>
+            </div>
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+              </svg>
+            </div>
+          </div>
+        </div>
         <div class="data-canvas" @dragover.prevent @drop="dragElement($event)">
           <div id="canvas-diagram"></div>
         </div>
         <div class="data-excel">
+          <div class="canvas-header" style="margin-bottom: 30px;">
+          <ul>
+            <li>Data Viewer</li>
+            <li class="widget-canvas">Message Log</li>
+          </ul>
+          <div class="canvas-actions">
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+              </svg>
+            </div>
+            <div class="icon-container">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+              </svg>
+            </div>
+          </div>
+        </div>
           <table>
             <thead>
               <tr>
@@ -84,6 +153,9 @@
           </table>
         </div>
       </b-colxx>
+      <b-colxx xxs="2" style="padding: 0">
+        <properties></properties>
+      </b-colxx>
     </b-row>
   </div>
 </template>
@@ -99,10 +171,16 @@ import { mapGetters, mapActions } from 'vuex'
 import entityService from '@/services/entity.service'
 import treeService from '@/services/tree.service'
 import madsTree from './../../shared/madsTree/index'
+import functions from './functions'
+import widgets from './widgets'
+import properties from './properties'
 
 export default {
   components: {
-    madsTree
+    madsTree,
+    functions,
+    widgets,
+    properties
   },
   data() {
     return {
@@ -135,7 +213,9 @@ export default {
         "H",
         "I",
         "J"
-      ]
+      ],
+      draggedEntityText: '',
+      draggedEntityColor: '#b0e0e6'
     }
   },
   methods: {
@@ -161,14 +241,16 @@ export default {
       })
     },
     dragElement(event) {
-      let elementText = event.dataTransfer.getData("text");
+      let elementText = this.draggedEntityText
+      let width = this.$_.size(elementText) * 8
+
       let flyShape = new joint.shapes.standard.Rectangle({
         position: {
           x: event.offsetX,
           y: event.offsetY
         },
         size: {
-          width: 105,
+          width: width,
           height: 35
         },
         attrs: {
@@ -178,7 +260,7 @@ export default {
             magnet: true
           },
           body: {
-            fill: '#b0e0e6',
+            fill: this.draggedEntityColor,
             strokeWidth: 1,
             stroke: "#cccccc"
           }
@@ -237,6 +319,16 @@ export default {
     },
     getCheckedNodes() {
       let checkedNodes = this.$refs.tree.getCheckedNodes()
+    },
+    onNodeClick (event, data) {
+      this.nodeClicked = true
+    },
+    onNodeDragStart (event, data) {
+      this.draggedEntityText = data.node ? data.node.name : ''
+    },
+    setDraggedEntity (setting) {
+      this.draggedEntityText = setting.text
+      this.draggedEntityColor = setting.color
     }
   },
   computed: {
@@ -309,23 +401,61 @@ export default {
     .right-panel {
       padding: 0;
       height: 100%;
+      border-right: 1px solid gray;
+      .canvas-header {
+        display: flex;
+        height: 40px;
+        ul {
+          list-style: none;
+          display: flex;
+          padding-left: 0;
+          height: 40px;
+          li {
+            width: 105px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &.widget-canvas {
+              border-left: 1px solid gray;
+              border-right: 1px solid gray;
+              border-bottom: 1px solid gray;
+            }
+          }
+        }
+        .canvas-actions {
+          border-bottom: 1px solid gray;
+          width: 90%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .icon-container {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-right: 1px solid #e2e2e2;
+          }
+          .icon {
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+          }
+        }
+      }
       .data-canvas {
         height: 55%;
         border-bottom: 1px solid gray;
         overflow: hidden;
       }
       .data-excel {
-        margin-top: 30px;
         height: 45%;
         overflow: auto;
-        padding: 2px;
         background-color: white;
         table {
           width: 100%;
           position: relative;
           overflow: auto;
           thead {
-            position: fixed;
             z-index: 99;
             tr {
               height: 30px;

@@ -28,7 +28,7 @@ export default {
     appIcon: 'mads-widget-manager',
     appSections: appSections,
     appSectionsIconFile: 'mads-widget-manager-icons.svg',
-    currentSection: 'widgetManager',
+    currentSection: 'widgetStore',
     appState: 'closed',
     sidebarHidden: false,
     appZindex: 0

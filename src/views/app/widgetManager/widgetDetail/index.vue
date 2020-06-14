@@ -3,8 +3,8 @@
     <b-row class="widget-row">
       <b-colxx xxs="2" class="widget-types">
         <div class="back-btn" @click="goToWidgetStore()">Back</div>
-        <div v-for="i in [2,3,4,5,6,7,8,9,10]" :key="i" class="options">
-          Option {{i}}
+        <div v-for="(option, index) in widgetOptions" :key="index" class="options">
+          {{option}}
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
@@ -75,7 +75,8 @@ export default {
   data() {
     return {
       widget: {},
-      userWidgets: []
+      userWidgets: [],
+      widgetOptions: ['Line', 'Area', 'Column & Bar', 'Pie', 'Gauge', 'Stock', 'CandleStick', 'Intraday', 'Depth', 'Column', 'Categorized', 'Distribution', 'Map Bubble', 'Subtasks', 'Interactive Gantt']
     }
   },
   methods: {
@@ -135,18 +136,21 @@ export default {
         background-color: rgba(76, 146, 195, 0.2);
         height: 100%;
         padding: 0;
+        overflow: auto;
         .back-btn {
           height: 40px;
           border-bottom: 1px solid rgba(215, 215, 215, 1);
-          padding: 6px 12px;
+          padding: 6px 20px;
           cursor: pointer;
+          font-size: 15px;
         }
         .options {
           height: 40px;
           display: flex;
           align-items: center;
-          justify-content: center;
           cursor: pointer;
+          padding-left: 40px;
+          color: #555555;
         }
       }
       .widget-content {
