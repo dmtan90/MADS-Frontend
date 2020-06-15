@@ -121,7 +121,7 @@ export default {
     text-align: center;
     position: relative;
     .tree-node {
-      margin: 0 20px 20px;
+      margin: 0 7px 20px;
       position: relative;
       display: flex;
       justify-content: center;
@@ -129,9 +129,8 @@ export default {
         position: relative;
         cursor: pointer;
         .label {
-          padding: 10px 20px;
+          padding: 10px;
           display: inline-block;
-          // border: 1px solid #FF5733;
           border-radius: 4px;
           min-width: 100px;
           text-align: center;
