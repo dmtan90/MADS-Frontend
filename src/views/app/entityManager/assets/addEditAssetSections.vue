@@ -45,13 +45,13 @@
       <div class="metadata-group">
         <b-form class="horizontal-form" v-for="(metadata, index) in asset.metadata" :key="index">
           <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
-            <b-form-input v-model="metadata.name" type="text"></b-form-input>
+            <b-form-input v-model="metadata.name" type="text" :disabled="true"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Data Type' : ''" class="data-type">
-            <b-form-input v-model="metadata.data_type"></b-form-input>
+            <b-form-input v-model="metadata.data_type" :disabled="true"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
-            <b-form-input v-model="metadata.unit"></b-form-input>
+            <b-form-input v-model="metadata.unit" :disabled="true"></b-form-input>
           </b-form-group>
           <b-form-group :label="(index === 0) ? 'Value' : ''" class="value">
             <b-form-input v-model="metadata.value"></b-form-input>
