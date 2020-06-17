@@ -9,7 +9,10 @@
       </div>
       <div v-if="category.expanded">
         <div class="category-list" v-for="(catFN, fnIndex) in category.list" :key="fnIndex">
-          <span class="fn-name" draggable="true" @dragstart="dragStart(catFN, $event)">{{catFN.name}}</span>
+          <span class="fn-name" draggable="true" @dragstart="dragStart(catFN, $event)">
+            <b-form-checkbox v-if="selectable"></b-form-checkbox>
+            {{catFN.name}}
+            </span>
         </div>
       </div>
     </div>
@@ -18,6 +21,11 @@
 
 <script>
 export default {
+  props: {
+    selectable: {
+      default: false
+    }
+  },
   data () {
     return {
       categoryList: []
@@ -319,6 +327,8 @@ export default {
           padding: 7px 10px 7px 7px;
           border-radius: 2px;
           cursor: pointer;
+          display: flex;
+          align-items: center;
         }
       }
     }

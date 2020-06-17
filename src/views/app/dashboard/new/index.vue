@@ -1,6 +1,6 @@
 <template>
   <div class="new-section h-100">
-    <div class="themes-section" v-if="!selectedTheme">
+    <div class="themes-section" v-if="!selectedDashboard">
       <b-row>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card">
           <div class="theme-container">
@@ -11,7 +11,7 @@
           </div>
         </b-colxx>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
-          <div class="theme-container" @click="selectedTheme = theme.key; hideAppSidebar('Dashboards')">
+          <div class="theme-container" @click="selectTheme(theme)">
             <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
             </div>
             <div class="theme-info">
@@ -24,15 +24,15 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedTheme === 'shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
-      <hevea-template v-if="selectedTheme === 'hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
-      <smart-agriculture-template v-if="selectedTheme === 'smart_agriculture'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></smart-agriculture-template>
+      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
+      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
+      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)"></smart-agriculture-template>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
 import smartAgricultureTemplate from './../smartAgricultureTemplate'
@@ -45,7 +45,6 @@ export default {
   },
   data () {
     return {
-      selectedTheme: null,
       dashboardThemes: [
         {
           name: 'Shea',
@@ -114,12 +113,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
+    },
+    selectTheme (theme) {
+      this.selectDashboard(theme)
+      if (theme) {
+        this.hideAppSidebar('Dashboards')
+      } else {
+        this.showAppSidebar('Dashboards')
+      }
     }
   },
-  mounted () {
+  computed: {
+    ...mapGetters(['selectedDashboard'])
+  },
+  beforeDestroy () {
+    this.selectDashboard(null)
+    this.showAppSidebar('Dashboards')
   }
 }
 </script>

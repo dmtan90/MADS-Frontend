@@ -1,0 +1,61 @@
+<template>
+<mads-modal
+    ref="madsModal"
+    :modalID="'add-widget-modal'"
+    :modalRef="'addWidgetModal'"
+    :modalSections="modalSections"
+    :selectedSectionIndex="selectedSectionIndex"
+    :editMode="editMode"
+    @select-section="selectSection($event)"
+    @next-section="nextSection()"
+    @on-cancel="onCancel()"
+    @on-save="saveWidget()">
+    <template v-slot:right-panel>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+    </template>
+  </mads-modal>
+</template>
+
+<script>
+import madsModal from './../shared/madsModal'
+import sections from './addWidgetSections'
+import DashboardBus from './dashboardBus'
+
+export default {
+  components: {
+    madsModal,
+    sections
+  },
+  data () {
+    return {
+      editMode: false,
+      modalSections: [{
+        index: 1,
+        name: 'Widget'
+      }, {
+        index: 2,
+        name: 'Data'
+      }],
+      selectedSectionIndex: 1
+    }
+  },
+  methods: {
+    selectSection (index) {
+      this.selectedSectionIndex = index
+    },
+    nextSection () {
+      this.selectedSectionIndex++
+    },
+    onCancel () {
+      this.selectedSectionIndex = 1
+    },
+    saveWidget () {
+      DashboardBus.$emit('show-demo-chart')
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

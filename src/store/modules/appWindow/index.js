@@ -22,7 +22,7 @@ export default {
   },
   actions: {
     async openApp ({ commit, state }, appKey) {
-      let appState = _.merge(state[appKey], { appZindex: state.appWindowCurrentZIndex + 10, sidebarHidden: false })
+      let appState = _.merge(state[appKey], { appZindex: state.appWindowCurrentZIndex + 10 })
       commit('updateAppState', appState)
       commit('updateAppWindowCurrentZIndex', state.appWindowCurrentZIndex + 10)
 

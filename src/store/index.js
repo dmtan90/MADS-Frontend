@@ -9,6 +9,7 @@ import appWindow from '@/store/modules/appWindow/index'
 import widgetManager from '@/store/modules/widgetManager'
 import entityManager from '@/store/modules/entityManager'
 import organization from '@/store/modules/org'
+import dashboard from '@/store/modules/dashboard'
 
 Vue.use(Vuex)
 
@@ -33,7 +34,8 @@ const store = new Vuex.Store({
     appWindow,
     widgetManager,
     entityManager,
-    organization
+    organization,
+    dashboard
   }
 })
 
