@@ -1,163 +1,174 @@
 <template>
-  <div class="data-cruncher">
-    <b-row class="">
-      <b-colxx xxs="3" class="left-panel">
-        <div class="header">
-          <div
-            class="item"
-            :class="{ active: leftPanelSection === 'data' }"
-            @click="leftPanelSection = 'data'"
-          >
-            Data
-          </div>
-          <div
-            class="item"
-            :class="{ active: leftPanelSection === 'functions' }"
-            @click="leftPanelSection = 'functions'"
-          >
-            Functions
-          </div>
-          <div
-            class="item"
-            :class="{ active: leftPanelSection === 'widgets' }"
-            @click="leftPanelSection = 'widgets'"
-          >
-            Widgets
-          </div>
-        </div>
-        <div id="canvas-options" class="tree-section" v-show="leftPanelSection === 'data'">
-          <div class="section-toggle">
-            <div class="section" :class="{ active: treeSection === 'sensor_parameters' }" @click="toggleTreeSection('sensor_parameters')">
-              Sensor Parameters
+  <div class="workspace-container">
+    <splitpanes vertical>
+      <pane size="20">
+        <div class="left-panel">
+          <div class="header">
+            <div
+              class="item"
+              :class="{ active: leftPanelSection === 'data' }"
+              @click="leftPanelSection = 'data'"
+            >
+              Data
             </div>
-            <div class="section" draggable="true" :class="{ active: treeSection === 'asset_properties' }" @click="toggleTreeSection('asset_properties')">
-              Asset Properties
+            <div
+              class="item"
+              :class="{ active: leftPanelSection === 'functions' }"
+              @click="leftPanelSection = 'functions'"
+            >
+              Functions
+            </div>
+            <div
+              class="item"
+              :class="{ active: leftPanelSection === 'widgets' }"
+              @click="leftPanelSection = 'widgets'"
+            >
+              Widgets
             </div>
           </div>
-          <div class="vue-tree-container">
-            <mads-tree
-              ref="tree"
-              :treeView="'file'"
-              :treeOptions="treeOptions"
-              @on-node-click="onNodeClick"
-              @on-node-drag-start="onNodeDragStart"
-            ></mads-tree>
-          </div>
-        </div>
-        <div v-if="leftPanelSection === 'functions'">
-          <functions @set-dragged-entity-text="setDraggedEntity"></functions>
-        </div>
-        <div v-if="leftPanelSection === 'widgets'">
-          <widgets @set-dragged-entity-text="setDraggedEntity"></widgets>
-        </div>
-      </b-colxx>
-      <b-colxx xxs="7" class="right-panel">
-        <div class="canvas-header">
-          <ul>
-            <li>Data Canvas</li>
-            <li class="widget-canvas">Widget Canvas</li>
-          </ul>
-          <div class="canvas-actions">
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#debug"></use>
-              </svg>
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
-              </svg>
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
-              </svg>
+          <div id="canvas-options" class="tree-section" v-show="leftPanelSection === 'data'">
+            <div class="section-toggle">
+              <div class="section" :class="{ active: treeSection === 'sensor_parameters' }" @click="toggleTreeSection('sensor_parameters')">
+                Sensor Parameters
+              </div>
+              <div class="section" draggable="true" :class="{ active: treeSection === 'asset_properties' }" @click="toggleTreeSection('asset_properties')">
+                Asset Properties
+              </div>
             </div>
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#zoom-out"></use>
-              </svg>
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#undo"></use>
-              </svg>
-            </div>
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#redo"></use>
-              </svg>
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
-              </svg>
-            </div>
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
-              </svg>
-            </div>
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
-              </svg>
+            <div class="vue-tree-container">
+              <mads-tree
+                ref="tree"
+                :treeView="'file'"
+                :treeOptions="treeOptions"
+                @on-node-click="onNodeClick"
+                @on-node-drag-start="onNodeDragStart"
+              ></mads-tree>
             </div>
           </div>
-        </div>
-        <div class="data-canvas" @dragover.prevent @drop="dragElement($event)">
-          <div id="canvas-diagram"></div>
-        </div>
-        <div class="data-excel">
-          <div class="canvas-header" style="margin-bottom: 30px;">
-          <ul>
-            <li>Data Viewer</li>
-            <li class="widget-canvas">Message Log</li>
-          </ul>
-          <div class="canvas-actions">
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
-              </svg>
-            </div>
-            <div class="icon-container">
-              <svg class="icon">
-                <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
-              </svg>
-            </div>
+          <div v-if="leftPanelSection === 'functions'">
+            <functions @set-dragged-entity-text="setDraggedEntity"></functions>
+          </div>
+          <div v-if="leftPanelSection === 'widgets'">
+            <widgets @set-dragged-entity-text="setDraggedEntity"></widgets>
           </div>
         </div>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th
-                  :class="{ active: selectedColumn === column }"
-                  v-for="column in columns"
-                  :key="column"
-                >
-                  {{ column }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="index in 11" :key="index">
-                <td class="row-no" :class="{ active: selectedRow === index }">
-                  {{ index }}
-                </td>
-                <td v-for="column in columns" :key="column">
-                  <input
-                    :id="column + index"
-                    type="text"
-                    autocomplete="none"
-                    @focus="
-                      selectedRow = index
-                      selectedColumn = column
-                    "
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </pane>
+      <pane size="65" class="middle-panel">
+        <splitpanes horizontal>
+          <pane size="60">
+            <div class="canvas-header">
+              <ul>
+                <li>Data Canvas</li>
+                <li class="widget-canvas">Widget Canvas</li>
+              </ul>
+              <div class="canvas-actions">
+                <div class="icon-container">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#debug"></use>
+                  </svg>
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
+                  </svg>
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
+                  </svg>
+                </div>
+                <div class="icon-container">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#zoom-out"></use>
+                  </svg>
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#undo"></use>
+                  </svg>
+                </div>
+                <div class="icon-container">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#redo"></use>
+                  </svg>
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
+                  </svg>
+                </div>
+                <div class="icon-container">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+                  </svg>
+                </div>
+                <div class="icon-container">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="data-canvas" @dragover.prevent @drop="dragElement($event)">
+              <div id="canvas-diagram"></div>
+            </div>
+          </pane>
+          <pane size="40">
+            <div class="data-excel">
+              <div class="canvas-header" style="margin-bottom: 30px;">
+                <ul>
+                  <li>Data Viewer</li>
+                  <li class="widget-canvas">Message Log</li>
+                </ul>
+                <div class="canvas-actions">
+                  <div class="icon-container">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+                    </svg>
+                  </div>
+                  <div class="icon-container">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th
+                      :class="{ active: selectedColumn === column }"
+                      v-for="column in columns"
+                      :key="column"
+                    >
+                      {{ column }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="index in 11" :key="index">
+                    <td class="row-no" :class="{ active: selectedRow === index }">
+                      {{ index }}
+                    </td>
+                    <td v-for="column in columns" :key="column">
+                      <input
+                        :id="column + index"
+                        type="text"
+                        autocomplete="none"
+                        @focus="
+                          selectedRow = index
+                          selectedColumn = column
+                        "
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </pane>
+        </splitpanes>
+      </pane>
+      <pane size="15">
+        <div class="right-panel">
+          <properties></properties>
         </div>
-      </b-colxx>
-      <b-colxx xxs="2" style="padding: 0">
-        <properties></properties>
-      </b-colxx>
-    </b-row>
+      </pane>
+    </splitpanes>
   </div>
+
 </template>
 
 <script>
@@ -174,13 +185,17 @@ import madsTree from './../../shared/madsTree/index'
 import functions from './functions'
 import widgets from './widgets'
 import properties from './properties'
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
 
 export default {
   components: {
     madsTree,
     functions,
     widgets,
-    properties
+    properties,
+    Splitpanes,
+    Pane
   },
   data() {
     return {
@@ -219,7 +234,7 @@ export default {
     }
   },
   methods: {
-    jointjsDemo() {
+    initCanvas() {
       this.diagramGraph = new joint.dia.Graph()
       this.diagramPaper = new joint.dia.Paper({
         el: $("#canvas-diagram"),
@@ -335,22 +350,19 @@ export default {
     ...mapGetters(['currentUser'])
   },
   mounted() {
-    this.jointjsDemo()
+    this.initCanvas()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.data-cruncher {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  .row {
-    margin: 0;
+  .workspace-container {
+    width: 100%;
     height: 100%;
+    overflow: auto;
+
     .left-panel {
       background-color: white;
-      border-right: 1px solid gray;
       padding: 0;
       height: 100%;
       overflow: auto;
@@ -398,10 +410,7 @@ export default {
         }
       }
     }
-    .right-panel {
-      padding: 0;
-      height: 100%;
-      border-right: 1px solid gray;
+    .middle-panel {
       .canvas-header {
         display: flex;
         height: 40px;
@@ -443,13 +452,9 @@ export default {
         }
       }
       .data-canvas {
-        height: 55%;
-        border-bottom: 1px solid gray;
         overflow: hidden;
       }
       .data-excel {
-        height: 45%;
-        overflow: auto;
         background-color: white;
         table {
           width: 100%;
@@ -510,5 +515,14 @@ export default {
       }
     }
   }
-}
+</style>
+
+<style lang="scss">
+  .splitpanes--vertical > .splitpanes__splitter {
+    border: 1px solid #cccccc;
+  }
+
+  .splitpanes--horizontal > .splitpanes__splitter {
+    border: 1px solid #cccccc;
+  }
 </style>
