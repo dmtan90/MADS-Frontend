@@ -223,7 +223,7 @@ export default {
       ],
       draggedEntityText: '',
       draggedEntityColor: '#b0e0e6',
-      selectedCells: []
+      selectedCells: {}
     }
   },
   methods: {
@@ -250,8 +250,14 @@ export default {
         linkPinning: false
       })
       this.diagramPaper.on('cell:pointerclick', function(cellView) {
-        cellView.highlight();
-        that.selectedCells = that.$_.concat(that.selectedCells, cellView)
+        let id = cellView.id
+        if(that.selectedCells[id]) {
+          delete that.selectedCells[id]
+          cellView.unhighlight()
+        } else {
+          that.selectedCells[id] = cellView
+          cellView.highlight()
+        }
       });
     },
     dragElement(event) {
@@ -353,7 +359,7 @@ export default {
       this.diagramPaper.scale(this.paperCurrentZoom)
     },
     deleteSelectedCells() {
-      this.$_.forEach(this.selectedCells, (cell) => {
+      this.$_.forEach(this.selectedCells, (cell, _) => {
         cell.model.remove()
       })
     }
