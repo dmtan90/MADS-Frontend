@@ -491,7 +491,7 @@ export default {
 
 .vue-tree.file {
   margin-top: 30px;
-  margin-left: 60px;
+  margin-left:20px;
   .tree-node-container {
     position: relative;
     .tree-node {
@@ -505,6 +505,7 @@ export default {
         display: flex;
         padding-left: 3px;
         align-items: center;
+        white-space: nowrap;
         .icon {
             width: 18px;
             height: 18px;
