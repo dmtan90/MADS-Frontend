@@ -96,7 +96,7 @@
                 </div>
                 <div class="icon-container">
                   <svg class="icon">
-                    <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+                    <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
                   </svg>
                 </div>
               </div>
@@ -120,7 +120,7 @@
                   </div>
                   <div class="icon-container">
                     <svg class="icon">
-                      <use xlink:href="/assets/img/mads-common-icons.svg#list"></use>
+                      <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
                     </svg>
                   </div>
                 </div>
