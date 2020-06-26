@@ -74,23 +74,23 @@
                   </svg>
                 </div>
                 <div class="icon-container">
-                  <svg class="icon">
+                  <svg class="icon" @click="zoomOut()">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
+                  </svg>
+                  <svg class="icon" @click="zoomIn()">
                     <use xlink:href="/assets/img/mads-common-icons.svg#zoom-out"></use>
                   </svg>
+                </div>
+                <div class="icon-container">
                   <svg class="icon">
                     <use xlink:href="/assets/img/mads-common-icons.svg#undo"></use>
                   </svg>
-                </div>
-                <div class="icon-container">
                   <svg class="icon">
                     <use xlink:href="/assets/img/mads-common-icons.svg#redo"></use>
                   </svg>
-                  <svg class="icon">
-                    <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
-                  </svg>
                 </div>
                 <div class="icon-container">
-                  <svg class="icon">
+                  <svg class="icon" @click="deleteSelectedCells()">
                     <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                   </svg>
                 </div>
@@ -101,7 +101,7 @@
                 </div>
               </div>
             </div>
-            <div class="data-canvas" @dragover.prevent @drop="dragElement($event)">
+            <div class="data-canvas" @dragover.prevent @drop="dragElement($event)" v-on:keyup.delete="deleteSelectedCells()">
               <div id="canvas-diagram"></div>
             </div>
           </pane>
@@ -206,17 +206,9 @@ export default {
       treeSection: "sensor_parameters",
       selectedRow: null,
       selectedColumn: null,
-      stencilGraph: null,
-      stencilPaper: null,
       diagramGraph: null,
       diagramPaper: null,
-      organisation: {},
-      entityWidth: 90,
-      entityHeight: 35,
-      xPos: 20,
-      yPos: 20,
-      xOffset: 35,
-      yOffset: 55,
+      paperCurrentZoom: 1,
       columns: [
         "A",
         "B",
@@ -230,17 +222,20 @@ export default {
         "J"
       ],
       draggedEntityText: '',
-      draggedEntityColor: '#b0e0e6'
+      draggedEntityColor: '#b0e0e6',
+      selectedCells: []
     }
   },
   methods: {
     initCanvas() {
+      let that = this
+
       this.diagramGraph = new joint.dia.Graph()
       this.diagramPaper = new joint.dia.Paper({
         el: $("#canvas-diagram"),
         model: this.diagramGraph,
-        width: 1200,
-        height: 1200,
+        width: 4800,
+        height: 4800,
         gridSize: 10,
         drawGrid: {
           name: "doubleMesh",
@@ -254,6 +249,10 @@ export default {
         },
         linkPinning: false
       })
+      this.diagramPaper.on('cell:pointerclick', function(cellView) {
+        cellView.highlight();
+        that.selectedCells = that.$_.concat(that.selectedCells, cellView)
+      });
     },
     dragElement(event) {
       let elementText = this.draggedEntityText
@@ -344,6 +343,19 @@ export default {
     setDraggedEntity (setting) {
       this.draggedEntityText = setting.text
       this.draggedEntityColor = setting.color
+    },
+    zoomOut() {
+      this.paperCurrentZoom = this.paperCurrentZoom + 0.2
+      this.diagramPaper.scale(this.paperCurrentZoom)
+    },
+    zoomIn() {
+      this.paperCurrentZoom = this.paperCurrentZoom - 0.2
+      this.diagramPaper.scale(this.paperCurrentZoom)
+    },
+    deleteSelectedCells() {
+      this.$_.forEach(this.selectedCells, (cell) => {
+        cell.model.remove()
+      })
     }
   },
   computed: {
@@ -351,6 +363,14 @@ export default {
   },
   mounted() {
     this.initCanvas()
+
+    document.addEventListener('keyup', (event) => {
+      let key = event.keyCode
+      event.preventDefault()
+      if (key === 8 || key === 46) {
+        this.deleteSelectedCells()
+      }
+    })
   }
 }
 </script>
@@ -448,11 +468,13 @@ export default {
             width: 20px;
             height: 20px;
             margin: 0 5px;
+            cursor: pointer;
           }
         }
       }
       .data-canvas {
-        overflow: hidden;
+        height: calc(100% - 40px);
+        overflow: auto;
       }
       .data-excel {
         background-color: white;
@@ -519,10 +541,10 @@ export default {
 
 <style lang="scss">
   .splitpanes--vertical > .splitpanes__splitter {
-    border: 1px solid #cccccc;
+    border: 2px solid #cccccc;
   }
 
   .splitpanes--horizontal > .splitpanes__splitter {
-    border: 1px solid #cccccc;
+    border: 2px solid #cccccc;
   }
 </style>
