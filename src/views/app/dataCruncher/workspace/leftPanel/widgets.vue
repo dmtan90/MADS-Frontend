@@ -139,7 +139,7 @@ export default {
       this.$set(category, 'expanded', !category.expanded)
     },
     dragStart (widget, event) {
-      this.$emit('set-dragged-entity-text', { text: widget.name, color: '#FFA07A' })
+      this.$emit('set-dragged-entity-text', { entity: widget, settings: { 'background-color': '#ffa07a' } })
     }
   },
   mounted () {

@@ -293,7 +293,7 @@ export default {
       this.$set(category, 'expanded', !category.expanded)
     },
     dragStart (catFn, event) {
-      this.$emit('set-dragged-entity-text', { text: catFn.name, color: '#dbedff' })
+      this.$emit('set-dragged-entity-text', { entity: catFn, settings: { 'background-color': '#dbedff' } })
     }
   },
   mounted () {
@@ -327,7 +327,7 @@ export default {
           padding: 7px 10px 7px 7px;
           border-radius: 2px;
           cursor: pointer;
-          display: flex;
+          display: inline-flex;
           align-items: center;
         }
       }

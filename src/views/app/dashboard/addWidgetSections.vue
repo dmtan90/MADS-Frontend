@@ -48,7 +48,7 @@
 
 <script>
 import madsTree from './../shared/madsTree/index'
-import functionsData from './../dataCruncher/workspace/functions'
+import functionsData from './../dataCruncher/workspace/leftPanel/functions'
 
 export default {
   components: {

@@ -1,0 +1,249 @@
+<template>
+  <div>
+    <div class="canvas-header">
+      <ul>
+        <li>Data Canvas</li>
+        <li class="widget-canvas">Widget Canvas</li>
+      </ul>
+      <div class="canvas-actions">
+        <div class="icon-container">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#debug"></use>
+          </svg>
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
+          </svg>
+          <svg class="icon" @click="registerTask()">
+            <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
+          </svg>
+        </div>
+        <div class="icon-container">
+          <svg class="icon" @click="zoomOut()">
+            <use xlink:href="/assets/img/mads-common-icons.svg#zoom-in"></use>
+          </svg>
+          <svg class="icon" @click="zoomIn()">
+            <use xlink:href="/assets/img/mads-common-icons.svg#zoom-out"></use>
+          </svg>
+        </div>
+        <div class="icon-container">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#undo"></use>
+          </svg>
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#redo"></use>
+          </svg>
+        </div>
+        <div class="icon-container">
+          <svg class="icon" @click="deleteSelectedCells()">
+            <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+          </svg>
+        </div>
+        <div class="icon-container">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="data-canvas" @dragover.prevent @drop="dragElement($event)" v-on:keyup.delete="deleteSelectedCells()">
+      <div id="canvas-diagram"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+/* eslint-disable no-undef */
+
+import $ from 'jquery'
+import 'jointjs/dist/joint.core.css'
+import * as joint from 'jointjs'
+
+export default {
+  props: {
+    draggedEntity: {
+      default: {}
+    }
+  },
+  data () {
+    return {
+      diagramGraph: null,
+      diagramPaper: null,
+      paperCurrentZoom: 1,
+      selectedCells: {}
+    }
+  },
+  methods: {
+    initCanvas () {
+      let that = this
+
+      this.diagramGraph = new joint.dia.Graph()
+      this.diagramPaper = new joint.dia.Paper({
+        el: $('#canvas-diagram'),
+        model: this.diagramGraph,
+        width: 4800,
+        height: 4800,
+        gridSize: 10,
+        drawGrid: {
+          name: 'doubleMesh',
+          args: [
+            { color: '#cccccc', thickness: 0.3 },
+            { color: '#cccccc', thickness: 0.6, scaleFactor: 4 }
+          ]
+        },
+        background: {
+          color: 'white'
+        },
+        linkPinning: false,
+        defaultLink: new joint.dia.Link({
+          attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
+          connector: {
+            name: 'smooth'
+          }
+        })
+      })
+      this.diagramPaper.on('cell:pointerclick', function (cellView) {
+        let id = cellView.id
+        if (that.selectedCells[id]) {
+          delete that.selectedCells[id]
+          cellView.unhighlight()
+        } else {
+          that.selectedCells[id] = cellView
+          cellView.highlight()
+        }
+      })
+    },
+    registerTask () {
+      let task = this.diagramGraph.toJSON()
+      console.log('dragged', task)
+    },
+    dragElement (event) {
+      let elementText = this.draggedEntity.text || ''
+      let width = this.$_.size(elementText) * 8 + 20 > 90 ? this.$_.size(elementText) * 8 + 20 : 90
+
+      let height = (this.draggedEntity.inPorts.length > this.draggedEntity.outPorts.length) ? (this.draggedEntity.inPorts.length * 20 + 20) : (this.draggedEntity.outPorts.length * 20 + 20)
+
+      let flyShape = new joint.shapes.devs.Model({
+        position: {
+          x: event.offsetX,
+          y: event.offsetY
+        },
+        size: {
+          width: width,
+          height: height
+        },
+        attrs: {
+          text: {
+            text: elementText,
+            fontSize: '12'
+          },
+          rect: {
+            fill: this.draggedEntity.backgroundColor,
+            rx: '5'
+          }
+        },
+        inPorts: this.draggedEntity.inPorts || [],
+        outPorts: this.draggedEntity.outPorts || [],
+        ports: {
+          groups: {
+            'in': {
+              attrs: {
+                '.port-body': {
+                  fill: '#16A085'
+                },
+                circle: {
+                  r: 8
+                }
+              }
+            },
+            'out': {
+              attrs: {
+                '.port-body': {
+                  fill: '#E74C3C'
+                },
+                circle: {
+                  r: 8
+                }
+              }
+            }
+          }
+        },
+        entity: this.draggedEntity.entity
+      })
+
+      flyShape.addTo(this.diagramGraph)
+    },
+    zoomOut () {
+      this.paperCurrentZoom = this.paperCurrentZoom + 0.2
+      this.diagramPaper.scale(this.paperCurrentZoom)
+    },
+    zoomIn () {
+      this.paperCurrentZoom = this.paperCurrentZoom - 0.2
+      this.diagramPaper.scale(this.paperCurrentZoom)
+    },
+    deleteSelectedCells () {
+      this.$_.forEach(this.selectedCells, (cell, _) => {
+        cell.model.remove()
+      })
+    }
+  },
+  mounted () {
+    this.initCanvas()
+
+    document.addEventListener('keyup', (event) => {
+      let key = event.keyCode
+      event.preventDefault()
+      if (key === 8 || key === 46) {
+        this.deleteSelectedCells()
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .canvas-header {
+    display: flex;
+    height: 40px;
+    ul {
+      list-style: none;
+      display: flex;
+      padding-left: 0;
+      height: 40px;
+      li {
+        width: 105px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &.widget-canvas {
+          border-left: 1px solid gray;
+          border-right: 1px solid gray;
+          border-bottom: 1px solid gray;
+        }
+      }
+    }
+    .canvas-actions {
+      border-bottom: 1px solid gray;
+      width: 90%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      .icon-container {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-right: 1px solid #e2e2e2;
+      }
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+    }
+  }
+  .data-canvas {
+    height: calc(100% - 40px);
+    overflow: auto;
+  }
+</style>
