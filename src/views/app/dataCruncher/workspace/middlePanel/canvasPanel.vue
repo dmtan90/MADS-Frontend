@@ -40,6 +40,11 @@
         </div>
         <div class="icon-container">
           <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+          </svg>
+        </div>
+        <div class="icon-container">
+          <svg class="icon">
             <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
           </svg>
         </div>
