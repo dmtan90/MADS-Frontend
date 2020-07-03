@@ -13,7 +13,7 @@
           <svg class="icon">
             <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
           </svg>
-          <svg class="icon">
+          <svg class="icon" @click="deployTask()">
             <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
           </svg>
         </div>
@@ -62,6 +62,10 @@
 import $ from 'jquery'
 import 'jointjs/dist/joint.core.css'
 import * as joint from 'jointjs'
+import { mapGetters } from 'vuex'
+import taskService from '@/services/task.service'
+
+// import onChange from 'on-change'
 
 export default {
   props: {
@@ -74,7 +78,9 @@ export default {
       diagramGraph: null,
       diagramPaper: null,
       paperCurrentZoom: 1,
-      selectedCells: {}
+      selectedCells: {},
+      graphObject: {},
+      taskId: null
     }
   },
   methods: {
@@ -119,36 +125,34 @@ export default {
     },
     getGraphObject () {
       let graph = this.diagramGraph.toJSON()
-      let graphObject = {}
+      this.graphObject = {}
 
       this.$_.forEach(graph.cells, (cell) => {
-        graphObject[cell.id] = cell
+        this.graphObject[cell.id] = cell
       })
-
-      return graphObject
     },
-    getInputNodes (graph) {
+    getInputNodes () {
       let inputNodes = {}
 
-      this.$_.forEach(graph, (cell) => {
+      this.$_.forEach(this.graphObject, (cell) => {
         if (cell.entityType === 'input') {
           inputNodes[cell.id] = []
         }
       })
 
-      this.$_.forEach(graph, (cell) => {
+      this.$_.forEach(this.graphObject, (cell) => {
         if (cell.type === 'link') {
           let linkSourceId = cell.source.id
           let isLinkFromInput = inputNodes[linkSourceId]
 
           if (isLinkFromInput) {
             let linkTargetId = cell.target.id
-            let linkTarget = graph[linkTargetId]
+            let linkTarget = this.graphObject[linkTargetId]
 
             inputNodes[linkSourceId] = this.$_.concat(inputNodes[linkSourceId], {
               'id': linkTarget.id,
               'module': linkTarget.entity.module,
-              'i_port': linkTarget.entity.inports
+              'i_port': linkTarget.entity.inports[0]
             })
           }
         }
@@ -156,18 +160,22 @@ export default {
 
       return inputNodes
     },
-    getWorkFlowInputs (graph) {
-      let inputNodes = this.getInputNodes(graph)
+    getWorkFlowInputs () {
+      let inputNodes = this.getInputNodes(this.graphObject)
       let inputs = []
 
-      this.$_.forEach(graph, (cell) => {
+      this.$_.forEach(this.graphObject, (cell) => {
         if (cell.entityType === 'input') {
+          let sensor = cell.entity
+          let sensorType = sensor.sensor_type
+          let parameterId = sensorType.parameters[0].id
+
           inputs = this.$_.concat(inputs, {
-            id: 'node2',
+            id: cell.id,
             'start_date': '2020-06-15',
             'end_date': '2020-06-16',
             sensor_id: 7,
-            parameter_id: '6d36b17cacc211eaa708acde48001122',
+            parameter_id: parameterId,
             nodes: inputNodes[cell.id]
           })
         }
@@ -175,58 +183,60 @@ export default {
 
       return inputs
     },
-    getVertices (graph) {
+    getVertices () {
       let vertices = []
 
-      this.$_.forEach(graph, (cell) => {
-        if (cell.type !== 'link' && cell.entityType === 'function') {
+      this.$_.forEach(this.graphObject, (cell) => {
+        if (cell.type !== 'link' && cell.entityType !== 'input') {
           vertices = this.$_.concat(vertices, {
             'id': cell.id,
             'module': cell.entity.module,
-            'type': 'function',
-            'o_ports': cell.entity.outports
+            'type': cell.entityType,
+            'o_ports': cell.entity.outports[0]
           })
         }
       })
 
       return vertices
     },
-    getEdgeList (graph) {
+    getEdgeList () {
       let edges = []
 
-      this.$_.forEach(graph, (cell) => {
+      this.$_.forEach(this.graphObject, (cell) => {
         if (cell.type === 'link') {
           let linkSourceId = cell.source.id
           let linkTargetId = cell.target.id
-          let linkSource = graph[linkSourceId]
-          let linkTarget = graph[linkTargetId]
+          let linkSource = this.graphObject[linkSourceId]
+          let linkTarget = this.graphObject[linkTargetId]
 
-          edges = this.$_.concat(edges, {
-            'source_node': {
-              'id': linkSource.id,
-              'module': linkSource.entity.module,
-              'o_ports': linkSource.entity.outports,
-              'type': linkSource.entityType
-            },
-            'target_node': {
-              'id': linkTarget.id,
-              'module': linkTarget.entity.module,
-              'o_ports': linkTarget.entity.outports,
-              'type': linkTarget.entityType
-            }
-          })
+          if (linkSource.entityType !== 'input') {
+            edges = this.$_.concat(edges, {
+              'source_node': {
+                'id': linkSource.id,
+                'module': linkSource.entity.module,
+                'o_ports': linkSource.entity.outports[0],
+                'type': linkSource.entityType
+              },
+              'target_node': {
+                'id': linkTarget.id,
+                'module': linkTarget.entity.module,
+                'o_ports': linkTarget.entity.outports[0],
+                'type': linkTarget.entityType
+              }
+            })
+          }
         }
       })
 
       return edges
     },
     registerTask () {
-      let graphObject = this.getGraphObject()
-      let inputs = this.getWorkFlowInputs(graphObject)
-      let vertices = this.getVertices(graphObject)
-      let edges = this.getEdgeList(graphObject)
+      this.getGraphObject()
+      let inputs = this.getWorkFlowInputs()
+      let vertices = this.getVertices()
+      let edges = this.getEdgeList()
 
-      let formattedTask = {
+      let payload = {
         name: 'Demo Task',
         type: 'one-time',
         description: 'Demo Task Description',
@@ -240,6 +250,27 @@ export default {
           }
         ]
       }
+      let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
+      taskService.create(config, payload)
+        .then((response) => {
+          this.taskId = response.id
+        })
+    },
+    deployTask () {
+      let payload = {
+        name: 'Demo Task',
+        type: 'one-time',
+        description: 'Demo Task Description',
+        id: this.taskId,
+        action: 'execute'
+      }
+
+      let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
+
+      taskService.create(config, payload)
+        .then((response) => {
+          this.taskId = response.id
+        })
     },
     dragElement (event) {
       let elementText = this.draggedEntity.text || ''
@@ -316,6 +347,12 @@ export default {
   mounted () {
     this.initCanvas()
 
+    // onChange(this.graphObject, (path, value, oldValue) => {
+    //   console.log('path:', path)
+    //   console.log('value:', value)
+    //   console.log('previousValue:', oldValue)
+    // })
+
     document.addEventListener('keyup', (event) => {
       let key = event.keyCode
       event.preventDefault()
@@ -323,6 +360,9 @@ export default {
         this.deleteSelectedCells()
       }
     })
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

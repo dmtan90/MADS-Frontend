@@ -43,7 +43,7 @@
       </div>
     </div>
     <div v-if="leftPanelSection === 'functions'">
-      <functions @set-dragged-entity-text="onFunctionDragStart"></functions>
+      <functions @set-dragged-function="onFunctionDragStart" @set-dragged-output="onOutputDragStart"></functions>
     </div>
     <div v-if="leftPanelSection === 'widgets'">
       <widgets @set-dragged-entity-text="onFunctionDragStart"></widgets>
@@ -80,6 +80,9 @@ export default {
     },
     onFunctionDragStart (data) {
       this.$emit('drag-function', data)
+    },
+    onOutputDragStart (data) {
+      this.$emit('drag-output', data)
     },
     toggleTreeSection (section) {
       this.treeSection = section

@@ -2,7 +2,7 @@
   <div class="workspace-container">
     <splitpanes vertical>
       <pane size="20">
-        <left-panel @drag-input-data="onInputDataDrag" @drag-function="onFunctionDrag"></left-panel>
+        <left-panel @drag-input-data="onInputDataDrag" @drag-function="onFunctionDrag" @drag-output="onOutputDrag"></left-panel>
       </pane>
       <pane size="65" class="middle-panel">
         <middle-panel :draggedEntity="draggedEntity"></middle-panel>
@@ -58,6 +58,16 @@ export default {
         entityType: 'function'
       }
     },
+    onOutputDrag ({ entity, settings }) {
+      this.draggedEntity = {
+        entity: entity,
+        text: entity.name,
+        backgroundColor: settings['background-color'],
+        inPorts: entity.inports,
+        outPorts: entity.outports,
+        entityType: 'output'
+      }
+    }
   }
 }
 </script>

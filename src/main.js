@@ -28,7 +28,8 @@ import Multiselect from 'vue-multiselect'
 import * as moment from 'moment-timezone'
 import Vue2OrgTree from 'vue2-org-tree'
 import HighchartsVue from 'highcharts-vue'
-import VueCarousel from 'vue-carousel';
+import VueCarousel from 'vue-carousel'
+import onChange from 'on-change'
 
 // import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 // import VTree from 'vue-tree-halower'
@@ -61,6 +62,7 @@ Vue.use(VueCarousel)
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
+Object.defineProperty(Vue.prototype, '$onChange', { value: onChange })
 
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API

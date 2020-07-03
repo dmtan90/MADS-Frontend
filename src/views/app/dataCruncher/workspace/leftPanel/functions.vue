@@ -16,6 +16,21 @@
         </div>
       </div>
     </div>
+    <div class="category">
+      <div class="category-name">
+        <svg class="icon">
+          <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+        </svg>
+        <span>Ouput</span>
+      </div>
+      <div>
+        <div class="category-list">
+          <span class="output-name" draggable="true" @dragstart="dragOutput()">
+              Print
+            </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,7 +61,10 @@ export default {
       this.$set(category, 'expanded', !category.expanded)
     },
     dragStart (catFn, event) {
-      this.$emit('set-dragged-entity-text', { entity: catFn, settings: { 'background-color': '#ffa07a' } })
+      this.$emit('set-dragged-function', { entity: catFn, settings: { 'background-color': '#ffa07a' } })
+    },
+    dragOutput () {
+      this.$emit('set-dragged-output', { entity: { 'module': 'Print', 'inports': ['output'], 'outports': ['print'], 'name': 'Print' }, settings: { 'background-color': '#ffe162' } })
     }
   },
   mounted () {
@@ -78,14 +96,19 @@ export default {
       .category-list {
         padding: 7px 7px 7px 20px;
         margin: 5px 0;
-        .fn-name {
-          background-color: #ffa07a;
+        .fn-name, .output-name {
           color: white;
           padding: 7px 10px 7px 7px;
           border-radius: 2px;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
+        }
+        .fn-name {
+          background-color: #ffa07a;
+        }
+        .output-name {
+           background-color: #ffe162;
         }
       }
     }
