@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="canvasContainer">
     <div class="canvas-header">
       <ul>
         <li>Data Canvas</li>
@@ -231,6 +231,8 @@ export default {
       return edges
     },
     registerTask () {
+      let loader = this.$loading.show({ container: this.$refs.canvasContainer })
+
       this.getGraphObject()
       let inputs = this.getWorkFlowInputs()
       let vertices = this.getVertices()
@@ -253,11 +255,14 @@ export default {
       let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
       taskService.create(config, payload)
         .then((response) => {
+          loader.hide()
           this.$toast.success('Task Registered Successfully')
           this.taskId = response.id
         })
     },
     deployTask () {
+      let loader = this.$loading.show({ container: this.$refs.canvasContainer })
+
       let payload = {
         name: 'Demo Task',
         type: 'one-time',
@@ -270,6 +275,7 @@ export default {
 
       taskService.create(config, payload)
         .then((response) => {
+          loader.hide()
           this.$toast.success('Task Deployed Successfully')
           this.taskId = response.id
         })
