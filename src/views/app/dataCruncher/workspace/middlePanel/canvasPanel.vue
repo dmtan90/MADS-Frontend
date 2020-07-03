@@ -1,5 +1,5 @@
 <template>
-  <div ref="canvasContainer">
+  <div>
     <div class="canvas-header">
       <ul>
         <li>Data Canvas</li>
@@ -231,7 +231,7 @@ export default {
       return edges
     },
     registerTask () {
-      let loader = this.$loading.show({ container: this.$refs.canvasContainer })
+      let loader = this.$loading.show()
 
       this.getGraphObject()
       let inputs = this.getWorkFlowInputs()
@@ -261,7 +261,7 @@ export default {
         })
     },
     deployTask () {
-      let loader = this.$loading.show({ container: this.$refs.canvasContainer })
+      let loader = this.$loading.show()
 
       let payload = {
         name: 'Demo Task',
