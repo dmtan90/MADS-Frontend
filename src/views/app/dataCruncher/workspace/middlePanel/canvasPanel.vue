@@ -253,6 +253,7 @@ export default {
       let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
       taskService.create(config, payload)
         .then((response) => {
+          this.$toast.success('Task Registered Successfully')
           this.taskId = response.id
         })
     },
@@ -269,6 +270,7 @@ export default {
 
       taskService.create(config, payload)
         .then((response) => {
+          this.$toast.success('Task Deployed Successfully')
           this.taskId = response.id
         })
     },

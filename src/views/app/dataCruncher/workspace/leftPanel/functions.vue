@@ -64,7 +64,7 @@ export default {
       this.$emit('set-dragged-function', { entity: catFn, settings: { 'background-color': '#ffa07a' } })
     },
     dragOutput () {
-      this.$emit('set-dragged-output', { entity: { 'module': 'Print', 'inports': ['output'], 'outports': ['print'], 'name': 'Print' }, settings: { 'background-color': '#ffe162' } })
+      this.$emit('set-dragged-output', { entity: { 'module': 'Print', 'inports': ['output'], 'outports': ['print'], 'name': 'Print' }, settings: { 'background-color': '#C70039' } })
     }
   },
   mounted () {
@@ -99,16 +99,20 @@ export default {
         .fn-name, .output-name {
           color: white;
           padding: 7px 10px 7px 7px;
-          border-radius: 2px;
+          border-radius: 5px;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
+          justify-content: center;
+          min-width: 90px;
+          height: 40px;
+          font-size: 13px;
         }
         .fn-name {
           background-color: #ffa07a;
         }
         .output-name {
-           background-color: #ffe162;
+          background-color: #C70039;
         }
       }
     }

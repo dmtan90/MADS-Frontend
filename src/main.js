@@ -29,11 +29,13 @@ import * as moment from 'moment-timezone'
 import Vue2OrgTree from 'vue2-org-tree'
 import HighchartsVue from 'highcharts-vue'
 import VueCarousel from 'vue-carousel'
+import VueToast from 'vue-toast-notification'
 import onChange from 'on-change'
 
 // import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 // import VTree from 'vue-tree-halower'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
 /* SERVICE -begin */
 import ApiService from '@/services/api.service'
@@ -59,6 +61,9 @@ Vue.component('multiselect', Multiselect)
 Vue.use(Vue2OrgTree)
 Vue.use(HighchartsVue)
 Vue.use(VueCarousel)
+Vue.use(VueToast, {
+  position: 'top-right'
+})
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
