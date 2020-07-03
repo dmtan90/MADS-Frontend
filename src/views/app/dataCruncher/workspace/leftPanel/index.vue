@@ -76,7 +76,7 @@ export default {
       this.nodeClicked = true
     },
     onNodeDragStart (event, data) {
-      this.$emit('drag-input-data', { entity: data.node, settings: { 'background-color': '#b0e0e6' } })
+      this.$emit('drag-input-data', { entity: data.node, settings: { 'background-color': '#7ad9ff' } })
     },
     onFunctionDragStart (data) {
       this.$emit('drag-function', data)

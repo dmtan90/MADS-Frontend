@@ -13,7 +13,7 @@
           <svg class="icon">
             <use xlink:href="/assets/img/mads-common-icons.svg#stop-button"></use>
           </svg>
-          <svg class="icon" @click="registerTask()">
+          <svg class="icon">
             <use xlink:href="/assets/img/mads-common-icons.svg#play-button"></use>
           </svg>
         </div>
@@ -39,7 +39,7 @@
           </svg>
         </div>
         <div class="icon-container">
-          <svg class="icon">
+          <svg class="icon" @click="registerTask()">
             <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
           </svg>
         </div>
@@ -117,9 +117,129 @@ export default {
         }
       })
     },
+    getGraphObject () {
+      let graph = this.diagramGraph.toJSON()
+      let graphObject = {}
+
+      this.$_.forEach(graph.cells, (cell) => {
+        graphObject[cell.id] = cell
+      })
+
+      return graphObject
+    },
+    getInputNodes (graph) {
+      let inputNodes = {}
+
+      this.$_.forEach(graph, (cell) => {
+        if (cell.entityType === 'input') {
+          inputNodes[cell.id] = []
+        }
+      })
+
+      this.$_.forEach(graph, (cell) => {
+        if (cell.type === 'link') {
+          let linkSourceId = cell.source.id
+          let isLinkFromInput = inputNodes[linkSourceId]
+
+          if (isLinkFromInput) {
+            let linkTargetId = cell.target.id
+            let linkTarget = graph[linkTargetId]
+
+            inputNodes[linkSourceId] = this.$_.concat(inputNodes[linkSourceId], {
+              'id': linkTarget.id,
+              'module': linkTarget.entity.module,
+              'i_port': linkTarget.entity.inports
+            })
+          }
+        }
+      })
+
+      return inputNodes
+    },
+    getWorkFlowInputs (graph) {
+      let inputNodes = this.getInputNodes(graph)
+      let inputs = []
+
+      this.$_.forEach(graph, (cell) => {
+        if (cell.entityType === 'input') {
+          inputs = this.$_.concat(inputs, {
+            id: 'node2',
+            'start_date': '2020-06-15',
+            'end_date': '2020-06-16',
+            sensor_id: 7,
+            parameter_id: '6d36b17cacc211eaa708acde48001122',
+            nodes: inputNodes[cell.id]
+          })
+        }
+      })
+
+      return inputs
+    },
+    getVertices (graph) {
+      let vertices = []
+
+      this.$_.forEach(graph, (cell) => {
+        if (cell.type !== 'link' && cell.entityType === 'function') {
+          vertices = this.$_.concat(vertices, {
+            'id': cell.id,
+            'module': cell.entity.module,
+            'type': 'function',
+            'o_ports': cell.entity.outports
+          })
+        }
+      })
+
+      return vertices
+    },
+    getEdgeList (graph) {
+      let edges = []
+
+      this.$_.forEach(graph, (cell) => {
+        if (cell.type === 'link') {
+          let linkSourceId = cell.source.id
+          let linkTargetId = cell.target.id
+          let linkSource = graph[linkSourceId]
+          let linkTarget = graph[linkTargetId]
+
+          edges = this.$_.concat(edges, {
+            'source_node': {
+              'id': linkSource.id,
+              'module': linkSource.entity.module,
+              'o_ports': linkSource.entity.outports,
+              'type': linkSource.entityType
+            },
+            'target_node': {
+              'id': linkTarget.id,
+              'module': linkTarget.entity.module,
+              'o_ports': linkTarget.entity.outports,
+              'type': linkTarget.entityType
+            }
+          })
+        }
+      })
+
+      return edges
+    },
     registerTask () {
-      let task = this.diagramGraph.toJSON()
-      console.log('dragged', task)
+      let graphObject = this.getGraphObject()
+      let inputs = this.getWorkFlowInputs(graphObject)
+      let vertices = this.getVertices(graphObject)
+      let edges = this.getEdgeList(graphObject)
+
+      let formattedTask = {
+        name: 'Demo Task',
+        type: 'one-time',
+        description: 'Demo Task Description',
+        workflows: [
+          {
+            input_data: inputs,
+            graph: {
+              edge_list: edges,
+              vertices: vertices
+            }
+          }
+        ]
+      }
     },
     dragElement (event) {
       let elementText = this.draggedEntity.text || ''
@@ -139,7 +259,8 @@ export default {
         attrs: {
           text: {
             text: elementText,
-            fontSize: '12'
+            fontSize: '13',
+            fill: '#fff'
           },
           rect: {
             fill: this.draggedEntity.backgroundColor,
@@ -172,7 +293,8 @@ export default {
             }
           }
         },
-        entity: this.draggedEntity.entity
+        entity: this.draggedEntity.entity,
+        entityType: this.draggedEntity.entityType
       })
 
       flyShape.addTo(this.diagramGraph)

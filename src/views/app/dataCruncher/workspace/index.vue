@@ -44,18 +44,18 @@ export default {
           text: entity.name,
           backgroundColor: settings['background-color'],
           inPorts: [],
-          outPorts: ['out1'],
-          type: 'input'
+          outPorts: [''],
+          entityType: 'input'
         }
      },
      onFunctionDrag ({ entity, settings }) {
       this.draggedEntity = {
         entity: entity,
-        text: entity.name,
+        text: entity.display_name,
         backgroundColor: settings['background-color'],
-        inPorts: ['in1', 'in2'],
-        outPorts: ['out1'],
-        type: 'function'
+        inPorts: entity.inports,
+        outPorts: entity.outports,
+        entityType: 'function'
       }
     },
   }
