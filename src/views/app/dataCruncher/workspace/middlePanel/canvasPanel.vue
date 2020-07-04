@@ -65,8 +65,6 @@ import * as joint from 'jointjs'
 import { mapGetters } from 'vuex'
 import taskService from '@/services/task.service'
 
-// import onChange from 'on-change'
-
 export default {
   props: {
     draggedEntity: {
@@ -313,7 +311,8 @@ export default {
             'in': {
               attrs: {
                 '.port-body': {
-                  fill: '#16A085'
+                  fill: '#16A085',
+                  magnet: 'passive'
                 },
                 circle: {
                   r: 8
@@ -354,12 +353,6 @@ export default {
   },
   mounted () {
     this.initCanvas()
-
-    // onChange(this.graphObject, (path, value, oldValue) => {
-    //   console.log('path:', path)
-    //   console.log('value:', value)
-    //   console.log('previousValue:', oldValue)
-    // })
 
     document.addEventListener('keyup', (event) => {
       let key = event.keyCode

@@ -31,7 +31,6 @@ import HighchartsVue from 'highcharts-vue'
 import VueCarousel from 'vue-carousel'
 import VueToast from 'vue-toast-notification'
 import Loading from 'vue-loading-overlay'
-import onChange from 'on-change'
 
 // import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 // import VTree from 'vue-tree-halower'
@@ -74,7 +73,6 @@ Vue.use(Loading, {
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
-Object.defineProperty(Vue.prototype, '$onChange', { value: onChange })
 
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API

@@ -23,7 +23,6 @@
     "konva": "^4.2.2",
     "lodash": "^4.17.15",
     "moment-timezone": "^0.5.28",
-    "on-change": "^2.0.1",
     "splitpanes": "^2.2.1",
     "v-calendar": "^0.9.7",
     "v-tooltip": "^2.0.3",
