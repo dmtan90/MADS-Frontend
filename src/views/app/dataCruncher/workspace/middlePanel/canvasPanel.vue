@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <div class="canvas-header">
       <ul>
         <li>Data Canvas</li>
@@ -38,7 +38,7 @@
             <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
           </svg>
         </div>
-        <div class="icon-container">
+        <div class="icon-container" :class="{'active': anyNewChanges}">
           <svg class="icon" @click="registerTask()">
             <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
           </svg>
@@ -78,7 +78,10 @@ export default {
       paperCurrentZoom: 1,
       selectedCells: {},
       graphObject: {},
-      taskId: null
+      taskId: null,
+      anyNewChanges: false,
+      rectangleSelect: null,
+      rectangleSelectInit: false
     }
   },
   methods: {
@@ -110,6 +113,85 @@ export default {
           }
         })
       })
+
+      // this.diagramPaper.on('blank:pointerdown', (evt, x, y) => {
+      // })
+
+      this.diagramPaper.on('blank:pointermove', (evt, x, y) => {
+        if (!this.rectangleSelectInit) {
+          this.rectangleSelectInit = true
+
+          this.rectangleSelectOriginX = x
+          this.rectangleSelectOriginY = y
+
+          this.rectangleSelect = new joint.shapes.standard.Rectangle({
+            position: {
+              x: this.rectangleSelectOriginX,
+              y: this.rectangleSelectOriginX
+            },
+            size: {
+              width: 0,
+              height: 0
+            },
+            attrs: {
+              body: {
+                fill: '#0779e4',
+                strokeDasharray: '10,2',
+                opacity: 0.3
+              }
+            }
+          })
+
+          this.rectangleSelect.addTo(this.diagramGraph)
+        }
+
+        let rectangleSelectWidth = x - this.rectangleSelectOriginX
+        let rectangleSelectHeight = y - this.rectangleSelectOriginY
+        this.rectangleSelect.resize(rectangleSelectWidth, rectangleSelectHeight)
+      })
+
+      this.diagramPaper.on('blank:pointerup', (evt, x, y) => {
+        this.rectangleSelectEndX = x
+        this.rectangleSelectEndY = y
+
+        this.rectangleSelect.remove()
+        this.rectangleSelectInit = false
+
+        let cells = that.diagramGraph.getCells()
+
+        this.$_.forEach(cells, (cell) => {
+          let cellView = cell.findView(this.diagramPaper)
+
+          let cellOriginX = cell.position.x
+          let cellOriginY = cell.position.y
+
+          let cellEndX = cell.position.x + cell.size.width
+          let cellEndY = cell.position.y + cell.size.height
+
+          if ((this.rectangleSelectOriginX <= cellOriginX <= this.rectangleSelectEndX) || (this.rectangleSelectOriginX <= cellEndX <= this.rectangleSelectEndX)) {
+            let id = cellView.id
+            that.selectedCells[id] = cellView
+            cellView.highlight()
+          } else if ((this.rectangleSelectOriginY <= cellOriginY <= this.rectangleSelectEndY) || (this.rectangleSelectOriginY <= cellEndY <= this.rectangleSelectEndY)) {
+            let id = cellView.id
+            that.selectedCells[id] = cellView
+            cellView.highlight()
+          }
+        })
+      })
+
+      this.diagramGraph.on('add', (cell) => {
+        this.anyNewChanges = true
+      })
+
+      this.diagramGraph.on('remove', (cell) => {
+        this.anyNewChanges = true
+      })
+
+      this.diagramGraph.on('change:target', (cell) => {
+        this.anyNewChanges = true
+      })
+
       this.diagramPaper.on('cell:pointerclick', function (cellView) {
         let id = cellView.id
         if (that.selectedCells[id]) {
@@ -120,6 +202,65 @@ export default {
           cellView.highlight()
         }
       })
+    },
+    dragElement (event) {
+      let elementText = this.draggedEntity.text || ''
+      let width = this.$_.size(elementText) * 8 + 20 > 90 ? this.$_.size(elementText) * 8 + 20 : 90
+
+      let height = (this.draggedEntity.inPorts.length > this.draggedEntity.outPorts.length) ? (this.draggedEntity.inPorts.length * 20 + 20) : (this.draggedEntity.outPorts.length * 20 + 20)
+
+      let flyShape = new joint.shapes.devs.Model({
+        position: {
+          x: event.offsetX,
+          y: event.offsetY
+        },
+        size: {
+          width: width,
+          height: height
+        },
+        attrs: {
+          text: {
+            text: elementText,
+            fontSize: '13',
+            fill: '#fff'
+          },
+          rect: {
+            fill: this.draggedEntity.backgroundColor,
+            rx: '5'
+          }
+        },
+        inPorts: this.draggedEntity.inPorts || [],
+        outPorts: this.draggedEntity.outPorts || [],
+        ports: {
+          groups: {
+            'in': {
+              attrs: {
+                '.port-body': {
+                  fill: '#16A085',
+                  magnet: 'passive'
+                },
+                circle: {
+                  r: 8
+                }
+              }
+            },
+            'out': {
+              attrs: {
+                '.port-body': {
+                  fill: '#E74C3C'
+                },
+                circle: {
+                  r: 8
+                }
+              }
+            }
+          }
+        },
+        entity: this.draggedEntity.entity,
+        entityType: this.draggedEntity.entityType
+      })
+
+      flyShape.addTo(this.diagramGraph)
     },
     getGraphObject () {
       let graph = this.diagramGraph.toJSON()
@@ -278,65 +419,6 @@ export default {
           this.taskId = response.id
         })
     },
-    dragElement (event) {
-      let elementText = this.draggedEntity.text || ''
-      let width = this.$_.size(elementText) * 8 + 20 > 90 ? this.$_.size(elementText) * 8 + 20 : 90
-
-      let height = (this.draggedEntity.inPorts.length > this.draggedEntity.outPorts.length) ? (this.draggedEntity.inPorts.length * 20 + 20) : (this.draggedEntity.outPorts.length * 20 + 20)
-
-      let flyShape = new joint.shapes.devs.Model({
-        position: {
-          x: event.offsetX,
-          y: event.offsetY
-        },
-        size: {
-          width: width,
-          height: height
-        },
-        attrs: {
-          text: {
-            text: elementText,
-            fontSize: '13',
-            fill: '#fff'
-          },
-          rect: {
-            fill: this.draggedEntity.backgroundColor,
-            rx: '5'
-          }
-        },
-        inPorts: this.draggedEntity.inPorts || [],
-        outPorts: this.draggedEntity.outPorts || [],
-        ports: {
-          groups: {
-            'in': {
-              attrs: {
-                '.port-body': {
-                  fill: '#16A085',
-                  magnet: 'passive'
-                },
-                circle: {
-                  r: 8
-                }
-              }
-            },
-            'out': {
-              attrs: {
-                '.port-body': {
-                  fill: '#E74C3C'
-                },
-                circle: {
-                  r: 8
-                }
-              }
-            }
-          }
-        },
-        entity: this.draggedEntity.entity,
-        entityType: this.draggedEntity.entityType
-      })
-
-      flyShape.addTo(this.diagramGraph)
-    },
     zoomOut () {
       this.paperCurrentZoom = this.paperCurrentZoom + 0.2
       this.diagramPaper.scale(this.paperCurrentZoom)
@@ -401,12 +483,18 @@ export default {
         align-items: center;
         padding: 10px;
         border-right: 1px solid #e2e2e2;
-      }
-      .icon {
-        width: 20px;
-        height: 20px;
-        margin: 0 5px;
-        cursor: pointer;
+        .icon {
+          width: 20px;
+          height: 20px;
+          margin: 0 5px;
+          cursor: pointer;
+        }
+        &.active {
+          background-color: #ffa07a;
+          .icon {
+            fill: white;
+          }
+        }
       }
     }
   }
