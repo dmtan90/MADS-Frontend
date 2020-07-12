@@ -64,6 +64,7 @@ import 'jointjs/dist/joint.core.css'
 import * as joint from 'jointjs'
 import { mapGetters } from 'vuex'
 import taskService from '@/services/task.service'
+import canvasService from '@/services/canvas.service'
 
 export default {
   props: {
@@ -262,13 +263,14 @@ export default {
 
       flyShape.addTo(this.diagramGraph)
     },
-    getGraphObject () {
-      let graph = this.diagramGraph.toJSON()
-      this.graphObject = {}
+    getGraphObject (graph) {
+      let graphObject = {}
 
       this.$_.forEach(graph.cells, (cell) => {
-        this.graphObject[cell.id] = cell
+        graphObject[cell.id] = cell
       })
+
+      return graphObject
     },
     getInputNodes () {
       let inputNodes = {}
@@ -299,11 +301,11 @@ export default {
 
       return inputNodes
     },
-    getWorkFlowInputs () {
-      let inputNodes = this.getInputNodes(this.graphObject)
+    getWorkFlowInputs (graphObject) {
+      let inputNodes = this.getInputNodes(graphObject)
       let inputs = []
 
-      this.$_.forEach(this.graphObject, (cell) => {
+      this.$_.forEach(graphObject, (cell) => {
         if (cell.entityType === 'input') {
           let sensor = cell.entity
           let sensorType = sensor.sensor_type
@@ -322,10 +324,10 @@ export default {
 
       return inputs
     },
-    getVertices () {
+    getVertices (graphObject) {
       let vertices = []
 
-      this.$_.forEach(this.graphObject, (cell) => {
+      this.$_.forEach(graphObject, (cell) => {
         if (cell.type !== 'link' && cell.entityType !== 'input') {
           vertices = this.$_.concat(vertices, {
             'id': cell.id,
@@ -338,15 +340,15 @@ export default {
 
       return vertices
     },
-    getEdgeList () {
+    getEdgeList (graphObject) {
       let edges = []
 
-      this.$_.forEach(this.graphObject, (cell) => {
+      this.$_.forEach(graphObject, (cell) => {
         if (cell.type === 'link') {
           let linkSourceId = cell.source.id
           let linkTargetId = cell.target.id
-          let linkSource = this.graphObject[linkSourceId]
-          let linkTarget = this.graphObject[linkTargetId]
+          let linkSource = graphObject[linkSourceId]
+          let linkTarget = graphObject[linkTargetId]
 
           if (linkSource.entityType !== 'input') {
             edges = this.$_.concat(edges, {
@@ -372,24 +374,32 @@ export default {
     registerTask () {
       let loader = this.$loading.show()
 
-      this.getGraphObject()
-      let inputs = this.getWorkFlowInputs()
-      let vertices = this.getVertices()
-      let edges = this.getEdgeList()
+      let graph = this.diagramGraph.toJSON()
+      let graphObject = this.getGraphObject(graph)
+      let workflowGraphs = canvasService.findGraphConnectedComponents(graphObject)
+      let workflows = []
+
+      this.$_.forEach(workflowGraphs, (workflow) => {
+        let workflowObject = this.getGraphObject(workflow)
+
+        let inputs = this.getWorkFlowInputs(workflowObject)
+        let vertices = this.getVertices(workflowObject)
+        let edges = this.getEdgeList(workflowObject)
+
+        workflows = this.$_.concat(workflows, {
+          input_data: inputs,
+          graph: {
+            edge_list: edges,
+            vertices: vertices
+          }
+        })
+      })
 
       let payload = {
         name: 'Demo Task',
         type: 'one-time',
         description: 'Demo Task Description',
-        workflows: [
-          {
-            input_data: inputs,
-            graph: {
-              edge_list: edges,
-              vertices: vertices
-            }
-          }
-        ]
+        workflows: workflows
       }
       let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
       taskService.create(config, payload)
