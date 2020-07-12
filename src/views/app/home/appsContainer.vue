@@ -15,6 +15,9 @@
     <div class="app-container" :class="{'maximized': getAppState('Dashboards') === 'maximize'}" :style="{'z-index': getAppZIndex('Dashboards')}">
       <dashboard v-if="getAppState('Dashboards') !== 'closed'"></dashboard>
     </div>
+    <div class="app-container" :class="{'maximized': getAppState('IoT_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('IoT_Manager')}">
+      <iot-manager v-if="getAppState('IoT_Manager') !== 'closed'"></iot-manager>
+    </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
     </div>
@@ -29,6 +32,7 @@ import dataCruncher from './../dataCruncher'
 import roleManager from './../roleManager'
 import entityManager from './../entityManager'
 import dashboard from './../dashboard'
+import iotManager from './../iotManager'
 
 export default {
   components: {
@@ -36,7 +40,8 @@ export default {
     dataCruncher,
     roleManager,
     entityManager,
-    dashboard
+    dashboard,
+    iotManager
   },
   data () {
     return {
