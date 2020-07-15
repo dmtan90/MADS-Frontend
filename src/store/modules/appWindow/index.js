@@ -6,6 +6,7 @@ import Data_Cruncher from './dataCruncher'
 import Entity_Manager from './entityManager'
 import Dashboards from './dashboad'
 import IoT_Manager from './iotManager'
+import Alerts_Reminder from './alerts'
 
 export default {
   state: {
@@ -64,6 +65,7 @@ export default {
     Data_Cruncher,
     Entity_Manager,
     Dashboards,
-    IoT_Manager
+    IoT_Manager,
+    Alerts_Reminder
   }
 }
