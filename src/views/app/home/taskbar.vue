@@ -63,6 +63,16 @@
           </svg>
           <div class="active"></div>
         </div>
+
+
+         <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Alerts_Reminder') !== 'closed'}" @click="openAppWindow('Alerts_Reminder')" v-tooltip="'Alerts Reminder'">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-alerts-reminders"></use>
+          </svg>
+          <div class="active"></div>
+        </div>
+
+
       </div>
       <div class="taskbar-right" :class="{'auto-margin': isScreenLocked}">
         <div class="options">

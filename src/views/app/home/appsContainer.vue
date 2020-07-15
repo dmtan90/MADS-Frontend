@@ -18,6 +18,9 @@
     <div class="app-container" :class="{'maximized': getAppState('IoT_Manager') === 'maximize'}" :style="{'z-index': getAppZIndex('IoT_Manager')}">
       <iot-manager v-if="getAppState('IoT_Manager') !== 'closed'"></iot-manager>
     </div>
+    <div class="app-container" :class="{'maximized': getAppState('Alerts_Reminder') === 'maximize'}" :style="{'z-index': getAppZIndex('Alerts_Reminder')}">
+      <alerts-reminder v-if="getAppState('Alerts_Reminder') !== 'closed'"></alerts-reminder>
+    </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
     </div>
@@ -33,6 +36,7 @@ import roleManager from './../roleManager'
 import entityManager from './../entityManager'
 import dashboard from './../dashboard'
 import iotManager from './../iotManager'
+import alertsReminder from './../alertsReminder'
 
 export default {
   components: {
@@ -41,7 +45,8 @@ export default {
     roleManager,
     entityManager,
     dashboard,
-    iotManager
+    iotManager,
+    alertsReminder
   },
   data () {
     return {
