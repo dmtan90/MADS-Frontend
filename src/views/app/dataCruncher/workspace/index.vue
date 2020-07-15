@@ -126,6 +126,7 @@ export default {
     onTaskSelect (task) {
       this.selectedTask = task
       this.openWorkspace = true
+      this.openTasks = false
     },
     onSelectAction (action) {
       this.taskType = action
@@ -138,6 +139,7 @@ export default {
     onCreateTask (task) {
       this.selectedTask = task
       this.openWorkspace = true
+      this.openTasks = false
     }
   },
   mounted () {
