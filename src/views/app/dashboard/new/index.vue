@@ -1,6 +1,6 @@
 <template>
   <div class="new-section h-100">
-    <div class="themes-section" v-if="!selectedTheme">
+    <div class="themes-section" v-if="!selectedDashboard">
       <b-row>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card">
           <div class="theme-container">
@@ -11,7 +11,7 @@
           </div>
         </b-colxx>
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
-          <div class="theme-container" @click="selectedTheme = theme.key; hideAppSidebar('Dashboards')">
+          <div class="theme-container" @click="selectTheme(theme)">
             <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
             </div>
             <div class="theme-info">
@@ -24,15 +24,15 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedTheme === 'shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
-      <hevea-template v-if="selectedTheme === 'hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
-      <smart-agriculture-template v-if="selectedTheme === 'smart_agriculture'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></smart-agriculture-template>
+      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
+      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
+      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)"></smart-agriculture-template>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
 import smartAgricultureTemplate from './../smartAgricultureTemplate'
@@ -45,7 +45,6 @@ export default {
   },
   data () {
     return {
-      selectedTheme: null,
       dashboardThemes: [
         {
           name: 'Shea',
@@ -63,71 +62,76 @@ export default {
           imageUrl: '/assets/img/smart_agriculture.png'
         },
         {
-          name: 'alone',
-          imageUrl: '/assets/img/seascapes_1.jpeg'
+          name: 'Amsterdam',
+          imageUrl: '/assets/img/amsterdam.jpg'
         },
         {
-          name: 'bloom',
-          imageUrl: '/assets/img/seascapes_2.jpeg'
+          name: 'Bangkok',
+          imageUrl: '/assets/img/bangkok.jpg'
         },
         {
-          name: 'economist',
-          imageUrl: '/assets/img/seascapes_3.jpeg'
+          name: 'Cairo',
+          imageUrl: '/assets/img/cairo.jpg'
         },
         {
-          name: 'elementary',
-          imageUrl: '/assets/img/seascapes_4.jpeg'
+          name: 'Dublin',
+          imageUrl: '/assets/img/dublin.jpg'
         },
         {
-          name: 'ffx',
-          imageUrl: '/assets/img/seascapes_5.jpeg'
+          name: 'Episkopi',
+          imageUrl: '/assets/img/episkopi.jpg'
         },
         {
-          name: 'flat',
-          imageUrl: '/assets/img/seascapes_6.jpeg'
+          name: 'Freetown',
+          imageUrl: '/assets/img/freetown.jpg'
         },
         {
-          name: 'flatdark',
-          imageUrl: '/assets/img/seascapes_7.jpeg'
+          name: 'Gustavia',
+          imageUrl: '/assets/img/gustavia.jpg'
         },
         {
-          name: 'ft',
-          imageUrl: '/assets/img/seascapes_1.jpeg'
+          name: 'Hamiltion',
+          imageUrl: '/assets/img/hamilton.jpg'
         },
         {
-          name: 'ggplot2',
-          imageUrl: '/assets/img/seascapes_2.jpeg'
+          name: 'Idaho',
+          imageUrl: '/assets/img/idaho.jpg'
         },
         {
-          name: 'google',
-          imageUrl: '/assets/img/seascapes_3.jpeg'
+          name: 'Jakarta',
+          imageUrl: '/assets/img/jakarta.jpg'
         },
         {
-          name: 'monokai',
-          imageUrl: '/assets/img/seascapes_4.jpeg'
+          name: 'Kathmandu',
+          imageUrl: '/assets/img/kathmandu.jpg'
         },
         {
-          name: 'null',
-          imageUrl: '/assets/img/seascapes_5.jpeg'
-        },
-        {
-          name: 'superheroes',
-          imageUrl: '/assets/img/seascapes_6.jpeg'
-        },
-        {
-          name: 'tufte',
-          imageUrl: '/assets/img/seascapes_7.jpeg'
+          name: 'London',
+          imageUrl: '/assets/img/london.jpg'
         }
       ]
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
+    },
+    selectTheme (theme) {
+      this.selectDashboard(theme)
+      if (theme) {
+        this.hideAppSidebar('Dashboards')
+      } else {
+        this.showAppSidebar('Dashboards')
+      }
     }
   },
-  mounted () {
+  computed: {
+    ...mapGetters(['selectedDashboard'])
+  },
+  beforeDestroy () {
+    this.selectDashboard(null)
+    this.showAppSidebar('Dashboards')
   }
 }
 </script>

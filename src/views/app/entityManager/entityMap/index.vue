@@ -2,13 +2,15 @@
   <div class="entity-map">
     <div class="vue-tree-container">
       <tree-header @save-tree-data="saveTreeData()" :selectedView="selectedView" @change-view="changeView($event)"></tree-header>
-      <mads-tree
-        ref="tree"
-        :treeView="selectedView"
-        :treeOptions="{showHoverOptions: true}"
-        @on-node-click="onSelectEntity"
-        >
-      </mads-tree>
+      <div class="vue-tree-wrap">
+        <mads-tree
+          ref="tree"
+          :treeView="selectedView"
+          :treeOptions="{showHoverOptions: true}"
+          @on-node-click="onSelectEntity"
+          >
+        </mads-tree>
+      </div>
     </div>
     <div class="right-section">
       <ul class="nav">
@@ -101,7 +103,11 @@ export default {
     .vue-tree-container {
       width: 80%;
       border-right: 1px solid #c8cbce;
-      overflow: auto;
+      .vue-tree-wrap {
+        overflow: auto;
+        height: calc(100% - 60px);
+        background-color: #f9fafc;
+      }
     }
     .right-section {
       border-left: 1px solid #c8cbce;

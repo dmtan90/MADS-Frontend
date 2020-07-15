@@ -5,6 +5,8 @@ import Widget_Manager from './widgetManager'
 import Data_Cruncher from './dataCruncher'
 import Entity_Manager from './entityManager'
 import Dashboards from './dashboad'
+import IoT_Manager from './iotManager'
+import Alerts_Reminder from './alerts'
 
 export default {
   state: {
@@ -22,7 +24,7 @@ export default {
   },
   actions: {
     async openApp ({ commit, state }, appKey) {
-      let appState = _.merge(state[appKey], { appZindex: state.appWindowCurrentZIndex + 10, sidebarHidden: false })
+      let appState = _.merge(state[appKey], { appZindex: state.appWindowCurrentZIndex + 10 })
       commit('updateAppState', appState)
       commit('updateAppWindowCurrentZIndex', state.appWindowCurrentZIndex + 10)
 
@@ -62,6 +64,8 @@ export default {
     Widget_Manager,
     Data_Cruncher,
     Entity_Manager,
-    Dashboards
+    Dashboards,
+    IoT_Manager,
+    Alerts_Reminder
   }
 }

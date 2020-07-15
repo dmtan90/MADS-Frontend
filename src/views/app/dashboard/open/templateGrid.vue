@@ -6,7 +6,7 @@
       </div>
     </div> -->
     <div class="grid templates-grid row">
-      <div class="col-md-4 grid-item" v-for="(template, index) in templates" :key="index" @click="selectTheme(template.key)">
+      <div class="col-md-4 grid-item" v-for="(template, index) in templates" :key="index" @click="selectTheme(template)">
         <div class="header">
           <span class="name">{{template.name}}</span>
         </div>
@@ -74,9 +74,9 @@ export default {
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
     },
-    selectTheme (key) {
+    selectTheme (theme) {
       this.hideAppSidebar('Dashboards')
-      this.$emit('select-theme', key)
+      this.$emit('select-theme', theme)
     }
   },
   computed: {

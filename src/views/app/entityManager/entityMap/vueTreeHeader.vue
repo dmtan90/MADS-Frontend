@@ -4,7 +4,7 @@
     <div class="view-select">
       <multiselect v-model="treeView" :options="[{name: 'Map View', key: 'map'}, {name: 'Outline View', key: 'outline'}]" @select="changeView" label="name" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
     </div>
-    <b-button @click="save()" class="save-btn">
+    <b-button @click="save()" class="save-btn" style="background-color: #FFA07A !important">
       <svg class="icon">
         <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
       </svg>
@@ -68,11 +68,10 @@ export default {
       justify-content: center;
       align-items: center;
       border: none;
-      background-color: #FFA07A !important;
       margin:  0 0 0 auto;
       .icon {
-        width: 21px;
-        height: 21px;
+        width: 24px;
+        height: 24px;
         fill: white;
       }
       span {

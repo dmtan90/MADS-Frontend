@@ -9,6 +9,9 @@
     @on-add-child-node="onAddChildNode"
     @on-node-click="onNodeClick"
     @on-node-select="onNodeSelect"
+    @on-node-mouse-over="onNodeMouseOver"
+    @on-node-mouse-leave="onNodeMouseLeave"
+    @on-node-drag-start="onNodeDragStart"
   >
   </tree>
 </template>
@@ -74,6 +77,15 @@ export default {
 
       this.$emit('on-node-select', event, data)
     },
+    onNodeMouseOver (event, data) {
+      this.$emit('on-node-mouse-over', event, data)
+    },
+    onNodeMouseLeave (event, data) {
+      this.$emit('on-node-mouse-leave', event, data)
+    },
+    onNodeDragStart (event, data) {
+      this.$emit('on-node-drag-start', event, data)
+    },
     getNodes (data) {
       if (data.options.selected) {
         let formattedData = data
@@ -109,7 +121,7 @@ export default {
     text-align: center;
     position: relative;
     .tree-node {
-      margin: 0 20px 20px;
+      margin: 0 7px 20px;
       position: relative;
       display: flex;
       justify-content: center;
@@ -117,9 +129,8 @@ export default {
         position: relative;
         cursor: pointer;
         .label {
-          padding: 10px 20px;
+          padding: 10px;
           display: inline-block;
-          // border: 1px solid #FF5733;
           border-radius: 4px;
           min-width: 100px;
           text-align: center;
@@ -480,7 +491,7 @@ export default {
 
 .vue-tree.file {
   margin-top: 30px;
-  margin-left: 60px;
+  margin-left:20px;
   .tree-node-container {
     position: relative;
     .tree-node {
@@ -494,6 +505,7 @@ export default {
         display: flex;
         padding-left: 3px;
         align-items: center;
+        white-space: nowrap;
         .icon {
             width: 18px;
             height: 18px;

@@ -161,7 +161,7 @@ export default {
         display: flex;
         align-items: center;
         padding: 10px;
-        background: #FFA07A;
+        background: #4c92c3;
         color: white;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;

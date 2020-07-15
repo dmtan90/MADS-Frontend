@@ -1,61 +1,66 @@
 <template>
-  <div class="energy-container">
-    <div class="left-section">
-      <h3>Live Status</h3>
-      <div class="img-container">
-        <img src="/assets/img/live_status.png" alt="">
-      </div>
+  <div>
+    <div class="chart-container demo-chart-container" v-show="showDemoChart">
+      <div id="demo-chart"></div>
     </div>
-    <div class="right-section">
-      <h3>Customer Profile</h3>
-      <div class="description-container">
-        <div class="info">
-          <div class="company-name">
-            <div class="header">Company Name</div>
-            <div class="text">Nanyang Technological University</div>
-          </div>
-          <div class="more-info">
-            <div class="user-name">
-              <div class="header">User Name</div>
-              <div class="text">ntusingapore</div>
-            </div>
-            <div class="headquarters">
-              <div class="header">Headquarters</div>
-              <div class="text">Singapore (Singapore)</div>
-            </div>
-          </div>
-          <div class="description">
-            <div class="header">Description</div>
-            <div class="text">
-              Nanyang Technological  is one of the top <br>
-              universities in Singapore offering undergraduate and <br>
-              postgraduate education and a leading global player <br>
-              in research and development
-            </div>
-          </div>
-        </div>
-        <div class="image-container">
-          <img src="https://www.opengovasia.com/wp-content/uploads/2018/09/5a8d10421129d8000136e397_The-Arc_NTU-smart-campus.jpg" alt="">
+    <div class="energy-container">
+      <div class="left-section">
+        <h3>Live Status</h3>
+        <div class="img-container">
+          <img src="/assets/img/live_status.png" alt="">
         </div>
       </div>
-      <div class="readings-container">
-        <div class="real-time">
-          <span class="text">Real-time Production</span>
-          <span class="value">0.78 <span>kW</span></span>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#sun"></use>
-          </svg>
+      <div class="right-section">
+        <h3>Customer Profile</h3>
+        <div class="description-container">
+          <div class="info">
+            <div class="company-name">
+              <div class="header">Company Name</div>
+              <div class="text">Nanyang Technological University</div>
+            </div>
+            <div class="more-info">
+              <div class="user-name">
+                <div class="header">User Name</div>
+                <div class="text">ntusingapore</div>
+              </div>
+              <div class="headquarters">
+                <div class="header">Headquarters</div>
+                <div class="text">Singapore (Singapore)</div>
+              </div>
+            </div>
+            <div class="description">
+              <div class="header">Description</div>
+              <div class="text">
+                Nanyang Technological  is one of the top <br>
+                universities in Singapore offering undergraduate and <br>
+                postgraduate education and a leading global player <br>
+                in research and development
+              </div>
+            </div>
+          </div>
+          <div class="image-container">
+            <img src="/assets/img/ntmu_site.jpeg" alt="">
+          </div>
         </div>
-        <div class="solar-production">
-          <span class="text">Total Solar Production</span>
-          <span class="value">167 <span>kWh</span></span>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#solar-panel"></use>
-          </svg>
+        <div class="readings-container">
+          <div class="real-time">
+            <span class="text">Real-time Production</span>
+            <span class="value">0.78 <span>kW</span></span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#sun"></use>
+            </svg>
+          </div>
+          <div class="solar-production">
+            <span class="text">Total Solar Production</span>
+            <span class="value">167 <span>kWh</span></span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#solar-panel"></use>
+            </svg>
+          </div>
         </div>
-      </div>
-      <div class="chart-container">
-        <div id="enery-generation-consumption"></div>
+        <div class="chart-container">
+          <div id="enery-generation-consumption"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,8 +69,14 @@
 <script>
 import Highcharts from 'highcharts'
 import Exporting from 'highcharts/modules/exporting'
+import DashboardBus from './../dashboardBus'
 
 export default {
+  data () {
+    return {
+      showDemoChart: false
+    }
+  },
   mounted () {
     Highcharts.chart('enery-generation-consumption', {
       chart: {
@@ -97,6 +108,47 @@ export default {
         name: 'Energy Consumpted',
         data: [39, 72, 57, 28.5, 41.9, 55.2, 10.0]
       }]
+    })
+
+    DashboardBus.$on('show-demo-chart', () => {
+      this.showDemoChart = true
+
+      Highcharts.chart('demo-chart', {
+        chart: {
+          type: 'line'
+        },
+        title: {
+          text: 'BCU Tank Temperature',
+          align: 'left',
+          margin: 35
+        },
+        xAxis: {
+          categories: ['3pm', '5pm', '7pm', '9pm', '11pm']
+        },
+        yAxis: {
+          title: {
+            text: 'Temperature'
+          }
+        },
+        plotOptions: {
+          line: {
+            dataLabels: {
+              enabled: true
+            },
+            enableMouseTracking: false
+          }
+        },
+        series: [{
+          name: 'Tank1',
+          data: [500000, 600000.0, 850000.9, 1100000.5, 1500000.5]
+        }, {
+          name: 'Tank2',
+          data: [100000, 200000, 300000, 400000, 500000.5]
+        }, {
+          name: 'Average',
+          data: [300000, 400000, 600000, 800000, 1000000.5]
+        }]
+      })
     })
   }
 }
@@ -199,5 +251,12 @@ export default {
         border-radius: 8px;
       }
     }
+  }
+  .demo-chart-container {
+    height: auto;
+    border: 1px solid #e2e2e2;
+    margin-bottom: 60px;
+    border-radius: 8px;
+    padding: 10px;
   }
 </style>

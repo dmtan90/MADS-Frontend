@@ -1,26 +1,26 @@
 <template>
-  <div>
-    <div class="templates" v-if="!selectedTheme">
-      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} templates</h2>
+  <div class="h-100">
+    <div class="templates" v-if="!selectedDashboard">
+      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
           <li class="active">Active ({{templates.length}})</li>
           <li class="" v-if="!source">Archived (0)</li>
         </ul>
       </div>
-      <template-grid :templates="templates" :source="source" @select-theme="selectedTheme = $event"></template-grid>
+      <template-grid :templates="templates" :source="source" @select-theme="selectTheme($event)"></template-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedTheme === 'shea'" @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></shea-template>
-      <hevea-template v-if="selectedTheme === 'hevea'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')"></hevea-template>
-      <smart-agriculture-template v-if="selectedTheme === 'smart_agriculture'"  @show-all="selectedTheme = null; showAppSidebar('Dashboards')">
+      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
+      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
+      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)">
       </smart-agriculture-template>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import templateGrid from './templateGrid'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
@@ -41,12 +41,11 @@ export default {
   data () {
     return {
       templates: [],
-      viewType: this.source ? 'grid' : 'list',
-      selectedTheme: null
+      viewType: this.source ? 'grid' : 'list'
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
     loadTemplates () {
       this.templates = [
         {
@@ -80,12 +79,25 @@ export default {
           template_image: '/assets/img/smart_agriculture.png'
         }
       ]
+    },
+    selectTheme (theme) {
+      this.selectDashboard(theme)
+      if (theme) {
+        this.hideAppSidebar('Dashboards')
+      } else {
+        this.showAppSidebar('Dashboards')
+      }
     }
   },
   computed: {
+    ...mapGetters(['selectedDashboard'])
   },
   mounted () {
     this.loadTemplates()
+  },
+  beforeDestroy () {
+    this.selectDashboard(null)
+    this.showAppSidebar('Dashboards')
   }
 }
 </script>

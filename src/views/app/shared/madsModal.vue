@@ -25,6 +25,7 @@
 
 <script>
 import EntityManagerBus from '../entityManager/entityManagerBus'
+import SharedBus from './sharedBus'
 
 export default {
   props: {
@@ -85,6 +86,10 @@ export default {
     this.visitedSections[this.selectedSectionIndex] = true
 
     EntityManagerBus.$on('open-mads-modal', (modalRef) => {
+      this.$refs[modalRef] && this.$refs[modalRef].show()
+    })
+
+    SharedBus.$on('open-mads-modal', (modalRef) => {
       this.$refs[modalRef] && this.$refs[modalRef].show()
     })
   }

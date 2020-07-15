@@ -1,6 +1,6 @@
 const dataTypeService = {
   read: function () {
-    return ['boolean', 'datetime', 'string', 'integer']
+    return ['boolean', 'datetime', 'string', 'integer', 'float']
   }
 }
 

@@ -11,7 +11,6 @@
         <lock-screen></lock-screen>
       </div>
     </div>
-    <div v-else class="loading"></div>
   </div>
 </template>
 
@@ -37,7 +36,8 @@ export default {
   data () {
     return {
       isScreenLocked: false,
-      hideTaskbar: false
+      hideTaskbar: false,
+      loader: this.$loading.show()
     }
   },
   methods: {
@@ -81,6 +81,13 @@ export default {
     },
     disableMenu (event) {
       event.preventDefault()
+    }
+  },
+  watch: {
+    currentUser (user) {
+      if (user) {
+        this.loader.hide()
+      }
     }
   },
   mounted () {

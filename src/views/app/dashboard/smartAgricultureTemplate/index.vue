@@ -1,7 +1,6 @@
 <template>
   <div class="theme-container">
     <div class="sidebar">
-      <button class="btn back-btn" @click="goBack()">All Themes</button>
       <ul>
         <li :class="{'active': selectedTab === 'dashboard'}" @click="selectedTab = 'dashboard'">
           Dashboard
@@ -13,19 +12,38 @@
           Contact Us
         </li>
       </ul>
+      <div class="action-btn-group">
+        <b-button class="back-btn sidebar-btn" @click="goBack()">
+          <svg class="icon back">
+            <use xlink:href="/assets/img/mads-common-icons.svg#back"></use>
+          </svg>
+          <span>Back</span>
+        </b-button>
+        <b-button class="new-tab-btn sidebar-btn">
+          <span>New Tab</span>
+          <svg class="icon plus">
+            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+          </svg>
+        </b-button>
+      </div>
     </div>
-    <div class="content">
-      <dashboard></dashboard>
+    <div class="content-wrap">
+      <dashboard-header></dashboard-header>
+      <div class="content">
+        <dashboard></dashboard>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import dashboard from './dashboard'
+import dashboardHeader from './../dashboardHeader'
 
 export default {
   components: {
-    dashboard
+    dashboard,
+    dashboardHeader
   },
   data () {
     return {
@@ -47,32 +65,67 @@ export default {
     .sidebar {
       width: 260px;
       background-color: #1E3664;
+      position: relative;
+      padding-top: 30px;
+      height: 100%;
       ul {
         list-style: none;
         padding: 0 1px 0 2px;
         margin-top: 20px;
         li {
           height: 50px;
-          margin: 20px 0;
-          border-radius: 23px;
+          margin: 20px -1px;
           display: flex;
           align-items: center;
           padding-left: 40px;
           color: white;
           font-size: 21px;
-          font-weight: bold;
           cursor: pointer;
           &.active {
             background-color: white;
-            color: #1E3664;
+            color: #000000;
+            border-top-left-radius: 21px;
+            border-bottom-left-radius: 21px;
+          }
+        }
+      }
+      .action-btn-group {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 10px;
+        justify-content: space-around;
+        width: 100%;
+        .sidebar-btn {
+          height: 40px;
+          line-height: 1;
+          border-radius: 20px !important;
+          display: flex;
+          align-items: center;
+          font-size: 16px;
+          margin: 0;
+          padding: 0;
+          justify-content: center;
+          width: 46%;
+          .icon {
+            width: 23px;
+            height: 23px;
+            &.back {
+              margin-right: 5px;
+            }
+            &.plus {
+              margin-left: 5px;
+            }
           }
         }
       }
     }
-    .content {
+    .content-wrap {
       width: calc(100% - 260px);
       overflow: auto;
+      .content {
       padding: 40px 40px 60px;
+      }
     }
   }
   .btn.back-btn {
