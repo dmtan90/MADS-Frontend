@@ -1,19 +1,20 @@
 import _ from 'lodash'
 
 const treeService = {
-  _initSensorParameterData: function (entity, selectedNodes, editingEntity) {
+  _initSensorParameterData: function (entity, selectedNodes, hiddenEntities, selectableEntities, editingEntity) {
     let that = this
-    let childrenPresent = (entity.type !== 'Sensor' && entity.entities && _.size(entity.entities)) > 0
+    let leafEntityType = _.includes(hiddenEntities, 'SensorParameter') ? 'Sensor' : 'SensorParameter'
+    let childrenPresent = (entity.type !== leafEntityType && entity.entities && _.size(entity.entities)) > 0
     let isEntitySelected = _.find(selectedNodes, (node) => {
       return (node.id === entity.id) && (node.type === entity.type)
     })
 
-    let isSelectable = !_.includes(['Organisation', 'Sensor'], entity.type) &&
+    let isSelectable = !_.includes(selectableEntities, entity.type) &&
       !(editingEntity && editingEntity.id === entity.id && editingEntity.type === entity.type)
 
     if (childrenPresent) {
       _.map(entity.entities, function (childEntity) {
-        return that._initSensorParameterData(childEntity, selectedNodes, editingEntity)
+        return that._initSensorParameterData(childEntity, selectedNodes, hiddenEntities, selectableEntities, editingEntity)
       })
 
       return _.assign(entity, {
@@ -130,14 +131,17 @@ const treeService = {
       case 'Sensor':
         icon = '/assets/img/mads-entity-manager-icons.svg#sensors'
         break
+      case 'SensorParameter':
+        icon = '/assets/img/mads-common-icons.svg#sensor-parameter'
+        break
     }
 
     return icon
   },
 
-  initData: function (entity, type = 'sensor-parameter', selectedNodes = [], editingEntity = null) {
+  initData: function (entity, type = 'sensor-parameter', options) {
     if (type === 'sensor-parameter') {
-      return this._initSensorParameterData(entity, selectedNodes, editingEntity)
+      return this._initSensorParameterData(entity, options.selectedNodes, options.hiddenEntities, options.selectableEntities, options.editingEntity)
     } else {
       return this._initAssetPropertyData(entity)
     }
