@@ -1,6 +1,6 @@
 <template>
   <div class="h-100">
-    <div class="templates" v-if="!selectedDashboard">
+    <div class="templates" v-if="!selectedTheme">
       <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
@@ -11,9 +11,9 @@
       <template-grid :templates="templates" :source="source" @select-theme="selectTheme($event)"></template-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
-      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
-      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)">
+      <shea-template v-if="selectedTheme.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
+      <hevea-template v-if="selectedTheme.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
+      <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="selectTheme(null)">
       </smart-agriculture-template>
     </div>
   </div>
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectTheme']),
     loadTemplates () {
       this.templates = [
         {
@@ -81,7 +81,7 @@ export default {
       ]
     },
     selectTheme (theme) {
-      this.selectDashboard(theme)
+      this.selectTheme(theme)
       if (theme) {
         this.hideAppSidebar('Dashboards')
       } else {
@@ -90,13 +90,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['selectedTheme'])
   },
   mounted () {
     this.loadTemplates()
   },
   beforeDestroy () {
-    this.selectDashboard(null)
+    this.selectTheme(null)
     this.showAppSidebar('Dashboards')
   }
 }

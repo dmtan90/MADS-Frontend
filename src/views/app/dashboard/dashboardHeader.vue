@@ -1,19 +1,22 @@
 <template>
   <div class="dashboard-header">
-    <span class="dashboard-name">{{selectedDashboard.name}}</span>
+    <span class="dashboard-name">{{selectedDashboard.name}} | {{selectedTheme.name}}</span>
     <div class="right-section">
-      <multiselect class="select-dashboard" :options="options" @select="onSelectDashboard" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key"></multiselect>
+      <multiselect class="select-dashboard" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key"></multiselect>
       <multiselect class="select-mode" v-model="selectedMode" :options="['View Mode', 'Edit Mode']" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Share</b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Export</b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Download</b-button>
-        <b-button class="round-btn new-btn" v-if="selectedMode === 'Edit Mode'" @click="addWidget()">
-          <span>New Widget</span>
-          <svg class="icon plus">
-            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
-          </svg>
-        </b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'Edit Mode'">Import</b-button>
+      <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Share</b-button>
+      <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Export</b-button>
+      <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Download</b-button>
+      <b-button class="round-btn new-btn" v-if="selectedMode === 'Edit Mode'" @click="addWidget()">
+        <span>New Widget</span>
+        <svg class="icon plus">
+          <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+        </svg>
+      </b-button>
+      <b-button class="round-btn" v-if="selectedMode === 'Edit Mode'">Import</b-button>
+      <svg class="icon">
+        <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+      </svg>
       <svg class="icon">
         <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
       </svg>
@@ -58,16 +61,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectDashboard']),
+    ...mapActions(['selectTheme']),
     addWidget () {
       SharedBus.$emit('open-mads-modal', 'addWidgetModal')
     },
-    onSelectDashboard (dashboard) {
-      this.selectDashboard(dashboard)
+    onselectTheme (dashboard) {
+      this.selectTheme(dashboard)
     }
   },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['selectedTheme', 'selectedDashboard'])
   }
 }
 </script>

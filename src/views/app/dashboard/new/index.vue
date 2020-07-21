@@ -1,17 +1,17 @@
 <template>
   <div class="new-section h-100">
-    <div class="themes-section" v-if="!selectedDashboard">
+    <div class="themes-section" v-if="showAllThemes">
       <b-row>
-        <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card">
-          <div class="theme-container">
+        <!-- <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card">
+          <div class="theme-container" @click="selectTheme({})">
             <div class="theme-image"></div>
             <div class="theme-info">
               <h3>Blank</h3>
             </div>
           </div>
-        </b-colxx>
+        </b-colxx> -->
         <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
-          <div class="theme-container" @click="selectTheme(theme)">
+          <div class="theme-container" @click="openNewDashboardModal(theme)">
             <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
             </div>
             <div class="theme-info">
@@ -24,28 +24,41 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
-      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
-      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)"></smart-agriculture-template>
+      <blank-template v-if="selectedTheme.key === 'blank'" @show-all="setTheme(null)"></blank-template>
+      <shea-template v-if="selectedTheme.key === 'shea'" @show-all="setTheme(null)"></shea-template>
+      <hevea-template v-if="selectedTheme.key === 'hevea'"  @show-all="setTheme(null)"></hevea-template>
+      <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="setTheme(null)"></smart-agriculture-template>
     </div>
+    <new-dashboard-modal ref="newDashboardModal" @create-dashboard="onCreateDashboard"></new-dashboard-modal>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import blankTemplate from './../blankTemplate'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
 import smartAgricultureTemplate from './../smartAgricultureTemplate'
+import newDashboardModal from './../newDashboardModal'
+import dashboardService from '@/services/dashboard.service'
 
 export default {
   components: {
     sheaTemplate,
     heveaTemplate,
-    smartAgricultureTemplate
+    smartAgricultureTemplate,
+    blankTemplate,
+    newDashboardModal
   },
   data () {
     return {
+      showAllThemes: true,
       dashboardThemes: [
+        {
+          name: 'Blank',
+          key: 'blank',
+          imageUrl: ''
+        },
         {
           name: 'Shea',
           key: 'shea',
@@ -113,12 +126,26 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard', 'selectTheme']),
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
     },
-    selectTheme (theme) {
-      this.selectDashboard(theme)
+    openNewDashboardModal (theme) {
+      this.selectTheme(theme)
+      this.$refs['newDashboardModal'].$refs['dashboardModal'].show()
+    },
+    onCreateDashboard (name) {
+      let params = { name: name, settings: {} }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+
+      dashboardService.create(config, params)
+        .then((response) => {
+          this.setDashboard(response)
+          this.hideAppSidebar('Dashboards')
+          this.showAllThemes = false
+        })
+    },
+    setTheme (theme) {
       if (theme) {
         this.hideAppSidebar('Dashboards')
       } else {
@@ -127,10 +154,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['currentUser', 'selectedTheme'])
   },
   beforeDestroy () {
-    this.selectDashboard(null)
+    this.selectTheme(null)
     this.showAppSidebar('Dashboards')
   }
 }
