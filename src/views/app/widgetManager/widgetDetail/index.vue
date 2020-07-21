@@ -8,7 +8,7 @@
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
-        <chart-widget :defaultValues="widget.default_values"></chart-widget>
+        <line-chart :visualSettings="visualSettings" :series="series"></line-chart>
         <div class="button-group" v-if="!userWidget && widget.id">
           <button class="btn download-btn" :class="{'disabled': checkIfWidgetAlreadyDownloaded()}"  @click="downloadwidiget()">Download</button>
         </div>
@@ -65,17 +65,19 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetService from '@/services/widget.service'
 import userWidgetService from '@/services/userWidget.service'
-import chartWidget from './chart-widget'
+import lineChart from './../../shared/widgets/lineChart'
 
 export default {
   props: ['userWidget'],
   components: {
-    chartWidget
+    lineChart
   },
   data() {
     return {
       widget: {},
       userWidgets: [],
+      series: [],
+      visualSettings: {},
       widgetOptions: ['Line', 'Area', 'Column & Bar', 'Pie', 'Gauge', 'Stock', 'CandleStick', 'Intraday', 'Depth', 'Column', 'Categorized', 'Distribution', 'Map Bubble', 'Subtasks', 'Interactive Gantt']
     }
   },
@@ -90,6 +92,8 @@ export default {
         .readId(this.selectedWidget)
         .then(response => {
           this.widget = response;
+          this.visualSettings = this.widget.default_values.visual_setting_values
+          this.series = this.widget.default_values.data_settings_values.series
         })
     },
     downloadwidiget() {

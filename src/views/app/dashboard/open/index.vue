@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard']),
     loadDashboards () {
       let config = { orgId: this.currentUser.org.id, projectId: 1 }
 
@@ -55,7 +55,7 @@ export default {
 
       dashboardService.readId(config)
         .then((response) => {
-          this.dashboards = response.dashboards
+          this.setDashboard(response)
         })
     },
     onSelectDashboard (dashboard) {

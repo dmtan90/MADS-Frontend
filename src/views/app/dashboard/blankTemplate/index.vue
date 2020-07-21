@@ -30,27 +30,47 @@
     <div class="content-wrap">
       <dashboard-header></dashboard-header>
       <div class="content">
+        <line-chart :visualSettings="visualSettings" :series="series"></line-chart>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import dashboardHeader from './../dashboardHeader'
+import lineChart from './../../shared/widgets/lineChart'
 
 export default {
   components: {
-    dashboardHeader
+    dashboardHeader,
+    lineChart
   },
   data () {
     return {
-      selectedTab: 'dashboard'
+      selectedTab: 'dashboard',
+      series: [],
+      visualSettings: {}
     }
   },
   methods: {
     goBack () {
       this.$emit('show-all')
     }
+  },
+  watch: {
+    selectedDashboard (dashboard) {
+      let widget = dashboard.widgets || []
+
+      if (widget.length) {
+        widget = widget[1]
+        this.series = widget.series
+        this.visualSettings = widget.visual_properties
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(['selectedDashboard'])
   }
 }
 </script>
@@ -138,8 +158,10 @@ export default {
     .content-wrap {
       width: calc(100% - 260px);
       overflow: auto;
+      background-color: #f2f2f2;
       .content {
         padding: 40px 40px 60px;
+        width: 500px;
       }
     }
   }
