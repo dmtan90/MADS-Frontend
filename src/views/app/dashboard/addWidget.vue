@@ -19,7 +19,6 @@
 <script>
 import madsModal from './../shared/madsModal'
 import sections from './addWidgetSections'
-import DashboardBus from './dashboardBus'
 
 export default {
   components: {

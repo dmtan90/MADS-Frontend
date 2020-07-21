@@ -2,26 +2,26 @@
   <div>
     <!-- <div class="table-options">
       <div class="search-box">
-        <b-form-input v-model="searchText" placeholder="Search template"></b-form-input>
+        <b-form-input v-model="searchText" placeholder="Search dashboard"></b-form-input>
       </div>
     </div> -->
-    <div class="grid templates-grid row">
-      <div class="col-md-4 grid-item" v-for="(template, index) in templates" :key="index" @click="selectTheme(template)">
+    <div class="grid dashboards-grid row">
+      <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index" @click="selectDashboard(dashboard)">
         <div class="header">
-          <span class="name">{{template.name}}</span>
+          <span class="name">{{dashboard.name}}</span>
         </div>
-        <div class="img-wrap" :style="{background: getBackgroundUrl(template.template_image)}">
+        <div class="img-wrap" :style="{background: getBackgroundUrl(dashboard.dashboard_image)}">
         </div>
-        <div class="info-wrap">
+        <!-- <div class="info-wrap">
           <div class="info">
             <span class="title">Manager</span>
-            <span class="value">{{renderUserName(template.leads)}}</span>
+            <span class="value">{{renderUserName(dashboard.leads)}}</span>
           </div>
           <div class="info">
             <span class="title">Members</span>
-            <span class="value">{{renderUserName(template.users)}}</span>
+            <span class="value">{{renderUserName(dashboard.users)}}</span>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@ import { mapActions } from 'vuex'
 
 export default {
   props: {
-    templates: {
+    dashboards: {
       type: Array,
       default: () => {
         return []
@@ -51,32 +51,33 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar']),
+    ...mapActions(['hideAppSidebar', 'setDashboard']),
     renderUserName (users) {
       users = this.$_.map(users, (user) => {
         return user.first_name
       })
       return this.$_.join(users, ', ')
     },
-    addTemplate (template) {
-      this.$refs.addEditTemplate.add()
+    addDashboard (dashboard) {
+      this.$refs.addEditDashboard.add()
     },
-    editTemplate (template) {
-      this.$refs.addEditTemplate.edit(template)
+    editDashboard (dashboard) {
+      this.$refs.addEditDashboard.edit(dashboard)
     },
-    deleteTemplate (template) {
-      // let config = { orgId: this.currentUser.org.id, templateId: 1, id: template.id }
-      // templateService.delete(config)
+    deleteDashboard (dashboard) {
+      // let config = { orgId: this.currentUser.org.id, dashboardId: 1, id: dashboard.id }
+      // dashboardService.delete(config)
       //   .then((response) => {
-      //     TemplateEventBus.$emit('reload-templates')
+      //     DashboardEventBus.$emit('reload-dashboards')
       //   })
     },
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
     },
-    selectTheme (theme) {
+    selectDashboard (dashboard) {
+      this.setDashboard(dashboard)
       this.hideAppSidebar('Dashboards')
-      this.$emit('select-theme', theme)
+      this.$emit('select-dashboard', dashboard)
     }
   },
   computed: {
@@ -105,20 +106,20 @@ export default {
         top: -20px;
       }
     }
-    .add-template {
+    .add-dashboard {
       margin: 0 0 0 auto;
     }
   }
-  .templates-table {
+  .dashboards-table {
     margin-top: 30px;
-    .edit-template, .delete-template {
+    .edit-dashboard, .delete-dashboard {
       text-decoration: underline;
       color: #2aa7ff;
       cursor: pointer;
       padding: 0 10px;
     }
   }
-  .grid.templates-grid {
+  .grid.dashboards-grid {
     margin-left: 0;
     margin-right: 0;
     margin-top: 40px;
@@ -133,6 +134,7 @@ export default {
       flex: 0 0 30%;
       width: 30%;
       border-radius: 4px;
+      margin-bottom: 30px;
       .header {
         height: 40px;
         display: flex;

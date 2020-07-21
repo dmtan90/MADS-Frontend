@@ -1,37 +1,31 @@
 <template>
   <div class="h-100">
-    <div class="templates" v-if="!selectedTheme">
-      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} Dashboards</h2>
+    <div class="dashboards" v-if="showAllDashboards">
+      <h2 class="page-heading">Hello Sumanta, you have {{dashboards.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
-          <li class="active">Active ({{templates.length}})</li>
+          <li class="active">Active ({{dashboards.length}})</li>
           <li class="" v-if="!source">Archived (0)</li>
         </ul>
       </div>
-      <template-grid :templates="templates" :source="source" @select-theme="selectTheme($event)"></template-grid>
+      <dashboard-grid :dashboards="dashboards" :source="source" @select-dashboard="onSelectDashboard"></dashboard-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedTheme.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
-      <hevea-template v-if="selectedTheme.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
-      <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="selectTheme(null)">
-      </smart-agriculture-template>
+      <blank-template @show-all="setTheme(null)"></blank-template>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import templateGrid from './templateGrid'
-import sheaTemplate from './../sheaTemplate'
-import heveaTemplate from './../heveaTemplate'
-import smartAgricultureTemplate from './../smartAgricultureTemplate'
+import dashboardGrid from './dashboardGrid'
+import dashboardService from '@/services/dashboard.service'
+import blankTemplate from './../blankTemplate'
 
 export default {
   components: {
-    templateGrid,
-    sheaTemplate,
-    heveaTemplate,
-    smartAgricultureTemplate
+    dashboardGrid,
+    blankTemplate
   },
   props: {
     source: {
@@ -41,69 +35,48 @@ export default {
   data () {
     return {
       templates: [],
+      dashboards: [],
+      showAllDashboards: true,
       viewType: this.source ? 'grid' : 'list'
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectTheme']),
-    loadTemplates () {
-      this.templates = [
-        {
-          id: 1,
-          name: 'Shea',
-          key: 'shea',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/shea.png'
-        },
-        {
-          id: 1,
-          name: 'HeveaConnect',
-          key: 'hevea',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/hevea.png'
-        },
-        {
-          id: 1,
-          name: 'Smart Agriculture',
-          key: 'smart_agriculture',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/smart_agriculture.png'
-        }
-      ]
+    ...mapActions(['hideAppSidebar', 'showAppSidebar']),
+    loadDashboards () {
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+
+      dashboardService.read(config)
+        .then((response) => {
+          this.dashboards = response.dashboards
+        })
     },
-    selectTheme (theme) {
-      this.selectTheme(theme)
-      if (theme) {
-        this.hideAppSidebar('Dashboards')
-      } else {
-        this.showAppSidebar('Dashboards')
-      }
+    loadDashboard (id) {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: id }
+
+      dashboardService.readId(config)
+        .then((response) => {
+          this.dashboards = response.dashboards
+        })
+    },
+    onSelectDashboard (dashboard) {
+      this.showAllDashboards = false
+      this.loadDashboard(dashboard.id)
     }
   },
   computed: {
-    ...mapGetters(['selectedTheme'])
+    ...mapGetters(['currentUser'])
   },
   mounted () {
-    this.loadTemplates()
+    this.loadDashboards()
   },
   beforeDestroy () {
-    this.selectTheme(null)
     this.showAppSidebar('Dashboards')
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .templates {
+  .dashboards {
     .page-heading {
       color: #3e4956;
       margin-bottom: 20px;

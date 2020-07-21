@@ -117,6 +117,15 @@ export default {
     }
   },
   methods: {
+    getUniqueKey () {
+      let result = ''
+      let characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+      let charactersLength = characters.length
+      for (var i = 0; i < 20; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength))
+      }
+      return result
+    },
     setCategory (category) {
     },
     setSettingsType (type) {
@@ -179,14 +188,16 @@ export default {
         })
     },
     saveWidgetInstance () {
+      let uniqueKey = this.getUniqueKey()
+
       let params = {
-        label: 'dnew asdfasdfas dfasdf asdf',
+        label: 'Label' + uniqueKey,
         visual_prop: this.visualProp,
         settings: {},
         series: this.dataSeries
       }
 
-      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: 1, widgetId: this.selectedWidget.id }
+      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
       dashboardService.createWidgetInstance(config, params)
         .then((response) => {
         })
@@ -196,7 +207,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedProject'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedDashboard'])
   },
   mounted () {
     this.loadWidgets()

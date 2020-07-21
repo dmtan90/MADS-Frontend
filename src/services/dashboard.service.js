@@ -12,9 +12,9 @@ const sensorService = {
       return error.response.data
     }
   },
-  read: async function (config, params) {
+  read: async function (config) {
     try {
-      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.projectId + resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.projectId + resource)
 
       return response.data
     } catch (error) {
@@ -41,7 +41,7 @@ const sensorService = {
   },
   readId: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + '/projects/' + config.projectId + resource + '/' + config.id)
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.projectId + resource + '/' + config.id)
 
       return response.data
     } catch (error) {

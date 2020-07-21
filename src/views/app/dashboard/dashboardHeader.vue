@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-header">
-    <span class="dashboard-name">{{selectedDashboard.name}} | {{selectedTheme.name}}</span>
+    <span class="dashboard-name">{{selectedDashboard.name}}</span>
     <div class="right-section">
       <multiselect class="select-dashboard" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key"></multiselect>
       <multiselect class="select-mode" v-model="selectedMode" :options="['View Mode', 'Edit Mode']" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
