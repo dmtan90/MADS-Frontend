@@ -120,8 +120,7 @@ export default {
         user_ids: userIds
       })
 
-      // return projectData
-      console.log(projectData)
+      return projectData
     },
     initGoogleSearch () {
       let input = document.getElementById('google-search-box')
