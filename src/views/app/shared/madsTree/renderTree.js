@@ -177,7 +177,7 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
   let isHoverChildOption = node.options ? node.options.hoverOptions.child : false
 
   let children = [
-    createElement('span', { class: { 'label': true }, attrs: { draggable: node.type === 'Sensor' } },
+    createElement('span', { class: { 'label': true }, attrs: { draggable: node.type === 'SensorParameter' } },
       [
         createElement('svg', {
           class: {

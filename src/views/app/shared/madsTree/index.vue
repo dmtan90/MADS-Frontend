@@ -60,6 +60,18 @@ export default {
         return []
       }
     },
+    hiddenEntities: {
+      type: Array,
+      default: () => {
+        return ['SensorParameter']
+      }
+    },
+    selectableEntities: {
+      type: Array,
+      default: () => {
+        return ['Organisation', 'Asset']
+      }
+    },
     isAnyNodeSelected: {
       type: Boolean,
       default: false
@@ -76,7 +88,12 @@ export default {
         .read(config)
         .then(response => {
           this.orgData = response
-          this.treeData = treeService.initData(this.orgData, 'sensor-parameter', this.selectedNodes, this.editingEntity)
+          this.treeData = treeService.initData(this.orgData, 'sensor-parameter', {
+            selectedNodes: this.selectedNodes,
+            hiddenEntities: this.hiddenEntities,
+            selectableEntities: this.selectableEntities,
+            editingEntity: this.editingEntity
+          })
           this.isDataLoading = false
         })
     },
