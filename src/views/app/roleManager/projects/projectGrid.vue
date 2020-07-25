@@ -35,7 +35,7 @@
           </div>
           <div class="info">
             <span class="title">Location</span>
-            <a :href="project.location.url" target="_blank" class="value location">
+            <a :href="getProjectLocationUrl(project)" target="_blank" class="value location">
               {{project.location && project.location.name}}
             </a>
           </div>
@@ -99,6 +99,9 @@ export default {
     onSelectProject (project) {
       this.selectProject(project)
       this.setEntityManagerCurrentPage(this.source)
+    },
+    getProjectLocationUrl (project) {
+      return project.location ? project.location.url : ''
     }
   },
   computed: {
