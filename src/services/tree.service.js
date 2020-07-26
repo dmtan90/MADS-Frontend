@@ -9,7 +9,7 @@ const treeService = {
       return (node.id === entity.id) && (node.type === entity.type)
     })
 
-    let isSelectable = !_.includes(selectableEntities, entity.type) &&
+    let isSelectable = _.includes(selectableEntities, entity.type) &&
       !(editingEntity && editingEntity.id === entity.id && editingEntity.type === entity.type)
 
     if (childrenPresent) {

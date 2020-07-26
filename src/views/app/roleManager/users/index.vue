@@ -17,14 +17,14 @@
         <label for="dropdown-left">Role</label>
       </div>
       <div class="invite-user">
-        <b-button v-b-modal.invite-user-modal>Invite user</b-button>
+        <b-button v-b-modal.add-edit-user-modal>Invite user</b-button>
       </div>
     </div>
     <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles"></user-list>
     <!-- <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list> -->
 
     <!-- Modal Section -->
-    <invite-user-modal :roles="roles"></invite-user-modal>
+    <!-- <invite-user-modal :roles="roles"></invite-user-modal> -->
   </div>
 </template>
 
