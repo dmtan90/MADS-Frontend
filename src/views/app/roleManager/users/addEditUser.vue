@@ -20,8 +20,8 @@
 import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditUserSections'
-import userService from '@/services/user.service'
-import UserEventBus from './userEventBus'
+import invitationService from '@/services/invitation.service'
+import UserEventBus from './../eventBus'
 
 export default {
   props: {
@@ -69,21 +69,12 @@ export default {
       this.selectedSectionIndex++
     },
     saveUser () {
-      let config = { orgId: this.currentUser.org.id }
-      let userData = this.$refs.sections.getUserData()
+      let payload = this.$refs.sections.getUserData()
 
-      if (this.editMode) {
-        config = this.$_.assign(config, { id: this.user.id })
-        userService.update(config, userData)
-          .then((response) => {
-            UserEventBus.$emit('reload-users')
-          })
-      } else {
-        userService.create(config, userData)
-          .then((response) => {
-            UserEventBus.$emit('reload-users')
-          })
-      }
+      invitationService.create(payload)
+        .then((response) => {
+          UserEventBus.$emit('reload-invites')
+        })
       this.selectedSectionIndex = 1
     },
     onCancel () {

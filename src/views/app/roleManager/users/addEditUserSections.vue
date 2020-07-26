@@ -7,7 +7,7 @@
           <b-form-input v-model="inviteEmail" id="email" type="email" required></b-form-input>
         </b-form-group>
         <b-form-group label="Select Role" label-for="role">
-          <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
+          <multiselect v-model="selectedRole" :options="roles" :select-label="''" @select="onSelectRole" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
           </multiselect>
         </b-form-group>
         <b-form-group label="Activity Tracking">
@@ -91,6 +91,21 @@ export default {
           })
       }
       this.selectedSectionIndex = 1
+    },
+    onSelectRole (role) {
+      this.selectedRole = role.id
+    },
+    getUserData () {
+      let inviteUser = {
+        invitation: {
+          email: this.inviteEmail,
+          assets: [],
+          apps: [],
+          role_id: this.selectedRole.id
+        }
+      }
+
+      return inviteUser
     }
   },
   computed: {

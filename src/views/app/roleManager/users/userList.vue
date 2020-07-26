@@ -52,7 +52,7 @@ export default {
     addUser (project) {
       this.$refs.addEditProject.add()
     },
-    editUser (user) {
+    editUser (project) {
       this.$refs.addEditProject.edit(project)
     }
   }

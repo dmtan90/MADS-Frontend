@@ -5,7 +5,8 @@
         <div v-if="screen === 0">
             <div v-for="category in $_.take(appCategories, 3)" :key="category">
               <div v-if="$_.size(apps[category])" class="apps-row">
-                <div v-for="app in apps[category]" :key="app.key" class="app">
+                <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
+                  <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
                   <svg class="icon">
                     <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                   </svg>
@@ -20,8 +21,9 @@
         <div class="screen" :class="{'active': screen === 1}">
           <div v-if="screen === 1 && $_.size(apps) > 3">
             <div v-for="category in $_.takeRight(appCategories, 3)" :key="category">
-              <div v-if="$_.size(apps[category])">
-                <div v-for="app in apps[category]" :key="app.key" class="app">
+              <div v-if="$_.size(apps[category])" class="apps-row">
+                <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
+                <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
                   <svg class="icon">
                     <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                   </svg>
@@ -59,7 +61,8 @@ export default {
       selectAll: false,
       allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
       appCategories: [],
-      apps: {}
+      apps: {},
+      selectedApps: []
     }
   },
   methods: {
@@ -228,14 +231,12 @@ export default {
         ]
       ]
     },
-    selectApp (key) {
+    selectApp (app) {
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
-        [key]: !this.selectedApps[key]
+        [app.id]: !this.selectedApps[app.id]
       })
-      // debugger
     },
     onSelectAll () {
-      // debugger
     }
   },
   computed: {
@@ -279,6 +280,7 @@ export default {
           background-color: #f8f8f8;
           margin-right: 8px;
           border-radius: 4px;
+          flex-direction: column;
           .icon {
             width: 21px;
             height: 21px;
