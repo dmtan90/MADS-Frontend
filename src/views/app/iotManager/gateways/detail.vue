@@ -55,7 +55,7 @@
             <div class="header">Credentails</div>
             <div class="body-box">
               <div class="edit-btn">
-                <button @click="addCredentials()">
+                <button @click="editCredentials(credentials)">
                   <svg class="icon">
                     <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
                   </svg>
@@ -82,7 +82,7 @@
                   Parent:
                 </div>
                 <div class="iteam">
-                  {{credentials.parent}}
+                  {{credentials.parent_type}}
                 </div>
               </div>
               <div class="iteams-row">
@@ -116,7 +116,7 @@
             <div class="header">Security</div>
             <div class="body-box">
               <div class="edit-btn">
-                <button @click="addSecurity()">
+                <button @click="editSecurity(security)">
                   <svg class="icon">
                     <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
                   </svg>
@@ -208,13 +208,16 @@ export default {
           this.credentials = {
             name: filterData ? filterData.name : null,
             channel: filterData ? filterData.channel : null,
-            parent: filterData ? filterData.parent_type : null,
+            parent_type: filterData ? filterData.parent_type : null,
+            parent_id: filterData ? filterData.parent_id : null,
             description: filterData ? filterData.description : null,
             uuid: filterData ? filterData.uuid : null,
+            id: filterData ? filterData.id : null,
             status: 'Active'
           }
 
           this.security = {
+            id: filterData ? filterData.id : null,
             access_token: filterData? filterData.access_token : null
           }
 
@@ -257,11 +260,11 @@ export default {
     deleteStreamParam(detail){
       
     },
-    addCredentials(){
-      this.$refs.addEditCredentials.add()
+    editCredentials(credentials){
+      this.$refs.addEditCredentials.edit(credentials)
     },
-    addSecurity(){
-      this.$refs.addEditSecurity.add()
+    editSecurity(security){
+      this.$refs.addEditSecurity.edit(security)
     },
     staticParamsData(data){
        let staticParamData = [...this.staticParams];

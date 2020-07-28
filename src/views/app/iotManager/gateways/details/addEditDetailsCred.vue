@@ -11,7 +11,7 @@
     @on-cancel="onCancel()"
     @on-save="saveGateway()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :credentialsData="gateway" :source="source" :entityMapParentNode="entityMapParentNode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :credentialsData="credential" :source="source" :entityMapParentNode="entityMapParentNode"></sections>
     </template>
   </mads-modal>
 </template>

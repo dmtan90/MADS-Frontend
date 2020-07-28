@@ -86,6 +86,9 @@ export default {
     getCredentialsData () {
       return this.credentials
     },
+    getSelectedEntity () {
+      return [{ id: this.selectedParentEntityId, type: this.credentials.parent_type }]
+    },
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject'])
@@ -100,7 +103,7 @@ export default {
         parent_id: this.credentialsData.parent_id,
       }
 
-      this.selectedSensorType = this.credentialsData.sensor_type
+      this.selectedSensorType = this.credentialsData.channel
 
       if (this.credentialsData.parent_type === 'Asset') {
         this.isAnyNodeSelected = true
