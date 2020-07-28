@@ -51,11 +51,13 @@ export default {
         })
     },
     loadDashboard (id) {
+      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: id }
 
       dashboardService.readId(config)
         .then((response) => {
           this.setDashboard(response)
+          loader.hide()
         })
     },
     onSelectDashboard (dashboard) {

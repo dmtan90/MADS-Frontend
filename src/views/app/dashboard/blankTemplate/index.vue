@@ -28,9 +28,25 @@
       </div>
     </div>
     <div class="content-wrap">
-      <dashboard-header></dashboard-header>
-      <div class="content">
-        <widget :visualSettings="visualSettings" :series="series"></widget>
+      <dashboard-header @on-change-mode="onChangeMode"></dashboard-header>
+      <div class="widgets-wrap">
+        <div class="layout-container">
+            <grid-layout
+                :layout.sync="layout"
+                :col-num="12"
+                :row-height="50"
+                :is-draggable="true"
+                :is-resizable="true"
+                :is-mirrored="false"
+                :vertical-compact="true"
+                :margin="[10, 10]"
+                :use-css-transforms="true"
+            >
+                <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.key">
+                    <widget :visualSettings="getVisualSettings(item)" :series="getSeries(item)" :widgetId="getWidgetId(item)" :width="item.w" :height="item.h" :colWidth="colWidth" :colHeight="colHeight"></widget>
+                </grid-item>
+            </grid-layout>
+        </div>
       </div>
     </div>
   </div>
@@ -40,38 +56,78 @@
 import { mapGetters } from 'vuex'
 import dashboardHeader from './../dashboardHeader'
 import widget from './../../shared/widgets/highChart'
+import VueGridLayout from 'vue-grid-layout'
+
+// import widgets from './../widgets.js'
 
 export default {
   components: {
     dashboardHeader,
-    widget
+    widget,
+    GridLayout: VueGridLayout.GridLayout,
+    GridItem: VueGridLayout.GridItem
   },
   data () {
     return {
+      widgets: [],
+      widgetObject: {},
       selectedTab: 'dashboard',
       series: [],
-      visualSettings: {}
+      visualSettings: {},
+      isEditMode: false,
+      layout: [],
+      // dummyLayout: [
+      //   { 'x': 0, 'y': 0, 'w': 1, 'h': 1, 'i': '0' }
+      // ],
+      colWidth: 98.5,
+      colHeight: 50
     }
   },
   methods: {
     goBack () {
       this.$emit('show-all')
+    },
+    onChangeMode (mode) {
+      if (mode === 'Edit Mode') {
+        this.isEditMode = true
+      } else {
+        this.isEditMode = false
+      }
+    },
+    getVisualSettings (item) {
+      return this.widgetObject[item.key].visual_properties
+    },
+    getSeries (item) {
+      return this.widgetObject[item.key].series
+    },
+    getWidgetId (item) {
+      return this.widgetObject[item.key].uuid
     }
   },
   watch: {
     selectedDashboard (dashboard) {
-      let widget = dashboard.widgets || []
+      this.widgets = dashboard.widgets
 
-      if (widget.length) {
-        widget = widget[1]
-        this.series = widget.series
-        this.visualSettings = widget.visual_properties
-      }
+      this.$_.forEach(this.widgets, (widget) => {
+        this.widgetObject[widget.id] = widget
+      })
+
+      this.layout = this.$_.map(this.widgets, (widget) => {
+        return this.$_.merge(widget.widget_settings, { key: widget.id })
+      })
     }
   },
   computed: {
     ...mapGetters(['selectedDashboard'])
   }
+  // mounted () {
+  //   let that = this
+  //   setTimeout(() => {
+  //     console.log(that)
+  //     this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
+  //     document.getElementById('dummy-layout').remove()
+  //   }, 100)
+  // }
 }
 </script>
 
@@ -158,10 +214,19 @@ export default {
     .content-wrap {
       width: calc(100% - 260px);
       overflow: auto;
-      background-color: #f2f2f2;
-      .content {
-        padding: 40px 40px 60px;
-        width: 500px;
+      background-color: #ffffff;
+      position: relative;
+      .widgets-wrap {
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        .vue-grid-layout {
+          .vue-grid-item {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+          }
+        }
       }
     }
   }

@@ -1,10 +1,6 @@
 <template>
   <div class="widget-container">
-    <div
-      id="widget"
-      style="height: 400px; display: flex; justify-content: center;"
-    ></div>
-    <!-- <div class="loading centered-loader" v-if="!defaultValues"></div> -->
+    <div :id="widgetId" :style="{ height: '230px', width: '373px' }" style="display: flex; justify-content: center;"></div>
   </div>
 </template>
 
@@ -24,9 +20,25 @@ export default {
       type: Array,
       required: true
     },
-    type: {
+    widgetId: {
       type: String,
-      requied: true
+      required: true
+    },
+    width: {
+      type: Number,
+      required: true
+    },
+    height: {
+      type: Number,
+      required: true
+    },
+    colWidth: {
+      type: Number,
+      required: true
+    },
+    colHeight: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -51,12 +63,18 @@ export default {
           }
         }
       )
-      this.chart = Highcharts.chart("widget", chartOptions)
-    },
+      this.chart = Highcharts.chart(this.widgetId, chartOptions)
+    }
   },
   watch: {
     series(value) {
       this.generateChart()
+    },
+    width () {
+      this.chart.setSize(this.width * this.colWidth, this.height * this.colHeight)
+    },
+    height () {
+      this.chart.setSize(this.width * this.colWidth, this.height * this.colHeight)
     }
   },
   mounted() {

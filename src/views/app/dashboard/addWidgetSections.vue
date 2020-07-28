@@ -193,7 +193,13 @@ export default {
       let params = {
         label: 'Label' + uniqueKey,
         visual_prop: this.visualProp,
-        settings: {},
+        settings: {
+          x: 0,
+          y: 5,
+          w: 4,
+          h: 4,
+          i: uniqueKey
+        },
         series: this.dataSeries
       }
 
