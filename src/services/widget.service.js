@@ -22,7 +22,7 @@ const widgetService = {
   },
   search: async function (searchText) {
     try {
-      const response = await ApiService.get('/search_widgets?label=' + searchText)
+      const response = await ApiService.get('/widgets/search?label=' + searchText)
       return response.data
     } catch (error) {
       return error.response.data

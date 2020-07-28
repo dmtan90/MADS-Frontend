@@ -30,7 +30,7 @@
     <div class="content-wrap">
       <dashboard-header></dashboard-header>
       <div class="content">
-        <line-chart :visualSettings="visualSettings" :series="series"></line-chart>
+        <widget :visualSettings="visualSettings" :series="series"></widget>
       </div>
     </div>
   </div>
@@ -39,12 +39,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import dashboardHeader from './../dashboardHeader'
-import lineChart from './../../shared/widgets/lineChart'
+import widget from './../../shared/widgets/highChart'
 
 export default {
   components: {
     dashboardHeader,
-    lineChart
+    widget
   },
   data () {
     return {

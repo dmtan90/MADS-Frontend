@@ -23,6 +23,10 @@ export default {
     series: {
       type: Array,
       required: true
+    },
+    type: {
+      type: String,
+      requied: true
     }
   },
   data() {
@@ -33,28 +37,18 @@ export default {
   methods: {
     generateChart() {
       let chartOptions = _.merge(
-        {},
-        {
-          width: 500
-        },
         this.visualSettings,
         {
-          series: this.series
-        },
-        {
-          xAxis: {
-            accessibility: {
-              rangeDescription: "Range: 2010 to 2017",
-            },
+          series: this.series,
+          chart: {
+            type: this.type
           },
-          plotOptions: {
-            series: {
-              label: {
-                connectorAllowed: false,
-              },
-              pointStart: 2010,
-            },
+          caption: {
+            text: ''
           },
+          credits: {
+            enabled: false
+          }
         }
       )
       this.chart = Highcharts.chart("widget", chartOptions)
@@ -82,4 +76,10 @@ export default {
     left: 50%;
   }
 }
+</style>
+
+<style lang="scss">
+  .highcharts-caption {
+    background-color: #e0e0e0;
+  }
 </style>
