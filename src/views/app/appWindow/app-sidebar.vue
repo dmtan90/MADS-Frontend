@@ -57,6 +57,10 @@ export default {
           display: block;
           margin: 0 auto;
           fill: #808080;
+          filter: gray;
+          -webkit-filter: grayscale(1);
+          filter: grayscale(1);
+
           &.sensor-icon {
             transform: rotate(180deg);
           }

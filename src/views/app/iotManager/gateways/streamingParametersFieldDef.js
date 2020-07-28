@@ -9,8 +9,8 @@ export default [
     title: 'Key'
   },
   {
-    name: 'value',
-    title: 'Value'
+    name: 'unit',
+    title: 'Unit'
   },
   {
     name: 'data_type',
