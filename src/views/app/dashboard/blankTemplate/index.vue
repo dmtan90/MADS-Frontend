@@ -31,19 +31,43 @@
       <dashboard-header @on-change-mode="onChangeMode"></dashboard-header>
       <div class="widgets-wrap">
         <div class="layout-container">
-            <grid-layout
-                :layout.sync="layout"
+          <!-- <grid-layout
+                :layout="layout"
                 :col-num="12"
                 :row-height="50"
                 :is-draggable="true"
                 :is-resizable="true"
                 :is-mirrored="false"
                 :vertical-compact="true"
-                :margin="[10, 10]"
+                :margin="[20, 20]"
                 :use-css-transforms="true"
             >
-                <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.key">
-                    <widget :visualSettings="getVisualSettings(item)" :series="getSeries(item)" :widgetId="getWidgetId(item)" :width="item.w" :height="item.h" :colWidth="colWidth" :colHeight="colHeight"></widget>
+                <grid-item ref="dummyGridItem" v-for="item in dummyLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                  Dummy Layout
+                </grid-item>
+            </grid-layout> -->
+
+            <grid-layout
+                :layout.sync="layout"
+                :col-num="12"
+                :row-height="50"
+                :is-draggable="isEditMode"
+                :is-resizable="isEditMode"
+                :is-mirrored="false"
+                :vertical-compact="true"
+                :margin="[20, 20]"
+                :use-css-transforms="true"
+            >
+                <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                    <widget
+                      :visualSettings="getVisualSettings(item)"
+                      :series="getSeries(item)"
+                      :widgetId="getWidgetId(item)"
+                      :page="'dashboard'"
+                      :colWidth="colWidth"
+                      :colHeight="colHeight"
+                      :cols="item.w"
+                      :rows="item.h"></widget>
                 </grid-item>
             </grid-layout>
         </div>
@@ -53,12 +77,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import dashboardHeader from './../dashboardHeader'
 import widget from './../../shared/widgets/highChart'
 import VueGridLayout from 'vue-grid-layout'
-
-// import widgets from './../widgets.js'
+import dasbhoardEventBus from './../dashboardBus'
+import dashboardService from '@/services/dashboard.service'
 
 export default {
   components: {
@@ -76,14 +100,15 @@ export default {
       visualSettings: {},
       isEditMode: false,
       layout: [],
-      // dummyLayout: [
-      //   { 'x': 0, 'y': 0, 'w': 1, 'h': 1, 'i': '0' }
-      // ],
-      colWidth: 98.5,
+      dummyLayout: [
+        { 'x': 0, 'y': 0, 'w': 4, 'h': 1, 'i': '0' }
+      ],
+      colWidth: 75,
       colHeight: 50
     }
   },
   methods: {
+    ...mapActions(['setDashboard']),
     goBack () {
       this.$emit('show-all')
     },
@@ -95,13 +120,23 @@ export default {
       }
     },
     getVisualSettings (item) {
-      return this.widgetObject[item.key].visual_properties
+      return this.widgetObject[item.i].visual_properties
     },
     getSeries (item) {
-      return this.widgetObject[item.key].series
+      return this.widgetObject[item.i].series
     },
     getWidgetId (item) {
-      return this.widgetObject[item.key].uuid
+      return this.widgetObject[item.i].uuid
+    },
+    reloadSelectedDasbhoard () {
+      let loader = this.$loading.show()
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+
+      dashboardService.readId(config)
+        .then((response) => {
+          this.setDashboard(response)
+          loader.hide()
+        })
     }
   },
   watch: {
@@ -112,22 +147,28 @@ export default {
         this.widgetObject[widget.id] = widget
       })
 
-      this.layout = this.$_.map(this.widgets, (widget) => {
-        return this.$_.merge(widget.widget_settings, { key: widget.id })
+      let widgetLayots = this.$_.clone(this.selectedDashboard.widget_layouts)
+
+      this.layout = this.$_.map(widgetLayots, (setting, id) => {
+        return this.$_.merge(setting, { i: id })
       })
     }
   },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['currentUser', 'selectedDashboard'])
+  },
+  mounted () {
+    // let that = this
+    // setTimeout(() => {
+    //   console.log(that)
+    //   this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
+    //   document.getElementById('dummy-layout').remove()
+    // }, 100)
+
+    dasbhoardEventBus.$on('widget-added', () => {
+      this.reloadSelectedDasbhoard()
+    })
   }
-  // mounted () {
-  //   let that = this
-  //   setTimeout(() => {
-  //     console.log(that)
-  //     this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
-  //     document.getElementById('dummy-layout').remove()
-  //   }, 100)
-  // }
 }
 </script>
 

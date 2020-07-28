@@ -135,7 +135,7 @@ export default {
       this.$refs['newDashboardModal'].$refs['dashboardModal'].show()
     },
     onCreateDashboard (name) {
-      let params = { name: name, settings: {} }
+      let params = { name: name, settings: {}, widget_layouts: {} }
       let config = { orgId: this.currentUser.org.id, projectId: 1 }
 
       dashboardService.create(config, params)

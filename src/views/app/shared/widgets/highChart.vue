@@ -1,6 +1,6 @@
 <template>
   <div class="widget-container">
-    <div :id="widgetId" :style="{ height: '230px', width: '373px' }" style="display: flex; justify-content: center;"></div>
+    <div :id="widgetId" style="display: flex; justify-content: center;"></div>
   </div>
 </template>
 
@@ -24,37 +24,43 @@ export default {
       type: String,
       required: true
     },
-    width: {
-      type: Number,
-      required: true
-    },
-    height: {
-      type: Number,
-      required: true
+    page: {
+      type: String,
+      default: ''
     },
     colWidth: {
       type: Number,
-      required: true
+      default: 0
     },
     colHeight: {
       type: Number,
-      required: true
+      default: 0
+    },
+    cols: {
+      type: Number,
+      default: 0
+    },
+    rows: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
-      chart: null
+      widget: null
     }
   },
   methods: {
-    generateChart() {
-      let chartOptions = _.merge(
-        this.visualSettings,
+    generateWidget() {
+      let widgetOptions = _.merge(
         {
-          series: this.series,
           chart: {
             type: this.type
           },
+        },
+        this.visualSettings,
+        {
+          series: this.series,
           caption: {
             text: ''
           },
@@ -63,23 +69,33 @@ export default {
           }
         }
       )
-      this.chart = Highcharts.chart(this.widgetId, chartOptions)
+      this.widget = Highcharts.chart(this.widgetId, widgetOptions)
+    },
+    renderWidget() {
+      this.generateWidget()
+      this.resizeWidget()
+    },
+    resizeWidget() {
+      let width = this.colWidth * this.cols + (20 * (this.cols - 1))
+      let height = this.colHeight * this.rows + (20 * (this.rows - 1))
+
+      this.widget.setSize(width, height)
     }
   },
   watch: {
     series(value) {
-      this.generateChart()
+      this.renderWidget()
     },
-    width () {
-      this.chart.setSize(this.width * this.colWidth, this.height * this.colHeight)
+    rows() {
+        this.resizeWidget()
     },
-    height () {
-      this.chart.setSize(this.width * this.colWidth, this.height * this.colHeight)
+    cols() {
+      this.resizeWidget()
     }
   },
   mounted() {
     Exporting(Highcharts)
-    this.generateChart()
+    this.renderWidget()
   },
 }
 </script>

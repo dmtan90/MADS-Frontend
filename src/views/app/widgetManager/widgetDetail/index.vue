@@ -8,7 +8,7 @@
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
-        <widget :visualSettings="visualSettings" :series="series" :type="widgetType"></widget>
+        <widget :visualSettings="visualSettings" :series="series" :type="widgetType" :widgetId="'widget-' + '1234'"></widget>
         <div class="button-group" v-if="userWidget">
           <button class="btn download-btn" v-if="checkIfWidgetAlreadyDownloaded" @click="openWidget()">Open</button>
         </div>

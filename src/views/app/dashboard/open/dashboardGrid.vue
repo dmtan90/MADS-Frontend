@@ -10,7 +10,10 @@
         <div class="header">
           <span class="name">{{dashboard.name}}</span>
         </div>
-        <div class="img-wrap" :style="{background: getBackgroundUrl(dashboard.dashboard_image)}">
+        <div class="img-wrap">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
+          </svg>
         </div>
         <!-- <div class="info-wrap">
           <div class="info">

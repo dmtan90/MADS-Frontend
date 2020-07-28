@@ -75,6 +75,7 @@ import madsTree from './../shared/madsTree/index'
 import widgetService from '@/services/widget.service'
 import settings from './settings'
 import dashboardService from '@/services/dashboard.service'
+import dasbhoardEventBus from './dashboardBus'
 
 const dataTypeMap = {
   'string': 'text',
@@ -187,25 +188,55 @@ export default {
           this.widgetList = response.widgets
         })
     },
+    findDashboardYOffset () {
+      let yOffset = 0
+      let widgetLayots = this.selectedDashboard.widget_layouts
+
+      if (this.$_.size(widgetLayots)) {
+        this.$_.forEach(widgetLayots, (layoutSetting, _) => {
+          if (layoutSetting.y > yOffset) {
+            yOffset = layoutSetting.y
+          }
+        })
+
+        return yOffset + 4
+      } else {
+        return yOffset
+      }
+    },
+    updateDashbaord (widgetInstance) {
+      let yOffset = this.findDashboardYOffset()
+      let widgetLayots = this.selectedDashboard.widget_layouts
+
+      widgetLayots[widgetInstance.id] = {
+        w: 4,
+        h: 4,
+        x: 0,
+        y: yOffset
+      }
+
+      let params = { widget_layouts: widgetLayots }
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+
+      dashboardService.update(config, params)
+        .then((response) => {
+          dasbhoardEventBus.$emit('widget-added')
+        })
+    },
     saveWidgetInstance () {
       let uniqueKey = this.getUniqueKey()
 
       let params = {
         label: 'Label' + uniqueKey,
         visual_prop: this.visualProp,
-        settings: {
-          x: 0,
-          y: 5,
-          w: 4,
-          h: 4,
-          i: uniqueKey
-        },
+        settings: {},
         series: this.dataSeries
       }
 
       let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
       dashboardService.createWidgetInstance(config, params)
         .then((response) => {
+          this.updateDashbaord(response)
         })
     },
     onVisualSettingsUpdate (value, key) {
