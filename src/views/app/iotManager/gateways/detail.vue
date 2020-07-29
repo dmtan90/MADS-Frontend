@@ -134,13 +134,33 @@
           </div>
         </b-tab>
         <b-tab title="Latest Logs">
-          <b-card-text>Latest Logs</b-card-text>
+          <div class="latest-logs-container">
+            <vuetable
+              ref="vuetable"
+              :api-mode="false"
+              :fields="latestLogsFields"
+              :data="latestLogsData"
+              pagination-path="" 
+              :css="latestLogsCss.table"
+              @vuetable:pagination-data="onPaginationData"
+              :per-page="3"
+              >
+            </vuetable>
+            <vuetable-pagination ref="pagination" :css="latestLogsCss.pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+          </div>
         </b-tab>
         <b-tab title="Parameter-Mapping">
           <b-card-text>Parameter Mapping</b-card-text>
         </b-tab>
         <b-tab title="Commands">
-          <b-card-text>Commands</b-card-text>
+          <div class="commands-container">
+            <b-form>
+              <b-form-group label="Add Commands" label-for="add-commands" class="commands">
+                <b-form-textarea v-model="commands.commands" id="add-commands" rows="15" max-rows="15"></b-form-textarea>
+              </b-form-group>
+              <b-button @click="addCommands()">Add</b-button>
+            </b-form>
+          </div>
         </b-tab>
 
       </b-tabs>
@@ -156,8 +176,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Vuetable from 'vuetable-2'
+import {Vuetable, VuetablePagination} from 'vuetable-2'
 import paramFieldDefs from './parametersFieldDef'
+import latestLogsFieldDef from './latestLogsFieldDef'
 import streamParamFieldDefs from './streamingParametersFieldDef'
 import addEditStaticParam from './addEditStaticParam'
 import addEditStreamingParam from './addEditStreamingParam'
@@ -172,7 +193,8 @@ export default {
     addEditStaticParam,
     addEditStreamingParam,
     addEditCredentials,
-    addEditSecurity
+    addEditSecurity,
+    VuetablePagination
   },
   data () {
     return {
@@ -182,14 +204,19 @@ export default {
       streamingParams: [],
       gatewayData: [],
       credentials:{},
-      security:{}
+      security:{},
+      latestLogsCss: latestLogsFieldDef.css,
+      latestLogsFields: latestLogsFieldDef.data,
+      latestLogsData: [],
+      commands:{}
     }
   },
   methods:{
     async loadGatewayData(){
       const config = {
         orgId: this.currentUser.org.id,
-        projectId: 1
+        projectId: 1,
+        id: this.selectedGateway.id
       }
 
       const params = {
@@ -198,12 +225,9 @@ export default {
       }
       let gatewayId = this.selectedGateway.id
 
-      gatewayService.read(config, params)
+      gatewayService.readId(config, params)
         .then((res) => {
-          this.gatewayData = res.gateways;
-          
-          let filterArr = res.gateways.filter((gateway) => gateway.id === gatewayId )
-          let filterData = filterArr[0]
+          let filterData = res;
 
           this.credentials = {
             name: filterData ? filterData.name : null,
@@ -232,10 +256,10 @@ export default {
 
           this.streamingParams = filterData.streaming_data.map((data, index) => {
             return {
-              name: data.data.name,
-              data_type: data.data.data_type,
-              unit: data.data.unit,
-              value: data.data.value
+              name: data.name,
+              data_type: data.data_type,
+              unit: data.unit,
+              value: data.value
             }
           });
         })
@@ -291,6 +315,22 @@ export default {
        }
        gatewayService.update(config, payload)
         .then((res)=> console.log("res",res))
+    },
+    onPaginationData (paginationData) {
+      this.$refs.pagination.setPaginationData(paginationData)
+    },
+    onChangePage (page) {
+      this.$refs.vuetable.changePage(page)
+    },
+    addCommands(){
+      let config = { orgId: this.currentUser.org.id, projectId: 1,id: this.selectedGateway.id }
+      let data = {
+        commands: JSON.parse(this.commands.commands)
+      }
+      gatewayService.storeCommandCreate(config, data)
+          .then((res)=>{
+              GatewayEventBus.$emit('reload-gateways');
+          })
     }
   },
   computed: {
@@ -427,5 +467,9 @@ export default {
         }
       }
     }
+  }
+
+  .commands-container{
+    width: 70%;
   }
 </style>

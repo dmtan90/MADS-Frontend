@@ -12,6 +12,15 @@ const gatewayService = {
       return error.response.data
     }
   },
+  storeCommandCreate: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + '/projects/'+ config.projectId +resource + '/' + config.id + "/store_commands", payload)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
+  },
   read: async function (config, params) {
     try {
       const response = await ApiService.get('/orgs/' + config.orgId + '/projects/'+ config.projectId +resource, { params })
@@ -41,7 +50,7 @@ const gatewayService = {
   },
   readId: async function (config) {
     try {
-      const response = await ApiService.get('/orgs/' + config.orgId + resource + '/' + config.id)
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/'+ config.projectId + resource + '/' + config.id)
 
       return response.data
     } catch (error) {
