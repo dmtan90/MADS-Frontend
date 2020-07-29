@@ -28,11 +28,11 @@
       </div>
     </div>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode"></dashboard-header>
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard="onSaveDashboard"></dashboard-header>
       <div class="widgets-wrap">
-        <div class="layout-container">
-          <!-- <grid-layout
-                :layout="layout"
+        <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
+          <grid-layout
+                :layout="dummyLayout"
                 :col-num="12"
                 :row-height="50"
                 :is-draggable="true"
@@ -45,8 +45,9 @@
                 <grid-item ref="dummyGridItem" v-for="item in dummyLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
                   Dummy Layout
                 </grid-item>
-            </grid-layout> -->
-
+            </grid-layout>
+        </div>
+        <div class="layout-container" v-if="showLayout">
             <grid-layout
                 :layout.sync="layout"
                 :col-num="12"
@@ -59,6 +60,14 @@
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                    <div class="edit-actions" v-if="isEditMode">
+                      <!-- <svg class="icon" @click="editWidget(item)">
+                        <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                      </svg> -->
+                      <svg class="icon" @click="deleteWidget(item)">
+                        <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+                      </svg>
+                    </div>
                     <widget
                       :visualSettings="getVisualSettings(item)"
                       :series="getSeries(item)"
@@ -101,10 +110,11 @@ export default {
       isEditMode: false,
       layout: [],
       dummyLayout: [
-        { 'x': 0, 'y': 0, 'w': 4, 'h': 1, 'i': '0' }
+        { 'x': 0, 'y': 0, 'w': 1, 'h': 1, 'i': '0' }
       ],
       colWidth: 75,
-      colHeight: 50
+      colHeight: 50,
+      showLayout: false
     }
   },
   methods: {
@@ -113,7 +123,7 @@ export default {
       this.$emit('show-all')
     },
     onChangeMode (mode) {
-      if (mode === 'Edit Mode') {
+      if (mode === 'edit') {
         this.isEditMode = true
       } else {
         this.isEditMode = false
@@ -128,6 +138,37 @@ export default {
     getWidgetId (item) {
       return this.widgetObject[item.i].uuid
     },
+    onSaveDashboard (name) {
+      console.log('layout', this.layout)
+      let widgetLayots = {}
+
+      this.$_.forEach(this.layout, (item) => {
+        widgetLayots[item.i] = item
+      })
+
+      let params = {
+        name: name,
+        widget_layouts: widgetLayots
+      }
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+
+      dashboardService.update(config, params)
+        .then((response) => {
+          this.reloadSelectedDasbhoard()
+        })
+    },
+    updateDashbaord (item) {
+      let widgetLayots = this.selectedDashboard.widget_layouts
+      delete widgetLayots[item.i]
+
+      let params = { widget_layouts: widgetLayots }
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+
+      dashboardService.update(config, params)
+        .then((response) => {
+          this.reloadSelectedDasbhoard()
+        })
+    },
     reloadSelectedDasbhoard () {
       let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
@@ -137,6 +178,19 @@ export default {
           this.setDashboard(response)
           loader.hide()
         })
+    },
+    deleteWidget (item) {
+      let widgetInstanceId = this.widgetObject[item.i].id
+      let widgetId = this.widgetObject[item.i].widget_id
+
+      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
+
+      dashboardService.deleteWidgetInstance(config)
+        .then((response) => {
+          this.updateDashbaord(item)
+        })
+    },
+    editWidget (item) {
     }
   },
   watch: {
@@ -158,12 +212,11 @@ export default {
     ...mapGetters(['currentUser', 'selectedDashboard'])
   },
   mounted () {
-    // let that = this
-    // setTimeout(() => {
-    //   console.log(that)
-    //   this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
-    //   document.getElementById('dummy-layout').remove()
-    // }, 100)
+    setTimeout(() => {
+      this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
+      document.getElementById('dummy-layout').remove()
+      this.showLayout = true
+    }, 100)
 
     dasbhoardEventBus.$on('widget-added', () => {
       this.reloadSelectedDasbhoard()
@@ -266,6 +319,30 @@ export default {
             background-color: white;
             border-radius: 5px;
             box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+            .edit-actions {
+              position: absolute;
+              width: 40px;
+              height: 40px;
+              background-color: #4c92c3;
+              right: 0;
+              top: 0;
+              z-index: 99;
+              display: flex;
+              align-items: center;
+              justify-content: space-evenly;
+              border-bottom-left-radius: 4px;
+              .icon {
+                fill: white;
+                width: 40px;
+                height: 40px;
+                padding: 10px;
+                border-right: 1px solid white;
+                cursor: pointer;
+                &:last-child {
+                  border-right: none;
+                }
+              }
+            }
           }
         }
       }

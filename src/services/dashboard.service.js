@@ -56,6 +56,15 @@ const sensorService = {
     } catch (error) {
       return error.response.data
     }
+  },
+  deleteWidgetInstance: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
   }
 }
 

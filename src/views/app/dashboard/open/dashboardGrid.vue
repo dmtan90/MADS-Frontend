@@ -126,7 +126,6 @@ export default {
     margin-left: 0;
     margin-right: 0;
     margin-top: 40px;
-    justify-content: space-between;
     .grid-item {
       display: flex;
       flex-direction: column;
@@ -138,6 +137,7 @@ export default {
       width: 30%;
       border-radius: 4px;
       margin-bottom: 30px;
+      margin-right: 30px;
       .header {
         height: 40px;
         display: flex;
@@ -167,11 +167,12 @@ export default {
         }
       }
       .img-wrap {
-        height: 180px;
-        max-height: 180px;
+        height: 270px;
         background-color: #fff;
         cursor: pointer;
-        background-size: cover !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .info-wrap {
         height: 90px;

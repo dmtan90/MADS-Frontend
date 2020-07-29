@@ -11,7 +11,7 @@
       <dashboard-grid :dashboards="dashboards" :source="source" @select-dashboard="onSelectDashboard"></dashboard-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <blank-template @show-all="setTheme(null)"></blank-template>
+      <blank-template @show-all="onShowAllDashboards"></blank-template>
     </div>
   </div>
 </template>
@@ -63,6 +63,10 @@ export default {
     onSelectDashboard (dashboard) {
       this.showAllDashboards = false
       this.loadDashboard(dashboard.id)
+    },
+    onShowAllDashboards () {
+      this.showAllDashboards = true
+      this.showAppSidebar('Dashboards')
     }
   },
   computed: {
