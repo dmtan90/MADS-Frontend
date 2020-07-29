@@ -142,26 +142,30 @@ export default {
       }
     },
     onAddSiblingNode(e,data){
+        // let sibling =
         debugger
     },
     onAddChildNode(e,data){
-      let parentNode = data.parentNode || this.data
-      let children = this.$_.concat(data.node.children,{
-            id: 11,
-            options: {
-              label: 'First First',
-              classes: [],
-              icon: '',
-              hoverOptions: [],
-              expanded: true,
-              selected: false,
-              visible: true,
-              selectable: false,
-              draggable: true
-            }})
-        data.node.children = children;
-        this.$set(parentNode, 'children', children)
-            debugger;
+      // let parentNode = data.parentNode || this.data
+      // let children = this.$_.concat(data.node.children,{
+      //       id: 11,
+      //       options: {
+      //         label: 'First First',
+      //         classes: [],
+      //         icon: '',
+      //         hoverOptions: {
+      //           sibling: true,
+      //           child: true
+      //         },
+      //         expanded: true,
+      //         selected: false,
+      //         visible: true,
+      //         selectable: false,
+      //         draggable: true
+      //       }})
+      //   data.node.children = children;
+      //   this.$set(parentNode, 'children', children)
+        debugger;
     }
   },
   computed: {
