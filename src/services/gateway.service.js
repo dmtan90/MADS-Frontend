@@ -21,6 +21,15 @@ const gatewayService = {
       return error.response.data
     }
   },
+  latestLogsRead: async function (config, params) {
+    try {
+      const response = await ApiService.get('/orgs/' + config.orgId + '/projects/'+ config.projectId +resource + '/' + config.id + "/data_dump_index", { params })
+
+      return response.data
+    } catch (error) {
+      return error.response.data
+    }
+  },
   read: async function (config, params) {
     try {
       const response = await ApiService.get('/orgs/' + config.orgId + '/projects/'+ config.projectId +resource, { params })

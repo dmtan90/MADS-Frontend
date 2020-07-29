@@ -134,23 +134,10 @@
           </div>
         </b-tab>
         <b-tab title="Latest Logs">
-          <div class="latest-logs-container">
-            <vuetable
-              ref="vuetable"
-              :api-mode="false"
-              :fields="latestLogsFields"
-              :data="latestLogsData"
-              pagination-path="" 
-              :css="latestLogsCss.table"
-              @vuetable:pagination-data="onPaginationData"
-              :per-page="3"
-              >
-            </vuetable>
-            <vuetable-pagination ref="pagination" :css="latestLogsCss.pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
-          </div>
+          <latest-logs-section></latest-logs-section>
         </b-tab>
         <b-tab title="Parameter-Mapping">
-          <b-card-text>Parameter Mapping</b-card-text>
+          <parameter-mapping-section></parameter-mapping-section>
         </b-tab>
         <b-tab title="Commands">
           <div class="commands-container">
@@ -178,7 +165,6 @@
 import { mapGetters } from 'vuex'
 import {Vuetable, VuetablePagination} from 'vuetable-2'
 import paramFieldDefs from './parametersFieldDef'
-import latestLogsFieldDef from './latestLogsFieldDef'
 import streamParamFieldDefs from './streamingParametersFieldDef'
 import addEditStaticParam from './addEditStaticParam'
 import addEditStreamingParam from './addEditStreamingParam'
@@ -186,6 +172,8 @@ import addEditCredentials from './details/addEditDetailsCred'
 import addEditSecurity from './details/addEditSecurity'
 import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
+import parameterMappingSection from './parameterMapping/parameterMappingSection'
+import latestLogsSection from './latestLogs/latestLogsSection'
 
 export default {
   components: {
@@ -194,7 +182,9 @@ export default {
     addEditStreamingParam,
     addEditCredentials,
     addEditSecurity,
-    VuetablePagination
+    VuetablePagination,
+    parameterMappingSection,
+    latestLogsSection
   },
   data () {
     return {
@@ -205,10 +195,7 @@ export default {
       gatewayData: [],
       credentials:{},
       security:{},
-      latestLogsCss: latestLogsFieldDef.css,
-      latestLogsFields: latestLogsFieldDef.data,
-      latestLogsData: [],
-      commands:{}
+      commands:{},
     }
   },
   methods:{
@@ -337,7 +324,7 @@ export default {
     ...mapGetters(['currentUser','selectedGateway'])
   },
   mounted () {
-    this.loadGatewayData();
+    this.loadGatewayData()
   }
 }
 </script>
