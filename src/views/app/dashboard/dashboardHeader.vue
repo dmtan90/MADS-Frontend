@@ -83,6 +83,7 @@ export default {
     },
     saveDashboard () {
       this.$emit('save-dashboard', this.dashboardName)
+      this.selectedMode = this.modes[0]
     }
   },
   mounted () {

@@ -24,10 +24,10 @@
       </b-row>
     </div>
     <div class="detail-section h-100" v-else>
-      <blank-template v-if="selectedTheme.key === 'blank'" @show-all="setTheme(null)"></blank-template>
-      <shea-template v-if="selectedTheme.key === 'shea'" @show-all="setTheme(null)"></shea-template>
-      <hevea-template v-if="selectedTheme.key === 'hevea'"  @show-all="setTheme(null)"></hevea-template>
-      <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="setTheme(null)"></smart-agriculture-template>
+      <blank-template v-if="selectedTheme.key === 'blank'" @show-all="onShowAllThemes()"></blank-template>
+      <shea-template v-if="selectedTheme.key === 'shea'" @show-all="onShowAllThemes()"></shea-template>
+      <hevea-template v-if="selectedTheme.key === 'hevea'"  @show-all="onShowAllThemes()"></hevea-template>
+      <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="onShowAllThemes()"></smart-agriculture-template>
     </div>
     <new-dashboard-modal ref="newDashboardModal" @create-dashboard="onCreateDashboard"></new-dashboard-modal>
   </div>
@@ -151,6 +151,10 @@ export default {
       } else {
         this.showAppSidebar('Dashboards')
       }
+    },
+    onShowAllThemes () {
+      this.showAllThemes = true
+      this.showAppSidebar('Dashboards')
     }
   },
   computed: {

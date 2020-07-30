@@ -44,7 +44,7 @@ const renderInput = (createElement, context, setting, key) => {
       },
       attrs: {
         type: dataTypeMap[setting.data_type],
-        value: setting.data_type === 'color' ? '#000000' : setting.value
+        value: setting.value
       },
       on: {
         input: e => inputHandler && inputHandler(e, key)
