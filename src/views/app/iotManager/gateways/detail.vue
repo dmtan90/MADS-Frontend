@@ -137,7 +137,7 @@
           <latest-logs-section></latest-logs-section>
         </b-tab>
         <b-tab title="Parameter-Mapping">
-          <parameter-mapping-section></parameter-mapping-section>
+          <parameter-mapping-section :streamingParams="streamingParams"></parameter-mapping-section>
         </b-tab>
         <b-tab title="Commands">
           <div class="commands-container">
