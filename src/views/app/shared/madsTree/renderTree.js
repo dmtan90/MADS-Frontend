@@ -225,6 +225,8 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
 }
 
 const renderNode = (createElement, node, context, parentNode) => {
+  node = _.merge(node, { parentId: parentNode ? parentNode.id : null })
+
   const { props } = context
   const { options } = props
 
