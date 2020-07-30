@@ -52,7 +52,7 @@ import { mapGetters, mapActions } from 'vuex'
 import fieldsDef from './projectFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditProject from './addEditProject'
-// import projectService from '@/services/project.service'
+import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
 
 export default {
@@ -87,11 +87,11 @@ export default {
       this.$refs.addEditProject.edit(project)
     },
     deleteProject (project) {
-      // let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
-      // projectService.delete(config)
-      //   .then((response) => {
-      //     ProjectEventBus.$emit('reload-projects')
-      //   })
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
+      projectService.delete(config)
+        .then((response) => {
+          ProjectEventBus.$emit('reload-projects')
+        })
     },
     onSelectProject (project) {
       this.selectProject(project)

@@ -35,7 +35,7 @@
           </div>
           <div class="info">
             <span class="title">Location</span>
-            <a :href="project.location.url" target="_blank" class="value location">
+            <a :href="getProjectLocationUrl(project)" target="_blank" class="value location">
               {{project.location && project.location.name}}
             </a>
           </div>
@@ -51,7 +51,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import addEditProject from './addEditProject'
-// import projectService from '@/services/project.service'
+import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
 
 export default {
@@ -90,15 +90,18 @@ export default {
       this.$refs.addEditProject.edit(project)
     },
     deleteProject (project) {
-      // let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
-      // projectService.delete(config)
-      //   .then((response) => {
-      //     ProjectEventBus.$emit('reload-projects')
-      //   })
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
+      projectService.delete(config)
+        .then((response) => {
+          ProjectEventBus.$emit('reload-projects')
+        })
     },
     onSelectProject (project) {
       this.selectProject(project)
       this.setEntityManagerCurrentPage(this.source)
+    },
+    getProjectLocationUrl (project) {
+      return project.location ? project.location.url : ''
     }
   },
   computed: {

@@ -17,32 +17,30 @@
         <label for="dropdown-left">Role</label>
       </div>
       <div class="invite-user">
-        <b-button v-b-modal.invite-user-modal>Invite user</b-button>
+        <b-button v-b-modal.add-edit-user-modal>Invite user</b-button>
       </div>
     </div>
     <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles"></user-list>
-    <!-- <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list> -->
+    <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list>
 
     <!-- Modal Section -->
-    <invite-user-modal :roles="roles"></invite-user-modal>
+    <!-- <invite-user-modal :roles="roles"></invite-user-modal> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import inviteUserModal from './inviteUserModal'
 import userService from '@/services/user.service'
 import roleService from '@/services/role.service'
 import invitationService from '@/services/invitation.service'
 import userList from './userList'
 import inviteList from './inviteList'
-import EventBus from '../eventBus'
+import UserEventBus from './../eventBus'
 
 export default {
   components: {
     userList,
-    inviteList,
-    inviteUserModal
+    inviteList
   },
   data () {
     return {
@@ -117,14 +115,12 @@ export default {
   mounted () {
     this.loadUsers()
     this.loadRoles()
-    // this.loadInvitations()
+    this.loadInvitations()
 
-    EventBus.$on('reload-users', () => {
+    UserEventBus.$on('reload-users', () => {
       this.loadUsers()
-    })
-
-    EventBus.$on('reload-invites', () => {
-      // this.loadInvitations()
+      this.loadInvitations()
+      this.selectedTab = 'invites'
     })
   }
 }

@@ -1,38 +1,40 @@
 <template>
   <div>
     <div class="apps-container">
-      <div v-if="screen === 0" class="screen">
-        <div v-for="(appsList, index) in displayedApps[0]" :key="index" class="apps-div">
-          <div v-for="app in appsList" :key="app.key" class="app" @click="selectApp(app.key)">
-            <b-form-checkbox v-model="selectedApps[app.key]"></b-form-checkbox>
-            <div class="app-div">
-              <svg class="icon">
-                <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-              </svg>
-              <div class="break"></div>
-              <span>
-                {{app.displayName}}
-              </span>
+      <div class="screen" :class="{'active': screen === 0}">
+        <div v-if="screen === 0">
+            <div v-for="category in $_.take(appCategories, 3)" :key="category">
+              <div v-if="$_.size(apps[category])" class="apps-row">
+                <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
+                  <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
+                  <svg class="icon">
+                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
+                  </svg>
+                  <span>
+                    {{app.name}}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-if="screen === 1" class="screen">
-        <div v-for="(appsList, index) in displayedApps[1]" :key="index" class="apps-div">
-          <div v-for="app in appsList" :key="app.key" class="app">
-            <b-form-checkbox></b-form-checkbox>
-            <div class="app-div">
-              <svg class="icon">
-                <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.iconId"></use>
-              </svg>
-              <div class="break"></div>
-              <span>
-                {{app.displayName}}
-              </span>
+        <div class="screen" :class="{'active': screen === 1}">
+          <div v-if="screen === 1 && $_.size(apps) > 3">
+            <div v-for="category in $_.takeRight(appCategories, 3)" :key="category">
+              <div v-if="$_.size(apps[category])" class="apps-row">
+                <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
+                <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
+                  <svg class="icon">
+                    <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
+                  </svg>
+                  <span>
+                    {{app.name}}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       <div class="select-all">
         <b-form-checkbox v-model="selectAll"  @change="onSelectAll()"></b-form-checkbox>
         <span>Select All</span>
@@ -50,13 +52,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
       screen: 0,
       selectAll: false,
-      displayedApps: [],
-      selectedApps: {}
+      allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
+      appCategories: [],
+      apps: {},
+      selectedApps: []
     }
   },
   methods: {
@@ -225,16 +231,24 @@ export default {
         ]
       ]
     },
-    selectApp (key) {
+    selectApp (app) {
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
-        [key]: !this.selectedApps[key]
+        [app.id]: !this.selectedApps[app.id]
       })
     },
     onSelectAll () {
     }
   },
+  computed: {
+    ...mapGetters(['orgApps'])
+  },
   mounted () {
-    this.displayedApps = this.getAllApps()
+    let apps = this.$_.groupBy(this.orgApps, (app) => { return app.category })
+    this.apps = this.$_.assign({}, apps)
+    this.appCategories = this.$_.filter(this.allAppCategories, (category) => {
+      let displayedCategories = this.$_.keys(this.apps)
+      return this.$_.includes(displayedCategories, category)
+    })
   }
 }
 </script>
@@ -266,6 +280,7 @@ export default {
           background-color: #f8f8f8;
           margin-right: 8px;
           border-radius: 4px;
+          flex-direction: column;
           .icon {
             width: 21px;
             height: 21px;
@@ -281,6 +296,9 @@ export default {
             justify-content: center;
             flex-wrap: wrap;
           }
+        }
+        .apps-row {
+          display: flex;
         }
       }
       .select-all {

@@ -37,6 +37,7 @@
           ref="tree"
           :treeView="'file'"
           :treeOptions="treeOptions"
+          :hiddenEntities="[]"
           @on-node-click="onNodeClick"
           @on-node-drag-start="onNodeDragStart"
         ></mads-tree>

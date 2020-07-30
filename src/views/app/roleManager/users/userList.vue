@@ -24,20 +24,20 @@
       </template>
     </vuetable>
 
-    <edit-user-modal :roles="roles" ref="editUser" :user="selectedUser"></edit-user-modal>
+    <add-edit-user ref="addEditUser" :roles="roles"></add-edit-user>
   </div>
 </template>
 
 <script>
 import Vuetable from 'vuetable-2'
 import userFields from './userFieldDefs'
-import editUserModal from './editUserModal'
+import addEditUser from './addEditUser'
 
 export default {
   props: ['users', 'roles'],
   components: {
     Vuetable,
-    editUserModal
+    addEditUser
   },
   data () {
     return {
@@ -49,9 +49,11 @@ export default {
     renderList (list) {
       return this.$_.join(list, ', ')
     },
-    editUser (user) {
-      this.selectedUser = user
-      this.$refs.editUser.$refs.editUserModal.show()
+    addUser (project) {
+      this.$refs.addEditProject.add()
+    },
+    editUser (project) {
+      this.$refs.addEditProject.edit(project)
     }
   }
 }
