@@ -7,12 +7,12 @@
         <multiselect v-model="selectedType" :options="mappingTypes" @select="onSelectMappingType" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
       </div>
       <div class="type-sections" v-if="selectedType">
-        <div v-if="selectedType === 'Object'">
+        <div v-if="selectedType === 'object'">
         </div>
-        <div v-if="selectedType === 'List'">
+        <div v-if="selectedType === 'list'">
 
         </div>
-        <div v-if="selectedType === 'Value'">
+        <div v-if="selectedType === 'value'">
           <multiselect v-model="selectedEntity" :options="entityTypes" @select="onSelectEntityType" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default {
       selectedType: null,
       selectedEntity: null,
       selectedParam: '',
-      mappingTypes: ['Object', 'List', 'Value'],
+      mappingTypes: ['object', 'list', 'value'],
       entityTypes: ['Gateway', 'Sensor'],
       mappingKey: '',
       mappingValue: ''

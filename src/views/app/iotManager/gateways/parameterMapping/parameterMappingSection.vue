@@ -1,12 +1,22 @@
 <template>
     <div v-if="mappingTreeData">
-        <b-button @click="saveMappings">Save Mappings</b-button>
-        <vue-tree @on-add-sibling-node="onAddSiblingNode"
-                  @on-add-child-node="onAddChildNode"
-                  :treeData="mappingTreeData"
-                  :treeOptions="treeOptions"
-                  :treeView="treeView">
-        </vue-tree>
+        <div v-if="editParameterMapping">
+          <div class="btn-container">
+            <b-button @click="saveMappings" class="save-param-btn">Save Mappings</b-button>
+          </div>
+          <div class="tree-container">
+            <vue-tree @on-add-sibling-node="onAddSiblingNode"
+                    @on-add-child-node="onAddChildNode"
+                    :treeData="mappingTreeData"
+                    :treeOptions="treeOptions"
+                    :treeView="treeView"
+                    ref="parameterTree">
+            </vue-tree>
+          </div>
+        </div>
+        <div class="json-print" v-if="!editParameterMapping">
+          <pre>{{renderPrintObject()}}</pre>
+        </div>
         <parameter-modal ref="parameterModal" :streamingParams="streamingParams" @on-save-mapping="onSaveMapping"></parameter-modal>
     </div>
 </template>
@@ -43,10 +53,14 @@ export default {
       },
       relativeEntity: {},
       entityRelation: '',
-      isParameterMappingsEmpty: true
+      editParameterMapping: true
     }
   },
   methods: {
+    renderPrintObject () {
+      let json = JSON.stringify(this.parameterMappings, undefined, 2)
+      return json.replace(/"([^"]+)":/g, '$1:')
+    },
     initTreeData () {
       this.mappingTreeData = {
         key: 'mappings',
@@ -123,7 +137,6 @@ export default {
       this.$set(parentNode, 'children', children)
       this.$set(parentNode.options, 'expanded', true)
 
-      debugger
       this.mappingTreeData = this.$_.merge({}, this.mappingTreeData)
     },
     addValueType (mapping) {
@@ -150,11 +163,11 @@ export default {
 
       let children = this.$_.concat(parentNode.children || [], node)
 
-      if (parentNode.type === 'List') {
+      if (parentNode.type === 'list') {
         let value = this.$_.concat(parentNode.value || [], { type: mapping.type, value: mapping.value })
         this.$set(parentNode, 'value', value)
       }
-      if (parentNode.type === 'Object') {
+      if (parentNode.type === 'object') {
         let value = this.$_.merge({}, parentNode.value, { type: mapping.type, value: mapping.value })
         this.$set(parentNode, 'value', value)
       }
@@ -165,13 +178,13 @@ export default {
     },
     onSaveMapping (mapping) {
       switch (mapping.type) {
-        case 'Object':
+        case 'object':
           this.addObjectType(mapping)
           break
-        case 'List':
+        case 'list':
           this.addListType(mapping)
           break
-        case 'Value':
+        case 'value':
           this.addValueType(mapping)
           break
       }
@@ -186,16 +199,46 @@ export default {
       this.relativeEntity = data
       this.$refs.parameterModal.$refs.modalRef.show()
     },
-    addObjectToMapping () {
+    traverseList (data) {
+      let list = []
 
+      this.$_.forEach(data.children, (child) => {
+        list = this.$_.concat(list, child.value)
+      })
+
+      return list
     },
-    addListToMapping () {
+    traverseObject (data) {
+      let obj = {}
+      this.$_.forEach(data.children, (child) => {
+        switch (child.type) {
+          case 'object':
+            let object = this.traverseObject(child)
+            obj = this.$_.merge(obj, {
+              [child.key]: object
+            })
+            break
+          case 'list':
+            let list = this.traverseList(child)
+            obj = this.$_.merge(obj, {
+              [child.key]: child.value
+            })
+            obj[child.key] = list
+            break
+          case 'value':
+            obj = this.$_.merge(obj, {
+              [child.key]: child.value
+            })
+            break
+        }
+      })
 
+      return obj
     },
     saveMappings () {
-      // this.$_.forEach(this.mappingTreeData, (key, ) => {
-
-      // })
+      let treeData = this.$refs.parameterTree.data
+      this.parameterMappings = this.traverseObject(treeData)
+      this.editParameterMapping = false
     }
   },
   computed: {
@@ -208,5 +251,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .btn-container {
+    text-align: center;
+    .save-param-btn {
+      background-color: #4c92c3 !important;
+      color: white !important;
+      border-color: #4c92c3 !important;
+    }
+  }
+  .json-print {
+    pre {
+      font-size: 14px;
+      background-color: #f2f2f2;
+      padding: 20px;
+      height: 450px;
+      overflow: auto;
+      border: 1px solid #d8d8d8;
+      border-radius: 4px;
+    }
+  }
 
 </style>
