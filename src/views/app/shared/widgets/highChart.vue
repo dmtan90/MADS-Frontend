@@ -66,14 +66,26 @@ export default {
           },
           credits: {
             enabled: false
+          },
+          xAxis: {
+            type: 'datetime',
+            title: {
+              text:  'Date'
+            }
+          },
+          time: {
+            useUTC: false
           }
         }
       )
+
       this.widget = Highcharts.chart(this.widgetId, widgetOptions)
     },
     renderWidget() {
       this.generateWidget()
-      this.resizeWidget()
+      if (this.page === 'dashboard') {
+        this.resizeWidget()
+      }
     },
     resizeWidget() {
       let width = this.colWidth * this.cols + (20 * (this.cols - 1))
@@ -87,7 +99,7 @@ export default {
       this.renderWidget()
     },
     rows() {
-        this.resizeWidget()
+      this.resizeWidget()
     },
     cols() {
       this.resizeWidget()

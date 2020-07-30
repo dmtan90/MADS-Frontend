@@ -60,7 +60,7 @@
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                    <div class="edit-actions" v-if="isEditMode">
+                    <div class="actions" v-if="isEditMode">
                       <!-- <svg class="icon" @click="editWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
                       </svg> -->
@@ -319,7 +319,7 @@ export default {
             background-color: white;
             border-radius: 5px;
             box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
-            .edit-actions {
+            .actions {
               position: absolute;
               width: 40px;
               height: 40px;

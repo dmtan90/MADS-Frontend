@@ -21,6 +21,7 @@ import { mapActions, mapGetters } from 'vuex'
 import dashboardGrid from './dashboardGrid'
 import dashboardService from '@/services/dashboard.service'
 import blankTemplate from './../blankTemplate'
+import DashboardEventBus from './../dashboardBus'
 
 export default {
   components: {
@@ -74,6 +75,10 @@ export default {
   },
   mounted () {
     this.loadDashboards()
+
+    DashboardEventBus.$on('reload-dashboards', () => {
+      this.loadDashboards()
+    })
   },
   beforeDestroy () {
     this.showAppSidebar('Dashboards')

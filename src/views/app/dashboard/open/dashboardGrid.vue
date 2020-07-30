@@ -6,11 +6,16 @@
       </div>
     </div> -->
     <div class="grid dashboards-grid row">
-      <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index" @click="selectDashboard(dashboard)">
+      <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index">
         <div class="header">
           <span class="name">{{dashboard.name}}</span>
+          <div class="actions">
+            <svg class="icon" @click="deleteDashboard(dashboard)">
+              <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+            </svg>
+          </div>
         </div>
-        <div class="img-wrap">
+        <div class="img-wrap" @click="selectDashboard(dashboard)">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
@@ -31,7 +36,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import dashboardService from '@/services/dashboard.service'
+import DashboardEventBus from './../dashboardBus'
 
 export default {
   props: {
@@ -68,11 +75,11 @@ export default {
       this.$refs.addEditDashboard.edit(dashboard)
     },
     deleteDashboard (dashboard) {
-      // let config = { orgId: this.currentUser.org.id, dashboardId: 1, id: dashboard.id }
-      // dashboardService.delete(config)
-      //   .then((response) => {
-      //     DashboardEventBus.$emit('reload-dashboards')
-      //   })
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: dashboard.id }
+      dashboardService.delete(config)
+        .then((response) => {
+          DashboardEventBus.$emit('reload-dashboards')
+        })
     },
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
@@ -84,6 +91,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['currentUser'])
   }
 }
 </script>
