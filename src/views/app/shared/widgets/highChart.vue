@@ -53,28 +53,11 @@ export default {
   methods: {
     generateWidget() {
       let widgetOptions = _.merge(
-        {
-          chart: {
-            type: this.type
-          },
-        },
         this.visualSettings,
         {
           series: this.series,
           caption: {
             text: ''
-          },
-          credits: {
-            enabled: false
-          },
-          xAxis: {
-            type: 'datetime',
-            title: {
-              text:  'Date'
-            }
-          },
-          time: {
-            useUTC: false
           }
         }
       )
