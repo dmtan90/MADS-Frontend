@@ -66,6 +66,7 @@ export default {
   },
   methods: {
     renderPrintObject () {
+      // let printObject = this.traversePrintRootObject(this.parameterMappings)
       let json = JSON.stringify(this.parameterMappings, undefined, 2)
       return json.replace(/"([^"]+)":/g, '$1:')
     },
@@ -417,8 +418,12 @@ export default {
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 21px;
-      height: 21px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      background-color: #4c92c3;
+      fill: white;
+      padding: 8px;
     }
   }
 
