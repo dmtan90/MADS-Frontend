@@ -406,7 +406,7 @@ export default {
   .json-print {
     position: relative;
     pre {
-      font-size: 14px;
+      font-size: 13px;
       background-color: #f2f2f2;
       padding: 20px;
       height: 450px;
