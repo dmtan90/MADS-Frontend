@@ -70,21 +70,20 @@ export default {
       this.selectedSectionIndex++
     },
     saveGateway () {
-        let config = { orgId: this.currentUser.org.id, projectId: 1 }
-        let gatewayData = this.$refs.sections.getGatewayData()
-        if(this.editMode){
-            config = this.$_.assign(config, { id: this.gateway.id })
-            gatewayService.update(config, gatewayData)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }else{
-            gatewayService.create(config, gatewayData)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }
-    
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let gatewayData = this.$refs.sections.getGatewayData()
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.gateway.id })
+        gatewayService.update(config, gatewayData)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+          })
+      } else {
+        gatewayService.create(config, gatewayData)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+          })
+      }
     },
     onCancel () {
       this.selectedSectionIndex = 1

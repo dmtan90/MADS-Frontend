@@ -1,10 +1,10 @@
 <template>
-    <div v-if="mappingTreeData">
+    <div>
         <div v-if="editParameterMapping">
           <div class="btn-container">
-            <b-button @click="saveMappings" class="save-param-btn">Save Mappings</b-button>
+            <b-button @click="saveMappings()" class="save-param-btn">Save Mappings</b-button>
           </div>
-          <div class="tree-container">
+          <div class="tree-container" v-if="mappingTreeData">
             <vue-tree @on-add-sibling-node="onAddSiblingNode"
                     @on-add-child-node="onAddChildNode"
                     :treeData="mappingTreeData"
@@ -16,15 +16,17 @@
         </div>
         <div class="json-print" v-if="!editParameterMapping">
           <pre>{{renderPrintObject()}}</pre>
+          <svg class="icon" @click="editMappings()">
+            <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+          </svg>
         </div>
-        <parameter-modal ref="parameterModal" :streamingParams="streamingParams" @on-save-mapping="onSaveMapping"></parameter-modal>
+        <parameter-modal ref="parameterModal" :streamingParams="streamingParams" :relativeEntity="relativeEntity" @on-save-mapping="onSaveMapping"></parameter-modal>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import gatewayService from '@/services/gateway.service'
-import GatewayEventBus from '../gatewayEventBus'
 import VueTree from 'vanyan-tree'
 import parameterModal from './addParameterMappingModal'
 
@@ -38,6 +40,12 @@ export default {
       type: Array,
       default: () => {
         return []
+      }
+    },
+    mappedParams: {
+      type: Object,
+      default: () => {
+        return {}
       }
     }
   },
@@ -53,7 +61,7 @@ export default {
       },
       relativeEntity: {},
       entityRelation: '',
-      editParameterMapping: true
+      editParameterMapping: false
     }
   },
   methods: {
@@ -89,6 +97,7 @@ export default {
         key: mapping.key,
         value: {},
         type: mapping.type,
+        entity: mapping.entity,
         options: {
           label: mapping.key + ' = { }',
           classes: [],
@@ -117,6 +126,7 @@ export default {
         key: mapping.key,
         value: [],
         type: mapping.type,
+        entity: mapping.entity,
         options: {
           label: mapping.key + ' = [ ]',
           classes: [],
@@ -145,8 +155,9 @@ export default {
         key: mapping.key,
         value: mapping.value,
         type: mapping.type,
+        entity: mapping.entity,
         options: {
-          label: mapping.key + ' = ' + mapping.value,
+          label: mapping.key + ' = ' + mapping.entity.value,
           classes: [],
           icon: '',
           hoverOptions: {
@@ -203,7 +214,7 @@ export default {
       let list = []
 
       this.$_.forEach(data.children, (child) => {
-        list = this.$_.concat(list, child.value)
+        list = this.$_.concat(list, child.entity)
       })
 
       return list
@@ -215,19 +226,24 @@ export default {
           case 'object':
             let object = this.traverseObject(child)
             obj = this.$_.merge(obj, {
-              [child.key]: object
+              [child.key]: {
+                type: 'object',
+                value: object
+              }
             })
             break
           case 'list':
             let list = this.traverseList(child)
             obj = this.$_.merge(obj, {
-              [child.key]: child.value
+              [child.key]: {
+                type: 'list',
+                value: list
+              }
             })
-            obj[child.key] = list
             break
           case 'value':
             obj = this.$_.merge(obj, {
-              [child.key]: child.value
+              [child.key]: child.entity
             })
             break
         }
@@ -239,13 +255,140 @@ export default {
       let treeData = this.$refs.parameterTree.data
       this.parameterMappings = this.traverseObject(treeData)
       this.editParameterMapping = false
+
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let gatewayData = {
+        mapped_parameters: this.parameterMappings
+      }
+
+      gatewayService.update(config, gatewayData)
+        .then((res) => {
+        })
+    },
+    initObject (mapping, key) {
+      switch (mapping.type) {
+        case 'object':
+          let objectList = this.$_.map(mapping.value, (mappingValue, key) => {
+            return this.initObject(mappingValue, key)
+          })
+          return {
+            key: key,
+            value: {},
+            type: mapping.type,
+            entity: {
+              type: 'object',
+              value: {}
+            },
+            options: {
+              label: key + ' = { }',
+              classes: [],
+              icon: '',
+              hoverOptions: {
+                sibling: true,
+                child: true
+              },
+              expanded: true,
+              selected: false,
+              visible: true,
+              selectable: false,
+              draggable: false
+            },
+            children: objectList
+          }
+        case 'list':
+          let list = this.$_.map((mapping.value), (mappingValue) => {
+            return this.initObject(mappingValue, 'value')
+          })
+          return {
+            key: 'value',
+            value: [],
+            type: mapping.type,
+            entity: {
+              type: 'list',
+              value: []
+            },
+            options: {
+              label: key + ' = [ ]',
+              classes: [],
+              icon: '',
+              hoverOptions: {
+                sibling: true,
+                child: true
+              },
+              expanded: true,
+              selected: false,
+              visible: true,
+              selectable: false,
+              draggable: false
+            },
+            children: list
+          }
+        case 'value':
+          return {
+            key: key,
+            value: mapping.value,
+            type: mapping.type,
+            entity: mapping,
+            options: {
+              label: key + ' = ' + mapping.value,
+              classes: [],
+              icon: '',
+              hoverOptions: {
+                sibling: false,
+                child: false
+              },
+              expanded: false,
+              selected: false,
+              visible: true,
+              selectable: false,
+              draggable: false
+            },
+            children: []
+          }
+      }
+    },
+    initParameterMappings (mappings) {
+      let children = this.$_.map(this.parameterMappings, (mapping, key) => {
+        return this.initObject(mapping, key)
+      })
+
+      return {
+        key: 'mappings',
+        value: {},
+        type: 'object',
+        options: {
+          label: 'Mappings',
+          classes: [],
+          icon: '',
+          hoverOptions: {
+            sibling: false,
+            child: true
+          },
+          expanded: true,
+          selected: false,
+          visible: true,
+          selectable: false,
+          draggable: false
+        },
+        children: children
+      }
+    },
+    editMappings () {
+      let parameterMappings = this.initParameterMappings(this.parameterMappings)
+      this.mappingTreeData = this.$_.merge({}, parameterMappings)
+      this.editParameterMapping = true
     }
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedGateway'])
   },
+  watch: {
+    mappedParams () {
+      this.parameterMappings = this.mappedParams
+    }
+  },
   mounted () {
-    this.initTreeData()
+    // this.initTreeData()
   }
 }
 </script>
@@ -260,6 +403,7 @@ export default {
     }
   }
   .json-print {
+    position: relative;
     pre {
       font-size: 14px;
       background-color: #f2f2f2;
@@ -268,6 +412,13 @@ export default {
       overflow: auto;
       border: 1px solid #d8d8d8;
       border-radius: 4px;
+    }
+    .icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 21px;
+      height: 21px;
     }
   }
 

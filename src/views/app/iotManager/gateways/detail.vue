@@ -137,7 +137,7 @@
           <latest-logs-section></latest-logs-section>
         </b-tab>
         <b-tab title="Parameter-Mapping">
-          <parameter-mapping-section :streamingParams="streamingParams"></parameter-mapping-section>
+          <parameter-mapping-section :streamingParams="gateway.streaming_data" :mappedParams="mappedParams"></parameter-mapping-section>
         </b-tab>
         <b-tab title="Commands">
           <div class="commands-container">
@@ -158,12 +158,12 @@
     <add-edit-credentials ref="addEditCredentials"></add-edit-credentials>
     <add-edit-security ref="addEditSecurity"></add-edit-security>
   </div>
-  
+
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import {Vuetable, VuetablePagination} from 'vuetable-2'
+import { Vuetable, VuetablePagination } from 'vuetable-2'
 import paramFieldDefs from './parametersFieldDef'
 import streamParamFieldDefs from './streamingParametersFieldDef'
 import addEditStaticParam from './addEditStaticParam'
@@ -193,13 +193,15 @@ export default {
       staticParams: [],
       streamingParams: [],
       gatewayData: [],
-      credentials:{},
-      security:{},
-      commands:{},
+      credentials: {},
+      security: {},
+      commands: {},
+      mappedParams: {},
+      gateway: {}
     }
   },
-  methods:{
-    async loadGatewayData(){
+  methods: {
+    async loadGatewayData () {
       const config = {
         orgId: this.currentUser.org.id,
         projectId: 1,
@@ -214,7 +216,8 @@ export default {
 
       gatewayService.readId(config, params)
         .then((res) => {
-          let filterData = res;
+          this.gateway = res
+          let filterData = res
 
           this.credentials = {
             name: filterData ? filterData.name : null,
@@ -229,7 +232,7 @@ export default {
 
           this.security = {
             id: filterData ? filterData.id : null,
-            access_token: filterData? filterData.access_token : null
+            access_token: filterData ? filterData.access_token : null
           }
 
           this.staticParams = filterData.static_data.map((data, index) => {
@@ -239,7 +242,7 @@ export default {
               unit: data.data.unit,
               value: data.data.value
             }
-          });
+          })
 
           this.streamingParams = filterData.streaming_data.map((data, index) => {
             return {
@@ -248,60 +251,60 @@ export default {
               unit: data.unit,
               value: data.value
             }
-          });
-        })
+          })
 
-        
+          this.mappedParams = filterData.mapped_parameters
+        })
     },
-    editStaticParam(detail){
+    editStaticParam (detail) {
       this.$refs.addEditStaticParam.edit(detail)
     },
-    deleteStaticParam(detail){
-      
+    deleteStaticParam (detail) {
+
     },
-    addStaticParam() {
+    addStaticParam () {
       this.$refs.addEditStaticParam.add()
     },
-    addStreamParam(){
+    addStreamParam () {
       this.$refs.addEditStreamingParam.add()
     },
-    editStreamParam(detail){
+    editStreamParam (detail) {
       this.$refs.addEditStreamingParam.edit(detail)
     },
-    deleteStreamParam(detail){
-      
+    deleteStreamParam (detail) {
+
     },
-    editCredentials(credentials){
+    editCredentials (credentials) {
       this.$refs.addEditCredentials.edit(credentials)
     },
-    editSecurity(security){
+    editSecurity (security) {
       this.$refs.addEditSecurity.edit(security)
     },
-    staticParamsData(data){
-       let staticParamData = [...this.staticParams];
-       staticParamData.push(data);
-       this.staticParams = staticParamData;
+    staticParamsData (data) {
+      let staticParamData = [...this.staticParams]
+      staticParamData.push(data)
+      this.staticParams = staticParamData
     },
-    streamingParamsData(data){
-       let streamingParamData = [...this.streamingParams];
-       streamingParamData.push(data);
-       this.streamingParams = streamingParamData;
+    streamingParamsData (data) {
+      let streamingParamData = [...this.streamingParams]
+      streamingParamData.push(data)
+      this.streamingParams = streamingParamData
     },
-    saveStaticParam(){
-       let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id };
-       let payload = {
-         'static_data': this.staticParams
-       }
-       gatewayService.update(config, payload)
-        .then((res)=> console.log("res",res))
+    saveStaticParam () {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let payload = {
+        'static_data': this.staticParams
+      }
+      gatewayService.update(config, payload)
+        .then((res) => console.log('res', res))
     },
-    saveStreamingParam(){
-       let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id };
-       let payload = {
-         'streaming_data': this.streamingParams
-       }
-       gatewayService.update(config, payload)
-        .then((res)=> console.log("res",res))
+    saveStreamingParam () {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let payload = {
+        'streaming_data': this.streamingParams
+      }
+      gatewayService.update(config, payload)
+        .then((res) => console.log('res', res))
     },
     onPaginationData (paginationData) {
       this.$refs.pagination.setPaginationData(paginationData)
@@ -309,19 +312,19 @@ export default {
     onChangePage (page) {
       this.$refs.vuetable.changePage(page)
     },
-    addCommands(){
-      let config = { orgId: this.currentUser.org.id, projectId: 1,id: this.selectedGateway.id }
+    addCommands () {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
       let data = {
         commands: JSON.parse(this.commands.commands)
       }
       gatewayService.storeCommandCreate(config, data)
-          .then((res)=>{
-              GatewayEventBus.$emit('reload-gateways');
-          })
+        .then((res) => {
+          GatewayEventBus.$emit('reload-gateways')
+        })
     }
   },
   computed: {
-    ...mapGetters(['currentUser','selectedGateway'])
+    ...mapGetters(['currentUser', 'selectedGateway'])
   },
   mounted () {
     this.loadGatewayData()
