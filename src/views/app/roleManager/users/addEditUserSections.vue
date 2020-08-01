@@ -4,7 +4,7 @@
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
         <b-form-group label="Email" label-for="email">
-          <b-form-input v-model="inviteEmail" id="email" type="email" required></b-form-input>
+          <b-form-input v-model="userInvite.email" id="email" type="email" required></b-form-input>
         </b-form-group>
         <b-form-group label="Select Role" label-for="role">
           <multiselect v-model="selectedRole" :options="roles" :select-label="''" @select="onSelectRole" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
@@ -21,9 +21,13 @@
           <mads-tree
             ref="tree"
             :treeView="'file'"
-            :selectableEntities="['Asset']"
             :treeOptions="treeOptions"
+            @on-node-select="onSelectEntity"
+            :isAnyNodeSelected="isAnyNodeSelected"
+            :editingEntity="userData"
           ></mads-tree>
+           <!-- :selectableEntities="['Asset']" -->
+           <!-- :selectedNodes="getSelectedEntity()" -->
         </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="apps">
@@ -68,50 +72,80 @@ export default {
       selectedRole: null,
       selectedAssets: [],
       selectedApps: [],
+      isAnyNodeSelected: false,
+      userInvite:{},
       treeOptions: {
         selectable: true
       }
     }
   },
   methods: {
-    saveUser () {
-      let config = { orgId: this.currentUser.org.id }
-      let userData = this.$refs.sections.getUserData()
+    // saveUser () {
+    //   let config = { orgId: this.currentUser.org.id }
+    //   let userData = this.$refs.sections.getUserData()
+    //   console.log("user",this.user);
 
-      if (this.editMode) {
-        config = this.$_.assign(config, { id: this.user.id })
-        userService.update(config, userData)
-          .then((response) => {
-            UserEventBus.$emit('reload-users')
-          })
+    //   // if (this.editMode) {
+    //   //   config = this.$_.assign(config, { id: this.user.id })
+    //   //   userService.update(config, userData)
+    //   //     .then((response) => {
+    //   //       UserEventBus.$emit('reload-users')
+    //   //     })
+    //   // } else {
+    //   //   userService.create(config, userData)
+    //   //     .then((response) => {
+    //   //       UserEventBus.$emit('reload-users')
+    //   //     })
+    //   // }
+    //   // this.selectedSectionIndex = 1
+    // },
+    onSelectEntity (event, entity) {
+      if (event && entity.type === "Asset") {
+        let asset = {
+          id : entity.id
+        }
+        this.userInvite.assets.push(asset)
       } else {
-        userService.create(config, userData)
-          .then((response) => {
-            UserEventBus.$emit('reload-users')
-          })
+        this.userInvite.assets = []
       }
-      this.selectedSectionIndex = 1
+      this.selectedParentEntityId = event ? entity.id : null
     },
     onSelectRole (role) {
-      this.selectedRole = role.id
+      this.selectedRole = role
+      this.userInvite.role_id = role.id
     },
     getUserData () {
-      let inviteUser = {
-        invitation: {
-          email: this.inviteEmail,
-          assets: [],
-          apps: [],
-          role_id: this.selectedRole.id
+      return {
+          invitation:this.userInvite
         }
-      }
-
-      return inviteUser
+    },
+    getSelectedEntity () {
+      return [{ id: this.selectedParentEntityId }]
     }
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   mounted () {
+    if(this.userData){
+      this.userInvite = {
+        email: this.userData.email || '',
+        role_id: this.userData.role.id || '',
+        inviter_id: this.userData.inviter ? this.userData.inviter.id : ''  || '',
+        assets: this.userData.assets || [],
+        apps: this.userData.apps || []
+      }
+
+      this.selectedRole = this.userData.originialRole ? this.userData.originialRole : this.userData.role
+    }else{
+      this.userInvite = {
+        email: '',
+        role_id: '',
+        inviter_id: this.currentUser.id,
+        assets: [],
+        apps:[]
+      }
+    }
   }
 }
 </script>

@@ -6,7 +6,9 @@
             <div v-for="category in $_.take(appCategories, 3)" :key="category">
               <div v-if="$_.size(apps[category])" class="apps-row">
                 <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
-                  <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
+                   <b-form-checkbox-group id="checkbox-group-2" v-model="selected" name="flavour-2">
+                      <b-form-checkbox v-bind:value="app.id"></b-form-checkbox>
+                  </b-form-checkbox-group>
                   <svg class="icon">
                     <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                   </svg>
@@ -62,7 +64,8 @@ export default {
       allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
       appCategories: [],
       apps: {},
-      selectedApps: []
+      selectedApps: [],
+      selected:[]
     }
   },
   methods: {
@@ -232,6 +235,7 @@ export default {
       ]
     },
     selectApp (app) {
+      // debugger
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
         [app.id]: !this.selectedApps[app.id]
       })
@@ -333,3 +337,6 @@ export default {
       }
     }
 </style>
+
+
+

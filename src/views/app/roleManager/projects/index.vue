@@ -3,8 +3,8 @@
     <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{projects.length}} projects</h2>
     <div class="view-header">
       <ul class="nav nav-tabs">
-        <li class="active">Active ({{projects.length}})</li>
-        <li class="" v-if="!source">Archived (0)</li>
+        <li :class="{'active': selectedTab === 'active'}" @click="selectedTab = 'active'">Active ({{active.length}})</li>
+        <li :class="{'active': selectedTab === 'archived'}" @click="selectedTab = 'archived'">Archived ({{archived.length}})</li>
       </ul>
       <div class="project-view" v-if="source">
         <svg class="icon grid" :class="{'active': viewType === 'grid'}" @click="viewType = 'grid'">
@@ -15,8 +15,9 @@
         </svg>
       </div>
     </div>
-    <project-list :projects="projects" v-if="viewType === 'list'" :source="source"></project-list>
-    <project-grid :projects="projects" v-if="viewType === 'grid'" :source="source"></project-grid>
+    <project-list :projects="active" v-if="selectedTab === 'active'" :source="source"></project-list>
+    <!-- <project-grid :projects="active" v-if="viewType === 'grid'" :source="source"></project-grid> -->
+    <archived-list :projects="archived" v-if="selectedTab === 'archived'" :source="source"></archived-list>
   </div>
 </template>
 
@@ -26,11 +27,13 @@ import projectService from '@/services/project.service'
 import projectList from './projectList'
 import projectGrid from './projectGrid'
 import ProjectEventBus from './projectEventBus'
+import archivedList from './archivedList'
 
 export default {
   components: {
     projectList,
-    projectGrid
+    projectGrid,
+    archivedList
   },
   props: {
     source: {
@@ -40,7 +43,10 @@ export default {
   data () {
     return {
       projects: [],
-      viewType: this.source ? 'grid' : 'list'
+      viewType: this.source ? 'grid' : 'list',
+      archived:[],
+      active:[],
+      selectedTab: 'active'
     }
   },
   methods: {
@@ -65,6 +71,8 @@ export default {
       projectService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.projects = response.projects
+          this.active = response.projects.filter((project)=> project.archived === false);
+          this.archived = response.projects.filter((project)=> project.archived === true);
         })
     }
   },

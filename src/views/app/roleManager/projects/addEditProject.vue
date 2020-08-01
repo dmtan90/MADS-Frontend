@@ -67,15 +67,31 @@ export default {
     saveProject () {
       let config = { orgId: this.currentUser.org.id }
       let projectData = this.$refs.sections.getProjectData()
+      // debugger;
+      let formData = new FormData();
+
+      formData.append("image", projectData.image, projectData.image.name);
+      formData.append("name", projectData.name);
+      formData.append("creator_id", projectData.creator_id);
+      formData.append("description", projectData.description);
+      for (var i = 0; i < projectData.lead_ids.length; i++) {
+          formData.append('lead_ids[]', projectData.lead_ids[i]);
+      }
+      // formData.set("lead_ids", );
+      formData.append("location[name]", projectData.location.name);
+      formData.append("location[place_id]", projectData.location.place_id);
+      formData.append("location[url]", projectData.location.url);
+      // formData.append("metadata", JSON.stringify(projectData.metadata));
+      // formData.set("user_ids", JSON.stringify(projectData.user_ids));
 
       if (this.editMode) {
         config = this.$_.assign(config, { id: this.project.id })
-        projectService.update(config, projectData)
+        projectService.update(config, formData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
           })
       } else {
-        projectService.create(config, projectData)
+        projectService.create(config, formData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
           })
