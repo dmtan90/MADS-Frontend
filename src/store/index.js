@@ -10,6 +10,7 @@ import widgetManager from '@/store/modules/widgetManager'
 import entityManager from '@/store/modules/entityManager'
 import organization from '@/store/modules/org'
 import dashboard from '@/store/modules/dashboard'
+import iotManager from '@/store/modules/iotManager'
 
 Vue.use(Vuex)
 
@@ -35,7 +36,8 @@ const store = new Vuex.Store({
     widgetManager,
     entityManager,
     organization,
-    dashboard
+    dashboard,
+    iotManager
   }
 })
 
