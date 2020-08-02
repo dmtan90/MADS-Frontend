@@ -43,7 +43,7 @@ export default {
     appIcon: 'mads-data-cruncher',
     appSections: appSections,
     appSectionsIconFile: 'mads-data-cruncher-icons.svg',
-    currentSection: 'workspace',
+    currentSection: 'dataCruncher',
     appState: 'closed',
     sidebarHidden: false,
     appZindex: 0

@@ -43,7 +43,7 @@ export default {
     appIcon: 'mads-dashboard',
     appSections: appSections,
     appSectionsIconFile: 'mads-dashboard-icons.svg',
-    currentSection: 'new',
+    currentSection: 'dashboards',
     appState: 'closed',
     sidebarHidden: false,
     appZindex: 0
