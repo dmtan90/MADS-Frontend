@@ -18,6 +18,16 @@ const appSections = [
     key: 'editor',
     name: 'Editor',
     iconId: 'editor'
+  },
+  {
+    key: 'settings',
+    name: 'Settings',
+    iconId: 'settings'
+  },
+  {
+    key: 'help',
+    name: 'Help',
+    iconId: 'help'
   }
 ]
 
