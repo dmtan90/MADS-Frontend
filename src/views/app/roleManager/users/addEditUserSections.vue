@@ -25,6 +25,8 @@
             @on-node-select="onSelectEntity"
             :isAnyNodeSelected="isAnyNodeSelected"
             :editingEntity="userData"
+            :selectedNodes="getSelectedEntity()"
+            :selectableEntities="['Asset']"
           ></mads-tree>
            <!-- :selectableEntities="['Asset']" -->
            <!-- :selectedNodes="getSelectedEntity()" -->
@@ -120,7 +122,13 @@ export default {
         }
     },
     getSelectedEntity () {
-      return [{ id: this.selectedParentEntityId }]
+      let assets = this.userData.assets.map((asset)=>{
+        return {
+          id: asset.id,
+          type: 'Asset'
+        }
+      })
+      return assets;
     }
   },
   computed: {

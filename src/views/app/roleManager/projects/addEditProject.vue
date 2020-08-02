@@ -67,7 +67,7 @@ export default {
     saveProject () {
       let config = { orgId: this.currentUser.org.id }
       let projectData = this.$refs.sections.getProjectData()
-      // debugger;
+      debugger;
       let formData = new FormData();
 
       formData.append("image", projectData.image, projectData.image.name);
@@ -77,12 +77,19 @@ export default {
       for (var i = 0; i < projectData.lead_ids.length; i++) {
           formData.append('lead_ids[]', projectData.lead_ids[i]);
       }
-      // formData.set("lead_ids", );
       formData.append("location[name]", projectData.location.name);
       formData.append("location[place_id]", projectData.location.place_id);
       formData.append("location[url]", projectData.location.url);
-      // formData.append("metadata", JSON.stringify(projectData.metadata));
-      // formData.set("user_ids", JSON.stringify(projectData.user_ids));
+      // for (var i = 0; i < projectData.metadata.length; i++) {
+      //     formData.append("metadata[][data_type]", projectData.metadata[i]["data_type"]);
+      //     formData.append("metadata[][name]", projectData.metadata[i]["name"]);
+      //     formData.append("metadata[][unit]", projectData.metadata[i]["unit"]);
+      //     formData.append("metadata[][value]", projectData.metadata[i]["value"]);
+      // }
+      this.getFormData(formData, projectData.metadata, "metadata")
+      for (var i = 0; i < projectData.user_ids.length; i++) {
+          formData.set("user_ids[]", projectData.user_ids[i]);
+      }
 
       if (this.editMode) {
         config = this.$_.assign(config, { id: this.project.id })
@@ -97,6 +104,26 @@ export default {
           })
       }
       this.selectedSectionIndex = 1
+    },
+    getFormData(formData, data, key) {
+      if (data instanceof Object) {
+        Object.keys(data).forEach(key => {
+          const value = data[key];
+          if (value instanceof Object && !Array.isArray(value)) {
+            return this.getFormData(formData, value, key);
+          }
+          // if (previousKey) {
+          //   key = `${previousKey}[${key}]`;
+          // }
+          if (Array.isArray(value)) {
+            value.forEach(val => {
+              formData.append(`${key}[]`, val);
+            });
+          } else {
+            formData.append(key, value);
+          }
+        });
+      }
     },
     onCancel () {
       this.selectedSectionIndex = 1

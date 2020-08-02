@@ -6,9 +6,7 @@
             <div v-for="category in $_.take(appCategories, 3)" :key="category">
               <div v-if="$_.size(apps[category])" class="apps-row">
                 <div v-for="app in apps[category]" :key="app.key" class="app" @click="selectApp(app)">
-                   <b-form-checkbox-group id="checkbox-group-2" v-model="selected" name="flavour-2">
-                      <b-form-checkbox v-bind:value="app.id"></b-form-checkbox>
-                  </b-form-checkbox-group>
+                   <b-form-checkbox @change="selectApp(app)"></b-form-checkbox>
                   <svg class="icon">
                     <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                   </svg>
