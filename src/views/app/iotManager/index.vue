@@ -9,6 +9,7 @@
       <div v-if="appVuexState.currentSection === 'gateways'" class="h-100">
         <gateways></gateways>
       </div>
+      <help :appName="'IOT Manager'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
 </template>
@@ -17,12 +18,14 @@
 import appWindow from './../appWindow'
 import iotManager from './iotManager'
 import gateways from './gateways'
+import help from './../shared/help'
 
 export default {
   components: {
     appWindow,
     iotManager,
-    gateways
+    gateways,
+    help
   },
   data () {
     return {

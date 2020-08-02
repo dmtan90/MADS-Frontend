@@ -18,6 +18,16 @@ const appSections = [
     key: 'editor',
     name: 'Editor',
     iconId: 'editor'
+  },
+  {
+    key: 'settings',
+    name: 'Settings',
+    iconId: 'settings'
+  },
+  {
+    key: 'help',
+    name: 'Help',
+    iconId: 'help'
   }
 ]
 
@@ -28,7 +38,7 @@ export default {
     appIcon: 'mads-widget-manager',
     appSections: appSections,
     appSectionsIconFile: 'mads-widget-manager-icons.svg',
-    currentSection: 'widgetStore',
+    currentSection: 'widgetManager',
     appState: 'closed',
     sidebarHidden: false,
     appZindex: 0
