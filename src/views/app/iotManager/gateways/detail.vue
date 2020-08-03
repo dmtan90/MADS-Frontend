@@ -143,7 +143,8 @@
           <div class="commands-container">
             <b-form>
               <b-form-group label="Add Commands" label-for="add-commands" class="commands">
-                <b-form-textarea v-model="commands.commands" id="add-commands" rows="15" max-rows="15"></b-form-textarea>
+                <vue-json-editor v-model="commands" :show-btns="false" :expandedOnStart="true" :mode="'code'"></vue-json-editor>
+                <!-- <b-form-textarea v-model="commands.commands" id="add-commands" rows="15" max-rows="15"></b-form-textarea> -->
               </b-form-group>
               <b-button @click="addCommands()">Add</b-button>
             </b-form>
@@ -174,6 +175,7 @@ import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
 import parameterMappingSection from './parameterMapping/parameterMappingSection'
 import latestLogsSection from './latestLogs/latestLogsSection'
+import vueJsonEditor from 'vue-json-editor'
 
 export default {
   components: {
@@ -184,7 +186,8 @@ export default {
     addEditSecurity,
     VuetablePagination,
     parameterMappingSection,
-    latestLogsSection
+    latestLogsSection,
+    vueJsonEditor
   },
   data () {
     return {
@@ -315,7 +318,7 @@ export default {
     addCommands () {
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
       let data = {
-        commands: JSON.parse(this.commands.commands)
+        commands: this.commands
       }
       gatewayService.storeCommandCreate(config, data)
         .then((res) => {

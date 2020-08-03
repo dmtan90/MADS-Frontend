@@ -403,4 +403,11 @@
       }
     }
   }
+  .jsoneditor.jsoneditor-mode-view {
+    height: 300px;
+    overflow: auto;
+  }
+  .jsoneditor-menu {
+    display: none;
+  }
 </style>

@@ -15,7 +15,8 @@
           </div>
         </div>
         <div class="json-print" v-if="!editParameterMapping">
-          <pre>{{renderPrintObject()}}</pre>
+          <vue-json-editor v-model="parameterMappings" :show-btns="false" :expandedOnStart="false" :mode="'view'"></vue-json-editor>
+          <!-- <pre>{{renderPrintObject()}}</pre> -->
           <svg class="icon" @click="editMappings()">
             <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
           </svg>
@@ -29,11 +30,13 @@ import { mapGetters } from 'vuex'
 import gatewayService from '@/services/gateway.service'
 import VueTree from 'vanyan-tree'
 import parameterModal from './addParameterMappingModal'
+import vueJsonEditor from 'vue-json-editor'
 
 export default {
   components: {
     VueTree,
-    parameterModal
+    parameterModal,
+    vueJsonEditor
   },
   props: {
     streamingParams: {
@@ -67,8 +70,8 @@ export default {
   methods: {
     renderPrintObject () {
       // let printObject = this.traversePrintRootObject(this.parameterMappings)
-      let json = JSON.stringify(this.parameterMappings, undefined, 2)
-      return json.replace(/"([^"]+)":/g, '$1:')
+      return JSON.stringify(this.parameterMappings, undefined, 2)
+      // return json.replace(/"([^"]+)":/g, '$1:')
     },
     initTreeData () {
       this.mappingTreeData = {
