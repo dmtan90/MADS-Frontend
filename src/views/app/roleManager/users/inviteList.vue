@@ -48,7 +48,7 @@ export default {
 
       invitationService.delete(config)
         .then((response) => {
-          EventBus.$emit('reload-invites')
+          EventBus.$emit('reload-users')
         })
     },
     reInviteUser (invitation) {

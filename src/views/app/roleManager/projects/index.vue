@@ -1,10 +1,10 @@
 <template>
   <div class="projects">
     <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{projects.length}} projects</h2>
-    <div class="view-header">
+    <div class="view-header" v-if="!source">
       <ul class="nav nav-tabs">
-        <li class="active">Active ({{projects.length}})</li>
-        <li class="" v-if="!source">Archived (0)</li>
+        <li :class="{'active': selectedTab === 'active'}" @click="selectedTab = 'active'">Active ({{active.length}})</li>
+        <li :class="{'active': selectedTab === 'archived'}" @click="selectedTab = 'archived'">Archived ({{archived.length}})</li>
       </ul>
       <div class="project-view" v-if="source">
         <svg class="icon grid" :class="{'active': viewType === 'grid'}" @click="viewType = 'grid'">
@@ -15,8 +15,11 @@
         </svg>
       </div>
     </div>
-    <project-list :projects="projects" v-if="viewType === 'list'" :source="source"></project-list>
-    <project-grid :projects="projects" v-if="viewType === 'grid'" :source="source"></project-grid>
+    <div v-if="viewType === 'list'">
+      <project-list :projects="active" v-if="selectedTab === 'active'" :source="source"></project-list>
+      <archived-list :projects="archived" v-if="selectedTab === 'archived'" :source="source"></archived-list>
+    </div>
+    <project-grid :projects="active" v-if="viewType === 'grid'" :source="source"></project-grid>
   </div>
 </template>
 
@@ -26,11 +29,13 @@ import projectService from '@/services/project.service'
 import projectList from './projectList'
 import projectGrid from './projectGrid'
 import ProjectEventBus from './projectEventBus'
+import archivedList from './archivedList'
 
 export default {
   components: {
     projectList,
-    projectGrid
+    projectGrid,
+    archivedList
   },
   props: {
     source: {
@@ -40,31 +45,20 @@ export default {
   data () {
     return {
       projects: [],
-      viewType: this.source ? 'grid' : 'list'
+      viewType: this.source ? 'grid' : 'list',
+      archived: [],
+      active: [],
+      selectedTab: 'active'
     }
   },
   methods: {
     loadProjects () {
-      // this.projects = [
-      //   {
-      //     id: 1,
-      //     name: 'Power Plant',
-      //     description: 'This is project descrption',
-      //     users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-      //     leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-      //     metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-      //     location: {
-      //       name: 'Cluny Road, Singapore Botanic Gardens, Singapore',
-      //       place_id: 'ChIJvWDbfRwa2jERgNnTOpAU3-o',
-      //       url: 'https://maps.google.com/?cid=16924268534376421760'
-      //     },
-      //     project_image: 'https://www.gtreview.com/wp-content/uploads/2014/10/Power-Plant-Factory.jpg'
-      //   }
-      // ]
       let config = { orgId: this.currentUser.org.id }
       projectService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.projects = response.projects
+          this.active = response.projects.filter((project) => project.archived === false)
+          this.archived = response.projects.filter((project) => project.archived === true)
         })
     }
   },

@@ -117,7 +117,8 @@ export default {
 
       let projectData = this.$_.merge(this.project, {
         lead_ids: leadIds,
-        user_ids: userIds
+        user_ids: userIds,
+        image: this.selectedFile
       })
 
       return projectData
