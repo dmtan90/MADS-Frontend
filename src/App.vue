@@ -362,18 +362,22 @@
     width: 100%;
     height: 100%;
     .home-card {
-      padding: 20px;
+      padding: 25px 20px;
       background-color: #252525;
       color: white;
-      width: 450px;
+      width: 550px;
       font-size: 15px;
       border-radius: 4px;
+      > span {
+        font-size: 16px;
+      }
       p {
         font-size: 15px;
       }
 
       h2 {
         color: white;
+        font-size: 30px;
       }
 
       .nav-sections {
