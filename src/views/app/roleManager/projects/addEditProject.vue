@@ -64,75 +64,43 @@ export default {
     nextSection () {
       this.selectedSectionIndex++
     },
+    uploadProjectImage (projectId, projectImage) {
+      let config = { orgId: this.currentUser.org.id, id: projectId }
+
+      let formData = new FormData()
+      formData.append('image', projectImage, projectImage.name)
+
+      projectService.update(config, formData)
+        .then((response) => {
+        })
+    },
     saveProject () {
       let config = { orgId: this.currentUser.org.id }
       let projectData = this.$refs.sections.getProjectData()
-      debugger;
-      let formData = new FormData();
 
-      formData.append("image", projectData.image, projectData.image.name);
-      formData.append("name", projectData.name);
-      formData.append("creator_id", projectData.creator_id);
-      formData.append("description", projectData.description);
-      for (var i = 0; i < projectData.lead_ids.length; i++) {
-          formData.append('lead_ids[]', projectData.lead_ids[i]);
-      }
-      formData.append("location[name]", projectData.location.name);
-      formData.append("location[place_id]", projectData.location.place_id);
-      formData.append("location[url]", projectData.location.url);
-      // for (var i = 0; i < projectData.metadata.length; i++) {
-      //     formData.append("metadata[][data_type]", projectData.metadata[i]["data_type"]);
-      //     formData.append("metadata[][name]", projectData.metadata[i]["name"]);
-      //     formData.append("metadata[][unit]", projectData.metadata[i]["unit"]);
-      //     formData.append("metadata[][value]", projectData.metadata[i]["value"]);
-      // }
-      this.pushArrayFormData(formData, projectData.metadata, "metadata")
-      for (var i = 0; i < projectData.user_ids.length; i++) {
-          formData.set("user_ids[]", projectData.user_ids[i]);
-      }
+      let projectImage = projectData.image
+
+      delete projectData.image
 
       if (this.editMode) {
         config = this.$_.assign(config, { id: this.project.id })
-        projectService.update(config, formData)
+        projectService.update(config, projectData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
+            if (projectImage.name) {
+              this.uploadProjectImage(this.project.id, projectImage)
+            }
           })
       } else {
-        projectService.create(config, formData)
+        projectService.create(config, projectData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
+            if (projectImage.name) {
+              this.uploadProjectImage(response.id, projectImage)
+            }
           })
       }
       this.selectedSectionIndex = 1
-    },
-    pushArrayFormData(formData, data, key){
-      let formKey;
-      if(data instanceof Array){
-        formKey = key + '[]'
-        data.forEach(element => {
-          formData.append(formKey, element);
-        })
-      }
-    },
-    getFormData(formData, data, key) {
-      if (data instanceof Object) {
-        Object.keys(data).forEach(key => {
-          const value = data[key];
-          if (value instanceof Object && !Array.isArray(value)) {
-            return this.getFormData(formData, value, key);
-          }
-          // if (previousKey) {
-          //   key = `${previousKey}[${key}]`;
-          // }
-          if (Array.isArray(value)) {
-            value.forEach(val => {
-              formData.append(`${key}[]`, val);
-            });
-          } else {
-            formData.append(key, value);
-          }
-        });
-      }
     },
     onCancel () {
       this.selectedSectionIndex = 1

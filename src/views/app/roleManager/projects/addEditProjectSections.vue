@@ -147,8 +147,7 @@ export default {
       })
     },
     uploadImage (file) {
-      this.selectedFile = file.target.files[0];
-
+      this.selectedFile = file.target.files[0]
     }
   },
   computed: {

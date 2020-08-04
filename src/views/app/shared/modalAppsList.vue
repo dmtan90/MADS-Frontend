@@ -233,7 +233,6 @@ export default {
       ]
     },
     selectApp (app) {
-      // debugger
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
         [app.id]: !this.selectedApps[app.id]
       })
