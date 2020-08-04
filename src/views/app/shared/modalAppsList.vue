@@ -237,6 +237,7 @@ export default {
       this.selectedApps = this.$_.assign({}, this.selectedApps, {
         [app.id]: !this.selectedApps[app.id]
       })
+      this.$emit('selectApps', this.selectedApps)
     },
     onSelectAll () {
     }

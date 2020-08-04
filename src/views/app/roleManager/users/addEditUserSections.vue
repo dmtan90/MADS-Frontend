@@ -34,7 +34,7 @@
     </section>
     <section v-if="selectedSectionIndex === 3" class="apps">
       <h5>Select Apps</h5>
-      <apps-list></apps-list>
+      <apps-list v-on:selectApps="selectApps"></apps-list>
     </section>
   </div>
 </template>
@@ -78,29 +78,10 @@ export default {
       userInvite:{},
       treeOptions: {
         selectable: true
-      }
+      },
     }
   },
   methods: {
-    // saveUser () {
-    //   let config = { orgId: this.currentUser.org.id }
-    //   let userData = this.$refs.sections.getUserData()
-    //   console.log("user",this.user);
-
-    //   // if (this.editMode) {
-    //   //   config = this.$_.assign(config, { id: this.user.id })
-    //   //   userService.update(config, userData)
-    //   //     .then((response) => {
-    //   //       UserEventBus.$emit('reload-users')
-    //   //     })
-    //   // } else {
-    //   //   userService.create(config, userData)
-    //   //     .then((response) => {
-    //   //       UserEventBus.$emit('reload-users')
-    //   //     })
-    //   // }
-    //   // this.selectedSectionIndex = 1
-    // },
     onSelectEntity (event, entity) {
       if (event && entity.type === "Asset") {
         let asset = {
@@ -122,13 +103,25 @@ export default {
         }
     },
     getSelectedEntity () {
-      let assets = this.userData.assets.map((asset)=>{
+      let assets = this.userInvite.assets.map((asset)=>{
         return {
           id: asset.id,
           type: 'Asset'
         }
       })
       return assets;
+    },
+    selectApps(apps){
+      
+      let selectAppValues = Object.keys(apps);
+
+      let selectApp = selectAppValues.map((app)=>{
+        return {
+          id: app
+        }
+      })
+
+      this.userInvite.apps = selectApp;
     }
   },
   computed: {

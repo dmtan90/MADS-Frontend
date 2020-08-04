@@ -86,7 +86,7 @@ export default {
       //     formData.append("metadata[][unit]", projectData.metadata[i]["unit"]);
       //     formData.append("metadata[][value]", projectData.metadata[i]["value"]);
       // }
-      this.getFormData(formData, projectData.metadata, "metadata")
+      this.pushArrayFormData(formData, projectData.metadata, "metadata")
       for (var i = 0; i < projectData.user_ids.length; i++) {
           formData.set("user_ids[]", projectData.user_ids[i]);
       }
@@ -104,6 +104,15 @@ export default {
           })
       }
       this.selectedSectionIndex = 1
+    },
+    pushArrayFormData(formData, data, key){
+      let formKey;
+      if(data instanceof Array){
+        formKey = key + '[]'
+        data.forEach(element => {
+          formData.append(formKey, element);
+        })
+      }
     },
     getFormData(formData, data, key) {
       if (data instanceof Object) {
