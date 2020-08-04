@@ -107,14 +107,14 @@ export default {
       })
       return this.$_.join(users, ', ')
     },
-    archiveProject(project){
-      console.log("project",project);
+    archiveProject (project) {
+      console.log('project', project)
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
         archived: true
       }
       projectService.update(config, payload)
-        .then((res)=>{
+        .then((res) => {
           ProjectEventBus.$emit('reload-projects')
         })
     }
@@ -159,8 +159,10 @@ export default {
       text-decoration: underline;
       color: #2aa7ff;
       white-space: nowrap;
+      max-width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: inline-block;
     }
     .edit-project, .delete-project {
       text-decoration: underline;

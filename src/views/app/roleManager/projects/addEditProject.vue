@@ -87,7 +87,7 @@ export default {
         projectService.update(config, projectData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
-            if (projectImage.name) {
+            if (projectImage && projectImage.name) {
               this.uploadProjectImage(this.project.id, projectImage)
             }
           })
@@ -95,7 +95,7 @@ export default {
         projectService.create(config, projectData)
           .then((response) => {
             ProjectEventBus.$emit('reload-projects')
-            if (projectImage.name) {
+            if (projectImage && projectImage.name) {
               this.uploadProjectImage(response.id, projectImage)
             }
           })
