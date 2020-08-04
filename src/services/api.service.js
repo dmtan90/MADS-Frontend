@@ -1,6 +1,12 @@
 import axios from 'axios'
+import _ from 'lodash'
 import TokenService from '@/services/token.service'
 import router from '@/router'
+import Vue from 'vue'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
+
+Vue.use(VueToast)
 
 const ApiService = {
 
@@ -57,17 +63,24 @@ const ApiService = {
         return response
       },
       async (error) => {
-        if (error.request.status === 403) {
+        let errorResponse = JSON.parse(error.request.response)
+
+        if (error.request.status === 400) {
+          let message = 'Bad Request'
+          Vue.$toast.error(message, { position: 'top-right' })
+        } else if (error.request.status === 403) {
+          Vue.$toast.error('Please Login', { position: 'top-right' })
           TokenService.removeToken()
           TokenService.removeRefreshToken()
           localStorage.removeItem('user_id')
           router.push('/user/login')
         } else if (error.request.status === 500) {
-          console.log(error)
+          Vue.$toast.error('Something Went Wrong', { position: 'top-right' })
         }
 
         // If error was not 401 just reject as is
-        throw error.response
+        errorResponse = _.merge({}, errorResponse, { data: {} })
+        throw errorResponse
       }
     )
   },

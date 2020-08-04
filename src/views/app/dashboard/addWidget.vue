@@ -19,7 +19,6 @@
 <script>
 import madsModal from './../shared/madsModal'
 import sections from './addWidgetSections'
-import DashboardBus from './dashboardBus'
 
 export default {
   components: {
@@ -35,6 +34,9 @@ export default {
       }, {
         index: 2,
         name: 'Data'
+      }, {
+        index: 3,
+        name: 'Settings'
       }],
       selectedSectionIndex: 1
     }
@@ -45,12 +47,15 @@ export default {
     },
     nextSection () {
       this.selectedSectionIndex++
+      if (this.selectedSectionIndex === 3) {
+        this.$refs.sections.setDataSeries()
+      }
     },
     onCancel () {
       this.selectedSectionIndex = 1
     },
     saveWidget () {
-      DashboardBus.$emit('show-demo-chart')
+      this.$refs.sections.saveWidgetInstance()
     }
   }
 }

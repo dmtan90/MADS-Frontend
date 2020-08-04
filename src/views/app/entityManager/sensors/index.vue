@@ -1,6 +1,6 @@
 <template>
   <div class="sensors">
-    <h2 class="page-heading">Sensors</h2>
+    <h2 class="page-heading">Sensors of {{this.selectedProject.name}}</h2>
     <div>
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors ({{sensors.length}})</li>

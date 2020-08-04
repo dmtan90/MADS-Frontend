@@ -10,7 +10,7 @@ const entityService = {
       return response.data
     } catch (error) {
       console.log(error)
-      return error.response.data
+      return error.data
     }
   },
   read: async function (config) {
@@ -19,7 +19,7 @@ const entityService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

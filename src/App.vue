@@ -329,14 +329,13 @@
       top: -2px;
     }
   }
-  input, button:not(.btn-login):not(.btn-register):not(.VueCarousel-dot) {
+  input, button:not(.btn-login):not(.btn-register):not(.VueCarousel-dot):not(.save-param-btn) {
     background-color: #ffffff !important;
     color: #333 !important;
     border-color: #e4e9ef !important;
     border-radius: 4px !important;
   }
   input, textarea, .multiselect > .multiselect__tags {
-    border-color: #3172A8 !important;
     border-radius: 4px !important;
   }
   .b-dropdown {
@@ -356,5 +355,62 @@
   }
   .pac-container {
     z-index: 1051;
+  }
+  .app-home {
+    background-size: cover !important;
+    width: 100%;
+    height: 100%;
+    .home-card {
+      padding: 25px 20px;
+      background-color: #252525;
+      color: white;
+      width: 550px;
+      font-size: 15px;
+      border-radius: 4px;
+      > span {
+        font-size: 16px;
+      }
+      p {
+        font-size: 15px;
+      }
+
+      h2 {
+        color: white;
+        font-size: 30px;
+      }
+
+      .nav-sections {
+        display: flex;
+        .left-section, .right-section {
+          flex-basis: 50%;
+          span {
+            display: block;
+          }
+        .icon {
+          fill: white;
+          height: 12px;
+          width: 12px;
+          transform: rotate(-90deg);
+        }
+        }
+      }
+
+      .learn-more-btn {
+        padding-top: 30px;
+        .btn {
+          font-size: 15px;
+          width: 120px;
+          height: 39px;
+          line-height: 1;
+        }
+      }
+    }
+  }
+  .jsoneditor.jsoneditor-mode-view {
+    height: 300px;
+    overflow: auto;
+  }
+  .jsoneditor-menu {
+    display: none;
   }
 </style>

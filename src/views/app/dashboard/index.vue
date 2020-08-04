@@ -4,6 +4,7 @@
       <dashboards v-if="appVuexState.currentSection === 'dashboards'"></dashboards>
       <new-section v-if="appVuexState.currentSection === 'new'"></new-section>
       <open-section v-if="appVuexState.currentSection === 'open'"></open-section>
+      <help :appName="'Dashboard'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
 </template>
@@ -13,13 +14,15 @@ import appWindow from './../appWindow'
 import dashboards from './dashboard.vue'
 import newSection from './new/index.vue'
 import openSection from './open/index.vue'
+import help from './../shared/help'
 
 export default {
   components: {
     appWindow,
     dashboards,
     newSection,
-    openSection
+    openSection,
+    help
   },
   data () {
     return {

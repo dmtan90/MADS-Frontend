@@ -5,13 +5,16 @@ export default [
     dataClass: ''
   },
   {
-    name: 'key'
+    name: 'name',
+    title: 'Key'
   },
   {
-    name: 'value'
+    name: 'value',
+    title: 'Value'
   },
   {
-    name: 'type'
+    name: 'data_type',
+    title: 'Type'
   },
   {
     name: '__slot:actions',

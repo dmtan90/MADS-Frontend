@@ -1,23 +1,30 @@
 <template>
   <div class="dashboard-header">
-    <span class="dashboard-name">{{selectedDashboard.name}}</span>
+    <span v-if="selectedMode.key === 'view'" class="dashboard-name">{{selectedDashboard.name}}</span>
+    <b-input class="dashboard-name-input" v-model="dashboardName" v-if="selectedMode.key === 'edit'"></b-input>
     <div class="right-section">
-      <multiselect class="select-dashboard" :options="options" @select="onSelectDashboard" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key"></multiselect>
-      <multiselect class="select-mode" v-model="selectedMode" :options="['View Mode', 'Edit Mode']" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Share</b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Export</b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'View Mode'">Download</b-button>
-        <b-button class="round-btn new-btn" v-if="selectedMode === 'Edit Mode'" @click="addWidget()">
-          <span>New Widget</span>
-          <svg class="icon plus">
-            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
-          </svg>
-        </b-button>
-        <b-button class="round-btn" v-if="selectedMode === 'Edit Mode'">Import</b-button>
-      <svg class="icon">
+      <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
+      <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
+      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Share</b-button>
+      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Export</b-button>
+      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
+      <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
+        <span>New Widget</span>
+        <svg class="icon plus">
+          <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+        </svg>
+      </b-button>
+      <b-button class="round-btn" v-if="selectedMode.key === 'edit'">Import</b-button>
+      <b-button class="round-btn save-btn" v-if="selectedMode.key === 'edit'" @click="saveDashboard()">
+        <span>Save</span>
+        <svg class="icon">
+          <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+        </svg>
+      </b-button>
+      <svg class="icon" v-if="selectedMode.key === 'view'">
         <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
       </svg>
-      <svg class="icon">
+      <svg class="icon" v-if="selectedMode.key === 'view'">
         <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
       </svg>
     </div>
@@ -37,7 +44,12 @@ export default {
   },
   data () {
     return {
-      selectedMode: 'View Mode',
+      modes: [
+        { key: 'view', name: 'View Mode' },
+        { key: 'edit', name: 'Edit Mode' }
+      ],
+      selectedMode: {},
+      dashboardName: '',
       options: [
         {
           name: 'Shea',
@@ -58,16 +70,27 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectDashboard']),
+    ...mapActions(['selectTheme']),
     addWidget () {
       SharedBus.$emit('open-mads-modal', 'addWidgetModal')
     },
-    onSelectDashboard (dashboard) {
-      this.selectDashboard(dashboard)
+    onselectTheme (dashboard) {
+      this.selectTheme(dashboard)
+    },
+    onSelectMode (mode) {
+      this.dashboardName = this.selectedDashboard.name
+      this.$emit('on-change-mode', mode.key)
+    },
+    saveDashboard () {
+      this.$emit('save-dashboard', this.dashboardName)
+      this.selectedMode = this.modes[0]
     }
   },
+  mounted () {
+    this.selectedMode = this.modes[0]
+  },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['selectedTheme', 'selectedDashboard'])
   }
 }
 </script>
@@ -82,6 +105,10 @@ export default {
     .dashboard-name {
       font-size: 18px;
       padding-left: 10px;
+    }
+    .dashboard-name-input {
+      width: 300px;
+      margin-left: 30px;
     }
     .right-section {
       margin: 0 10px 0 auto;
@@ -107,6 +134,16 @@ export default {
           .icon {
             width: 21px;
             height: 21px;
+          }
+        }
+        &.save-btn {
+          display: flex;
+          align-items: center;
+          background-color: #4c92c3 !important;
+          color: white !important;
+          border-color: #ffffff !important;
+          .icon {
+            fill: white;
           }
         }
       }

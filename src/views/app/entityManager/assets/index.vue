@@ -1,6 +1,6 @@
 <template>
   <div class="assets">
-    <h2 class="page-heading">Assets</h2>
+    <h2 class="page-heading">Assets of {{this.selectedProject.name}}</h2>
     <div>
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'assets'}" @click="selectedTab = 'assets'">Assets ({{assets.length}})</li>

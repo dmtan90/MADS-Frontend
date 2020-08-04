@@ -8,9 +8,14 @@
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
-        <chart-widget :defaultValues="widget.default_values"></chart-widget>
-        <div class="button-group" v-if="!userWidget && widget.id">
-          <button class="btn download-btn" :class="{'disabled': checkIfWidgetAlreadyDownloaded()}"  @click="downloadwidiget()">Download</button>
+        <widget :visualSettings="visualSettings" :series="series" :type="widgetType" :widgetId="'widget-' + '1234'"></widget>
+        <div class="button-group" v-if="userWidget">
+          <button class="btn download-btn" v-if="checkIfWidgetAlreadyDownloaded" @click="openWidget()">Open</button>
+        </div>
+        <div class="button-group" v-else>
+          <button class="btn download-btn" :disabled="checkIfWidgetAlreadyDownloaded()" @click="downloadwidiget()">
+            {{ checkIfWidgetAlreadyDownloaded() ? 'Downloaded' : 'Download'}}
+          </button>
         </div>
       </b-colxx>
       <b-colxx xxs="3" class="widget-properties">
@@ -65,31 +70,38 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import widgetService from '@/services/widget.service'
 import userWidgetService from '@/services/userWidget.service'
-import chartWidget from './chart-widget'
+import widget from './../../shared/widgets/highChart'
 
 export default {
   props: ['userWidget'],
   components: {
-    chartWidget
+    widget
   },
   data() {
     return {
       widget: {},
       userWidgets: [],
+      series: [],
+      visualSettings: {},
+      widgetType: '',
       widgetOptions: ['Line', 'Area', 'Column & Bar', 'Pie', 'Gauge', 'Stock', 'CandleStick', 'Intraday', 'Depth', 'Column', 'Categorized', 'Distribution', 'Map Bubble', 'Subtasks', 'Interactive Gantt']
     }
   },
   methods: {
-    ...mapActions(['selectWidget', 'setCurrentPage']),
+    ...mapActions(['selectWidget', 'setCurrentPage', 'setCurrentSection']),
     goToWidgetStore() {
       this.setCurrentPage('index')
       this.selectWidget(null)
     },
     loadWidget() {
+      let that = this
       widgetService
         .readId(this.selectedWidget)
         .then(response => {
-          this.widget = response;
+          this.widget = response
+          this.widgetType = this.widget.category[1]
+          this.visualSettings = this.widget.visual_prop
+          this.series = this.widget.default_values.data_settings_values.series
         })
     },
     downloadwidiget() {
@@ -103,12 +115,16 @@ export default {
           }
         })
     },
+    openWidget() {
+      this.setCurrentSection({ appKey: 'Widget_Manager', section: 'editor' })
+      this.setCurrentPage('index')
+    },
     loadCurrentUserWidgets () {
       let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
       userWidgetService
         .read(config, { page_number: 1, page_size: 10 })
         .then(response => {
-          this.userWidgets = _.map(response.user_widgets, (widget) => widget.id)
+          this.userWidgets = _.map(response.user_widgets, (user_widget) => user_widget.widget.id)
         })
     },
     checkIfWidgetAlreadyDownloaded() {

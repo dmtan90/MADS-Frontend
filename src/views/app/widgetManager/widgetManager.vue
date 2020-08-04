@@ -1,16 +1,45 @@
 <template>
-  <div class="widget-manager">
-    <h2>Welcome to widget manager</h2>
-    <p>
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. <br>
-      Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, <br>
-      when an unknown printer took a galley of type and scrambled it to make a type <br>
-      specimen book. It has survived not only five centuries, but also the leap into <br>
-      electronic typesetting, remaining essentially unchanged. It was popularised in <br>
-      the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, <br>
-      and more recently with desktop publishing software like Aldus PageMaker including <br>
-      versions of Lorem Ipsum.
-    </p>
+  <div class="widget-manager app-home">
+    <div class="home-card">
+      <span>Welcome to</span>
+      <h2>Widget Manager</h2>
+      <p>
+        Lorem ipsum dolorsit amet, consecteturadipiscingelit, seddo eiusmodtemporincididuntutlaboreet dolore magna aliqua.
+      </p>
+      <div class="nav-sections">
+        <div class="left-section">
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+        </div>
+        <div class="right-section">
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+        </div>
+      </div>
+      <div class="learn-more-btn">
+        <b-button>Learn More</b-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,12 +53,12 @@ export default {
 <style lang="scss" scoped>
   .widget-manager {
     padding: 30px;
-    h2 {
-      color: #4C92C3;
-    }
     p {
       margin-top: 20px;
       font-size: 12px;
+    }
+    &.app-home {
+      background: url("/assets/img/widget-manager.jpg");
     }
   }
 </style>
