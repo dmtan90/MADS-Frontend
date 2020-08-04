@@ -8,7 +8,7 @@ const siteService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   read: async function (params) {
@@ -17,7 +17,7 @@ const siteService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   update: async function (id, payload) {
@@ -26,7 +26,7 @@ const siteService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   delete: async function (id) {
@@ -35,7 +35,7 @@ const siteService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readId: async function (id) {
@@ -44,7 +44,7 @@ const siteService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

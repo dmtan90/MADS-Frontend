@@ -100,7 +100,7 @@ export default {
         .then(response => {
           this.widget = response
           this.widgetType = this.widget.category[1]
-          this.visualSettings = this.widget.default_values.visual_setting_values
+          this.visualSettings = this.widget.visual_prop
           this.series = this.widget.default_values.data_settings_values.series
         })
     },

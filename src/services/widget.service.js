@@ -8,7 +8,7 @@ const widgetService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readId: async function (id) {
@@ -17,7 +17,7 @@ const widgetService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   search: async function (searchText) {
@@ -25,7 +25,7 @@ const widgetService = {
       const response = await ApiService.get('/widgets/search?label=' + searchText)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

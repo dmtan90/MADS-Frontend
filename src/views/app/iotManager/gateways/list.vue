@@ -21,6 +21,9 @@
         <template v-slot:gateway="props">
           <span class="gateway-name" @click="onSelectGateway(props.rowData)">{{props.rowData.name}}</span>
         </template>
+         <template v-slot:status>
+          <span>Active</span>
+        </template>
         <template v-slot:actions="props" v-if="!source">
           <span class="edit-gateway" @click="showGateway(props.rowData)">Show</span>
           <span class="edit-gateway" @click="editGateway(props.rowData)">Edit</span>
@@ -30,7 +33,7 @@
     </div>
 
     <!-- Modal Section -->
-    <!-- <add-edit-gateway ref="addEditGateway"></add-edit-gateway> -->
+    <add-edit-gateway ref="addEditGateway"></add-edit-gateway>
   </div>
 </template>
 
@@ -38,7 +41,9 @@
 import { mapGetters, mapActions } from 'vuex'
 import fieldsDef from './fieldsDef'
 import Vuetable from 'vuetable-2'
-// import addEditGateway from './addEditGateway'
+import addEditGateway from './addEditGateway'
+import gatewayService from '@/services/gateway.service'
+import GatewayEventBus from './gatewayEventBus'
 
 export default {
   props: {
@@ -54,8 +59,8 @@ export default {
     }
   },
   components: {
-    Vuetable
-    // addEditGateway
+    Vuetable,
+    addEditGateway
   },
   data () {
     return {
@@ -64,9 +69,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectGateway', 'setEntityManagerCurrentPage']),
+    ...mapActions(['selectGateway']),
     showGateway (detail) {
+      this.selectGateway(detail)
       this.$emit('show-detail', detail)
+      
+
+    //   GatewayEventBus.$on('reload-gateways', () => {
+    //   this.loadGateways()
+    // })
     },
     addGateway (gateway) {
       this.$refs.addEditGateway.add()
@@ -75,11 +86,11 @@ export default {
       this.$refs.addEditGateway.edit(gateway)
     },
     deleteGateway (gateway) {
-      // let config = { orgId: this.currentUser.org.id, gatewayId: 1, id: gateway.id }
-      // gatewayService.delete(config)
-      //   .then((response) => {
-      //     GatewayEventBus.$emit('reload-gateways')
-      //   })
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: gateway.id }
+      gatewayService.delete(config)
+        .then((response) => {
+          GatewayEventBus.$emit('reload-gateways')
+        })
     },
     onSelectGateway (gateway) {
       this.selectGateway(gateway)

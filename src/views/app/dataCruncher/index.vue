@@ -3,6 +3,7 @@
     <template v-slot:content>
       <data-cruncher v-if="appVuexState.currentSection === 'dataCruncher'"></data-cruncher>
       <workspace v-if="appVuexState.currentSection === 'workspace'"></workspace>
+      <help :appName="'Data Cruncher'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
 </template>
@@ -11,12 +12,14 @@
 import appWindow from './../appWindow'
 import dataCruncher from './dataCruncher'
 import workspace from './workspace/index'
+import help from './../shared/help'
 
 export default {
   components: {
     appWindow,
     dataCruncher,
-    workspace
+    workspace,
+    help
   },
   computed: {
     appVuexState () {

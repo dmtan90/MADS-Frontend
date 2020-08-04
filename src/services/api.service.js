@@ -1,4 +1,5 @@
 import axios from 'axios'
+import _ from 'lodash'
 import TokenService from '@/services/token.service'
 import router from '@/router'
 import Vue from 'vue'
@@ -65,7 +66,8 @@ const ApiService = {
         let errorResponse = JSON.parse(error.request.response)
 
         if (error.request.status === 400) {
-          Vue.$toast.error(errorResponse.message || 'Bad Request', { position: 'top-right' })
+          let message = 'Bad Request'
+          Vue.$toast.error(message, { position: 'top-right' })
         } else if (error.request.status === 403) {
           Vue.$toast.error('Please Login', { position: 'top-right' })
           TokenService.removeToken()
@@ -77,7 +79,8 @@ const ApiService = {
         }
 
         // If error was not 401 just reject as is
-        throw error.response
+        errorResponse = _.merge({}, errorResponse, { data: {} })
+        throw errorResponse
       }
     )
   },

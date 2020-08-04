@@ -8,7 +8,7 @@ const roleService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

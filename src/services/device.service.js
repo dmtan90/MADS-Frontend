@@ -9,7 +9,7 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   read: async function (params) {
@@ -18,7 +18,7 @@ const deviceService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   update: async function (id, payload) {
@@ -26,7 +26,7 @@ const deviceService = {
       const response = await ApiService.put(resource + '/' + id, payload)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   delete: async function (id) {
@@ -34,7 +34,7 @@ const deviceService = {
       const response = await ApiService.delete(resource + '/' + id)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readId: async function (id) {
@@ -42,7 +42,7 @@ const deviceService = {
       const response = await ApiService.get(resource + '/' + id)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

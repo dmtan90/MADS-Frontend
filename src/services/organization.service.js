@@ -8,7 +8,7 @@ const organizationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readApps: async function (config) {
@@ -17,7 +17,7 @@ const organizationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

@@ -7,7 +7,7 @@ const userWidgetService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   create: async function (config, params) {
@@ -16,7 +16,7 @@ const userWidgetService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

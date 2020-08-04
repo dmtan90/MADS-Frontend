@@ -18,8 +18,8 @@ export default [
     sortField: 'members'
   },
   {
-    name: 'status',
-    sortField: 'metadata'
+    name: '__slot:status',
+    title: 'Status'
   },
   {
     name: '__slot:actions',
