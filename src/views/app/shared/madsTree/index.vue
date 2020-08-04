@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isDataLoading">
+  <div v-if="treeData">
     <mads-tree
       ref="tree"
       :treeData="treeData"
@@ -15,7 +15,6 @@
       @on-node-drag-start="onNodeDragStart"
     ></mads-tree>
   </div>
-  <div v-else class="loading"></div>
 </template>
 
 <script>
@@ -31,7 +30,6 @@ export default {
   },
   data () {
     return {
-      isDataLoading: false,
       orgData: null,
       treeData: null,
       relativeEntity: {},
@@ -82,7 +80,6 @@ export default {
   },
   methods: {
     loadProjectEntities () {
-      this.isDataLoading = true
       let config = { orgId: this.currentUser.org.id, projectId: (this.selectedProject ? this.selectedProject.id : 1) }
       entityService
         .read(config)
@@ -94,7 +91,6 @@ export default {
             selectableEntities: this.selectableEntities,
             editingEntity: this.editingEntity
           })
-          this.isDataLoading = false
         })
     },
     getTreeData () {

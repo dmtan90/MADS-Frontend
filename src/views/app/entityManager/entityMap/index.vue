@@ -51,7 +51,6 @@ export default {
       selectedTab: 'properties',
       selectedEntity: null,
       selectedParentEntity: null,
-      isDataLoading: false,
       selectedView: 'map',
       entityMapParentNode: null
     }
@@ -62,13 +61,15 @@ export default {
       this.selectedEntity = null
     },
     saveTreeData () {
-      this.isDataLoading = true
+      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       let payload = this.$refs.tree.getTreeData()
 
       entityService.create(config, payload)
         .then(response => {
           TreeEventBus.$emit('reload-entities')
+          loader.hide()
+          this.$toast.success('Entity Map Saved Successfully', { position: 'top-right' })
         })
     },
     changeView (view) {

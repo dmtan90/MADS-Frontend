@@ -336,7 +336,6 @@
     border-radius: 4px !important;
   }
   input, textarea, .multiselect > .multiselect__tags {
-    border-color: #3172A8 !important;
     border-radius: 4px !important;
   }
   .b-dropdown {

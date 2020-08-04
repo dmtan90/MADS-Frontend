@@ -9,7 +9,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   read: async function (config) {
@@ -18,7 +18,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   update: async function (config, payload) {
@@ -27,7 +27,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   delete: async function (config) {
@@ -36,7 +36,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readId: async function (config) {
@@ -45,7 +45,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   createWidgetInstance: async function (config, payload) {
@@ -54,7 +54,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   deleteWidgetInstance: async function (config) {
@@ -63,7 +63,7 @@ const sensorService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

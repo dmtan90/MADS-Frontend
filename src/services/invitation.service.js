@@ -8,7 +8,7 @@ const invitationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   read: async function (config, params) {
@@ -17,7 +17,7 @@ const invitationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   delete: async function (config) {
@@ -26,7 +26,7 @@ const invitationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }

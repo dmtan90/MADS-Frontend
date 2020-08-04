@@ -16,7 +16,7 @@ const UserService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   create: async function (config, payload) {
@@ -34,7 +34,7 @@ const UserService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   update: async function (config, payload) {
@@ -42,7 +42,7 @@ const UserService = {
       const response = await ApiService.put('orgs/' + config.orgId + '/users/' + config.userId, payload)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   search: async function (config, payload) {
@@ -50,7 +50,7 @@ const UserService = {
       const response = await ApiService.get('orgs/' + config.orgId +'/users/search?label=' + payload)
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   getUserProfile: async function (config) {
@@ -59,7 +59,7 @@ const UserService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   saveUserSettings: async function (config, payload) {
@@ -68,7 +68,7 @@ const UserService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   updateUserSettings: async function (config, payload) {
@@ -77,7 +77,7 @@ const UserService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   }
 }
