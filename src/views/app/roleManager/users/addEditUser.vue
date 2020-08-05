@@ -40,11 +40,8 @@ export default {
       modalSections: [{
         index: 1,
         name: 'Details'
-      }, {
+      },{
         index: 2,
-        name: 'Assets'
-      }, {
-        index: 3,
         name: 'Apps'
       }],
       selectedSectionIndex: 1,
