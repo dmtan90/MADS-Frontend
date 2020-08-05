@@ -28,7 +28,7 @@
             <div v-if="screen === 0">
               <div v-for="category in $_.take(appCategories, 3)" :key="category">
                 <div v-if="$_.size(apps[category])">
-                  <div v-for="app in apps[category]" :key="app.key" class="app" :class="{'opened': getAppState(filterAppsInfo(appsInfo, app.icon_id)) !== 'closed'}" @click="openAppWindow(filterAppsInfo(appsInfo, app.icon_id))">
+                  <div v-for="app in apps[category]" :key="app.key" class="app" @click="openAppWindow(appKeyMappings[app.key])">
                     <svg class="icon">
                       <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                     </svg>
@@ -44,7 +44,7 @@
             <div v-if="screen === 1 && $_.size(apps) > 3">
               <div v-for="category in $_.takeRight(appCategories, 3)" :key="category">
                 <div v-if="$_.size(apps[category])">
-                  <div v-for="app in apps[category]" :key="app.key" class="app" :class="{'opened': getAppState(filterAppsInfo(appsInfo, app.icon_id)) !== 'closed'}" @click="openAppWindow(filterAppsInfo(appsInfo, app.icon_id))">
+                  <div v-for="app in apps[category]" :key="app.key" class="app" @click="openAppWindow(appKeyMappings[app.key])">
                     <svg class="icon">
                       <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                     </svg>
@@ -83,36 +83,15 @@ export default {
       allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
       appCategories: [],
       apps: {},
-      appsInfo: [
-        {
-          iconId: "mads-dashboard",
-          state: "Dashboards"
-        },
-        {
-          iconId: "mads-widget-manager",
-          state: "Widget_Manager"
-        },
-        {
-          iconId: "mads-data-cruncher",
-          state: "Data_Cruncher"
-        },
-        {
-          iconId: "mads-role-manager",
-          state: "Role_Manager"
-        },
-        {
-          iconId: "mads-entity-manager",
-          state: "Entity_Manager"
-        },
-        {
-          iconId: "mads-iot-manager",
-          state: "IoT_Manager"
-        },
-        {
-          iconId: "mads-alerts-reminders",
-          state: "Alerts_Reminder"
-        }
-      ]
+      appKeyMappings:{
+        widgetManager: "Widget_Manager",
+        dashboards: "Dashboards",
+        dataCruncher: "Data_Cruncher",
+        roleManager: "Role_Manager",
+        entityManager: "Entity_Manager",
+        iotManager: "IoT_Manager",
+        alerts: "Alerts_Reminder"
+      }
     }
   },
   methods: {
@@ -121,17 +100,15 @@ export default {
       this.searchApp = ''
       this.showSlider = !this.showSlider
     },
-    filterAppsInfo(appsInfo, iconId){
-      // debugger;
-      let filter = appsInfo.filter((appInfo)=> appInfo.iconId === iconId)[0]
-      let state = filter ? filter.state : "Alerts_Reminder"
-      return state
-    },
     getAppState (app) {
       return this.$store.state.appWindow[app].appState
     },
     openAppWindow (app) {
-      EventBus.$emit('open-app-window', app)
+      let appValues =  Object.values(this.appKeyMappings);
+      let filterAppValues = appValues.filter((appValue) => appValue === app);
+      if(filterAppValues.length > 0){
+        EventBus.$emit('open-app-window', app)
+      }
     },
   },
   computed: {
