@@ -28,7 +28,7 @@
             <div v-if="screen === 0">
               <div v-for="category in $_.take(appCategories, 3)" :key="category">
                 <div v-if="$_.size(apps[category])">
-                  <div v-for="app in apps[category]" :key="app.key" class="app">
+                  <div v-for="app in apps[category]" :key="app.key" class="app" @click="openAppWindow(appKeyMappings[app.key])">
                     <svg class="icon">
                       <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                     </svg>
@@ -44,7 +44,7 @@
             <div v-if="screen === 1 && $_.size(apps) > 3">
               <div v-for="category in $_.takeRight(appCategories, 3)" :key="category">
                 <div v-if="$_.size(apps[category])">
-                  <div v-for="app in apps[category]" :key="app.key" class="app">
+                  <div v-for="app in apps[category]" :key="app.key" class="app" @click="openAppWindow(appKeyMappings[app.key])">
                     <svg class="icon">
                       <use :xlink:href="'/assets/img/mads-app-icons.svg#' + app.icon_id"></use>
                     </svg>
@@ -82,7 +82,16 @@ export default {
       screen: 0,
       allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
       appCategories: [],
-      apps: {}
+      apps: {},
+      appKeyMappings:{
+        widgetManager: "Widget_Manager",
+        dashboards: "Dashboards",
+        dataCruncher: "Data_Cruncher",
+        roleManager: "Role_Manager",
+        entityManager: "Entity_Manager",
+        iotManager: "IoT_Manager",
+        alerts: "Alerts_Reminder"
+      }
     }
   },
   methods: {
@@ -90,7 +99,17 @@ export default {
       this.screen = 0
       this.searchApp = ''
       this.showSlider = !this.showSlider
-    }
+    },
+    getAppState (app) {
+      return this.$store.state.appWindow[app].appState
+    },
+    openAppWindow (app) {
+      let appValues =  Object.values(this.appKeyMappings);
+      let filterAppValues = appValues.filter((appValue) => appValue === app);
+      if(filterAppValues.length > 0){
+        EventBus.$emit('open-app-window', app)
+      }
+    },
   },
   computed: {
     ...mapGetters(['visualSettings', 'orgApps'])
