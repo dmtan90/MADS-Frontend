@@ -37,14 +37,21 @@ export default {
   data () {
     return {
       editMode: false,
+      // modalSections: [{
+      //   index: 1,
+      //   name: 'Details'
+      // }, {
+      //   index: 2,
+      //   name: 'Assets'
+      // }, {
+      //   index: 3,
+      //   name: 'Apps'
+      // }],
       modalSections: [{
         index: 1,
         name: 'Details'
-      }, {
+      },{
         index: 2,
-        name: 'Assets'
-      }, {
-        index: 3,
         name: 'Apps'
       }],
       selectedSectionIndex: 1,
