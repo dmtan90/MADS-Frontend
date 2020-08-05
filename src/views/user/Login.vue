@@ -47,7 +47,6 @@ export default {
     formSubmit () {
       if (this.email !== '' && this.password !== '') {
         this.login({ email: this.email, password: this.password })
-        this.password = ''
       }
     }
   }

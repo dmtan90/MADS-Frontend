@@ -1,6 +1,14 @@
 import ApiService from '@/services/api.service'
 import TokenService from '@/services/token.service'
 import store from '@/store'
+import Vue from 'vue'
+import Loading from 'vue-loading-overlay'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
+import 'vue-loading-overlay/dist/vue-loading.css'
+
+Vue.use(VueToast)
+Vue.use(Loading)
 
 class AuthenticationError extends Error {
   constructor (errorCode, message) {
@@ -19,6 +27,12 @@ const AuthService = {
      * @throws AuthenticationError
     **/
   login: async function (email, password) {
+    let loader = Vue.$loading.show({
+      loader: 'bars',
+      color: '#ffffff',
+      backgroundColor: '#000000'
+    })
+
     const requestData = {
       method: 'post',
       url: '/sign-in',
@@ -31,8 +45,11 @@ const AuthService = {
     try {
       const response = await ApiService.customRequest(requestData)
       store.dispatch('loginSuccess', response.data)
+      loader.hide()
     } catch (error) {
       store.dispatch('loginFailed')
+      loader.hide()
+      Vue.$toast.error('Login Failed', { position: 'top-right' })
     }
   },
 
@@ -70,6 +87,11 @@ const AuthService = {
      * Will also remove `Authorization Bearer <token>` header from future requests.
     **/
   logout: async function () {
+    let loader = Vue.$loading.show({
+      loader: 'bars',
+      color: '#ffffff',
+      backgroundColor: '#000000'
+    })
     const accessToken = TokenService.getToken()
     const refreshToken = TokenService.getRefreshToken()
 
@@ -84,8 +106,10 @@ const AuthService = {
 
     try {
       const response = await ApiService.customRequest(requestData)
+      loader.hide()
       return response.data
     } catch (error) {
+      loader.hide()
       throw new AuthenticationError(error.response.status, error.response.data.detail)
     }
   },
