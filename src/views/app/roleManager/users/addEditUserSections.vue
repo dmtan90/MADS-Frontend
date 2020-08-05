@@ -15,21 +15,6 @@
         </b-form-group>
       </b-form>
     </section>
-    <!-- <section v-if="selectedSectionIndex === 2" class="assets">
-      <h5>Select Assets</h5>
-        <div class="vue-tree-container">
-          <mads-tree
-            ref="tree"
-            :treeView="'file'"
-            :treeOptions="treeOptions"
-            @on-node-select="onSelectEntity"
-            :isAnyNodeSelected="isAnyNodeSelected"
-            :editingEntity="userData"
-            :selectedNodes="getSelectedEntity()"
-            :selectableEntities="['Asset']"
-          ></mads-tree>
-        </div>
-    </section> -->
     <section v-if="selectedSectionIndex === 2" class="apps">
       <h5>Select Apps</h5>
       <apps-list v-on:selectApps="selectApps"></apps-list>
@@ -111,8 +96,8 @@ export default {
     },
     selectApps(apps){
       apps = this.$_.filter(apps, (value, key) => { return value });
-      let selectAppValues = Object.keys(apps);
-      let selectApp = selectAppValues.map((app)=>{
+      let selectAppValues = this.$_.keys(apps);
+      let selectApp = this.$_.map(selectAppValues, (app)=>{
         return {
           id: app
         }

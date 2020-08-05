@@ -74,8 +74,8 @@ export default {
       this.$emit('selectApps', this.selectedApps)
     },
     onSelectAll () {
-      let getValue = Object.values(this.apps).flat();
-      getValue.map((value) => {
+      let getValue = this.$_.values(this.apps).flat();
+      this.$_.map(getValue, (value) => {
         this.selectedApps = this.$_.assign({}, this.selectedApps,{
           [value.id]: !this.selectedApps[value.id]
         })
