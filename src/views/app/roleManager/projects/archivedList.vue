@@ -4,9 +4,6 @@
       <div class="search-box">
         <b-form-input v-model="searchText" placeholder="Search project"></b-form-input>
       </div>
-      <div class="add-project" v-if="!source">
-        <b-button @click="addProject()">Add project</b-button>
-      </div>
     </div>
     <div class="lists-table projects-table">
       <vuetable
@@ -38,7 +35,7 @@
         <template v-slot:actions="props" v-if="!source">
           <span class="edit-project" @click="editProject(props.rowData)">Edit</span>
           <span class="delete-project" @click="deleteProject(props.rowData)">Delete</span>
-          <span class="delete-project" @click="archiveProject(props.rowData)">Archived</span>
+          <span class="delete-project" @click="unArchiveProject(props.rowData)">Unarchive</span>
         </template>
       </vuetable>
     </div>
@@ -107,14 +104,14 @@ export default {
       })
       return this.$_.join(users, ', ')
     },
-    archiveProject (project) {
-      console.log('project', project)
+    unArchiveProject(project){
+      console.log("project",project);
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
-        archived: true
+        archived: false
       }
       projectService.update(config, payload)
-        .then((res) => {
+        .then((res)=>{
           ProjectEventBus.$emit('reload-projects')
         })
     }
@@ -159,10 +156,8 @@ export default {
       text-decoration: underline;
       color: #2aa7ff;
       white-space: nowrap;
-      max-width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: inline-block;
     }
     .edit-project, .delete-project {
       text-decoration: underline;

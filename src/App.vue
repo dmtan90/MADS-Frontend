@@ -338,6 +338,9 @@
   input, textarea, .multiselect > .multiselect__tags {
     border-radius: 4px !important;
   }
+  .multiselect__option {
+    text-transform: capitalize;
+  }
   .b-dropdown {
     width: 100%;
     text-align: left;

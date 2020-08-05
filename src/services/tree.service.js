@@ -26,7 +26,8 @@ const treeService = {
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
           selectable: isSelectable,
-          icon: this._entityTypeIcon(entity.type)
+          icon: this._entityTypeIcon(entity.type),
+          isLeafNode: false
         }
       })
     } else {
@@ -38,59 +39,9 @@ const treeService = {
           hoverOptions: this._hoverOptions(entity.type),
           visible: true,
           selectable: isSelectable,
-          icon: this._entityTypeIcon(entity.type)
+          icon: this._entityTypeIcon(entity.type),
+          isLeafNode: true
         }
-      })
-    }
-  },
-
-  _initAssetPropertyData: function (entity) {
-    let that = this
-    let isAssetType = entity.type === 'Asset'
-    let childrenPresent = (entity.type !== 'Sensor' && entity.entities && _.size(entity.entities)) > 0
-    if (childrenPresent && !isAssetType) {
-      return _.assign(entity, {
-        options: {
-          label: entity.name,
-          classes: [entity.type],
-          expanded: true,
-          selected: false,
-          hoverOptions: this._hoverOptions(entity.type),
-          visible: true,
-          selectable: (entity.type !== 'Organisation') && (entity.type !== 'Sensor')
-        }
-      },
-      {
-        children: _.map(entity.entities, function (childEntity) {
-          return that._initAssetPropertyData(childEntity)
-        })
-      })
-    } else if (childrenPresent && isAssetType) {
-      let that = this
-      return _.assign(entity, {
-        options: {
-          label: entity.name,
-          classes: [entity.type],
-          expanded: true,
-          selected: false,
-          hoverOptions: this._hoverOptions(entity.type),
-          visible: true,
-          selectable: true
-        }
-      },
-      {
-        children: _.map(entity.properties, function (property) {
-          return _.assign((property, {
-            options: {
-              label: property,
-              classes: ['Parameter'],
-              selected: false,
-              hoverOptions: that._hoverOptions('Parameter'),
-              visible: true,
-              selectable: false
-            }
-          }))
-        })
       })
     }
   },
@@ -140,11 +91,7 @@ const treeService = {
   },
 
   initData: function (entity, type = 'sensor-parameter', options) {
-    if (type === 'sensor-parameter') {
-      return this._initSensorParameterData(entity, options.selectedNodes, options.hiddenEntities, options.selectableEntities, options.editingEntity)
-    } else {
-      return this._initAssetPropertyData(entity)
-    }
+    return this._initSensorParameterData(entity, options.selectedNodes, options.hiddenEntities, options.selectableEntities, options.editingEntity)
   },
 
   initOptions: function (options = {}) {

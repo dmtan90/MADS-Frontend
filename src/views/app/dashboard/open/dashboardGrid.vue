@@ -20,16 +20,6 @@
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
         </div>
-        <!-- <div class="info-wrap">
-          <div class="info">
-            <span class="title">Manager</span>
-            <span class="value">{{renderUserName(dashboard.leads)}}</span>
-          </div>
-          <div class="info">
-            <span class="title">Members</span>
-            <span class="value">{{renderUserName(dashboard.users)}}</span>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>

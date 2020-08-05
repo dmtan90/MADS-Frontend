@@ -28,7 +28,7 @@
     <section v-if="currentStep === 2" class="assets">
       <h5>Select Assets</h5>
       <div class="assets-container">
-        <mads-tree ref="tree" :treeData="treeData" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
+        <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions"></mads-tree>
       </div>
     </section>
     <section v-if="currentStep === 3" class="apps">
@@ -45,10 +45,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import entityService from '@/services/entity.service'
-import treeService from '@/services/tree.service'
 import invitationService from '@/services/invitation.service'
-import madsTree from '../../shared/madsTree/madsTree'
+import madsTree from './../../shared/madsTree/index'
 import appsList from '../../shared/modalAppsList'
 import EventBus from '../eventBus'
 
@@ -77,81 +75,13 @@ export default {
       selectedRole: null,
       selectedAssets: [],
       selectedApps: [],
-      orgData: null,
-      treeData: null,
-      treeOptions: {}
+      treeOptions: {
+        selectable: true,
+        singleSelect: true
+      }
     }
   },
   methods: {
-    loadProjectEntities () {
-      this.isDataLoading = true
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
-      entityService
-        .read(config)
-        .then(response => {
-          this.orgData = response
-          this.treeOptions = treeService.initOptions({ selectable: true })
-          this.treeData = treeService.initData(this.orgData)
-          this.isDataLoading = false
-        })
-    },
-    formatSensorParameterData (entity) {
-      let childrenPresent = (entity.type !== 'Parameter')
-      let that = this
-      if (childrenPresent) {
-        return {
-          id: entity.id,
-          type: entity.type,
-          title: entity.name,
-          expanded: (entity.type !== 'Sensor'),
-          chkDisabled: (entity.type === 'Sensor' || entity.type === 'Organisation'),
-          children: this.$_.map(entity.entities, function (entity) {
-            return that.formatSensorParameterData(entity)
-          })
-        }
-      } else {
-        return {
-          id: entity.id,
-          type: entity.type,
-          title: entity.name,
-          chkDisabled: true
-        }
-      }
-    },
-    formatAssetPropertyData (entity) {
-      let isPropertiesPresent = entity.properties && this.$_.size(entity.properties) > 0
-      let that = this
-      if (!isPropertiesPresent) {
-        return {
-          id: entity.id,
-          type: entity.type,
-          title: entity.name,
-          expanded: true,
-          children: this.$_.map(entity.entities, function (entity) {
-            return that.formatAssetPropertyData(entity)
-          })
-        }
-      } else {
-        return {
-          id: entity.id,
-          type: entity.type,
-          title: entity.name,
-          expanded: true,
-          children: this.$_.map(entity.properties, function (property) {
-            return {
-              chkDisabled: true,
-              title: '<span draggable="true" class="draggable-element" data-name="' + property + '">' + property + '</span>'
-            }
-          })
-        }
-      }
-    },
-    makeTreeData () {
-      let entity = this.orgData
-      this.sensorParameterData = [this.formatSensorParameterData(entity)]
-      this.treeData = this.sensorParameterData
-      this.assetPropertyData = [this.formatAssetPropertyData(entity)]
-    },
     inviteUser () {
       this.$refs.inviteUserModal.hide()
       let payload = {
@@ -194,7 +124,6 @@ export default {
     }
   },
   mounted () {
-    this.loadProjectEntities()
   }
 }
 </script>
