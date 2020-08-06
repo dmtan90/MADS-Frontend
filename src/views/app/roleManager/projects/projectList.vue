@@ -108,7 +108,6 @@ export default {
       return this.$_.join(users, ', ')
     },
     archiveProject (project) {
-      console.log('project', project)
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
         archived: true

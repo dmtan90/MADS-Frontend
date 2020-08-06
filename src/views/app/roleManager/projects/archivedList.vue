@@ -104,14 +104,13 @@ export default {
       })
       return this.$_.join(users, ', ')
     },
-    unArchiveProject(project){
-      console.log("project",project);
+    unArchiveProject (project) {
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
         archived: false
       }
       projectService.update(config, payload)
-        .then((res)=>{
+        .then((res) => {
           ProjectEventBus.$emit('reload-projects')
         })
     }

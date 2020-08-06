@@ -40,7 +40,7 @@ export default {
       modalSections: [{
         index: 1,
         name: 'Details'
-      },{
+      }, {
         index: 2,
         name: 'Apps'
       }],
@@ -58,7 +58,6 @@ export default {
       this.editMode = true
       this.$refs.madsModal.$refs.createUserModal.show()
       this.user = user
-      console.log("user",user)
     },
     selectSection (index) {
       this.selectedSectionIndex = index
@@ -67,18 +66,18 @@ export default {
       this.selectedSectionIndex++
     },
     saveUser () {
-      if(this.editMode){
+      if (this.editMode) {
         let payload = this.$refs.sections.getUserData()
-        let config = {orgId: this.currentUser.org.id, id: this.user.id}
+        let config = { orgId: this.currentUser.org.id, id: this.user.id }
 
         invitationService.update(config, payload)
           .then((response) => {
             UserEventBus.$emit('reload-users')
           })
         this.selectedSectionIndex = 1
-      }else{
+      } else {
         let payload = this.$refs.sections.getUserData()
-        let config = {orgId: this.currentUser.org.id}
+        let config = { orgId: this.currentUser.org.id }
 
         invitationService.create(config, payload)
           .then((response) => {
@@ -86,7 +85,6 @@ export default {
           })
         this.selectedSectionIndex = 1
       }
-      
     },
     onCancel () {
       this.selectedSectionIndex = 1

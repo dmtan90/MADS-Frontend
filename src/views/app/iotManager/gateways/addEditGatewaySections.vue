@@ -8,7 +8,7 @@
         </b-form-group>
         <b-form-group label="Gateway Channel" label-for="gateway-type">
           <multiselect v-model="selectedGatewayType" :options="gatewayTypes" @select="onSelectGatewayType" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
-        </b-form-group> 
+        </b-form-group>
         <b-form-group label="Gateway Description" label-for="gateway-description" class="description">
           <b-form-textarea v-model="gateway.description" id="gateway-type-description" rows="6" max-rows="6"></b-form-textarea>
         </b-form-group>
@@ -29,7 +29,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import sensorTypeService from '@/services/sensorType.service'
 import madsTree from './../../shared/madsTree/index'
 import userService from '@/services/user.service'
 
@@ -60,7 +59,7 @@ export default {
   data () {
     return {
       selectedGatewayType: null,
-      gatewayTypes: ["http","mqtt"],
+      gatewayTypes: ['http', 'mqtt'],
       caretakers: [],
       gateway: {},
       orgData: null,
@@ -82,8 +81,7 @@ export default {
         })
     },
     onSelectGatewayType (channel) {
-      console.log("gatewayType",channel)
-      this.gateway.channel = channel;
+      this.gateway.channel = channel
     },
     onSelectCaretaker (caretaker) {
     },
@@ -105,8 +103,8 @@ export default {
     getSelectedEntity () {
       return [{ id: this.selectedParentEntityId, type: this.gateway.parent_type }]
     },
-    genrateString(){
-      return (Math.random().toString(36)+'uygsshssygugdugsssgvb').slice(2, 100+2);
+    genrateString () {
+      return (Math.random().toString(36) + 'uygsshssygugdugsssgvb').slice(2, 100 + 2)
     }
   },
   computed: {
@@ -114,7 +112,7 @@ export default {
   },
   mounted () {
     this.loadUsers()
-    if(this.gatewayData){
+    if (this.gatewayData) {
       this.gateway = {
         name: this.gatewayData.name || '',
         description: this.gatewayData.description || '',
@@ -131,10 +129,10 @@ export default {
       if (this.gateway.parent_type === 'Asset') {
         this.selectedParentEntityId = this.gatewayData.parent_id
       }
-    }else{
+    } else {
       this.gateway = {
         name: '',
-        description:  '',
+        description: '',
         channel: '',
         parent_type: '',
         parent_id: null,

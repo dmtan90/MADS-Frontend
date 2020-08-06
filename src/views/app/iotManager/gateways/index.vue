@@ -52,7 +52,7 @@ export default {
     loadGateways () {
       const config = {
         orgId: this.currentUser.org.id,
-        projectId: 1
+        projectId: this.selectedProject.id
       }
 
       const params = {
@@ -63,36 +63,6 @@ export default {
         .then((res) => {
           this.gateways = res.gateways
         })
-      // this.gateways = [
-      //   {
-      //     id: 1,
-      //     name: 'Gateway1',
-      //     uuid: 'abcd1234',
-      //     channel: 'http',
-      //     status: 'Active'
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'Gateway2',
-      //     uuid: 'abcd1234',
-      //     channel: 'mqtt',
-      //     status: 'Inactive'
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'Gateway3',
-      //     uuid: 'abcd1234',
-      //     channel: 'http',
-      //     status: 'Active'
-      //   },
-      //   {
-      //     id: 4,
-      //     name: 'Gateway4',
-      //     uuid: 'abcd1234',
-      //     channel: 'mqtt',
-      //     status: 'Active'
-      //   }
-      // ]
     },
     onShowDetail (detail) {
       this.showListing = false
@@ -100,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadGateways()

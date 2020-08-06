@@ -9,9 +9,7 @@ const policyService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
       if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
       }
     }
   }

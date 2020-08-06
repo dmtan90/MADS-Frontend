@@ -266,7 +266,6 @@ export default {
       axios
         .get('http://5dad77e9c7e88c0014aa2a45.mockapi.io/devices')
         .then(response => {
-          console.log(response.data[0])
           return response.data[0]
         })
         .then(res => {
@@ -293,11 +292,9 @@ export default {
       this.sort = sort
     },
     addNewItem () {
-      console.log('adding item : ', this.newItem)
       axios
         .post('http://5dad77e9c7e88c0014aa2a45.mockapi.io/users/1/sensors', this.newItem)
         .then(response => {
-          console.log(response)
         })
     },
     selectAll (isToggle) {

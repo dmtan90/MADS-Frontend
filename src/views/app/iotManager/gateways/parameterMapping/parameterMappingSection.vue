@@ -260,7 +260,7 @@ export default {
       this.parameterMappings = this.traverseObject(treeData)
       this.editParameterMapping = false
 
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: this.selectedGateway.id }
       let gatewayData = {
         mapped_parameters: this.parameterMappings
       }
@@ -384,7 +384,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedGateway'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedGateway'])
   },
   watch: {
     mappedParams () {

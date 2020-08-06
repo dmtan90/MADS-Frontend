@@ -4,7 +4,6 @@
     :modalID="'add-edit-streaming-modal'"
     :modalRef="'createEditStreamingModal'"
     :editMode="editMode"
-    @on-cancel="onCancel()"
     @on-save="saveGateway()">
     <template v-slot:body-panel>
         <div class="heading">
@@ -26,10 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import madsSingleSectionModal from './../../shared/madsSingleSectionModal'
-import GatewayEventBus from './gatewayEventBus'
-import TreeEventBus from './../../shared/madsTree/treeEventBus'
 
 export default {
   props: {
@@ -44,7 +40,7 @@ export default {
     return {
       editMode: false,
       gateway: null,
-      streamParam:{}
+      streamParam: {}
     }
   },
   methods: {
@@ -59,44 +55,38 @@ export default {
       this.streamParam = detail
     },
     saveGateway () {
-      if(this.editMode){
+      if (this.editMode) {
         this.streamParam = {
 
         }
-      }else{
-        this.$emit('saveData', this.streamParam);
+      } else {
+        this.$emit('saveData', this.streamParam)
         this.streamParam = {
           name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        };
+          value: '',
+          data_type: '',
+          unit: ''
+        }
       }
-    },
-    onCancel () {
-    //   this.allSectionsVisited = false
     }
   },
-  mounted(){
-    if(this.editMode){
-        this.staticParam = {
-          name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        }
-      }else{
-        this.staticParam = {
-          name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        }
+  mounted () {
+    if (this.editMode) {
+      this.staticParam = {
+        name: '',
+        value: '',
+        data_type: '',
+        unit: ''
       }
+    } else {
+      this.staticParam = {
+        name: '',
+        value: '',
+        data_type: '',
+        unit: ''
+      }
+    }
   }
-//   computed: {
-//     ...mapGetters(['currentUser', 'selectedProject'])
-//   }
 }
 </script>
 

@@ -18,9 +18,7 @@ const notificationService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
       if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
       }
     }
   },
@@ -30,7 +28,6 @@ const notificationService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
     }
   },
   delete: async function (id) {
@@ -39,7 +36,6 @@ const notificationService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
     }
   },
   readId: async function (id) {
@@ -48,9 +44,7 @@ const notificationService = {
 
       return response.data
     } catch (error) {
-      console.log(error)
       if (error.errors.error.message === 'Unauthorized') {
-        console.log('unauthorised')
       }
     }
   }
