@@ -183,7 +183,7 @@ export default {
     },
     loadWidgets () {
       widgetService
-        .read({ page_number: 1, page_size: 10 })
+        .read({ page_number: 1, page_size: 100 })
         .then(response => {
           this.widgetList = response.widgets
         })

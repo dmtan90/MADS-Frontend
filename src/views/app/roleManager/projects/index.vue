@@ -55,7 +55,7 @@ export default {
     loadProjects () {
       let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id }
-      projectService.read(config, { page_number: 1, page_size: 10 })
+      projectService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.projects = response.projects
           this.active = response.projects.filter((project) => project.archived === false)

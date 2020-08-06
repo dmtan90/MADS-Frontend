@@ -56,7 +56,7 @@ export default {
       }
 
       const params = {
-        page_size: 20,
+        page_size: 100,
         page_number: 1
       }
       gatewayService.read(config, params)

@@ -36,7 +36,7 @@ export default {
     ...mapActions(['selectProject']),
     loadAssets () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      assetService.read(config, { page_number: 1, page_size: 10 })
+      assetService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.assets = response.assets
         })
@@ -44,7 +44,7 @@ export default {
     loadAssetTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
 
-      assetTypeService.read(config, { page_number: 1, page_size: 10 })
+      assetTypeService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.assetTypes = response.asset_types
         })

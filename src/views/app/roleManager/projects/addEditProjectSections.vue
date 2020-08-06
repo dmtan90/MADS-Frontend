@@ -95,7 +95,7 @@ export default {
     },
     loadUsers () {
       let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 10 })
+      userService.read(config, { page_size: 100 })
         .then((response) => {
           this.users = response.users
         })

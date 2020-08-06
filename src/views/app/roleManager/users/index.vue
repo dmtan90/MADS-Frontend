@@ -74,7 +74,7 @@ export default {
         })
     },
     loadRoles () {
-      roleService.read({ page_number: 1, page_size: 10 })
+      roleService.read({ page_number: 1, page_size: 100 })
         .then(response => {
           this.roles = response.roles
         })
@@ -103,7 +103,7 @@ export default {
     },
     loadInvitations () {
       let config = { orgId: this.currentUser.org.id }
-      invitationService.read(config, { page_number: 1, page_size: 10 })
+      invitationService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.invitations = response.invitations
         })

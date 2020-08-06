@@ -36,7 +36,7 @@ export default {
       }
 
       const params = {
-        page_size: 6,
+        page_size: 100,
         page_number: 1
       }
       gatewayService.latestLogsRead(config, params)
