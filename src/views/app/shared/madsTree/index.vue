@@ -149,12 +149,14 @@ export default {
           hoverOptions: { sibling: true, child: entityType === 'Asset' },
           visible: true,
           selectable: false,
-          icon: entityType === 'Asset' ? '/assets/img/mads-entity-manager-icons.svg#assets' : '/assets/img/mads-entity-manager-icons.svg#sensors'
+          icon: entityType === 'Asset' ? '/assets/img/mads-entity-manager-icons.svg#assets' : '/assets/img/mads-entity-manager-icons.svg#sensors',
+          isLeafNode: true
         }
       })
       let entities = this.$_.concat(parentNode.entities || [], node)
       this.$set(parentNode, 'entities', entities)
       this.$set(parentNode.options, 'expanded', true)
+      this.$set(parentNode.options, 'isLeafNode', false)
 
       this.treeData = this.$_.assign({}, this.treeData)
     }

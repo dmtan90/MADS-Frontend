@@ -34,7 +34,7 @@
       </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="metadata">
-      <div class="metadata-group">
+      <div class="metadata-group" v-if="sensor.metadata.length">
         <b-form class="horizontal-form" v-for="(metadata, index) in sensor.metadata" :key="index">
           <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
             <b-form-input v-model="metadata.name" type="text" :disabled="true"></b-form-input>
@@ -49,6 +49,9 @@
             <b-form-input v-model="metadata.value"></b-form-input>
           </b-form-group>
         </b-form>
+      </div>
+      <div class="metadata-group" v-else>
+        <span>No Metadata Present</span>
       </div>
     </section>
   </div>
