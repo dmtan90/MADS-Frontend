@@ -50,7 +50,7 @@ export default {
       align-items: center;
       .btn {
         display: block;
-        width: 90%;
+        width: 95%;
         margin-bottom: 10px;
         background-color: #4c92c3 !important;
         color: white !important;

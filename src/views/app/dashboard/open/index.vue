@@ -143,7 +143,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

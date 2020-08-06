@@ -94,7 +94,7 @@ export default {
         box-shadow: inset 0 -2px 0 #2aa7ff;
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

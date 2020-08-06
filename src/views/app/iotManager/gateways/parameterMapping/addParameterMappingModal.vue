@@ -13,7 +13,7 @@
       </div>
       <div class="entity-sections" v-if="selectedEntity">
         <div v-if="selectedEntity === 'Gateway'">
-          <b-form-group>
+          <b-form-group v-if="streamingParams.length">
             <b-form-radio-group
               id="radio-group-1"
               v-model="selectedParam"
@@ -24,6 +24,7 @@
               @change="onGatewayParamChange"
             ></b-form-radio-group>
           </b-form-group>
+          <span v-else>No Streaming Params Found</span>
         </div>
         <div v-if="selectedEntity === 'Sensor'">
           <div class="vue-tree-container">
