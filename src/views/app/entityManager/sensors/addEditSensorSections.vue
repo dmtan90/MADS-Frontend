@@ -61,7 +61,7 @@
 import { mapGetters } from 'vuex'
 import sensorTypeService from '@/services/sensorType.service'
 import madsTree from './../../shared/madsTree/index'
-import userService from '@/services/user.service'
+import projectService from '@/services/project.service'
 
 export default {
   components: {
@@ -105,8 +105,8 @@ export default {
   },
   methods: {
     loadUsers () {
-      let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 100 })
+      let config = { orgId: this.currentUser.org.id, id: this.selectedProject.id }
+      projectService.readUsers(config, { page_size: 100 })
         .then((response) => {
           this.caretakers = response.users
         })

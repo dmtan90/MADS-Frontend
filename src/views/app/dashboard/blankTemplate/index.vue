@@ -133,6 +133,7 @@ export default {
       return this.widgetObject[item.i].uuid
     },
     onSaveDashboard (name) {
+      this.isEditMode = false
       let widgetLayots = {}
 
       this.$_.forEach(this.layout, (item) => {
