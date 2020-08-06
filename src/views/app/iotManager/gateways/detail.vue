@@ -132,6 +132,27 @@
               </div>
             </div>
           </div>
+
+          <div class="security-box">
+            <div class="header">Timestamp</div>
+            <div class="body-box">
+              <div class="edit-btn">
+                <button @click="editTimestamp()">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                  </svg>
+                </button>
+              </div>
+              <div class="items-row">
+                <div class="item-main">
+                  Mapping:
+                </div>
+                <div class="item">
+                  {{timestampMapping || 'No Mapping Found'}}
+                </div>
+              </div>
+            </div>
+          </div>
         </b-tab>
         <b-tab title="Latest Logs">
           <latest-logs-section></latest-logs-section>
@@ -158,6 +179,7 @@
     <add-edit-streaming-param @saveData="streamingParamsData" ref="addEditStreamingParam"></add-edit-streaming-param>
     <add-edit-credentials ref="addEditCredentials"></add-edit-credentials>
     <add-edit-security ref="addEditSecurity"></add-edit-security>
+    <timestamp-mapping ref="timeStampModal"></timestamp-mapping>
   </div>
 
 </template>
@@ -171,6 +193,7 @@ import addEditStaticParam from './addEditStaticParam'
 import addEditStreamingParam from './addEditStreamingParam'
 import addEditCredentials from './details/addEditDetailsCred'
 import addEditSecurity from './details/addEditSecurity'
+import timestampMapping from './details/timestampMappingModal'
 import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
 import parameterMappingSection from './parameterMapping/parameterMappingSection'
@@ -184,6 +207,7 @@ export default {
     addEditStreamingParam,
     addEditCredentials,
     addEditSecurity,
+    timestampMapping,
     parameterMappingSection,
     latestLogsSection,
     vueJsonEditor
@@ -199,7 +223,8 @@ export default {
       security: {},
       commands: {},
       mappedParams: {},
-      gateway: {}
+      gateway: {},
+      timestampMapping: ''
     }
   },
   methods: {
@@ -261,7 +286,6 @@ export default {
       this.$refs.addEditStaticParam.edit(detail)
     },
     deleteStaticParam (detail) {
-
     },
     addStaticParam () {
       this.$refs.addEditStaticParam.add()
@@ -273,7 +297,6 @@ export default {
       this.$refs.addEditStreamingParam.edit(detail)
     },
     deleteStreamParam (detail) {
-
     },
     editCredentials (credentials) {
       this.$refs.addEditCredentials.edit(credentials)
@@ -322,6 +345,9 @@ export default {
         .then((res) => {
           GatewayEventBus.$emit('reload-gateways')
         })
+    },
+    editTimestamp () {
+      this.$refs.timeStampModal.edit()
     }
   },
   computed: {

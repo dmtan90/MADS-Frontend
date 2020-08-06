@@ -24,7 +24,6 @@
 import { mapGetters } from 'vuex'
 import madsSingleSectionModal from '../../../shared/madsSingleSectionModal'
 import GatewayEventBus from '../gatewayEventBus'
-import TreeEventBus from '../../../shared/madsTree/treeEventBus'
 import gatewayService from '@/services/gateway.service'
 
 export default {
