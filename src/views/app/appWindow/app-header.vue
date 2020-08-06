@@ -15,7 +15,7 @@
           <use xlink:href="/assets/img/mads-app-window-icons.svg#collapse"></use>
         </svg>
       </div>
-      <div class="window-icons" @click="closeApp(appVuexState.appKey)">
+      <div class="window-icons" @click="closeApp(appVuexState)">
         <svg class="icon close-icon">
           <use xlink:href="/assets/img/mads-app-window-icons.svg#close"></use>
         </svg>
