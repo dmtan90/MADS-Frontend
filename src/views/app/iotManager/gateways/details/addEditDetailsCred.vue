@@ -76,6 +76,7 @@ export default {
         gatewayService.update(config, gatewayData)
           .then((res) => {
             GatewayEventBus.$emit('reload-gateways')
+            GatewayEventBus.$emit('reload-gateway')
           })
       } else {
         gatewayService.create(config, gatewayData)

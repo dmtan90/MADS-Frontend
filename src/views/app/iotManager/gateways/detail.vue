@@ -179,7 +179,7 @@
     <add-edit-streaming-param @saveData="streamingParamsData" ref="addEditStreamingParam"></add-edit-streaming-param>
     <add-edit-credentials ref="addEditCredentials"></add-edit-credentials>
     <add-edit-security ref="addEditSecurity"></add-edit-security>
-    <timestamp-mapping ref="timeStampModal"></timestamp-mapping>
+    <timestamp-mapping ref="timeStampModal" :timestampMapping="timestampMapping"></timestamp-mapping>
   </div>
 
 </template>
@@ -229,6 +229,8 @@ export default {
   },
   methods: {
     async loadGatewayData () {
+      let loader = this.$loading.show()
+
       const config = {
         orgId: this.currentUser.org.id,
         projectId: this.selectedProject.id,
@@ -242,6 +244,8 @@ export default {
 
       gatewayService.readId(config, params)
         .then((res) => {
+          loader.hide()
+
           this.gateway = res
           let filterData = res
 
@@ -278,6 +282,8 @@ export default {
               value: data.value
             }
           })
+
+          this.timestampMapping = filterData.timestamp_mapping || ''
 
           this.mappedParams = filterData.mapped_parameters
         })
@@ -355,6 +361,10 @@ export default {
   },
   mounted () {
     this.loadGatewayData()
+
+    GatewayEventBus.$on('reload-gateway', () => {
+      this.loadGatewayData()
+    })
   }
 }
 </script>

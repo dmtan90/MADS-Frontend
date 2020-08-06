@@ -10,7 +10,7 @@
         </div>
         <b-form class="main-panel">
             <b-form-group label="Add New Mapping" label-for="timestamp-mapping">
-              <b-form-input v-model="timestampMapping" type="text" id="timestamp-mapping"></b-form-input>
+              <b-form-input v-model="mapping" type="text" id="timestamp-mapping"></b-form-input>
             </b-form-group>
         </b-form>
     </template>
@@ -27,9 +27,15 @@ export default {
   components: {
     madsSingleSectionModal
   },
+  props: {
+    timestampMapping: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
-      timestampMapping: ''
+      mapping: ''
     }
   },
   methods: {
@@ -37,19 +43,27 @@ export default {
       this.$refs.madsSingleSectionModal.$refs.timestampMapping.show()
     },
     updateTimestamp () {
-      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: this.selectedGateway.id }
       let data = {
-        timestamp_mapping: this.timestampMapping
+        timestamp_mapping: this.mapping
       }
 
       gatewayService.update(config, data)
         .then((res) => {
-          GatewayEventBus.$emit('reload-gateways')
+          GatewayEventBus.$emit('reload-gateway')
         })
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedProject'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedGateway'])
+  },
+  watch: {
+    timestampMapping () {
+      this.mapping = this.timestampMapping
+    }
+  },
+  mounted () {
+    this.mapping = this.timestampMapping
   }
 }
 </script>
