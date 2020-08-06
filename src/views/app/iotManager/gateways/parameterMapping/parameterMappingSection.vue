@@ -461,9 +461,11 @@ export default {
   }
   .edit-mappings {
     display: flex;
+    height: 700px;
     .mapping-actions {
       width: 400px;
       border: 1px solid #e2e2e2;
+      border-left: none;
       margin: 0 0 0 auto;
       padding: 20px 0px;
       position: relative;
@@ -489,6 +491,9 @@ export default {
     }
     .tree-container {
       width: calc(100% - 250px);
+      border: 1px solid #e2e2e2;
+      height: 700px;
+      overflow: auto;
     }
   }
   .json-print {
