@@ -22,6 +22,7 @@ import { mapGetters } from 'vuex'
 import madsTree from './../../shared/madsTree/madsTree'
 import treeService from '@/services/tree.service'
 import entityService from '@/services/entity.service'
+import orgService from '@/services/organization.service'
 import TreeEventBus from './treeEventBus'
 
 export default {
@@ -85,7 +86,21 @@ export default {
         .read(config)
         .then(response => {
           this.orgData = response
-          this.treeData = treeService.initData(this.orgData, 'sensor-parameter', {
+          this.treeData = treeService.initData(this.orgData, {
+            selectedNodes: this.selectedNodes,
+            hiddenEntities: this.hiddenEntities,
+            selectableEntities: this.selectableEntities,
+            editingEntity: this.editingEntity
+          })
+        })
+    },
+    loadOrgEntities () {
+      let config = { orgId: this.currentUser.org.id }
+      orgService
+        .readEntities(config)
+        .then(response => {
+          this.orgData = response
+          this.treeData = treeService.initData(this.orgData, {
             selectedNodes: this.selectedNodes,
             hiddenEntities: this.hiddenEntities,
             selectableEntities: this.selectableEntities,
@@ -166,7 +181,8 @@ export default {
   },
   mounted () {
     this.options = this.$_.merge(this.options, this.treeOptions)
-    this.loadProjectEntities()
+    // this.loadProjectEntities()
+    this.loadOrgEntities()
 
     TreeEventBus.$on('add-entity', (entityData, entityType) => {
       this.addEntity(entityData, entityType)

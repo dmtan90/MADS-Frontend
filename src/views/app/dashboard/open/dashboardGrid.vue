@@ -65,7 +65,7 @@ export default {
       this.$refs.addEditDashboard.edit(dashboard)
     },
     deleteDashboard (dashboard) {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: dashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: dashboard.id }
       dashboardService.delete(config)
         .then((response) => {
           DashboardEventBus.$emit('reload-dashboards')

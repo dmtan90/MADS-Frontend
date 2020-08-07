@@ -216,7 +216,7 @@ export default {
       }
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)
         .then((response) => {
@@ -233,7 +233,7 @@ export default {
         series: this.dataSeries
       }
 
-      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
       dashboardService.createWidgetInstance(config, params)
         .then((response) => {
           this.updateDashbaord(response)

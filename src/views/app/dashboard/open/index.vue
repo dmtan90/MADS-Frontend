@@ -44,7 +44,7 @@ export default {
   methods: {
     ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard']),
     loadDashboards () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id }
 
       dashboardService.read(config)
         .then((response) => {
@@ -53,7 +53,7 @@ export default {
     },
     loadDashboard (id) {
       let loader = this.$loading.show()
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: id }
+      let config = { orgId: this.currentUser.org.id, id: id }
 
       dashboardService.readId(config)
         .then((response) => {

@@ -90,7 +90,7 @@ const treeService = {
     return icon
   },
 
-  initData: function (entity, type = 'sensor-parameter', options) {
+  initData: function (entity, options) {
     return this._initSensorParameterData(entity, options.selectedNodes, options.hiddenEntities, options.selectableEntities, options.editingEntity)
   },
 

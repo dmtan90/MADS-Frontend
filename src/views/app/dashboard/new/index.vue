@@ -136,7 +136,7 @@ export default {
     },
     onCreateDashboard (name) {
       let params = { name: name, settings: {}, widget_layouts: {} }
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id }
 
       dashboardService.create(config, params)
         .then((response) => {

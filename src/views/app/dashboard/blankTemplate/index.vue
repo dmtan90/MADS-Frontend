@@ -144,7 +144,7 @@ export default {
         name: name,
         widget_layouts: widgetLayots
       }
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)
         .then((response) => {
@@ -156,7 +156,7 @@ export default {
       delete widgetLayots[item.i]
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)
         .then((response) => {
@@ -165,7 +165,7 @@ export default {
     },
     reloadSelectedDasbhoard () {
       let loader = this.$loading.show()
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.readId(config)
         .then((response) => {
@@ -177,7 +177,7 @@ export default {
       let widgetInstanceId = this.widgetObject[item.i].id
       let widgetId = this.widgetObject[item.i].widget_id
 
-      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
 
       dashboardService.deleteWidgetInstance(config)
         .then((response) => {

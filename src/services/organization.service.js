@@ -19,6 +19,15 @@ const organizationService = {
     } catch (error) {
       return error.data
     }
+  },
+  readEntities: async function (config) {
+    try {
+      const response = await ApiService.get(resource + '/' + config.orgId + '/entities')
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 
