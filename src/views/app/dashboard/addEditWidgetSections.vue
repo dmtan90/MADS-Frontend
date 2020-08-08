@@ -4,11 +4,6 @@
     <section v-if="selectedSectionIndex === 1" class="select-widget">
       <div class="widgets-section">
         <div class="widgets">
-          <ul class="widgets-classification">
-            <li :class="{'active': selectedClassification === 'timeseries'}" @click="selectClassfication('timeseries')">Timeseries</li>
-            <li :class="{'active': selectedClassification === 'latest'}" @click="selectClassfication('latest')">Latest</li>
-            <li :class="{'active': selectedClassification === 'standard'}" @click="selectClassfication('standard')">Standard</li>
-          </ul>
           <b-row v-if="editMode && this.selectedWidget">
             <b-colxx lg="10" md="10" sm="12" xs="12" xxs="12" class="widget">
               <div class="widget-container edit">
@@ -22,6 +17,11 @@
             </b-colxx>
           </b-row>
           <div v-else>
+            <ul class="widgets-classification">
+              <li :class="{'active': selectedClassification === 'timeseries'}" @click="selectClassfication('timeseries')">Timeseries</li>
+              <li :class="{'active': selectedClassification === 'latest'}" @click="selectClassfication('latest')">Latest</li>
+              <li :class="{'active': selectedClassification === 'standard'}" @click="selectClassfication('standard')">Standard</li>
+            </ul>
             <b-row v-if="widgetsLoaded">
               <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetClassifcation[selectedClassification]" :key="index">
                 <div class="widget-container" @click="setSelectedWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
