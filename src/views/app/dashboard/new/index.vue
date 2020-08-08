@@ -60,21 +60,6 @@ export default {
           imageUrl: ''
         },
         {
-          name: 'Shea',
-          key: 'shea',
-          imageUrl: '/assets/img/shea.png'
-        },
-        {
-          name: 'Hevea',
-          key: 'hevea',
-          imageUrl: '/assets/img/hevea.png'
-        },
-        {
-          name: 'Smart Agriculture',
-          key: 'smart_agriculture',
-          imageUrl: '/assets/img/smart_agriculture.png'
-        },
-        {
           name: 'Amsterdam',
           imageUrl: '/assets/img/amsterdam.jpg'
         },
