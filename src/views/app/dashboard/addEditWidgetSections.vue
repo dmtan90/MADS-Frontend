@@ -4,6 +4,11 @@
     <section v-if="selectedSectionIndex === 1" class="select-widget">
       <div class="widgets-section">
         <div class="widgets">
+          <ul class="widgets-classification">
+            <li :class="{'active': selectedClassification === 'timeseries'}" @click="selectClassfication('timeseries')">Timeseries</li>
+            <li :class="{'active': selectedClassification === 'latest'}" @click="selectClassfication('latest')">Latest</li>
+            <li :class="{'active': selectedClassification === 'standard'}" @click="selectClassfication('standard')">Standard</li>
+          </ul>
           <b-row v-if="editMode && this.selectedWidget">
             <b-colxx lg="10" md="10" sm="12" xs="12" xxs="12" class="widget">
               <div class="widget-container edit">
@@ -16,18 +21,20 @@
               </div>
             </b-colxx>
           </b-row>
-          <b-row v-else>
-            <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetList" :key="index">
-              <div class="widget-container" @click="setSelectedWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
-                <div class="widget-image">
-                  <img :src="widget.image_url" alt="">
+          <div v-else>
+            <b-row v-if="widgetsLoaded">
+              <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetClassifcation[selectedClassification]" :key="index">
+                <div class="widget-container" @click="setSelectedWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
+                  <div class="widget-image">
+                    <img :src="widget.image_url" alt="">
+                  </div>
+                  <div class="widget-info">
+                    <h3>{{widget.label}}</h3>
+                  </div>
                 </div>
-                <div class="widget-info">
-                  <h3>{{widget.label}}</h3>
-                </div>
-              </div>
-            </b-colxx>
-          </b-row>
+              </b-colxx>
+            </b-row>
+          </div>
         </div>
       </div>
     </section>
@@ -108,9 +115,10 @@ export default {
   },
   data () {
     return {
-      selectedCategory: 'charts',
+      selectedClassification: 'timeseries',
       selectedWidget: null,
       widgetDetail: null,
+      widgetClassifcation: {},
       widgetList: [],
       dataSeries: [],
       selectedSettingsType: 'visualSettings',
@@ -125,7 +133,8 @@ export default {
         singleSelect: false
       },
       dataTypeMap: dataTypeMap,
-      selectedNodes: []
+      selectedNodes: [],
+      widgetsLoaded: false
     }
   },
   methods: {
@@ -138,7 +147,8 @@ export default {
       }
       return result
     },
-    setCategory (category) {
+    selectClassfication (classification) {
+      this.selectedClassification = classification
     },
     setSettingsType (type) {
       this.selectedSettingsType = type
@@ -198,9 +208,12 @@ export default {
     },
     loadWidgets () {
       widgetService
-        .read({ page_number: 1, page_size: 100 })
+        .readFiltered({ page_number: 1, page_size: 100 })
         .then(response => {
-          this.widgetList = response.widgets
+          this.$_.forEach(response.data, (classification) => {
+            this.widgetClassifcation[classification.classification] = classification.widgets
+          })
+          this.widgetsLoaded = true
         })
     },
     findDashboardYOffset () {
@@ -359,6 +372,22 @@ export default {
             h3 {
               font-size: 21px;
             }
+          }
+        }
+      }
+      .widgets-classification {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        li {
+          font-size: 16px;
+          padding: 0 15px;
+          cursor: pointer;
+          border-bottom: 1px solid #e2e2e2;
+          min-width: 120px;
+          text-align: center;
+          &.active {
+            border-bottom: 3px solid #4c92c3;
           }
         }
       }

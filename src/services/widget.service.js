@@ -27,7 +27,16 @@ const widgetService = {
     } catch (error) {
       return error.data
     }
-  }
+  },
+  readFiltered: async function (params) {
+    try {
+      const response = await ApiService.get(resource + '/filtered', { params })
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
 }
 
 export default widgetService

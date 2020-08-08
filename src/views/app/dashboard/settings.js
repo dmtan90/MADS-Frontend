@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 const dataTypeMap = {
+  'integer': 'number',
   'string': 'text',
   'boolean': 'checkbox',
   'color': 'color'
@@ -89,6 +90,7 @@ const renderSetting = (createElement, context, setting, key, isHeader = false) =
       settingTemplate = renderObject(createElement, context, setting, key, isHeader)
       break
     case 'string':
+    case 'integer':
     case 'boolean':
     case 'color':
       settingTemplate = renderInput(createElement, context, setting, key)
