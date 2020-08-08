@@ -24,14 +24,14 @@
       </div>
     </div>
     <div id="canvas-options" class="tree-section" v-show="leftPanelSection === 'data'">
-      <div class="section-toggle">
+      <!-- <div class="section-toggle">
         <div class="section" :class="{ active: treeSection === 'sensor_parameters' }" @click="toggleTreeSection('sensor_parameters')">
           Sensor Parameters
         </div>
         <div class="section" draggable="true" :class="{ active: treeSection === 'asset_properties' }" @click="toggleTreeSection('asset_properties')">
           Asset Properties
         </div>
-      </div>
+      </div> -->
       <div class="vue-tree-container">
         <mads-tree
           ref="tree"

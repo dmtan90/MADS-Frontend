@@ -85,10 +85,14 @@ export default {
   },
   methods: {
     loadProjectEntities () {
+      let loader = this.$loading.show()
+
       let config = { orgId: this.currentUser.org.id, projectId: (this.selectedProject ? this.selectedProject.id : 1) }
       entityService
         .read(config)
         .then(response => {
+          loader.hide()
+
           this.orgData = response
           this.treeData = treeService.initData(this.orgData, {
             selectedNodes: this.selectedNodes,
@@ -99,10 +103,14 @@ export default {
         })
     },
     loadOrgEntities () {
+      let loader = this.$loading.show()
+
       let config = { orgId: this.currentUser.org.id }
       orgService
         .readEntities(config)
         .then(response => {
+          loader.hide()
+
           this.orgData = response
           this.treeData = treeService.initData(this.orgData, {
             selectedNodes: this.selectedNodes,
