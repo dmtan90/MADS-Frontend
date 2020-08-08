@@ -77,6 +77,10 @@ export default {
     },
     editingEntity: {
       default: null
+    },
+    type: {
+      type: String,
+      default: 'project'
     }
   },
   methods: {
@@ -181,8 +185,12 @@ export default {
   },
   mounted () {
     this.options = this.$_.merge(this.options, this.treeOptions)
-    // this.loadProjectEntities()
-    this.loadOrgEntities()
+
+    if (this.type === 'project') {
+      this.loadProjectEntities()
+    } else {
+      this.loadOrgEntities()
+    }
 
     TreeEventBus.$on('add-entity', (entityData, entityType) => {
       this.addEntity(entityData, entityType)

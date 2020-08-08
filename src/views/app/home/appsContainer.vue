@@ -121,7 +121,6 @@ export default {
     bottom: 60px;
     background-color: none;
     &.maximized {
-      background-color: white;
       height: calc(100% - 60px);
       width: 100%;
       left: 0;

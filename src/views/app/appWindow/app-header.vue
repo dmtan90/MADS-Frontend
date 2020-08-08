@@ -41,7 +41,7 @@ export default {
     height: 45px;
     width: 100%;
     color: #f8f8f8;
-    background-color: rgba(76, 146, 195, 1);
+    background-color: rgba(57, 63, 77, 0.9);
     align-items: center;
     padding-left: 20px;
     padding-right: 10px;

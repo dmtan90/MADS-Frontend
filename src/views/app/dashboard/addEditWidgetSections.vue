@@ -1,16 +1,22 @@
 <template>
   <div>
-    <h3>Add New Widget</h3>
+    <h3>{{ editMode ? 'Update Widget' : 'Add New Widget' }}</h3>
     <section v-if="selectedSectionIndex === 1" class="select-widget">
-      <!-- <div class="widget-category">
-        <span class="category" :class="{'active': selectedCategory === 'charts'}" @click="setCategory('charts')">Charts</span>
-        <span class="category" :class="{'active': selectedCategory === 'stocks'}" @click="setCategory('stocks')">Stocks</span>
-        <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
-        <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
-      </div> -->
       <div class="widgets-section">
         <div class="widgets">
-          <b-row>
+          <b-row v-if="editMode && this.selectedWidget">
+            <b-colxx lg="10" md="10" sm="12" xs="12" xxs="12" class="widget">
+              <div class="widget-container edit">
+                <div class="widget-image">
+                  <img :src="this.selectedWidget.image_url" alt="">
+                </div>
+                <div class="widget-info">
+                  <h3>{{this.selectedWidget.label}}</h3>
+                </div>
+              </div>
+            </b-colxx>
+          </b-row>
+          <b-row v-else>
             <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetList" :key="index">
               <div class="widget-container" @click="setSelectedWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
                 <div class="widget-image">
@@ -25,11 +31,7 @@
         </div>
       </div>
     </section>
-    <section v-if="selectedSectionIndex === 2" class="select-data">
-      <!-- <div class="widget-category data-type-category">
-        <span class="category" :class="{'active': selectedDataType === 'entityData'}" @click="setDataType('entityData')">Entity Data</span>
-        <span class="category" :class="{'active': selectedDataType === 'functionData'}" @click="setDataType('functionData')">Function</span>
-      </div> -->
+    <section v-show="selectedSectionIndex === 2" class="select-data">
       <div class="data-type-section">
         <div class="vue-tree-container">
           <mads-tree
@@ -37,7 +39,9 @@
             :treeView="'file'"
             :treeOptions="treeOptions"
             :hiddenEntities="[]"
+            :selectedNodes="selectedNodes"
             :selectableEntities="['SensorParameter']"
+            :type="'organization'"
           ></mads-tree>
         </div>
       </div>
@@ -49,7 +53,7 @@
       </div>
       <div v-if="selectedSettingsType === 'visualSettings'">
         <div class="visual-settings">
-            <settings :settings="visualSettings" @on-setting-upate="onVisualSettingsUpdate"></settings>
+            <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate"></settings>
           </div>
       </div>
       <div v-if="selectedSettingsType === 'dataSettings'">
@@ -59,7 +63,8 @@
               <div class="setting" v-for="(setting, index) in dataSettings[1].properties" :key="index">
                 <div v-if="setting.key !== 'multiple'">
                   <span class="setting-key">{{setting.key}}</span>
-                  <b-form-input :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="dataSeries[seriesIndex][setting.key]"></b-form-input>
+                  <b-form-input v-if="seriesProp[seriesIndex]" :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="seriesProp[seriesIndex][setting.key]"></b-form-input>
+                  <b-form-input v-else :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="dataSeries[seriesIndex][setting.key]"></b-form-input>
                 </div>
               </div>
             </div>
@@ -96,6 +101,9 @@ export default {
     editMode: {
       type: Boolean,
       default: false
+    },
+    widgetData: {
+      type: Object
     }
   },
   data () {
@@ -110,11 +118,14 @@ export default {
       visualSettings: [],
       dataSettings: [],
       dataProp: {},
+      visualProp: {},
+      seriesProp: [],
       treeOptions: {
         selectable: true,
-        singleSelect: true
+        singleSelect: false
       },
-      dataTypeMap: dataTypeMap
+      dataTypeMap: dataTypeMap,
+      selectedNodes: []
     }
   },
   methods: {
@@ -134,7 +145,7 @@ export default {
     },
     setSelectedWidget (widget) {
       this.selectedWidget = widget
-      this.loadSelectedWidget(widget)
+      this.loadSelectedWidget(widget.id)
     },
     setDataSeries () {
       this.selectedDataSeries = this.$refs.tree.getSelectedNodes()
@@ -149,7 +160,7 @@ export default {
               'source_metadata': {
                 'entity_type': 'sensor',
                 'entity_id': selectedData.parentId,
-                'parameter': (axis === 'x') ? 'inserted_timestamp' : selectedData.name
+                'parameter': (axis === 'x') ? 'inserted_timestamp' : selectedData.uuid
               }
             })
           }
@@ -168,17 +179,21 @@ export default {
         this.dataSeries = this.$_.concat(this.dataSeries, dataSerie)
       })
     },
-    loadSelectedWidget (selectedWidget) {
+    loadSelectedWidget (id) {
       widgetService
-        .readId(selectedWidget.id)
+        .readId(id)
         .then(response => {
           this.widgetDetail = response
-          this.isMultipleSeries = this.widgetDetail.data_prop.series.multiple
-          this.treeOptions = this.$_.merge(this.treeOptions, { singleSelect: !this.isMultipleSeries })
-          this.visualSettings = this.widgetDetail.visual_settings
-          this.visualProp = this.widgetDetail.visual_prop
+
           this.dataSettings = this.widgetDetail.data_settings
           this.dataProp = this.widgetDetail.data_prop
+          this.visualSettings = this.widgetDetail.visual_settings
+
+          if (!this.editMode) {
+            this.visualProp = this.widgetDetail.visual_prop
+          }
+
+          this.selectedWidget = response
         })
     },
     loadWidgets () {
@@ -248,6 +263,29 @@ export default {
   },
   mounted () {
     this.loadWidgets()
+
+    if (this.widgetData) {
+      this.loadSelectedWidget(this.widgetData.widget_id)
+
+      let yAxisIndex = 0
+
+      this.$_.forEach(this.widgetData.series_data[0].axes, (axis, index) => {
+        if (axis.name === 'y') {
+          yAxisIndex = index
+        }
+      })
+
+      this.$_.forEach(this.widgetData.series_data, (series) => {
+        let sourceDetails = series.axes[yAxisIndex].source_details
+        this.selectedNodes = this.$_.concat(this.selectedNodes, {
+          id: sourceDetails.parameter,
+          type: 'SensorParameter'
+        })
+      })
+
+      this.visualProp = this.widgetData.visual_properties
+      this.seriesProp = this.widgetData.series
+    }
   }
 }
 </script>
@@ -310,6 +348,18 @@ export default {
         }
         &.active {
           border: 2px solid #4c92c3;
+        }
+        &.edit {
+          border: 1px solid #e2e2e2;
+          .widget-image {
+            height: 300px;
+            max-height: 300px;
+          }
+          .widget-info {
+            h3 {
+              font-size: 21px;
+            }
+          }
         }
       }
       .widget {

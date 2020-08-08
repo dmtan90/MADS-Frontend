@@ -33,12 +33,13 @@ export default {
   .app-sidebar {
     width: 100px;
     display: inline-block;
-    height: calc(100% - 40px);
+    height: calc(100% - 45px);
     border-right: 1px solid rgba(242, 242, 242, 1);
     position: absolute;
-    top: 40px;
+    top: 45px;
     overflow: auto;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
+    background-color: white;
     .section {
       height: 100px;
       border-bottom: 1px solid rgba(242, 242, 242, 1);

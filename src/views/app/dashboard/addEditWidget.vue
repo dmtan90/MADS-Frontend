@@ -11,14 +11,14 @@
     @on-cancel="onCancel()"
     @on-save="saveWidget()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :widgetData="widget"></sections>
     </template>
   </mads-modal>
 </template>
 
 <script>
 import madsModal from './../shared/madsModal'
-import sections from './addWidgetSections'
+import sections from './addEditWidgetSections'
 
 export default {
   components: {
@@ -38,12 +38,26 @@ export default {
         index: 3,
         name: 'Settings'
       }],
-      selectedSectionIndex: 1
+      selectedSectionIndex: 1,
+      widget: null
     }
   },
   methods: {
+    add () {
+      this.editMode = false
+      this.$refs.madsModal.$refs.addWidgetModal.show()
+      this.widget = null
+    },
+    edit (widget) {
+      this.editMode = true
+      this.$refs.madsModal.$refs.addWidgetModal.show()
+      this.widget = widget
+    },
     selectSection (index) {
       this.selectedSectionIndex = index
+      if (this.selectedSectionIndex === 3) {
+        this.$refs.sections.setDataSeries()
+      }
     },
     nextSection () {
       this.selectedSectionIndex++

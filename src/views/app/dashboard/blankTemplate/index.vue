@@ -55,9 +55,9 @@
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
                     <div class="actions" v-if="isEditMode">
-                      <!-- <svg class="icon" @click="editWidget(item)">
+                      <svg class="icon" @click="editWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
-                      </svg> -->
+                      </svg>
                       <svg class="icon" @click="deleteWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
@@ -76,6 +76,7 @@
         </div>
       </div>
     </div>
+    <edit-widget ref="editWidget"></edit-widget>
   </div>
 </template>
 
@@ -86,11 +87,13 @@ import widget from './../../shared/widgets/highChart'
 import VueGridLayout from 'vue-grid-layout'
 import dasbhoardEventBus from './../dashboardBus'
 import dashboardService from '@/services/dashboard.service'
+import editWidget from './../addEditWidget'
 
 export default {
   components: {
     dashboardHeader,
     widget,
+    editWidget,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem
   },
@@ -185,6 +188,8 @@ export default {
         })
     },
     editWidget (item) {
+      let widget = this.widgetObject[item.i]
+      this.$refs.editWidget.edit(widget)
     }
   },
   watch: {
@@ -290,8 +295,10 @@ export default {
       position: relative;
       .widgets-wrap {
         width: 100%;
-        height: 100%;
+        height: calc(100% - 50px);
         padding: 10px;
+        margin-top: 50px;
+        overflow: auto;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;
@@ -299,7 +306,7 @@ export default {
             box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
             .actions {
               position: absolute;
-              width: 40px;
+              width: 90px;
               height: 40px;
               background-color: #4c92c3;
               right: 0;
