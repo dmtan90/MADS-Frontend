@@ -27,6 +27,9 @@
           <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
             <b-form-input v-model="metadata.unit"></b-form-input>
           </b-form-group>
+          <svg class="icon" @click="removeMetadata(index)">
+            <use xlink:href="/assets/img/mads-common-icons.svg#minus"></use>
+          </svg>
         </b-form>
         <b-button class="add-new-row" @click="addNewMetadata()">
           <svg class="icon">
@@ -104,7 +107,13 @@ export default {
       if (!this.assetType.sensor_type_present) {
         delete this.assetType.parameters
       }
+
+      this.$_.remove(this.assetType.metadata, (metadata) => { return !metadata.name })
+
       return this.assetType
+    },
+    removeMetadata (index) {
+      this.assetType.metadata.splice(index, 1)
     }
   },
   mounted () {
@@ -114,8 +123,8 @@ export default {
       this.assetType = {
         name: this.assetTypeData.name || '',
         description: this.assetTypeData.description || '',
-        metadata: this.$_.size(this.assetTypeData.metadata) ? this.assetTypeData.metadata : [{ name: '', data_type: '', unit: '' }],
-        parameters: this.$_.size(this.assetTypeData.parameters) ? this.assetTypeData.parameters : [{ name: '', data_type: '', unit: '' }],
+        metadata: this.$_.size(this.assetTypeData.metadata) ? this.assetTypeData.metadata : [],
+        parameters: this.$_.size(this.assetTypeData.parameters) ? this.assetTypeData.parameters : [],
         generated_by: 'user',
         sensor_type_present: this.assetTypeData.sensor_type_present
       }
@@ -150,6 +159,12 @@ export default {
       }
       .unit {
         width: 20%;
+      }
+      .icon {
+        width: 24px;
+        height: 24px;
+        fill: #d11a2a;
+        cursor: pointer;
       }
     }
     .add-new-row {

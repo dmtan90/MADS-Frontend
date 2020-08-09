@@ -9,18 +9,14 @@
       <template v-slot:checkbox>
         <b-form-checkbox></b-form-checkbox>
       </template>
-      <template v-slot:assets="props">
-        <span>
-          {{renderList(props.rowData.assets)}}
-        </span>
-      </template>
       <template v-slot:apps="props">
         <span>
-          {{renderList(props.rowData.apps)}}
+          {{props.rowData.apps.length}}
         </span>
       </template>
       <template v-slot:actions="props">
         <span @click="editUser(props.rowData)" class="edit-user">Edit</span>
+        <span @click="deleteUser(props.rowData)" class="delete-user">Delete</span>
       </template>
     </vuetable>
 
@@ -49,11 +45,14 @@ export default {
     renderList (list) {
       return this.$_.join(list, ', ')
     },
-    addUser (project) {
-      this.$refs.addEditProject.add()
+    addUser (user) {
+      this.$refs.addEditUser.add()
     },
     editUser (user) {
-      this.$refs.addEditProject.edit(project)
+      this.$refs.addEditUser.edit(user)
+    },
+    deleteUser (project){
+
     }
   }
 }
@@ -66,6 +65,12 @@ export default {
       text-decoration: underline;
       color: #2aa7ff;
       cursor: pointer;
+    }
+    .delete-user{
+      text-decoration: underline;
+      color: #2aa7ff;
+      cursor: pointer;
+      margin-left: 5px;
     }
   }
 </style>

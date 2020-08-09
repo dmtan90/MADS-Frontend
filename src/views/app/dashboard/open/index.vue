@@ -1,37 +1,43 @@
 <template>
   <div class="h-100">
-    <div class="templates" v-if="!selectedDashboard">
-      <h2 class="page-heading">Hello Sumanta, you have {{templates.length}} Dashboards</h2>
+    <div class="dashboards" v-if="showAllDashboards">
+      <h2 class="page-heading">Hello Sumanta, you have {{dashboards.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
-          <li class="active">Active ({{templates.length}})</li>
+          <li class="active">Active ({{dashboards.length}})</li>
           <li class="" v-if="!source">Archived (0)</li>
         </ul>
       </div>
-      <template-grid :templates="templates" :source="source" @select-theme="selectTheme($event)"></template-grid>
+      <dashboard-grid :dashboards="dashboards" :source="source" @select-dashboard="onSelectDashboard"></dashboard-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="selectTheme(null)"></shea-template>
-      <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="selectTheme(null)"></hevea-template>
-      <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="selectTheme(null)">
-      </smart-agriculture-template>
+      <blank-template v-if="!selectedDashboard.dummy" @show-all="onShowAllDashboards"></blank-template>
+      <div v-else class="h-100">
+        <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="onShowAllDashboards()"></shea-template>
+        <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="onShowAllDashboards()"></hevea-template>
+        <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="onShowAllDashboards()"></smart-agriculture-template>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import templateGrid from './templateGrid'
+import dashboardGrid from './dashboardGrid'
+import dashboardService from '@/services/dashboard.service'
+import blankTemplate from './../blankTemplate'
 import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
 import smartAgricultureTemplate from './../smartAgricultureTemplate'
+import DashboardEventBus from './../dashboardBus'
 
 export default {
   components: {
-    templateGrid,
+    dashboardGrid,
+    blankTemplate,
     sheaTemplate,
-    heveaTemplate,
-    smartAgricultureTemplate
+    smartAgricultureTemplate,
+    heveaTemplate
   },
   props: {
     source: {
@@ -41,69 +47,84 @@ export default {
   data () {
     return {
       templates: [],
-      viewType: this.source ? 'grid' : 'list'
+      dashboards: [],
+      showAllDashboards: true,
+      viewType: this.source ? 'grid' : 'list',
+      selectedDashboard: {}
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'selectDashboard']),
-    loadTemplates () {
-      this.templates = [
-        {
-          id: 1,
-          name: 'Shea',
-          key: 'shea',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/shea.png'
-        },
-        {
-          id: 1,
-          name: 'HeveaConnect',
-          key: 'hevea',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/hevea.png'
-        },
-        {
-          id: 1,
-          name: 'Smart Agriculture',
-          key: 'smart_agriculture',
-          description: 'This is template descrption',
-          users: [{ first_name: 'Vikram', last_name: 'Singh' }, { first_name: 'Chandra', last_name: 'Shekhar' }, { first_name: 'Ayoush', last_name: 'Singh' }],
-          leads: [{ first_name: 'Arjun', last_name: 'Singh' }],
-          metadata: [{ name: 'metadata1', data_type: 'string', unit: 'unit1', value: 'value1' }],
-          template_image: '/assets/img/smart_agriculture.png'
-        }
-      ]
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard']),
+    loadDashboards () {
+      let config = { orgId: this.currentUser.org.id }
+
+      dashboardService.read(config)
+        .then((response) => {
+          this.dashboards = response.dashboards
+
+          this.dashboards = this.$_.concat(this.dashboards, [
+            {
+              name: 'Shea',
+              key: 'shea',
+              imageUrl: '/assets/img/shea.png',
+              dummy: true
+            },
+            {
+              name: 'Hevea',
+              key: 'hevea',
+              imageUrl: '/assets/img/hevea.png',
+              dummy: true
+            },
+            {
+              name: 'Smart Agriculture',
+              key: 'smart_agriculture',
+              imageUrl: '/assets/img/smart_agriculture.png',
+              dummy: true
+            }
+          ])
+        })
     },
-    selectTheme (theme) {
-      this.selectDashboard(theme)
-      if (theme) {
-        this.hideAppSidebar('Dashboards')
-      } else {
-        this.showAppSidebar('Dashboards')
+    loadDashboard (id) {
+      let loader = this.$loading.show()
+      let config = { orgId: this.currentUser.org.id, id: id }
+
+      dashboardService.readId(config)
+        .then((response) => {
+          this.setDashboard(response)
+          loader.hide()
+        })
+    },
+    onSelectDashboard (dashboard) {
+      this.selectedDashboard = dashboard
+      this.showAllDashboards = false
+
+      if (!dashboard.dummy) {
+        this.loadDashboard(dashboard.id)
       }
+    },
+    onShowAllDashboards () {
+      this.showAllDashboards = true
+      this.showAppSidebar('Dashboards')
     }
   },
   computed: {
-    ...mapGetters(['selectedDashboard'])
+    ...mapGetters(['currentUser'])
   },
   mounted () {
-    this.loadTemplates()
+    this.loadDashboards()
+
+    DashboardEventBus.$on('reload-dashboards', () => {
+      this.loadDashboards()
+    })
   },
   beforeDestroy () {
-    this.selectDashboard(null)
     this.showAppSidebar('Dashboards')
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .templates {
+  .dashboards {
     .page-heading {
       color: #3e4956;
       margin-bottom: 20px;
@@ -159,7 +180,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

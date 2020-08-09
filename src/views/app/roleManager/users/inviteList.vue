@@ -17,8 +17,8 @@
         <span class="reinvite" @click="reInviteUser(props.rowData)">Re-Invite</span>
       </template>
    </vuetable>
-
-    <invite-user-modal ref="reInviteUserModal" :roles="roles" :reinvite="true" :invitation="selectedInvitation"></invite-user-modal>
+    <add-edit-user ref="addEditUser" :roles="roles"></add-edit-user>
+    <!-- <invite-user-modal ref="reInviteUserModal" :roles="roles" :reinvite="true" :invitation="selectedInvitation"></invite-user-modal> -->
   </div>
 </template>
 
@@ -27,14 +27,14 @@ import Vuetable from 'vuetable-2'
 import { mapGetters } from 'vuex'
 import invitationDef from './invitationFieldDefs'
 import invitationService from '@/services/invitation.service'
-import inviteUserModal from './inviteUserModal'
 import EventBus from '../eventBus'
+import addEditUser from './addEditUser'
 
 export default {
   props: ['invitations', 'roles'],
   components: {
     Vuetable,
-    inviteUserModal
+    addEditUser
   },
   data () {
     return {
@@ -48,12 +48,11 @@ export default {
 
       invitationService.delete(config)
         .then((response) => {
-          EventBus.$emit('reload-invites')
+          EventBus.$emit('reload-users')
         })
     },
     reInviteUser (invitation) {
-      this.selectedInvitation = invitation
-      this.$refs.reInviteUserModal.$refs.inviteUserModal.show()
+      this.$refs.addEditUser.edit(invitation)
     }
   },
   computed: {

@@ -14,6 +14,7 @@
         <project-list v-if="entityManagerCurrentPage === 'index'" :source="'sensors-index'"></project-list>
         <sensors v-else></sensors>
       </div>
+      <help :appName="'Entity Manager'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
 </template>
@@ -26,6 +27,7 @@ import entityMap from './entityMap/index'
 import assets from './assets/index'
 import sensors from './sensors/index'
 import projectList from './../roleManager/projects/index'
+import help from './../shared/help'
 
 export default {
   components: {
@@ -34,7 +36,8 @@ export default {
     entityMap,
     assets,
     sensors,
-    projectList
+    projectList,
+    help
   },
   data () {
     return {

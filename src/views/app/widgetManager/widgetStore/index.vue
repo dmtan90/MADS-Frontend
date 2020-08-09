@@ -19,18 +19,32 @@
       </div>
     </div>
     <div class="widget-category">
-      <span class="category" :class="{'active': selectedCategory === 'charts'}" @click="setCategory('charts')">Charts</span>
-      <span class="category" :class="{'active': selectedCategory === 'stocks'}" @click="setCategory('stocks')">Stocks</span>
-      <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
-      <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
+      <span class="category" :class="{'active': selectedCategory === 'popular'}" @click="setCategory('popular')">Popular</span>
+      <span class="category" :class="{'active': selectedCategory === 'library'}" @click="setCategory('library')">Library</span>
+      <!-- <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
+      <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span> -->
     </div>
     <div class="widgets-section">
-      <div class="widgets">
+      <div class="widgets" v-if="selectedCategory === 'popular'">
         <b-row>
           <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in displayedWidgets" :key="index">
             <div class="widget-container">
               <div class="widget-image">
                 <img :src="widget.image_url" alt="" @click="openWidgetDetailPage(widget)">
+              </div>
+              <div class="widget-info">
+                <h3>{{widget.label}}</h3>
+              </div>
+            </div>
+          </b-colxx>
+        </b-row>
+      </div>
+      <div class="widgets" v-if="selectedCategory === 'library'">
+        <b-row>
+          <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetsLibrary" :key="index">
+            <div class="widget-container">
+              <div class="widget-image">
+                <img :src="widget.image_url" alt="">
               </div>
               <div class="widget-info">
                 <h3>{{widget.label}}</h3>
@@ -50,8 +64,9 @@ import widgetService from '@/services/widget.service'
 export default {
   data () {
     return {
-      selectedCategory: 'charts',
+      selectedCategory: 'popular',
       widgets: [],
+      widgetsLibrary: [],
       searchText: '',
       widgetSearchResults: [],
       displayedWidgets: []
@@ -68,11 +83,31 @@ export default {
     },
     loadWidgets () {
       widgetService
-        .read({ page_number: 1, page_size: 10 })
+        .read({ page_number: 1, page_size: 100 })
         .then(response => {
           this.widgets = response.widgets
           this.displayedWidgets = this.widgets
         })
+    },
+    loadWidgetsLibrary () {
+      this.widgetsLibrary = [
+        { label: 'Scatter Plot', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/scatter/thumbnail.png' },
+        { label: 'Bubble Chart', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bubble/thumbnail.png' },
+        { label: '3D bubbles', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bubble-3d/thumbnail.png' },
+        { label: 'Series Gauge', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-speedometer/thumbnail.png' },
+        { label: 'Sold Gauge', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-solid/thumbnail.png' },
+        { label: 'VU meter', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-vu-meter/thumbnail.png' },
+        { label: 'Clock', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-clock/thumbnail.png' },
+        { label: 'Heat map', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/heatmap/thumbnail.png' },
+        { label: 'Large heat map', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/heatmap-canvas/thumbnail.png' },
+        { label: 'Box plot', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/box-plot/thumbnail.png' },
+        { label: 'Bell curve', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bellcurve/thumbnail.png' },
+        { label: 'Histogram', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/histogram/thumbnail.png' },
+        { label: 'Single Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/basic-line/thumbnail.png' },
+        { label: 'Multiple Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/compare/thumbnail.png' },
+        { label: 'Stock chart with GUI', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/stock-tools-gui/thumbnail.png' },
+        { label: 'Area Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/intraday-area/thumbnail.png' }
+      ]
     },
     searchWidget () {
       if (this.searchText) {
@@ -89,6 +124,7 @@ export default {
   },
   mounted () {
     this.loadWidgets()
+    this.loadWidgetsLibrary()
   }
 }
 </script>

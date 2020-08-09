@@ -9,7 +9,7 @@ const projectService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   read: async function (config, params) {
@@ -18,7 +18,7 @@ const projectService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   update: async function (config, payload) {
@@ -27,7 +27,7 @@ const projectService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   delete: async function (config) {
@@ -36,7 +36,7 @@ const projectService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readId: async function (config) {
@@ -45,7 +45,16 @@ const projectService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
+    }
+  },
+  readUsers: async function (config, params) {
+    try {
+      const response = await ApiService.get('/orgs/' + config.orgId + resource + '/' + config.id + '/users', { params })
+
+      return response.data
+    } catch (error) {
+      return error.data
     }
   }
 }

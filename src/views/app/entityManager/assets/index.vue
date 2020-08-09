@@ -1,6 +1,6 @@
 <template>
   <div class="assets">
-    <h2 class="page-heading">Assets</h2>
+    <h2 class="page-heading">Assets of {{this.selectedProject.name}}</h2>
     <div>
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'assets'}" @click="selectedTab = 'assets'">Assets ({{assets.length}})</li>
@@ -36,7 +36,7 @@ export default {
     ...mapActions(['selectProject']),
     loadAssets () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      assetService.read(config, { page_number: 1, page_size: 10 })
+      assetService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.assets = response.assets
         })
@@ -44,7 +44,7 @@ export default {
     loadAssetTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
 
-      assetTypeService.read(config, { page_number: 1, page_size: 10 })
+      assetTypeService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.assetTypes = response.asset_types
         })
@@ -94,7 +94,7 @@ export default {
         box-shadow: inset 0 -2px 0 #2aa7ff;
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

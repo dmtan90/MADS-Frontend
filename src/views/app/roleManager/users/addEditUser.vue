@@ -20,8 +20,8 @@
 import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditUserSections'
-import userService from '@/services/user.service'
-import UserEventBus from './userEventBus'
+import invitationService from '@/services/invitation.service'
+import UserEventBus from './../eventBus'
 
 export default {
   props: {
@@ -42,9 +42,6 @@ export default {
         name: 'Details'
       }, {
         index: 2,
-        name: 'Assets'
-      }, {
-        index: 3,
         name: 'Apps'
       }],
       selectedSectionIndex: 1,
@@ -69,22 +66,25 @@ export default {
       this.selectedSectionIndex++
     },
     saveUser () {
-      let config = { orgId: this.currentUser.org.id }
-      let userData = this.$refs.sections.getUserData()
-
       if (this.editMode) {
-        config = this.$_.assign(config, { id: this.user.id })
-        userService.update(config, userData)
+        let payload = this.$refs.sections.getUserData()
+        let config = { orgId: this.currentUser.org.id, id: this.user.id }
+
+        invitationService.update(config, payload)
           .then((response) => {
             UserEventBus.$emit('reload-users')
           })
+        this.selectedSectionIndex = 1
       } else {
-        userService.create(config, userData)
+        let payload = this.$refs.sections.getUserData()
+        let config = { orgId: this.currentUser.org.id }
+
+        invitationService.create(config, payload)
           .then((response) => {
             UserEventBus.$emit('reload-users')
           })
+        this.selectedSectionIndex = 1
       }
-      this.selectedSectionIndex = 1
     },
     onCancel () {
       this.selectedSectionIndex = 1

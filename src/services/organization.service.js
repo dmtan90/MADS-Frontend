@@ -8,7 +8,7 @@ const organizationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
     }
   },
   readApps: async function (config) {
@@ -17,7 +17,16 @@ const organizationService = {
 
       return response.data
     } catch (error) {
-      return error.response.data
+      return error.data
+    }
+  },
+  readEntities: async function (config) {
+    try {
+      const response = await ApiService.get(resource + '/' + config.orgId + '/entities')
+
+      return response.data
+    } catch (error) {
+      return error.data
     }
   }
 }

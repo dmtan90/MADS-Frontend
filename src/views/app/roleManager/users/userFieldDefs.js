@@ -14,10 +14,6 @@ export default [
     dataClass: 'user-role'
   },
   {
-    name: '__slot:assets',
-    title: 'Assets'
-  },
-  {
     name: '__slot:apps',
     title: 'Apps'
   },

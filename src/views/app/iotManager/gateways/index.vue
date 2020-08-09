@@ -27,10 +27,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import gatewayService from '@/services/gateway.service'
+import gatewayService from '@/services/gateway.service'
 import gatewayList from './list'
 // import gatewayGrid from './gatewayGrid'
-// import GatewayEventBus from './gatewayEventBus'
+import GatewayEventBus from './gatewayEventBus'
 import detail from './detail'
 
 export default {
@@ -50,36 +50,19 @@ export default {
   },
   methods: {
     loadGateways () {
-      this.gateways = [
-        {
-          id: 1,
-          name: 'Gateway1',
-          uuid: 'abcd1234',
-          channel: 'http',
-          status: 'Active'
-        },
-        {
-          id: 2,
-          name: 'Gateway2',
-          uuid: 'abcd1234',
-          channel: 'mqtt',
-          status: 'Inactive'
-        },
-        {
-          id: 3,
-          name: 'Gateway3',
-          uuid: 'abcd1234',
-          channel: 'http',
-          status: 'Active'
-        },
-        {
-          id: 4,
-          name: 'Gateway4',
-          uuid: 'abcd1234',
-          channel: 'mqtt',
-          status: 'Active'
-        }
-      ]
+      const config = {
+        orgId: this.currentUser.org.id,
+        projectId: this.selectedProject.id
+      }
+
+      const params = {
+        page_size: 100,
+        page_number: 1
+      }
+      gatewayService.read(config, params)
+        .then((res) => {
+          this.gateways = res.gateways
+        })
     },
     onShowDetail (detail) {
       this.showListing = false
@@ -87,14 +70,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadGateways()
 
-    // GatewayEventBus.$on('reload-gateways', () => {
-    //   this.loadGateways()
-    // })
+    GatewayEventBus.$on('reload-gateways', () => {
+      this.loadGateways()
+    })
   }
 }
 </script>
@@ -156,7 +139,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

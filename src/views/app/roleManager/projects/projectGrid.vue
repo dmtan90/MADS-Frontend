@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="table-options">
-      <div class="search-box">
+      <div class="search-box" v-if="!source">
         <b-form-input v-model="searchText" placeholder="Search project"></b-form-input>
       </div>
       <div class="add-project" v-if="!source">
@@ -12,33 +12,20 @@
       <div class="col-md-4 grid-item" v-for="(project, index) in projects" :key="index">
         <div class="header">
           <span class="name">{{project.name}}</span>
-          <span class="actions" v-if="!source">
+          <div class="actions" v-if="!source">
             <svg class="icon" @click="editProject(project)">
               <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
             </svg>
             <svg class="icon" @click="deleteProject(project)">
               <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
             </svg>
-          </span>
+          </div>
         </div>
         <div class="img-wrap" @click="onSelectProject(project)">
-          <img :src="project.project_image" alt="">
-        </div>
-        <div class="info-wrap">
-          <div class="info">
-            <span class="title">Manager</span>
-            <span class="value">{{renderUserName(project.leads)}}</span>
-          </div>
-          <div class="info">
-            <span class="title">Members</span>
-            <span class="value">{{renderUserName(project.users)}}</span>
-          </div>
-          <div class="info">
-            <span class="title">Location</span>
-            <a :href="getProjectLocationUrl(project)" target="_blank" class="value location">
-              {{project.location && project.location.name}}
-            </a>
-          </div>
+          <img :src="project.avatar" alt="" v-if="project.avatar">
+          <svg class="icon" v-else>
+            <use xlink:href="/assets/img/mads-role-manager-icons.svg#projects"></use>
+          </svg>
         </div>
       </div>
     </div>
@@ -76,7 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectProject', 'setEntityManagerCurrentPage']),
+    ...mapActions(['selectProject', 'setEntityManagerCurrentPage', 'setIotManagerCurrentPage']),
     renderUserName (users) {
       users = this.$_.map(users, (user) => {
         return user.first_name
@@ -98,7 +85,15 @@ export default {
     },
     onSelectProject (project) {
       this.selectProject(project)
-      this.setEntityManagerCurrentPage(this.source)
+
+      switch (this.source) {
+        case 'iotManager':
+          this.setIotManagerCurrentPage(this.source)
+          break
+        default:
+          this.setEntityManagerCurrentPage(this.source)
+      }
+
     },
     getProjectLocationUrl (project) {
       return project.location ? project.location.url : ''
@@ -148,17 +143,18 @@ export default {
     margin-left: 0;
     margin-right: 0;
     margin-top: 40px;
-    justify-content: space-between;
     .grid-item {
       display: flex;
       flex-direction: column;
-      height: 390px;
+      height: 310px;
       padding: 0;
       box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
       justify-content: space-between;
       flex: 0 0 30%;
       width: 30%;
       border-radius: 4px;
+      margin-bottom: 30px;
+      margin-right: 30px;
       .header {
         height: 40px;
         display: flex;
@@ -170,6 +166,7 @@ export default {
         border-top-right-radius: 4px;
         .name {
           font-size: 16px;
+          text-transform: uppercase;
         }
         .actions {
           height: 24px;
@@ -188,15 +185,19 @@ export default {
         }
       }
       .img-wrap {
-        height: 230px;
+        height: 270px;
+        background-color: #fff;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         img {
           width: 100%;
           height: 100%;
         }
       }
       .info-wrap {
-        height: 120px;
+        height: 90px;
         padding: 20px;
         .info {
           display: flex;

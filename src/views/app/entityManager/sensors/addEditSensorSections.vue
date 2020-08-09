@@ -34,7 +34,7 @@
       </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="metadata">
-      <div class="metadata-group">
+      <div class="metadata-group" v-if="sensor.metadata.length">
         <b-form class="horizontal-form" v-for="(metadata, index) in sensor.metadata" :key="index">
           <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
             <b-form-input v-model="metadata.name" type="text" :disabled="true"></b-form-input>
@@ -50,6 +50,9 @@
           </b-form-group>
         </b-form>
       </div>
+      <div class="metadata-group" v-else>
+        <span>No Metadata Present</span>
+      </div>
     </section>
   </div>
 </template>
@@ -58,7 +61,7 @@
 import { mapGetters } from 'vuex'
 import sensorTypeService from '@/services/sensorType.service'
 import madsTree from './../../shared/madsTree/index'
-import userService from '@/services/user.service'
+import projectService from '@/services/project.service'
 
 export default {
   components: {
@@ -102,15 +105,15 @@ export default {
   },
   methods: {
     loadUsers () {
-      let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 10 })
+      let config = { orgId: this.currentUser.org.id, id: this.selectedProject.id }
+      projectService.readUsers(config, { page_size: 100 })
         .then((response) => {
           this.caretakers = response.users
         })
     },
     loadSensorTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      sensorTypeService.read(config, { page_number: 1, page_size: 10 })
+      sensorTypeService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.sensorTypes = response.sensors_type
         })

@@ -38,6 +38,7 @@
         <template v-slot:actions="props" v-if="!source">
           <span class="edit-project" @click="editProject(props.rowData)">Edit</span>
           <span class="delete-project" @click="deleteProject(props.rowData)">Delete</span>
+          <span class="delete-project" @click="archiveProject(props.rowData)">Archived</span>
         </template>
       </vuetable>
     </div>
@@ -105,6 +106,16 @@ export default {
         return user.first_name
       })
       return this.$_.join(users, ', ')
+    },
+    archiveProject (project) {
+      let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
+      let payload = {
+        archived: true
+      }
+      projectService.update(config, payload)
+        .then((res) => {
+          ProjectEventBus.$emit('reload-projects')
+        })
     }
   },
   computed: {
@@ -147,8 +158,10 @@ export default {
       text-decoration: underline;
       color: #2aa7ff;
       white-space: nowrap;
+      max-width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: inline-block;
     }
     .edit-project, .delete-project {
       text-decoration: underline;

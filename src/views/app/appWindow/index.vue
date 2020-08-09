@@ -30,16 +30,16 @@ export default {
 <style lang="scss" scoped>
   .app-window {
     height: 100%;
-    background-color: white;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     .app-content {
+      background-color: white;
       display: inline-block;
       height: calc(100% - 45px);
       width: calc(100% - 100px);
       margin-left: 100px;
-      margin-top: 40px;
+      margin-top: 45px;
       overflow: auto;
       &.full-width {
         margin-left: 0;

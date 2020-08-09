@@ -66,7 +66,7 @@ export default {
     display: flex;
     height: 100%;
     .sidebar {
-      width: 260px;
+      width: 180px;
       position: relative;
       height: 100%;
       .sidebar-background {
@@ -86,21 +86,25 @@ export default {
         background-color: rgba(0, 0, 0, 0.8);
         position: relative;
         height: 100%;
-        padding: 30px 10px;
+        padding-top: 30px;
         ul {
-        list-style: none;
-        padding-left: 0;
+          list-style: none;
+          padding: 0 1px 0 2px;
+          margin-top: 20px;
           li {
-            cursor: pointer;
-            height: 45px;
-            font-size: 15px;
-            border-radius: 4px;
+            height: 40px;
+            margin: 20px -1px;
             display: flex;
             align-items: center;
-            padding-left: 10px;
+            padding-left: 15px;
             color: white;
+            font-size: 16px;
+            cursor: pointer;
             &.active {
-              background-color: #4a81d4 !important;
+              background-color: white;
+              color: #000000;
+              border-top-left-radius: 21px;
+              border-bottom-left-radius: 21px;
             }
           }
         }
@@ -109,9 +113,9 @@ export default {
           align-items: center;
           position: absolute;
           bottom: 10px;
-          left: 0;
           justify-content: space-around;
           width: 100%;
+          flex-direction: column;
           .sidebar-btn {
             height: 40px;
             line-height: 1;
@@ -122,14 +126,11 @@ export default {
             margin: 0;
             padding: 0;
             justify-content: center;
-            width: 46%;
-            background-color: #4a81d4 !important;
-            color: white !important;
-            border-color: #4a81d4 !important;
+            width: 75%;
+            margin: 10px 0;
             .icon {
               width: 23px;
               height: 23px;
-              fill: white;
               &.back {
                 margin-right: 5px;
               }
@@ -142,10 +143,14 @@ export default {
       }
     }
     .content-wrap {
-      width: calc(100% - 260px);
+      width: calc(100% - 180px);
       overflow: auto;
       .content {
-      padding: 40px 40px 60px;
+        width: 100%;
+        height: calc(100% - 50px);
+        padding: 20px;
+        margin-top: 50px;
+        overflow: auto;
       }
     }
   }

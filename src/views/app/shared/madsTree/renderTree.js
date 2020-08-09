@@ -225,6 +225,8 @@ const renderNodeLabel = (createElement, node, context, parentNode) => {
 }
 
 const renderNode = (createElement, node, context, parentNode) => {
+  node = _.merge(node, { parentId: parentNode ? parentNode.id : null })
+
   const { props } = context
   const { options } = props
 
@@ -239,7 +241,7 @@ const renderNode = (createElement, node, context, parentNode) => {
     renderNodeLabel(createElement, node, context, parentNode)
   ]
 
-  if (node[childrenKey] && _.size(node[childrenKey]) > 0) {
+  if (!node.options.isLeafNode) {
     children = _.concat(
       children,
       renderCollapsExpandIcon(createElement, node, context)
@@ -257,7 +259,7 @@ const renderNode = (createElement, node, context, parentNode) => {
     'div', {
       class: _.merge({
         'tree-node': true,
-        'leaf': !(node[childrenKey] && _.size(node[childrenKey]) > 0)
+        'leaf': node.options.isLeafNode
       }, nodeClasses)
     },
     children

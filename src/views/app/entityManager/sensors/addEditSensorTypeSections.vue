@@ -24,6 +24,9 @@
           <b-form-group :label="(index === 0) ? 'Unit' : ''" class="unit">
             <b-form-input v-model="metadata.unit"></b-form-input>
           </b-form-group>
+          <svg class="icon" @click="removeMetadata(index)">
+            <use xlink:href="/assets/img/mads-common-icons.svg#minus"></use>
+          </svg>
         </b-form>
         <b-button class="add-new-row" @click="addNewMetadata()">
           <svg class="icon">
@@ -46,6 +49,9 @@
           <b-form-group :label=" (index === 0)  ? 'Unit' : ''" class="unit">
             <b-form-input v-model="parameter.unit"></b-form-input>
           </b-form-group>
+          <svg class="icon" @click="removeParameter(index)">
+            <use xlink:href="/assets/img/mads-common-icons.svg#minus"></use>
+          </svg>
         </b-form>
         <b-button class="add-new-row" @click="addNewParameter()">
           <svg class="icon">
@@ -94,7 +100,23 @@ export default {
       this.sensorType = this.$_.assign(this.sensorType, { parameters: parameters })
     },
     getSensorTypeData () {
+      this.$_.remove(this.sensorType.metadata, (metadata) => { return !metadata.name })
+      this.$_.remove(this.sensorType.parameters, (parameter) => { return !parameter.name })
+
+      // if (this.$_.size(this.sensorType.metadata) < 1) {
+      //   delete this.sensorType.metadata
+      // }
+
+      // if (this.$_.size(this.sensorType.parameters) < 1) {
+      //   delete this.sensorType.parameters
+      // }
       return this.sensorType
+    },
+    removeMetadata (index) {
+      this.sensorType.metadata.splice(index, 1)
+    },
+    removeParameter (index) {
+      this.sensorType.parameters.splice(index, 1)
     }
   },
   mounted () {
@@ -104,8 +126,8 @@ export default {
       this.sensorType = {
         name: this.sensorTypeData.name || '',
         description: this.sensorTypeData.description || '',
-        metadata: this.$_.size(this.sensorTypeData.metadata) ? this.sensorTypeData.metadata : [{ name: '', data_type: '', unit: '' }],
-        parameters: this.$_.size(this.sensorTypeData.parameters) ? this.sensorTypeData.parameters : [{ name: '', data_type: '', unit: '' }]
+        metadata: this.$_.size(this.sensorTypeData.metadata) ? this.sensorTypeData.metadata : [],
+        parameters: this.$_.size(this.sensorTypeData.parameters) ? this.sensorTypeData.parameters : []
       }
     } else {
       this.sensorType = {
@@ -136,6 +158,12 @@ export default {
       }
       .unit {
         width: 20%;
+      }
+      .icon {
+        width: 24px;
+        height: 24px;
+        fill: #d11a2a;
+        cursor: pointer;
       }
     }
     .add-new-row {

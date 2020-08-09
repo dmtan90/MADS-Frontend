@@ -18,16 +18,16 @@
         </div>
       </div>
     </div>
-    <div class="widget-category">
+    <!-- <div class="widget-category">
       <span class="category" :class="{'active': selectedCategory === 'charts'}" @click="setCategory('charts')">Charts</span>
       <span class="category" :class="{'active': selectedCategory === 'stocks'}" @click="setCategory('stocks')">Stocks</span>
       <span class="category" :class="{'active': selectedCategory === 'maps'}" @click="setCategory('maps')">Maps</span>
       <span class="category" :class="{'active': selectedCategory === 'gantt'}" @click="setCategory('gantt')">Gantt</span>
-    </div>
+    </div> -->
     <div class="widgets-section">
       <div class="widgets">
         <b-row>
-          <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgets" :key="index">
+          <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in userWidgets" :key="index">
             <div class="widget-container">
               <div class="widget-image">
                 <img :src="widget.image_url" alt="" @click="openWidgetDetailPage(widget)">
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       selectedCategory: 'charts',
-      widgets: []
+      userWidgets: []
     }
   },
   methods: {
@@ -65,11 +65,13 @@ export default {
       this.setCurrentPage('widgetDetail')
     },
     loadUserWidgets () {
-      let config = {userId: this.currentUser.id, orgId: this.currentUser.org.id}
+      let config = { userId: this.currentUser.id, orgId: this.currentUser.org.id }
       userWidgetService
-        .read(config, { page_number: 1, page_size: 10 })
+        .read(config, { page_number: 1, page_size: 100 })
         .then(response => {
-          this.userWidgets = response.user_widgets;
+          this.userWidgets = this.$_.map(response.user_widgets, (user_widget) => {
+            return user_widget.widget
+          })
         })
     }
   },

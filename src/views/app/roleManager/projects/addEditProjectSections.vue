@@ -50,6 +50,9 @@
           <b-form-group :label="(index === 0) ? 'Value' : ''" class="value">
             <b-form-input v-model="metadata.value"></b-form-input>
           </b-form-group>
+          <svg class="icon" @click="removeMetadata(index)">
+            <use xlink:href="/assets/img/mads-common-icons.svg#minus"></use>
+          </svg>
         </b-form>
         <b-button class="add-new-row" @click="addNewMetadata()">
           <svg class="icon">
@@ -95,7 +98,7 @@ export default {
     },
     loadUsers () {
       let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 10 })
+      userService.read(config, { page_size: 100 })
         .then((response) => {
           this.users = response.users
         })
@@ -117,8 +120,11 @@ export default {
 
       let projectData = this.$_.merge(this.project, {
         lead_ids: leadIds,
-        user_ids: userIds
+        user_ids: userIds,
+        image: this.selectedFile
       })
+
+      this.$_.remove(this.project.metadata, (metadata) => { return !metadata.name })
 
       return projectData
     },
@@ -147,6 +153,9 @@ export default {
     },
     uploadImage (file) {
       this.selectedFile = file.target.files[0]
+    },
+    removeMetadata (index) {
+      this.project.metadata.splice(index, 1)
     }
   },
   computed: {
@@ -164,7 +173,7 @@ export default {
         location: this.projectData.location || {},
         lead_ids: [],
         user_ids: [],
-        metadata: this.$_.size(this.projectData.metadata) ? this.projectData.metadata : [{ name: '', data_type: '', unit: '', value: '' }],
+        metadata: this.$_.size(this.projectData.metadata) ? this.projectData.metadata : [],
         creator_id: this.projectData.creator_id
       }
 
@@ -244,6 +253,12 @@ export default {
       }
       .value {
         width: 25%;
+      }
+      .icon {
+        width: 24px;
+        height: 24px;
+        fill: #d11a2a;
+        cursor: pointer;
       }
     }
     .add-new-row {

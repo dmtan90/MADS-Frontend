@@ -47,7 +47,6 @@ export default {
     formSubmit () {
       if (this.email !== '' && this.password !== '') {
         this.login({ email: this.email, password: this.password })
-        this.password = ''
       }
     }
   }
@@ -60,3 +59,13 @@ export default {
   // }
 }
 </script>
+
+<style lang="scss" scoped>
+  .image-side {
+    p.text-white {
+      font-size: 25px;
+      width: 310px;
+    }
+  }
+</style>
+

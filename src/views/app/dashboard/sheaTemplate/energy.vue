@@ -161,7 +161,7 @@ export default {
       width: 400px;
       .img-container {
         img {
-          width: 90%;
+          width: 95%;
         }
       }
     }
