@@ -28,6 +28,15 @@ const organizationService = {
     } catch (error) {
       return error.data
     }
+  },
+  dataCruncherToken: async function (config) {
+    try {
+      const response = await ApiService.post(resource + '/' + config.orgId + '/data_cruncher_token')
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 

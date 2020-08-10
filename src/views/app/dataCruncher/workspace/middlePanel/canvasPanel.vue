@@ -421,6 +421,8 @@ export default {
           loader.hide()
           this.$toast.success('Task Registered Successfully')
           this.taskId = response.id
+
+          this.$emit('task-created', this.taskId)
         })
     },
     deployTask () {
