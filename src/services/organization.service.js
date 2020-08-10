@@ -28,6 +28,15 @@ const organizationService = {
     } catch (error) {
       return error.data
     }
+  },
+  readCommandWidgets: async function (config) {
+    try {
+      const response = await ApiService.get(resource + '/' + config.orgId + '/command_widget_types')
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 

@@ -65,7 +65,25 @@ const sensorService = {
     } catch (error) {
       return error.data
     }
-  }
+  },
+  createCommandWidget: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets', payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  updateCommandWidget: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
 }
 
 export default sensorService

@@ -36,7 +36,7 @@ const widgetService = {
     } catch (error) {
       return error.data
     }
-  },
+  }
 }
 
 export default widgetService

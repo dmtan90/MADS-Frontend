@@ -41,6 +41,23 @@
                 </grid-item>
             </grid-layout>
         </div>
+        <!-- <div class="layout-container">
+          <grid-layout
+                :layout="commandWidgetLayout"
+                :col-num="12"
+                :row-height="50"
+                :is-draggable="true"
+                :is-resizable="true"
+                :is-mirrored="false"
+                :vertical-compact="true"
+                :margin="[20, 20]"
+                :use-css-transforms="true"
+            >
+                <grid-item ref="dummyGridItem" v-for="item in commandWidgetLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                  Dummy Layout
+                </grid-item>
+            </grid-layout>
+        </div> -->
         <div class="layout-container" v-if="showLayout">
             <grid-layout
                 :layout.sync="layout"
@@ -62,15 +79,40 @@
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
                     </div>
-                    <widget
-                      :visualSettings="getVisualSettings(item)"
-                      :series="getSeries(item)"
-                      :widgetId="getWidgetId(item)"
-                      :page="'dashboard'"
-                      :colWidth="colWidth"
-                      :colHeight="colHeight"
-                      :cols="item.w"
-                      :rows="item.h"></widget>
+                    <div v-if="item.type === 'command_widget'" class="command-widget-wrap">
+                      <h2>{{commandWidgetObject[item.i].label}}</h2>
+                      <div v-for="(setting, key) in getCommandDataSettings(item)" :key="key" class="command-widget">
+                        <h2>{{ $_.replace(key, '_', ' ') }}</h2>
+                        <div v-if="setting.html_type === 'range'">
+                          <b-form-input v-model="setting.value" type="range" :min="setting.min" :max="setting.max" step="0.5"></b-form-input>
+                          <span class="mt-2">Value: {{ setting.value }}</span>
+                        </div>
+                        <div v-if="setting.html_type === 'color'" class="color-wrap">
+                          <span>{{ setting.value || '#000000'}}</span>
+                          <b-form-input v-model="setting.value" type="color"></b-form-input>
+                        </div>
+                        <div v-if="setting.html_tag === 'select'" class="select-wrap">
+                          <b-form-radio-group :id="'radio-group-' + key" v-model="setting.value">
+                            <b-form-radio :value="value" v-for="(value, key) in setting.source" :key="key">{{ key }}</b-form-radio>
+                          </b-form-radio-group>
+                        </div>
+                      </div>
+                      <div class="btn-wrap">
+                        <b-button class="btn" @click="updateCommandWidget(commandWidgetObject[item.i])">Apply</b-button>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <widget
+                        :visualSettings="getVisualSettings(item)"
+                        :series="getSeries(item)"
+                        :widgetId="getWidgetId(item)"
+                        :page="'dashboard'"
+                        :colWidth="colWidth"
+                        :colHeight="colHeight"
+                        :cols="item.w"
+                        :rows="item.h">
+                      </widget>
+                    </div>
                 </grid-item>
             </grid-layout>
         </div>
@@ -101,6 +143,7 @@ export default {
     return {
       widgets: [],
       widgetObject: {},
+      commandWidgetObject: {},
       selectedTab: 'home',
       series: [],
       visualSettings: {},
@@ -109,6 +152,7 @@ export default {
       dummyLayout: [
         { 'x': 0, 'y': 0, 'w': 1, 'h': 1, 'i': '0' }
       ],
+      commandWidgetLayout: [{ 'x': 0, 'y': 0, 'w': 6, 'h': 6, 'i': '0' }],
       colWidth: 75,
       colHeight: 50,
       showLayout: false
@@ -125,6 +169,9 @@ export default {
       } else {
         this.isEditMode = false
       }
+    },
+    getCommandDataSettings (item) {
+      return this.commandWidgetObject[item.i].data_settings
     },
     getVisualSettings (item) {
       return this.widgetObject[item.i].visual_properties
@@ -190,6 +237,16 @@ export default {
     editWidget (item) {
       let widget = this.widgetObject[item.i]
       this.$refs.editWidget.edit(widget)
+    },
+    updateCommandWidget (widget) {
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widget.id }
+
+      let params = {
+        data_settings: widget.data_settings
+      }
+      dashboardService.updateCommandWidget(config, params)
+        .then((response) => {
+        })
     }
   },
   watch: {
@@ -198,6 +255,10 @@ export default {
 
       this.$_.forEach(this.widgets, (widget) => {
         this.widgetObject[widget.id] = widget
+      })
+
+      this.$_.forEach(dashboard.command_widgets, (widget) => {
+        this.commandWidgetObject[widget.id] = widget
       })
 
       let widgetLayots = this.$_.clone(this.selectedDashboard.widget_layouts)
@@ -328,6 +389,58 @@ export default {
                 }
               }
             }
+            .command-widget-wrap {
+              padding: 15px;
+              overflow: auto;
+              height: 100%;
+              > h2 {
+                margin-bottom: 30px;
+                background-color: #e2e2e2;
+                padding: 5px 10px;
+              }
+              .command-widget {
+                margin-bottom: 30px;
+                h2 {
+                  text-transform: capitalize;
+                  // color: #5A677F;
+                  font-size: 19px;
+                }
+                .color-wrap {
+                  border: 1px solid #e2e2e2;
+                  padding: 5px 5px 5px 10px;
+                  display: flex;
+                  align-items: center;
+                  background-color: white;
+                  width: 120px;
+                  height: 50px;
+                  span {
+                    display: inline-block;
+                    color: #5A677F;
+                    width: 60px;
+                    text-transform: uppercase;
+                  }
+                  input {
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    cursor: pointer;
+                    padding: 0;
+                  }
+                }
+              }
+              .btn-wrap {
+                .btn {
+                  background-color: #ffa07a !important;
+                  color: white !important;
+                  width: 120px;
+                  border: 1px solid #ffa07a !important;
+                  font-size: 18px;
+                  height: 40px;
+                  padding: 0 10px;
+                  width: 100%;
+                }
+              }
+            }
           }
         }
       }
@@ -339,5 +452,15 @@ export default {
     height: 10px;
     display: flex;
     align-items: center;
+  }
+</style>
+
+<style lang="scss">
+  .select-wrap {
+    label {
+      text-transform: capitalize;
+      font-size: 15px;
+      color: #5A677F;
+    }
   }
 </style>
