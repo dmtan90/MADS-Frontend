@@ -100,7 +100,7 @@ export default {
     background-color: #dadada;
     display: flex;
     align-items: center;
-    position: absolute;
+    // position: absolute;
     width: 100%;
     .dashboard-name {
       font-size: 18px;

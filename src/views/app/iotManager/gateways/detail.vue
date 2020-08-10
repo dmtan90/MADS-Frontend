@@ -365,6 +365,9 @@ export default {
     GatewayEventBus.$on('reload-gateway', () => {
       this.loadGatewayData()
     })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>

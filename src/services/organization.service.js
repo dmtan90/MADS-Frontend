@@ -29,6 +29,15 @@ const organizationService = {
       return error.data
     }
   },
+  readGateways: async function (config) {
+    try {
+      const response = await ApiService.get(resource + '/' + config.orgId + '/gateways')
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   readCommandWidgets: async function (config) {
     try {
       const response = await ApiService.get(resource + '/' + config.orgId + '/command_widget_types')

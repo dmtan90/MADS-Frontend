@@ -57,6 +57,15 @@ const sensorService = {
       return error.data
     }
   },
+  updateWidgetInstance: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   deleteWidgetInstance: async function (config) {
     try {
       const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
@@ -84,6 +93,15 @@ const sensorService = {
       return error.data
     }
   },
+  deleteCommandWidget: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  }
 }
 
 export default sensorService

@@ -41,23 +41,6 @@
                 </grid-item>
             </grid-layout>
         </div>
-        <!-- <div class="layout-container">
-          <grid-layout
-                :layout="commandWidgetLayout"
-                :col-num="12"
-                :row-height="50"
-                :is-draggable="true"
-                :is-resizable="true"
-                :is-mirrored="false"
-                :vertical-compact="true"
-                :margin="[20, 20]"
-                :use-css-transforms="true"
-            >
-                <grid-item ref="dummyGridItem" v-for="item in commandWidgetLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                  Dummy Layout
-                </grid-item>
-            </grid-layout>
-        </div> -->
         <div class="layout-container" v-if="showLayout">
             <grid-layout
                 :layout.sync="layout"
@@ -71,11 +54,11 @@
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                    <div class="actions" v-if="isEditMode">
-                      <svg class="icon" @click="editWidget(item)">
+                    <div class="actions" :class="{'single': item.type === 'command_widget'}" v-if="isEditMode">
+                      <svg class="icon" v-if="(item.type !== 'command_widget')">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
                       </svg>
-                      <svg class="icon" @click="deleteWidget(item)">
+                      <svg class="icon" @click="(item.type === 'command_widget') ? deleteCommandWidget(item) : deleteWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
                     </div>
@@ -92,7 +75,7 @@
                           <b-form-input v-model="setting.value" type="color"></b-form-input>
                         </div>
                         <div v-if="setting.html_tag === 'select'" class="select-wrap">
-                          <b-form-radio-group :id="'radio-group-' + key" v-model="setting.value">
+                          <b-form-radio-group v-model="setting.value">
                             <b-form-radio :value="value" v-for="(value, key) in setting.source" :key="key">{{ key }}</b-form-radio>
                           </b-form-radio-group>
                         </div>
@@ -224,6 +207,8 @@ export default {
         })
     },
     deleteWidget (item) {
+      let loader = this.$loading.show()
+
       let widgetInstanceId = this.widgetObject[item.i].id
       let widgetId = this.widgetObject[item.i].widget_id
 
@@ -231,6 +216,7 @@ export default {
 
       dashboardService.deleteWidgetInstance(config)
         .then((response) => {
+          loader.hide()
           this.updateDashbaord(item)
         })
     },
@@ -238,14 +224,47 @@ export default {
       let widget = this.widgetObject[item.i]
       this.$refs.editWidget.edit(widget)
     },
+    hexToRgb (hex) {
+      return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+        , (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16))
+    },
+    rgbToHex (r, g, b) {
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+    },
     updateCommandWidget (widget) {
+      let loader = this.$loading.show()
+
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widget.id }
 
+      let dataSettings = this.$_.merge({}, widget.data_settings)
+
+      this.$_.forEach(dataSettings, (setting) => {
+        if (setting.html_type === 'color') {
+          setting.value = this.hexToRgb(setting.value)
+        }
+      })
+
       let params = {
-        data_settings: widget.data_settings
+        data_settings: dataSettings
       }
       dashboardService.updateCommandWidget(config, params)
         .then((response) => {
+          loader.hide()
+        })
+    },
+    deleteCommandWidget (item) {
+      let widgetId = this.commandWidgetObject[item.i].id
+
+      let loader = this.$loading.show()
+
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widgetId }
+
+      dashboardService.updateCommandWidget(config)
+        .then((response) => {
+          loader.hide()
+          this.updateDashbaord(item)
         })
     }
   },
@@ -257,7 +276,21 @@ export default {
         this.widgetObject[widget.id] = widget
       })
 
-      this.$_.forEach(dashboard.command_widgets, (widget) => {
+      let commandWidgets = dashboard.command_widgets
+
+      this.$_.forEach(commandWidgets, (widget) => {
+        this.$_.forEach(widget.data_settings, (setting) => {
+          if (setting.html_type === 'color') {
+            if (setting.value) {
+              setting.value = this.rgbToHex(setting.value[0], setting.value[1], setting.value[2])
+            } else {
+              setting.value = '#000000'
+            }
+          }
+          if (setting.html_tag === 'select') {
+            setting.value = setting.value || setting.default
+          }
+        })
         this.commandWidgetObject[widget.id] = widget
       })
 
@@ -281,6 +314,9 @@ export default {
     dasbhoardEventBus.$on('widget-added', () => {
       this.reloadSelectedDasbhoard()
     })
+  },
+  beforeDestroy () {
+    dasbhoardEventBus.$off()
   }
 }
 </script>
@@ -358,7 +394,6 @@ export default {
         width: 100%;
         height: calc(100% - 50px);
         padding: 10px;
-        margin-top: 50px;
         overflow: auto;
         .vue-grid-layout {
           .vue-grid-item {
@@ -387,6 +422,9 @@ export default {
                 &:last-child {
                   border-right: none;
                 }
+              }
+              &.single {
+                width: 40px;
               }
             }
             .command-widget-wrap {
@@ -437,7 +475,7 @@ export default {
                   font-size: 18px;
                   height: 40px;
                   padding: 0 10px;
-                  width: 100%;
+                  width: 150px;
                 }
               }
             }

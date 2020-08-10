@@ -140,6 +140,9 @@ export default {
   },
   mounted () {
     EventBus.$on('toggle-slider', () => { this.toggleSlider() })
+  },
+  beforeDestroy () {
+    EventBus.$off()
   }
 }
 </script>

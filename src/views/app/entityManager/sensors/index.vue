@@ -66,6 +66,7 @@ export default {
   },
   beforeDestroy () {
     this.selectProject(null)
+    SensorEventBus.$off()
   }
 }
 </script>

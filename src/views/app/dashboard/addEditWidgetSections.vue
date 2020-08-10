@@ -21,7 +21,7 @@
               <li :class="{'active': selectedClassification === 'timeseries'}" @click="selectClassfication('timeseries')">Timeseries</li>
               <li :class="{'active': selectedClassification === 'latest'}" @click="selectClassfication('latest')">Latest</li>
               <li :class="{'active': selectedClassification === 'standard'}" @click="selectClassfication('standard')">Standard</li>
-              <li :class="{'active': selectedClassification === 'command'}" @click="selectClassfication('command')">Command</li>
+              <li :class="{'active': selectedClassification === 'command'}" @click="selectClassfication('command')">Control</li>
             </ul>
             <b-row v-if="widgetsLoaded && (selectedClassification !== 'command')">
               <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetClassifcation[selectedClassification]" :key="index">
@@ -64,8 +64,11 @@
             :type="'organization'"
           ></mads-tree>
         </div>
-        <div v-else>
+        <div v-else class="gateways-wrap">
           <span>Select Gateway</span>
+          <b-form-radio-group v-model="gatewayId">
+            <b-form-radio :value="gateway.id" v-for="(gateway, index) in gateways" :key="index">{{ gateway.name }}</b-form-radio>
+          </b-form-radio-group>
         </div>
       </div>
     </section>
@@ -96,7 +99,7 @@
         </div>
       </div>
       <div v-else>
-        Command Visit Settings
+        Predefined Settings
       </div>
     </section>
   </div>
@@ -143,6 +146,8 @@ export default {
       widgetClassifcation: {},
       widgetList: [],
       commandWidgets: [],
+      gateways: [],
+      gatewayId: null,
       dataSeries: [],
       selectedSettingsType: 'visualSettings',
       selectedDataSeries: [],
@@ -253,6 +258,13 @@ export default {
           this.commandWidgets = response.command_widget_types
         })
     },
+    loadGateways () {
+      orgService
+        .readGateways({ orgId: this.currentUser.org.id })
+        .then(response => {
+          this.gateways = response.gateways
+        })
+    },
     findDashboardYOffset () {
       let yOffset = 0
       let widgetLayots = this.selectedDashboard.widget_layouts
@@ -309,13 +321,26 @@ export default {
           })
       }
     },
+    updateWidgetInstance () {
+      let params = {
+        label: this.widgetData.label,
+        visual_prop: this.visualProp,
+        series: this.dataSeries
+      }
+
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
+      dashboardService.updateWidgetInstance(config, params)
+        .then((response) => {
+          dasbhoardEventBus.$emit('widget-added')
+        })
+    },
     createCommandWidget () {
       let widgetParameters = this.selectedWidget.widget_parameters
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id }
 
       let params = {
         dashboard_id: this.selectedDashboard.id,
-        gateway_id: 1,
+        gateway_id: this.gatewayId,
         label: 'LED Control Panel',
         data_settings: widgetParameters.data_settings,
         visual_settings: widgetParameters.visual_settings,
@@ -336,6 +361,7 @@ export default {
   mounted () {
     this.loadWidgets()
     this.loadCommandWidgets()
+    this.loadGateways()
 
     if (this.widgetData) {
       this.loadSelectedWidget(this.widgetData.widget_id)
@@ -539,6 +565,16 @@ export default {
           transform: rotate(0deg);
         }
       }
+    }
+  }
+  .gateways-wrap {
+    > span {
+      font-size: 15px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .custom-control-inline {
+      display: flex;
     }
   }
 </style>

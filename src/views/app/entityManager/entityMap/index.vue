@@ -93,6 +93,7 @@ export default {
   },
   beforeDestroy () {
     this.selectProject(null)
+    TreeEventBus.$off()
   }
 }
 </script>
