@@ -10,9 +10,11 @@
 import Highcharts from "highcharts"
 import Exporting from "highcharts/modules/exporting"
 import StockInit from 'highcharts/modules/stock'
+import Boost from 'highcharts/modules/boost'
 
 Exporting(Highcharts)
 StockInit(Highcharts)
+Boost(Highcharts)
 
 export default {
   props: {
@@ -66,6 +68,14 @@ export default {
           series: this.series,
           caption: {
             text: ''
+          },
+          boost: {
+            useGPUTranslations: true
+          },
+          plotOptions: {
+            series: {
+              turboThreshold: 1000000
+            }
           }
         }
       )

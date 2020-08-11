@@ -10,7 +10,7 @@
         <div class="header">
           <span class="name">{{dashboard.name}}</span>
           <div class="actions" v-if="!dashboard.dummy">
-            <svg class="icon" @click="deleteDashboard(dashboard)">
+            <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
               <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
             </svg>
           </div>
@@ -150,18 +150,20 @@ export default {
           font-size: 16px;
         }
         .actions {
-          height: 24px;
+          height: 30px;
           margin: 0 0 0 auto;
           display: flex;
           .icon {
-            width: 24px;
-            height: 24px;
-            fill: #FFA07A;
+            width: 30px;
+            height: 30px;
             margin-left: 10px;
             cursor: pointer;
             background: white;
             border-radius: 4px;
             padding: 5px;
+            &.dustbin {
+              background-color: #4c92c3;
+            }
           }
         }
       }

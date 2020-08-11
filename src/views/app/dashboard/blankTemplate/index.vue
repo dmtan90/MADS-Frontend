@@ -55,26 +55,39 @@
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
                     <div class="actions" :class="{'single': item.type === 'command_widget'}" v-if="isEditMode">
-                      <svg class="icon" v-if="(item.type !== 'command_widget')">
+                      <svg class="icon pencil" v-if="(item.type !== 'command_widget')" @click="editWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
                       </svg>
-                      <svg class="icon" @click="(item.type === 'command_widget') ? deleteCommandWidget(item) : deleteWidget(item)">
+                      <svg class="icon dustbin" @click="(item.type === 'command_widget') ? deleteCommandWidget(item) : deleteWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
                     </div>
                     <div v-if="item.type === 'command_widget'" class="command-widget-wrap">
                       <h2>{{commandWidgetObject[item.i].label}}</h2>
                       <div v-for="(setting, key) in getCommandDataSettings(item)" :key="key" class="command-widget">
-                        <h2>{{ $_.replace(key, '_', ' ') }}</h2>
-                        <div v-if="setting.html_type === 'range'">
+                        <div v-if="setting.html_type === 'range'" class="range-wrap setting-wrap">
+                          <div class="label-wrap">
+                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
+                            <div>
+                              <span class="text">Value:</span>
+                              <span class="value">{{ setting.value }}</span>
+                            </div>
+                          </div>
                           <b-form-input v-model="setting.value" type="range" :min="setting.min" :max="setting.max" step="0.5"></b-form-input>
-                          <span class="mt-2">Value: {{ setting.value }}</span>
                         </div>
-                        <div v-if="setting.html_type === 'color'" class="color-wrap">
-                          <span>{{ setting.value || '#000000'}}</span>
-                          <b-form-input v-model="setting.value" type="color"></b-form-input>
+                        <div v-if="setting.html_type === 'color'" class="setting-wrap">
+                          <div class="label-wrap">
+                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
+                          </div>
+                          <div class="color-wrap">
+                            <span>{{ setting.value || '#000000'}}</span>
+                            <b-form-input v-model="setting.value" type="color"></b-form-input>
+                          </div>
                         </div>
                         <div v-if="setting.html_tag === 'select'" class="select-wrap">
+                          <div class="label-wrap">
+                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
+                          </div>
                           <b-form-radio-group v-model="setting.value">
                             <b-form-radio :value="value" v-for="(value, key) in setting.source" :key="key">{{ key }}</b-form-radio>
                           </b-form-radio-group>
@@ -328,7 +341,7 @@ export default {
       width: 180px;
       background-color: #1E3664;
       position: relative;
-      padding-top: 30px;
+      padding-top: 40px;
       height: 100%;
       ul {
         list-style: none;
@@ -344,7 +357,7 @@ export default {
           font-size: 16px;
           cursor: pointer;
           &.active {
-            background-color: white;
+            background-color: #f2f2f2;
             color: #000000;
             border-top-left-radius: 21px;
             border-bottom-left-radius: 21px;
@@ -391,35 +404,40 @@ export default {
       position: relative;
       .widgets-wrap {
         width: 100%;
-        height: calc(100% - 50px);
+        height: calc(100% - 60px);
         padding: 10px;
         overflow: auto;
+        background-color: #f2f2f2;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+            box-shadow: 0 1px 4px 0 rgba(21,27,38,.08);
             .actions {
               position: absolute;
               width: 90px;
               height: 40px;
-              background-color: #4c92c3;
-              right: 0;
-              top: 0;
+              right: 6px;
+              top: 6px;
               z-index: 99;
               display: flex;
               align-items: center;
               justify-content: space-evenly;
-              border-bottom-left-radius: 4px;
+              background-color: white;
               .icon {
                 fill: white;
                 width: 40px;
                 height: 40px;
                 padding: 10px;
-                border-right: 1px solid white;
+                border-radius: 20px;
                 cursor: pointer;
                 &:last-child {
                   border-right: none;
+                }
+                &.pencil {
+                  background-color: #9BCCE5;
+                }
+                &.dustbin {
+                  background-color: #27AAE1;
                 }
               }
               &.single {
@@ -427,54 +445,90 @@ export default {
               }
             }
             .command-widget-wrap {
-              padding: 15px;
+              padding: 20px;
               overflow: auto;
               height: 100%;
               > h2 {
-                margin-bottom: 30px;
-                background-color: #e2e2e2;
-                padding: 5px 10px;
+                margin-bottom: 40px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #000000;
               }
               .command-widget {
-                margin-bottom: 30px;
-                h2 {
-                  text-transform: capitalize;
-                  // color: #5A677F;
-                  font-size: 19px;
-                }
-                .color-wrap {
-                  border: 1px solid #e2e2e2;
-                  padding: 5px 5px 5px 10px;
+                margin-bottom: 22px;
+                .setting-wrap {
                   display: flex;
                   align-items: center;
-                  background-color: white;
+                  .label-wrap {
+                    width: 100px;
+                    h2 {
+                      font-size: 16px;
+                      color: #000000;
+                      margin-bottom: 0;
+                      text-transform: capitalize;
+                    }
+                    .text {
+                      color: #6D6E71;
+                      font-size: 13px;
+                      padding-top: 4px;
+                      display: inline-block;
+                    }
+                    .value {
+                      color: #4292D4;
+                      font-size: 13px;
+                      font-weight: bold;
+                    }
+                  }
+                  input {
+                    width: calc(100% - 100px);
+                  }
+                }
+                .color-wrap {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-evenly;
+                  background-color: #F3F7FB;
                   width: 120px;
-                  height: 50px;
+                  height: 45px;
+                  border-radius: 4px;
                   span {
                     display: inline-block;
-                    color: #5A677F;
+                    color: #303033;
                     width: 60px;
                     text-transform: uppercase;
                   }
                   input {
                     border: none;
-                    width: 40px;
-                    height: 40px;
+                    width: 35px;
+                    height: 38px;
                     cursor: pointer;
                     padding: 0;
+                    background-color: #F3F7FB !important;
+                  }
+                }
+                .select-wrap {
+                  .label-wrap {
+                    margin-bottom: 10px;
+                  }
+                  h2 {
+                    font-size: 16px;
+                    color: #000000;
+                    margin-bottom: 0;
+                    text-transform: capitalize;
                   }
                 }
               }
               .btn-wrap {
                 .btn {
-                  background-color: #ffa07a !important;
+                  background-color: #27AAE1 !important;
                   color: white !important;
-                  width: 120px;
-                  border: 1px solid #ffa07a !important;
-                  font-size: 18px;
-                  height: 40px;
+                  border: 1px solid #27AAE1 !important;
+                  font-size: 13px;
+                  height: 45px;
                   padding: 0 10px;
-                  width: 150px;
+                  width: 180px;
+                  text-transform: uppercase;
+                  margin-top: 20px;
                 }
               }
             }
@@ -496,8 +550,8 @@ export default {
   .select-wrap {
     label {
       text-transform: capitalize;
-      font-size: 15px;
-      color: #5A677F;
+      font-size: 14px;
+      color: #6D6E71;
     }
   }
 </style>

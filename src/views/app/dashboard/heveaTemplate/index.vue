@@ -86,7 +86,7 @@ export default {
         background-color: rgba(0, 0, 0, 0.8);
         position: relative;
         height: 100%;
-        padding-top: 30px;
+        padding-top: 40px;
         ul {
           list-style: none;
           padding: 0 1px 0 2px;
@@ -147,7 +147,7 @@ export default {
       overflow: auto;
       .content {
         width: 100%;
-        height: calc(100% - 50px);
+        height: calc(100% - 60px);
         padding: 20px;
         margin-top: 50px;
         overflow: auto;

@@ -286,8 +286,8 @@ export default {
       let widgetLayots = this.selectedDashboard.widget_layouts
 
       widgetLayots[widgetInstance.id] = {
-        w: isCommandWidget ? 8 : 4,
-        h: isCommandWidget ? 10 : 4,
+        w: isCommandWidget ? 4 : 4,
+        h: isCommandWidget ? 9 : 4,
         x: 0,
         y: yOffset,
         type: isCommandWidget ? 'command_widget' : 'highcharts'
