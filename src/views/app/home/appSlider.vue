@@ -83,14 +83,14 @@ export default {
       allAppCategories: ['Core', 'Productivity', 'Management', 'Analytics', 'Security', 'General'],
       appCategories: [],
       apps: {},
-      appKeyMappings:{
-        widgetManager: "Widget_Manager",
-        dashboards: "Dashboards",
-        dataCruncher: "Data_Cruncher",
-        roleManager: "Role_Manager",
-        entityManager: "Entity_Manager",
-        iotManager: "IoT_Manager",
-        alerts: "Alerts_Reminder"
+      appKeyMappings: {
+        widgetManager: 'Widget_Manager',
+        dashboards: 'Dashboards',
+        dataCruncher: 'Data_Cruncher',
+        roleManager: 'Role_Manager',
+        entityManager: 'Entity_Manager',
+        iotManager: 'IoT_Manager',
+        alerts: 'Alerts_Reminder'
       }
     }
   },
@@ -104,12 +104,12 @@ export default {
       return this.$store.state.appWindow[app].appState
     },
     openAppWindow (app) {
-      let appValues =  Object.values(this.appKeyMappings);
-      let filterAppValues = appValues.filter((appValue) => appValue === app);
-      if(filterAppValues.length > 0){
+      let appValues = Object.values(this.appKeyMappings)
+      let filterAppValues = appValues.filter((appValue) => appValue === app)
+      if (filterAppValues.length > 0) {
         EventBus.$emit('open-app-window', app)
       }
-    },
+    }
   },
   computed: {
     ...mapGetters(['visualSettings', 'orgApps'])

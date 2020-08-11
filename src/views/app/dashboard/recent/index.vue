@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-wrap">
+  <div class="recent-wrap">
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .editor-wrap {
+  .recent-wrap {
     background: url("/assets/img/coming-soon-2.jpg");
     background-size: cover !important;
     background-position: center !important;
