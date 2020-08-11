@@ -86,7 +86,7 @@
                     </div>
                     <div v-else>
                       <widget
-                        :visualSettings="getVisualSettings(item)"
+                        :visualProperties="getVisualProperties(item)"
                         :series="getSeries(item)"
                         :widgetId="getWidgetId(item)"
                         :page="'dashboard'"
@@ -129,7 +129,6 @@ export default {
       commandWidgetObject: {},
       selectedTab: 'home',
       series: [],
-      visualSettings: {},
       isEditMode: false,
       layout: [],
       dummyLayout: [
@@ -156,7 +155,7 @@ export default {
     getCommandDataSettings (item) {
       return this.commandWidgetObject[item.i].data_settings
     },
-    getVisualSettings (item) {
+    getVisualProperties (item) {
       return this.widgetObject[item.i].visual_properties
     },
     getSeries (item) {

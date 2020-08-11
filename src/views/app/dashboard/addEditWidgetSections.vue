@@ -309,9 +309,9 @@ export default {
 
         let params = {
           label: 'Label' + uniqueKey,
-          visual_prop: this.visualProp,
-          settings: {},
-          series: this.dataSeries
+          visual_properties: this.visualProp,
+          widget_settings: {},
+          series_data: this.dataSeries
         }
 
         let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
