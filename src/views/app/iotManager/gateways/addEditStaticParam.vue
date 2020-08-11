@@ -4,7 +4,6 @@
     :modalID="'add-edit-static-modal'"
     :modalRef="'createEditStaticModal'"
     :editMode="editMode"
-    @on-cancel="onCancel()"
     @on-save="saveGateway()">
     <template v-slot:body-panel>
         <div class="heading">
@@ -26,11 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import madsSingleSectionModal from './../../shared/madsSingleSectionModal'
-import GatewayEventBus from './gatewayEventBus'
-import TreeEventBus from './../../shared/madsTree/treeEventBus'
-import gatewayService from '@/services/gateway.service'
 
 export default {
   props: {
@@ -45,7 +40,7 @@ export default {
     return {
       editMode: false,
       gateway: null,
-      staticParam:{}
+      staticParam: {}
     }
   },
   methods: {
@@ -60,45 +55,37 @@ export default {
       this.staticParam = detail
     },
     saveGateway () {
-      if(this.editMode){
+      if (this.editMode) {
         this.staticParam = {
-
         }
-      }else{
-       console.log("this.staticParam", this.staticParam)
-        this.$emit('saveData', this.staticParam);
+      } else {
+        this.$emit('saveData', this.staticParam)
         this.staticParam = {
           name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        };
+          value: '',
+          data_type: '',
+          unit: ''
+        }
       }
-    },
-    onCancel () {
-    //   this.allSectionsVisited = false
     }
   },
-  mounted(){
-    if(this.editMode){
-        this.staticParam = {
-          name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        }
-      }else{
-        this.staticParam = {
-          name: '',
-          value:'',
-          data_type:'',
-          unit:''
-        }
+  mounted () {
+    if (this.editMode) {
+      this.staticParam = {
+        name: '',
+        value: '',
+        data_type: '',
+        unit: ''
       }
+    } else {
+      this.staticParam = {
+        name: '',
+        value: '',
+        data_type: '',
+        unit: ''
+      }
+    }
   }
-//   computed: {
-//     ...mapGetters(['currentUser', 'selectedProject'])
-//   }
 }
 </script>
 

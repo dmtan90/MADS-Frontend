@@ -67,7 +67,7 @@ export default {
     loadUserWidgets () {
       let config = { userId: this.currentUser.id, orgId: this.currentUser.org.id }
       userWidgetService
-        .read(config, { page_number: 1, page_size: 10 })
+        .read(config, { page_number: 1, page_size: 100 })
         .then(response => {
           this.userWidgets = this.$_.map(response.user_widgets, (user_widget) => {
             return user_widget.widget

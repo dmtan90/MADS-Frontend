@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 const dataTypeMap = {
+  'integer': 'number',
   'string': 'text',
   'boolean': 'checkbox',
   'color': 'color'
@@ -32,7 +33,9 @@ const renderObject = (createElement, context, setting, parentKey, isHeader = fal
 }
 
 const renderInput = (createElement, context, setting, key) => {
-  const { listeners } = context
+  const { listeners, props } = context
+  const { visualProp } = props
+
   const inputHandler = listeners['on-setting-upate']
 
   let inputTemplate = ''
@@ -44,7 +47,7 @@ const renderInput = (createElement, context, setting, key) => {
       },
       attrs: {
         type: dataTypeMap[setting.data_type],
-        value: setting.value
+        value: _.get(visualProp, key)
       },
       on: {
         input: e => inputHandler && inputHandler(e, key)
@@ -57,7 +60,7 @@ const renderInput = (createElement, context, setting, key) => {
         [setting.data_type]: true
       },
       attrs: {
-        checked: setting.value
+        checked: _.get(visualProp, key)
       }
     })
   }
@@ -87,6 +90,7 @@ const renderSetting = (createElement, context, setting, key, isHeader = false) =
       settingTemplate = renderObject(createElement, context, setting, key, isHeader)
       break
     case 'string':
+    case 'integer':
     case 'boolean':
     case 'color':
       settingTemplate = renderInput(createElement, context, setting, key)

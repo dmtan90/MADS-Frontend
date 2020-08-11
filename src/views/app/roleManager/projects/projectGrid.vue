@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['selectProject', 'setEntityManagerCurrentPage']),
+    ...mapActions(['selectProject', 'setEntityManagerCurrentPage', 'setIotManagerCurrentPage']),
     renderUserName (users) {
       users = this.$_.map(users, (user) => {
         return user.first_name
@@ -85,7 +85,15 @@ export default {
     },
     onSelectProject (project) {
       this.selectProject(project)
-      this.setEntityManagerCurrentPage(this.source)
+
+      switch (this.source) {
+        case 'iotManager':
+          this.setIotManagerCurrentPage(this.source)
+          break
+        default:
+          this.setEntityManagerCurrentPage(this.source)
+      }
+
     },
     getProjectLocationUrl (project) {
       return project.location ? project.location.url : ''

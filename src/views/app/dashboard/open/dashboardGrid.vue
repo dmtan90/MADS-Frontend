@@ -9,13 +9,14 @@
       <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index">
         <div class="header">
           <span class="name">{{dashboard.name}}</span>
-          <div class="actions">
+          <div class="actions" v-if="!dashboard.dummy">
             <svg class="icon" @click="deleteDashboard(dashboard)">
               <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
             </svg>
           </div>
         </div>
         <div class="img-wrap" @click="selectDashboard(dashboard)">
+          <img :src="dashboard.imageUrl" alt="" v-if="dashboard.imageUrl">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
           </svg>
@@ -65,7 +66,7 @@ export default {
       this.$refs.addEditDashboard.edit(dashboard)
     },
     deleteDashboard (dashboard) {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: dashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: dashboard.id }
       dashboardService.delete(config)
         .then((response) => {
           DashboardEventBus.$emit('reload-dashboards')
@@ -171,6 +172,10 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .info-wrap {
         height: 90px;

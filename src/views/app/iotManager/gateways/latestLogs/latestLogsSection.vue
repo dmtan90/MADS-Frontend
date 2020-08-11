@@ -13,10 +13,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import {Vuetable} from 'vuetable-2'
+import { Vuetable } from 'vuetable-2'
 import fieldDef from './fieldDefs'
 import gatewayService from '@/services/gateway.service'
-import GatewayEventBus from '../gatewayEventBus'
 
 export default {
   components: {
@@ -25,29 +24,29 @@ export default {
   data () {
     return {
       fields: fieldDef,
-      data: [],
+      data: []
     }
   },
-  methods:{
-    loadData(){
-        const config = {
+  methods: {
+    loadData () {
+      const config = {
         orgId: this.currentUser.org.id,
-        projectId: 1,
+        projectId: this.selectedProject.id,
         id: this.selectedGateway.id
       }
 
       const params = {
-        page_size: 6,
+        page_size: 100,
         page_number: 1
       }
-        gatewayService.latestLogsRead(config, params)
-            .then((res)=>{
-                this.data = res.data_dumps
-            })
+      gatewayService.latestLogsRead(config, params)
+        .then((res) => {
+          this.data = res.data_dumps
+        })
     }
   },
   computed: {
-    ...mapGetters(['currentUser','selectedGateway'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedGateway'])
   },
   mounted () {
     this.loadData()

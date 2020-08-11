@@ -20,9 +20,7 @@
 import { mapGetters } from 'vuex'
 import madsModal from '../../../shared/madsModal'
 import sections from './addEditDetailsCredSections'
-import sensorService from '@/services/sensor.service'
 import GatewayEventBus from '../gatewayEventBus'
-import TreeEventBus from '../../../shared/madsTree/treeEventBus'
 import gatewayService from '@/services/gateway.service'
 
 export default {
@@ -71,20 +69,21 @@ export default {
       this.selectedSectionIndex++
     },
     saveGateway () {
-       let config = { orgId: this.currentUser.org.id, projectId: 1 }
-        let gatewayData = this.$refs.sections.getCredentialsData()
-        if(this.editMode){
-            config = this.$_.assign(config, { id: this.credential.id })
-            gatewayService.update(config, gatewayData)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }else{
-            gatewayService.create(config, gatewayData)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
+      let gatewayData = this.$refs.sections.getCredentialsData()
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.credential.id })
+        gatewayService.update(config, gatewayData)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+            GatewayEventBus.$emit('reload-gateway')
+          })
+      } else {
+        gatewayService.create(config, gatewayData)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+          })
+      }
     },
     onCancel () {
       this.selectedSectionIndex = 1

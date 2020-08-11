@@ -38,11 +38,11 @@ export default {
       appState = _.merge(state[appKey], { appZindex: 0 })
       commit('updateAppState', appState)
     },
-    async closeApp ({ commit, state }, appKey) {
-      let appState = _.merge(state[appKey], { appState: 'closed' })
+    async closeApp ({ commit, state }, app) {
+      let appState = _.merge(state[app.appKey], { appState: 'closed', currentSection: app.appSections[0].key })
       commit('updateAppState', appState)
 
-      appState = _.merge(state[appKey], { appZindex: 0 })
+      appState = _.merge(state[app.appKey], { appZindex: 0 })
       commit('updateAppState', appState)
     },
     async hideAppSidebar ({ commit, state }, appKey) {

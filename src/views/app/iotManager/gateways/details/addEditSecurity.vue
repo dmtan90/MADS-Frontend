@@ -24,7 +24,6 @@
 import { mapGetters } from 'vuex'
 import madsSingleSectionModal from '../../../shared/madsSingleSectionModal'
 import GatewayEventBus from '../gatewayEventBus'
-import TreeEventBus from '../../../shared/madsTree/treeEventBus'
 import gatewayService from '@/services/gateway.service'
 
 export default {
@@ -40,7 +39,7 @@ export default {
     return {
       editMode: false,
       security: {},
-      staicParam:{},
+      staicParam: {}
       // access_token: null
     }
   },
@@ -56,30 +55,30 @@ export default {
       this.security = security
     },
     saveGateway () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       let data = this.security
-        if(this.editMode){
-            config = this.$_.assign(config, { id: this.security.id })
-            gatewayService.update(config, data)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }else{
-            gatewayService.create(config, data)
-                .then((res)=>{
-                    GatewayEventBus.$emit('reload-gateways');
-                })
-        }
+      if (this.editMode) {
+        config = this.$_.assign(config, { id: this.security.id })
+        gatewayService.update(config, data)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+          })
+      } else {
+        gatewayService.create(config, data)
+          .then((res) => {
+            GatewayEventBus.$emit('reload-gateways')
+          })
+      }
     },
     onCancel () {
     //   this.allSectionsVisited = false
     },
-    genAccessToken(){
-      this.security.access_token = (Math.random().toString(36)+'uygsshssygugdugsssgvb').slice(2, 100+2);
+    genAccessToken () {
+      this.security.access_token = (Math.random().toString(36) + 'uygsshssygugdugsssgvb').slice(2, 100 + 2)
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   }
 }
 </script>

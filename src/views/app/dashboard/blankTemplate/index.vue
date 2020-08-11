@@ -54,28 +54,54 @@
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                    <div class="actions" v-if="isEditMode">
-                      <!-- <svg class="icon" @click="editWidget(item)">
+                    <div class="actions" :class="{'single': item.type === 'command_widget'}" v-if="isEditMode">
+                      <svg class="icon" v-if="(item.type !== 'command_widget')">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
-                      </svg> -->
-                      <svg class="icon" @click="deleteWidget(item)">
+                      </svg>
+                      <svg class="icon" @click="(item.type === 'command_widget') ? deleteCommandWidget(item) : deleteWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
                     </div>
-                    <widget
-                      :visualSettings="getVisualSettings(item)"
-                      :series="getSeries(item)"
-                      :widgetId="getWidgetId(item)"
-                      :page="'dashboard'"
-                      :colWidth="colWidth"
-                      :colHeight="colHeight"
-                      :cols="item.w"
-                      :rows="item.h"></widget>
+                    <div v-if="item.type === 'command_widget'" class="command-widget-wrap">
+                      <h2>{{commandWidgetObject[item.i].label}}</h2>
+                      <div v-for="(setting, key) in getCommandDataSettings(item)" :key="key" class="command-widget">
+                        <h2>{{ $_.replace(key, '_', ' ') }}</h2>
+                        <div v-if="setting.html_type === 'range'">
+                          <b-form-input v-model="setting.value" type="range" :min="setting.min" :max="setting.max" step="0.5"></b-form-input>
+                          <span class="mt-2">Value: {{ setting.value }}</span>
+                        </div>
+                        <div v-if="setting.html_type === 'color'" class="color-wrap">
+                          <span>{{ setting.value || '#000000'}}</span>
+                          <b-form-input v-model="setting.value" type="color"></b-form-input>
+                        </div>
+                        <div v-if="setting.html_tag === 'select'" class="select-wrap">
+                          <b-form-radio-group v-model="setting.value">
+                            <b-form-radio :value="value" v-for="(value, key) in setting.source" :key="key">{{ key }}</b-form-radio>
+                          </b-form-radio-group>
+                        </div>
+                      </div>
+                      <div class="btn-wrap">
+                        <b-button class="btn" @click="updateCommandWidget(commandWidgetObject[item.i])">Apply</b-button>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <widget
+                        :visualProperties="getVisualProperties(item)"
+                        :series="getSeries(item)"
+                        :widgetId="getWidgetId(item)"
+                        :page="'dashboard'"
+                        :colWidth="colWidth"
+                        :colHeight="colHeight"
+                        :cols="item.w"
+                        :rows="item.h">
+                      </widget>
+                    </div>
                 </grid-item>
             </grid-layout>
         </div>
       </div>
     </div>
+    <edit-widget ref="editWidget"></edit-widget>
   </div>
 </template>
 
@@ -86,11 +112,13 @@ import widget from './../../shared/widgets/highChart'
 import VueGridLayout from 'vue-grid-layout'
 import dasbhoardEventBus from './../dashboardBus'
 import dashboardService from '@/services/dashboard.service'
+import editWidget from './../addEditWidget'
 
 export default {
   components: {
     dashboardHeader,
     widget,
+    editWidget,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem
   },
@@ -98,14 +126,15 @@ export default {
     return {
       widgets: [],
       widgetObject: {},
+      commandWidgetObject: {},
       selectedTab: 'home',
       series: [],
-      visualSettings: {},
       isEditMode: false,
       layout: [],
       dummyLayout: [
         { 'x': 0, 'y': 0, 'w': 1, 'h': 1, 'i': '0' }
       ],
+      commandWidgetLayout: [{ 'x': 0, 'y': 0, 'w': 6, 'h': 6, 'i': '0' }],
       colWidth: 75,
       colHeight: 50,
       showLayout: false
@@ -123,7 +152,10 @@ export default {
         this.isEditMode = false
       }
     },
-    getVisualSettings (item) {
+    getCommandDataSettings (item) {
+      return this.commandWidgetObject[item.i].data_settings
+    },
+    getVisualProperties (item) {
       return this.widgetObject[item.i].visual_properties
     },
     getSeries (item) {
@@ -133,7 +165,7 @@ export default {
       return this.widgetObject[item.i].uuid
     },
     onSaveDashboard (name) {
-      console.log('layout', this.layout)
+      this.isEditMode = false
       let widgetLayots = {}
 
       this.$_.forEach(this.layout, (item) => {
@@ -144,7 +176,7 @@ export default {
         name: name,
         widget_layouts: widgetLayots
       }
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)
         .then((response) => {
@@ -156,7 +188,7 @@ export default {
       delete widgetLayots[item.i]
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)
         .then((response) => {
@@ -165,7 +197,7 @@ export default {
     },
     reloadSelectedDasbhoard () {
       let loader = this.$loading.show()
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.readId(config)
         .then((response) => {
@@ -174,17 +206,65 @@ export default {
         })
     },
     deleteWidget (item) {
+      let loader = this.$loading.show()
+
       let widgetInstanceId = this.widgetObject[item.i].id
       let widgetId = this.widgetObject[item.i].widget_id
 
-      let config = { orgId: this.currentUser.org.id, projectId: 1, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
 
       dashboardService.deleteWidgetInstance(config)
         .then((response) => {
+          loader.hide()
           this.updateDashbaord(item)
         })
     },
     editWidget (item) {
+      let widget = this.widgetObject[item.i]
+      this.$refs.editWidget.edit(widget)
+    },
+    hexToRgb (hex) {
+      return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+        , (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16))
+    },
+    rgbToHex (r, g, b) {
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+    },
+    updateCommandWidget (widget) {
+      let loader = this.$loading.show()
+
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widget.id }
+
+      let dataSettings = this.$_.merge({}, widget.data_settings)
+
+      this.$_.forEach(dataSettings, (setting) => {
+        if (setting.html_type === 'color') {
+          setting.value = this.hexToRgb(setting.value)
+        }
+      })
+
+      let params = {
+        data_settings: dataSettings
+      }
+      dashboardService.updateCommandWidget(config, params)
+        .then((response) => {
+          loader.hide()
+        })
+    },
+    deleteCommandWidget (item) {
+      let widgetId = this.commandWidgetObject[item.i].id
+
+      let loader = this.$loading.show()
+
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widgetId }
+
+      dashboardService.updateCommandWidget(config)
+        .then((response) => {
+          loader.hide()
+          this.updateDashbaord(item)
+        })
     }
   },
   watch: {
@@ -193,6 +273,24 @@ export default {
 
       this.$_.forEach(this.widgets, (widget) => {
         this.widgetObject[widget.id] = widget
+      })
+
+      let commandWidgets = dashboard.command_widgets
+
+      this.$_.forEach(commandWidgets, (widget) => {
+        this.$_.forEach(widget.data_settings, (setting) => {
+          if (setting.html_type === 'color') {
+            if (setting.value) {
+              setting.value = this.rgbToHex(setting.value[0], setting.value[1], setting.value[2])
+            } else {
+              setting.value = '#000000'
+            }
+          }
+          if (setting.html_tag === 'select') {
+            setting.value = setting.value || setting.default
+          }
+        })
+        this.commandWidgetObject[widget.id] = widget
       })
 
       let widgetLayots = this.$_.clone(this.selectedDashboard.widget_layouts)
@@ -215,6 +313,9 @@ export default {
     dasbhoardEventBus.$on('widget-added', () => {
       this.reloadSelectedDasbhoard()
     })
+  },
+  beforeDestroy () {
+    dasbhoardEventBus.$off()
   }
 }
 </script>
@@ -290,8 +391,9 @@ export default {
       position: relative;
       .widgets-wrap {
         width: 100%;
-        height: 100%;
+        height: calc(100% - 50px);
         padding: 10px;
+        overflow: auto;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;
@@ -299,7 +401,7 @@ export default {
             box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
             .actions {
               position: absolute;
-              width: 40px;
+              width: 90px;
               height: 40px;
               background-color: #4c92c3;
               right: 0;
@@ -320,6 +422,61 @@ export default {
                   border-right: none;
                 }
               }
+              &.single {
+                width: 40px;
+              }
+            }
+            .command-widget-wrap {
+              padding: 15px;
+              overflow: auto;
+              height: 100%;
+              > h2 {
+                margin-bottom: 30px;
+                background-color: #e2e2e2;
+                padding: 5px 10px;
+              }
+              .command-widget {
+                margin-bottom: 30px;
+                h2 {
+                  text-transform: capitalize;
+                  // color: #5A677F;
+                  font-size: 19px;
+                }
+                .color-wrap {
+                  border: 1px solid #e2e2e2;
+                  padding: 5px 5px 5px 10px;
+                  display: flex;
+                  align-items: center;
+                  background-color: white;
+                  width: 120px;
+                  height: 50px;
+                  span {
+                    display: inline-block;
+                    color: #5A677F;
+                    width: 60px;
+                    text-transform: uppercase;
+                  }
+                  input {
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    cursor: pointer;
+                    padding: 0;
+                  }
+                }
+              }
+              .btn-wrap {
+                .btn {
+                  background-color: #ffa07a !important;
+                  color: white !important;
+                  width: 120px;
+                  border: 1px solid #ffa07a !important;
+                  font-size: 18px;
+                  height: 40px;
+                  padding: 0 10px;
+                  width: 150px;
+                }
+              }
             }
           }
         }
@@ -332,5 +489,15 @@ export default {
     height: 10px;
     display: flex;
     align-items: center;
+  }
+</style>
+
+<style lang="scss">
+  .select-wrap {
+    label {
+      text-transform: capitalize;
+      font-size: 15px;
+      color: #5A677F;
+    }
   }
 </style>

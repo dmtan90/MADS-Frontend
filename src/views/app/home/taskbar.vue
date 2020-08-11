@@ -191,6 +191,9 @@ export default {
       this.currentTime = this.$moment()
     }, 1000)
   },
+  beforeDestroy () {
+    EventBus.$off()
+  },
   destroyed () {
     clearTimeout(this.timer)
   }

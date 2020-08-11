@@ -52,47 +52,17 @@ export default {
     loadGateways () {
       const config = {
         orgId: this.currentUser.org.id,
-        projectId: 1
+        projectId: this.selectedProject.id
       }
 
       const params = {
-        page_size: 20,
+        page_size: 100,
         page_number: 1
       }
       gatewayService.read(config, params)
         .then((res) => {
           this.gateways = res.gateways
         })
-      // this.gateways = [
-      //   {
-      //     id: 1,
-      //     name: 'Gateway1',
-      //     uuid: 'abcd1234',
-      //     channel: 'http',
-      //     status: 'Active'
-      //   },
-      //   {
-      //     id: 2,
-      //     name: 'Gateway2',
-      //     uuid: 'abcd1234',
-      //     channel: 'mqtt',
-      //     status: 'Inactive'
-      //   },
-      //   {
-      //     id: 3,
-      //     name: 'Gateway3',
-      //     uuid: 'abcd1234',
-      //     channel: 'http',
-      //     status: 'Active'
-      //   },
-      //   {
-      //     id: 4,
-      //     name: 'Gateway4',
-      //     uuid: 'abcd1234',
-      //     channel: 'mqtt',
-      //     status: 'Active'
-      //   }
-      // ]
     },
     onShowDetail (detail) {
       this.showListing = false
@@ -100,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
     this.loadGateways()
@@ -108,6 +78,9 @@ export default {
     GatewayEventBus.$on('reload-gateways', () => {
       this.loadGateways()
     })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>
@@ -169,7 +142,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

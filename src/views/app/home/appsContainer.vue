@@ -108,6 +108,9 @@ export default {
   },
   mounted () {
     EventBus.$on('open-app-window', (app) => { this.openAppWindow(app) })
+  },
+  beforeDestroy () {
+    EventBus.$off()
   }
 }
 </script>
@@ -121,7 +124,6 @@ export default {
     bottom: 60px;
     background-color: none;
     &.maximized {
-      background-color: white;
       height: calc(100% - 60px);
       width: 100%;
       left: 0;

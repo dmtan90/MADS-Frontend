@@ -483,7 +483,7 @@ export default {
     }
     .canvas-actions {
       border-bottom: 1px solid gray;
-      width: 90%;
+      width: 95%;
       display: flex;
       align-items: center;
       justify-content: flex-end;

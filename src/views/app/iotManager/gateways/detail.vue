@@ -61,51 +61,51 @@
                   </svg>
                 </button>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Name:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.name}}
                 </div>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Channel:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.channel}}
                 </div>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Parent:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.parent_type}}
                 </div>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Description:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.description}}
                 </div>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   UUID:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.uuid}}
                 </div>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Status:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{credentials.status}}
                 </div>
               </div>
@@ -122,12 +122,33 @@
                   </svg>
                 </button>
               </div>
-              <div class="iteams-row">
-                <div class="iteam-main">
+              <div class="items-row">
+                <div class="item-main">
                   Access Token:
                 </div>
-                <div class="iteam">
+                <div class="item">
                   {{security.access_token}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="security-box">
+            <div class="header">Timestamp</div>
+            <div class="body-box">
+              <div class="edit-btn">
+                <button @click="editTimestamp()">
+                  <svg class="icon">
+                    <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                  </svg>
+                </button>
+              </div>
+              <div class="items-row">
+                <div class="item-main">
+                  Mapping:
+                </div>
+                <div class="item">
+                  {{timestampMapping || 'No Mapping Found'}}
                 </div>
               </div>
             </div>
@@ -153,24 +174,26 @@
 
       </b-tabs>
     </div>
-</div>
+  </div>
     <add-edit-static-param @saveData="staticParamsData" ref="addEditStaticParam"></add-edit-static-param>
     <add-edit-streaming-param @saveData="streamingParamsData" ref="addEditStreamingParam"></add-edit-streaming-param>
     <add-edit-credentials ref="addEditCredentials"></add-edit-credentials>
     <add-edit-security ref="addEditSecurity"></add-edit-security>
+    <timestamp-mapping ref="timeStampModal" :timestampMapping="timestampMapping"></timestamp-mapping>
   </div>
 
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { Vuetable, VuetablePagination } from 'vuetable-2'
+import Vuetable from 'vuetable-2'
 import paramFieldDefs from './parametersFieldDef'
 import streamParamFieldDefs from './streamingParametersFieldDef'
 import addEditStaticParam from './addEditStaticParam'
 import addEditStreamingParam from './addEditStreamingParam'
 import addEditCredentials from './details/addEditDetailsCred'
 import addEditSecurity from './details/addEditSecurity'
+import timestampMapping from './details/timestampMappingModal'
 import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
 import parameterMappingSection from './parameterMapping/parameterMappingSection'
@@ -184,7 +207,7 @@ export default {
     addEditStreamingParam,
     addEditCredentials,
     addEditSecurity,
-    VuetablePagination,
+    timestampMapping,
     parameterMappingSection,
     latestLogsSection,
     vueJsonEditor
@@ -200,25 +223,29 @@ export default {
       security: {},
       commands: {},
       mappedParams: {},
-      gateway: {}
+      gateway: {},
+      timestampMapping: ''
     }
   },
   methods: {
     async loadGatewayData () {
+      let loader = this.$loading.show()
+
       const config = {
         orgId: this.currentUser.org.id,
-        projectId: 1,
+        projectId: this.selectedProject.id,
         id: this.selectedGateway.id
       }
 
       const params = {
-        page_size: 20,
+        page_size: 100,
         page_number: 1
       }
-      let gatewayId = this.selectedGateway.id
 
       gatewayService.readId(config, params)
         .then((res) => {
+          loader.hide()
+
           this.gateway = res
           let filterData = res
 
@@ -256,6 +283,8 @@ export default {
             }
           })
 
+          this.timestampMapping = filterData.timestamp_mapping || ''
+
           this.mappedParams = filterData.mapped_parameters
         })
     },
@@ -263,7 +292,6 @@ export default {
       this.$refs.addEditStaticParam.edit(detail)
     },
     deleteStaticParam (detail) {
-
     },
     addStaticParam () {
       this.$refs.addEditStaticParam.add()
@@ -275,7 +303,6 @@ export default {
       this.$refs.addEditStreamingParam.edit(detail)
     },
     deleteStreamParam (detail) {
-
     },
     editCredentials (credentials) {
       this.$refs.addEditCredentials.edit(credentials)
@@ -294,20 +321,20 @@ export default {
       this.streamingParams = streamingParamData
     },
     saveStaticParam () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: this.selectedGateway.id }
       let payload = {
         'static_data': this.staticParams
       }
       gatewayService.update(config, payload)
-        .then((res) => console.log('res', res))
+        .then((res) => {})
     },
     saveStreamingParam () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: this.selectedGateway.id }
       let payload = {
         'streaming_data': this.streamingParams
       }
       gatewayService.update(config, payload)
-        .then((res) => console.log('res', res))
+        .then((res) => {})
     },
     onPaginationData (paginationData) {
       this.$refs.pagination.setPaginationData(paginationData)
@@ -316,7 +343,7 @@ export default {
       this.$refs.vuetable.changePage(page)
     },
     addCommands () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: this.selectedGateway.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: this.selectedGateway.id }
       let data = {
         commands: this.commands
       }
@@ -324,13 +351,23 @@ export default {
         .then((res) => {
           GatewayEventBus.$emit('reload-gateways')
         })
+    },
+    editTimestamp () {
+      this.$refs.timeStampModal.edit()
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedGateway'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedGateway'])
   },
   mounted () {
     this.loadGatewayData()
+
+    GatewayEventBus.$on('reload-gateway', () => {
+      this.loadGatewayData()
+    })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>
@@ -401,15 +438,17 @@ export default {
           }
         }
       }
-      .iteams-row{
+      .items-row{
         width: 100%;
         display: flex;
-        padding-bottom:10px ;
-        .iteam-main{
-
+        padding-bottom: 10px;
+        align-items: center;
+        .item-main{
+          font-size: 15px;
+          width: 95px;
         }
-        .iteam{
-
+        .item{
+          font-size: 14px;
         }
       }
     }
@@ -448,15 +487,16 @@ export default {
           }
         }
       }
-      .iteams-row{
+      .items-row{
         width: 100%;
         display: flex;
         padding-bottom:10px ;
-        .iteam-main{
-
+        .item-main{
+          font-size: 15px;
+          width: 105px;
         }
-        .iteam{
-
+        .item{
+          font-size: 14px;
         }
       }
     }

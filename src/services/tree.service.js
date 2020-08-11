@@ -6,7 +6,7 @@ const treeService = {
     let leafEntityType = _.includes(hiddenEntities, 'SensorParameter') ? 'Sensor' : 'SensorParameter'
     let childrenPresent = (entity.type !== leafEntityType && entity.entities && _.size(entity.entities)) > 0
     let isEntitySelected = _.find(selectedNodes, (node) => {
-      return (node.id === entity.id) && (node.type === entity.type)
+      return (node.id === entity.id || node.id === entity.uuid) && (_.toLower(node.type) === _.toLower(entity.type))
     })
 
     let isSelectable = _.includes(selectableEntities, entity.type) &&
@@ -41,7 +41,8 @@ const treeService = {
           selectable: isSelectable,
           icon: this._entityTypeIcon(entity.type),
           isLeafNode: true
-        }
+        },
+        entities: []
       })
     }
   },
@@ -90,7 +91,7 @@ const treeService = {
     return icon
   },
 
-  initData: function (entity, type = 'sensor-parameter', options) {
+  initData: function (entity, options) {
     return this._initSensorParameterData(entity, options.selectedNodes, options.hiddenEntities, options.selectableEntities, options.editingEntity)
   },
 

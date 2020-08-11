@@ -53,12 +53,14 @@ export default {
   },
   methods: {
     loadProjects () {
+      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id }
-      projectService.read(config, { page_number: 1, page_size: 10 })
+      projectService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.projects = response.projects
           this.active = response.projects.filter((project) => project.archived === false)
           this.archived = response.projects.filter((project) => project.archived === true)
+          loader.hide()
         })
     }
   },
@@ -71,6 +73,9 @@ export default {
     ProjectEventBus.$on('reload-projects', () => {
       this.loadProjects()
     })
+  },
+  beforeDestroy () {
+    ProjectEventBus.$off()
   }
 }
 </script>
@@ -132,7 +137,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

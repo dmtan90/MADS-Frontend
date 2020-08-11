@@ -63,7 +63,7 @@ export default {
     display: flex;
     height: 100%;
     .sidebar {
-      width: 260px;
+      width: 180px;
       background-color: #1E3664;
       position: relative;
       padding-top: 30px;
@@ -73,13 +73,13 @@ export default {
         padding: 0 1px 0 2px;
         margin-top: 20px;
         li {
-          height: 50px;
+          height: 40px;
           margin: 20px -1px;
           display: flex;
           align-items: center;
           padding-left: 40px;
           color: white;
-          font-size: 21px;
+          font-size: 16px;
           cursor: pointer;
           &.active {
             background-color: white;
@@ -96,6 +96,7 @@ export default {
         bottom: 10px;
         justify-content: space-around;
         width: 100%;
+        flex-direction: column;
         .sidebar-btn {
           height: 40px;
           line-height: 1;
@@ -106,7 +107,8 @@ export default {
           margin: 0;
           padding: 0;
           justify-content: center;
-          width: 46%;
+          width: 75%;
+          margin: 10px 0;
           .icon {
             width: 23px;
             height: 23px;
@@ -121,10 +123,15 @@ export default {
       }
     }
     .content-wrap {
-      width: calc(100% - 260px);
+      width: calc(100% - 180px);
       overflow: auto;
+      position: relative;
       .content {
-      padding: 40px 40px 60px;
+        width: 100%;
+        height: calc(100% - 50px);
+        padding: 20px;
+        margin-top: 50px;
+        overflow: auto;
       }
     }
   }

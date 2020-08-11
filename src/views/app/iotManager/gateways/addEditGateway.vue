@@ -22,7 +22,6 @@ import madsModal from './../../shared/madsModal'
 import sections from './addEditGatewaySections'
 import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
-import TreeEventBus from './../../shared/madsTree/treeEventBus'
 
 export default {
   props: {
@@ -70,7 +69,7 @@ export default {
       this.selectedSectionIndex++
     },
     saveGateway () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
       let gatewayData = this.$refs.sections.getGatewayData()
       if (this.editMode) {
         config = this.$_.assign(config, { id: this.gateway.id })
@@ -95,7 +94,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

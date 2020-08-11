@@ -47,6 +47,15 @@ const projectService = {
     } catch (error) {
       return error.data
     }
+  },
+  readUsers: async function (config, params) {
+    try {
+      const response = await ApiService.get('/orgs/' + config.orgId + resource + '/' + config.id + '/users', { params })
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 

@@ -11,7 +11,12 @@
       <dashboard-grid :dashboards="dashboards" :source="source" @select-dashboard="onSelectDashboard"></dashboard-grid>
     </div>
     <div class="detail-section h-100" v-else>
-      <blank-template @show-all="onShowAllDashboards"></blank-template>
+      <blank-template v-if="!selectedDashboard.dummy" @show-all="onShowAllDashboards"></blank-template>
+      <div v-else class="h-100">
+        <shea-template v-if="selectedDashboard.key === 'shea'" @show-all="onShowAllDashboards()"></shea-template>
+        <hevea-template v-if="selectedDashboard.key === 'hevea'"  @show-all="onShowAllDashboards()"></hevea-template>
+        <smart-agriculture-template v-if="selectedDashboard.key === 'smart_agriculture'"  @show-all="onShowAllDashboards()"></smart-agriculture-template>
+      </div>
     </div>
   </div>
 </template>
@@ -21,12 +26,18 @@ import { mapActions, mapGetters } from 'vuex'
 import dashboardGrid from './dashboardGrid'
 import dashboardService from '@/services/dashboard.service'
 import blankTemplate from './../blankTemplate'
+import sheaTemplate from './../sheaTemplate'
+import heveaTemplate from './../heveaTemplate'
+import smartAgricultureTemplate from './../smartAgricultureTemplate'
 import DashboardEventBus from './../dashboardBus'
 
 export default {
   components: {
     dashboardGrid,
-    blankTemplate
+    blankTemplate,
+    sheaTemplate,
+    smartAgricultureTemplate,
+    heveaTemplate
   },
   props: {
     source: {
@@ -38,22 +49,44 @@ export default {
       templates: [],
       dashboards: [],
       showAllDashboards: true,
-      viewType: this.source ? 'grid' : 'list'
+      viewType: this.source ? 'grid' : 'list',
+      selectedDashboard: {}
     }
   },
   methods: {
     ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard']),
     loadDashboards () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id }
 
       dashboardService.read(config)
         .then((response) => {
           this.dashboards = response.dashboards
+
+          this.dashboards = this.$_.concat(this.dashboards, [
+            {
+              name: 'Shea',
+              key: 'shea',
+              imageUrl: '/assets/img/shea.png',
+              dummy: true
+            },
+            {
+              name: 'Hevea',
+              key: 'hevea',
+              imageUrl: '/assets/img/hevea.png',
+              dummy: true
+            },
+            {
+              name: 'Smart Agriculture',
+              key: 'smart_agriculture',
+              imageUrl: '/assets/img/smart_agriculture.png',
+              dummy: true
+            }
+          ])
         })
     },
     loadDashboard (id) {
       let loader = this.$loading.show()
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: id }
+      let config = { orgId: this.currentUser.org.id, id: id }
 
       dashboardService.readId(config)
         .then((response) => {
@@ -62,8 +95,12 @@ export default {
         })
     },
     onSelectDashboard (dashboard) {
+      this.selectedDashboard = dashboard
       this.showAllDashboards = false
-      this.loadDashboard(dashboard.id)
+
+      if (!dashboard.dummy) {
+        this.loadDashboard(dashboard.id)
+      }
     },
     onShowAllDashboards () {
       this.showAllDashboards = true
@@ -82,6 +119,7 @@ export default {
   },
   beforeDestroy () {
     this.showAppSidebar('Dashboards')
+    DashboardEventBus.$off()
   }
 }
 </script>
@@ -143,7 +181,7 @@ export default {
         }
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

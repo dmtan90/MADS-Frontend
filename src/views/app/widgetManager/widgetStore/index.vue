@@ -4,11 +4,14 @@
       <div class="header">
         <div class="content">
           <div class="txt">
-            Graphic resource for everyone
+            Search widgets for your IoT projects
           </div>
           <b-form>
             <b-form-group>
               <b-form-input type="text" v-model="searchText" debounce="500" @change="searchWidget()" placeholder="Search widgets"/>
+              <svg class="icon" @click="searchWidget()">
+                <use xlink:href="/assets/img/mads-common-icons.svg#search"></use>
+              </svg>
             </b-form-group>
           </b-form>
           <div class="btn-group">
@@ -83,7 +86,7 @@ export default {
     },
     loadWidgets () {
       widgetService
-        .read({ page_number: 1, page_size: 10 })
+        .read({ page_number: 1, page_size: 100 })
         .then(response => {
           this.widgets = response.widgets
           this.displayedWidgets = this.widgets
@@ -91,22 +94,18 @@ export default {
     },
     loadWidgetsLibrary () {
       this.widgetsLibrary = [
-        { label: 'Scatter Plot', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/scatter/thumbnail.png' },
-        { label: 'Bubble Chart', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bubble/thumbnail.png' },
-        { label: '3D bubbles', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bubble-3d/thumbnail.png' },
-        { label: 'Series Gauge', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-speedometer/thumbnail.png' },
-        { label: 'Sold Gauge', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-solid/thumbnail.png' },
-        { label: 'VU meter', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-vu-meter/thumbnail.png' },
-        { label: 'Clock', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/gauge-clock/thumbnail.png' },
-        { label: 'Heat map', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/heatmap/thumbnail.png' },
-        { label: 'Large heat map', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/heatmap-canvas/thumbnail.png' },
-        { label: 'Box plot', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/box-plot/thumbnail.png' },
-        { label: 'Bell curve', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/bellcurve/thumbnail.png' },
-        { label: 'Histogram', image_url: 'https://www.highcharts.com/demo/images/samples/highcharts/demo/histogram/thumbnail.png' },
-        { label: 'Single Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/basic-line/thumbnail.png' },
-        { label: 'Multiple Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/compare/thumbnail.png' },
-        { label: 'Stock chart with GUI', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/stock-tools-gui/thumbnail.png' },
-        { label: 'Area Line Series', image_url: 'https://www.highcharts.com/demo/images/samples/stock/demo/intraday-area/thumbnail.png' }
+        { label: 'Scatter Plot', image_url: '/assets/img/scatter.png' },
+        { label: 'Bubble Chart', image_url: '/assets/img/bubble.png' },
+        { label: '3D bubbles', image_url: '/assets/img/bubble-3d.png' },
+        { label: 'VU meter', image_url: '/assets/img/gauge-vu-meter.png' },
+        { label: 'Clock', image_url: '/assets/img/gauge-clock.png' },
+        { label: 'Heat map', image_url: '/assets/img/heatmap.png' },
+        { label: 'Large heat map', image_url: '/assets/img/heatmap-canvas.png' },
+        { label: 'Box plot', image_url: '/assets/img/box-plot.png' },
+        { label: 'Bell curve', image_url: '/assets/img/bellcurve.png' },
+        { label: 'Histogram', image_url: '/assets/img/histogram.png' },
+        { label: 'Stock chart with GUI', image_url: '/assets/img/stock-tools-gui.png' },
+        { label: 'Area Line Series', image_url: '/assets/img/intraday-area.png' }
       ]
     },
     searchWidget () {
@@ -182,7 +181,9 @@ export default {
           color: white;
           line-height: 1;
           &.popular-btn {
-            background: rgba(69, 166, 236, 1);
+            background-color: #1273eb !important;
+            color: white !important;
+            border: 1px solid #1273eb !important;
           }
           &.recent-btn {
             background-color: transparent;
@@ -243,6 +244,30 @@ export default {
       }
       .widget {
         margin: 20px 0;
+      }
+    }
+  }
+</style>
+
+<style lang="scss">
+  .widget-header {
+    .form-group {
+      position: relative;
+      input {
+        height: 54px;
+      }
+      .icon {
+        fill: white;
+        position: absolute;
+        width: 54px;
+        height: 100px;
+        right: 0px;
+        top: 0;
+        background: #1273eb;
+        height: 54px;
+        padding: 16px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
       }
     }
   }

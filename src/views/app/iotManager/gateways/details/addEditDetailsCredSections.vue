@@ -8,7 +8,7 @@
         </b-form-group>
         <b-form-group label="Credentials Channel" label-for="credentials-type">
           <multiselect v-model="selectedSensorType" :options="gatewayTypes" @select="onSelectGatewayType" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
-        </b-form-group> 
+        </b-form-group>
         <b-form-group label="Credentials Description" label-for="credentials-description" class="description">
           <b-form-textarea v-model="credentials.description" id="credentials-description" rows="6" max-rows="6"></b-form-textarea>
         </b-form-group>
@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import sensorTypeService from '@/services/sensorType.service'
 import madsTree from '../../../shared/madsTree/index'
 
 export default {
@@ -59,7 +57,7 @@ export default {
   data () {
     return {
       selectedSensorType: null,
-      gatewayTypes: ["http","mqtt"],
+      gatewayTypes: ['http', 'mqtt'],
       orgData: null,
       treeData: null,
       treeOptions: {
@@ -88,10 +86,7 @@ export default {
     },
     getSelectedEntity () {
       return [{ id: this.selectedParentEntityId, type: this.credentials.parent_type }]
-    },
-  },
-  computed: {
-    ...mapGetters(['currentUser', 'selectedProject'])
+    }
   },
   mounted () {
     if (this.credentialsData) {
@@ -100,7 +95,7 @@ export default {
         description: this.credentialsData.description || '',
         channel: this.credentialsData.channel || '',
         parent_type: this.credentialsData.parent_type,
-        parent_id: this.credentialsData.parent_id,
+        parent_id: this.credentialsData.parent_id
       }
 
       this.selectedSensorType = this.credentialsData.channel
@@ -118,7 +113,7 @@ export default {
         description: '',
         parent_type: '',
         parent_id: null,
-        channel: '',
+        channel: ''
       }
     }
   }

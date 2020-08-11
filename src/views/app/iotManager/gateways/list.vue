@@ -73,11 +73,6 @@ export default {
     showGateway (detail) {
       this.selectGateway(detail)
       this.$emit('show-detail', detail)
-      
-
-    //   GatewayEventBus.$on('reload-gateways', () => {
-    //   this.loadGateways()
-    // })
     },
     addGateway (gateway) {
       this.$refs.addEditGateway.add()
@@ -86,7 +81,7 @@ export default {
       this.$refs.addEditGateway.edit(gateway)
     },
     deleteGateway (gateway) {
-      let config = { orgId: this.currentUser.org.id, projectId: 1, id: gateway.id }
+      let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id, id: gateway.id }
       gatewayService.delete(config)
         .then((response) => {
           GatewayEventBus.$emit('reload-gateways')
@@ -107,7 +102,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser'])
+    ...mapGetters(['currentUser', 'selectedProject'])
   }
 }
 </script>

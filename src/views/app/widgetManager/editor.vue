@@ -1,5 +1,6 @@
 <template>
-  <div>Widget Manager Editor</div>
+  <div class="editor-wrap">
+  </div>
 </template>
 
 <script>
@@ -8,4 +9,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .editor-wrap {
+    background: url("/assets/img/coming-soon-2.jpg");
+    background-size: cover !important;
+    background-position: center !important;
+    width: 100%;
+    height: 100%;
+  }
 </style>

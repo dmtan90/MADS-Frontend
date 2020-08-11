@@ -35,8 +35,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import addWidget from './addWidget'
-import SharedBus from './../shared/sharedBus'
+import addWidget from './addEditWidget'
 
 export default {
   components: {
@@ -72,7 +71,7 @@ export default {
   methods: {
     ...mapActions(['selectTheme']),
     addWidget () {
-      SharedBus.$emit('open-mads-modal', 'addWidgetModal')
+      this.$refs.addWidget.add()
     },
     onselectTheme (dashboard) {
       this.selectTheme(dashboard)
@@ -97,11 +96,12 @@ export default {
 
 <style lang="scss" scoped>
   .dashboard-header {
-    height: 48px;
+    height: 50px;
     background-color: #dadada;
-    margin-top: 2px;
     display: flex;
     align-items: center;
+    // position: absolute;
+    width: 100%;
     .dashboard-name {
       font-size: 18px;
       padding-left: 10px;

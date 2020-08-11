@@ -36,14 +36,14 @@ export default {
     ...mapActions(['selectProject']),
     loadSensors () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      sensorService.read(config, { page_number: 1, page_size: 10 })
+      sensorService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.sensors = response.sensors
         })
     },
     loadSensorTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      sensorTypeService.read(config, { page_number: 1, page_size: 10 })
+      sensorTypeService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.sensorTypes = response.sensors_type
         })
@@ -66,6 +66,7 @@ export default {
   },
   beforeDestroy () {
     this.selectProject(null)
+    SensorEventBus.$off()
   }
 }
 </script>
@@ -93,7 +94,7 @@ export default {
         box-shadow: inset 0 -2px 0 #2aa7ff;
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

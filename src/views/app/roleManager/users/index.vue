@@ -74,7 +74,7 @@ export default {
         })
     },
     loadRoles () {
-      roleService.read({ page_number: 1, page_size: 10 })
+      roleService.read({ page_number: 1, page_size: 100 })
         .then(response => {
           this.roles = response.roles
         })
@@ -103,7 +103,7 @@ export default {
     },
     loadInvitations () {
       let config = { orgId: this.currentUser.org.id }
-      invitationService.read(config, { page_number: 1, page_size: 10 })
+      invitationService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.invitations = response.invitations
         })
@@ -122,6 +122,9 @@ export default {
       this.loadInvitations()
       this.selectedTab = 'invites'
     })
+  },
+  beforeDestroy () {
+    UserEventBus.$off()
   }
 }
 </script>
@@ -149,7 +152,7 @@ export default {
         box-shadow: inset 0 -2px 0 #2aa7ff;
       }
     }
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     background-color: white;
     padding: 20px;

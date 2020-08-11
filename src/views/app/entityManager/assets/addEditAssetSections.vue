@@ -42,7 +42,7 @@
       </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="metadata">
-      <div class="metadata-group">
+      <div class="metadata-group" v-if="asset.metadata.length">
         <b-form class="horizontal-form" v-for="(metadata, index) in asset.metadata" :key="index">
           <b-form-group :label="(index === 0) ? 'Metadata Name(key)' : ''" class="name">
             <b-form-input v-model="metadata.name" type="text" :disabled="true"></b-form-input>
@@ -58,6 +58,9 @@
           </b-form-group>
         </b-form>
       </div>
+      <div class="metadata-group" v-else>
+        <span>No Metadata Present</span>
+      </div>
     </section>
   </div>
 </template>
@@ -66,7 +69,7 @@
 import { mapGetters } from 'vuex'
 import assetTypeService from '@/services/assetType.service'
 import madsTree from './../../shared/madsTree/index'
-import userService from '@/services/user.service'
+import projectService from '@/services/project.service'
 
 export default {
   components: {
@@ -110,15 +113,15 @@ export default {
   },
   methods: {
     loadUsers () {
-      let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 10 })
+      let config = { orgId: this.currentUser.org.id, id: this.selectedProject.id }
+      projectService.readUsers(config, { page_size: 100 })
         .then((response) => {
           this.caretakers = response.users
         })
     },
     loadAssetTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      assetTypeService.read(config, { page_number: 1, page_size: 10 })
+      assetTypeService.read(config, { page_number: 1, page_size: 100 })
         .then((response) => {
           this.assetTypes = response.asset_types
 

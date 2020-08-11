@@ -44,7 +44,6 @@ export default {
   },
   methods: {
     formSubmit () {
-      console.log('register')
       this.$router.push('/')
     }
   }

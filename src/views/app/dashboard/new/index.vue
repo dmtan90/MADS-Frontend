@@ -60,21 +60,6 @@ export default {
           imageUrl: ''
         },
         {
-          name: 'Shea',
-          key: 'shea',
-          imageUrl: '/assets/img/shea.png'
-        },
-        {
-          name: 'Hevea',
-          key: 'hevea',
-          imageUrl: '/assets/img/hevea.png'
-        },
-        {
-          name: 'Smart Agriculture',
-          key: 'smart_agriculture',
-          imageUrl: '/assets/img/smart_agriculture.png'
-        },
-        {
           name: 'Amsterdam',
           imageUrl: '/assets/img/amsterdam.jpg'
         },
@@ -136,7 +121,7 @@ export default {
     },
     onCreateDashboard (name) {
       let params = { name: name, settings: {}, widget_layouts: {} }
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id }
 
       dashboardService.create(config, params)
         .then((response) => {
