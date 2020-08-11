@@ -11,7 +11,7 @@
     @on-cancel="onCancel()"
     @on-save="saveAlertRules()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :gatewayData="alertRule" :source="source" :entityMapParentNode="entityMapParentNode"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :alertRulesData="alertRule" :source="source" :entityMapParentNode="entityMapParentNode"></sections>
     </template>
   </mads-modal>
 </template>
@@ -21,8 +21,7 @@ import { mapGetters } from 'vuex'
 import madsModal from './../../../shared/madsModal'
 import sections from './addEditAlertRulesSections'
 import alertRulesService from '@/services/alertRules.service'
-import alertRulesEventBus from './alertRulesEventBus'
-import TreeEventBus from './../../../shared/madsTree/treeEventBus'
+import AlertRulesEventBus from './alertRulesEventBus'
 
 export default {
   props: {
@@ -73,20 +72,20 @@ export default {
       this.selectedSectionIndex++
     },
     saveAlertRules () {
-      // let config = { orgId: this.currentUser.org.id, projectId: 1 }
-      // let gatewayData = this.$refs.sections.getGatewayData()
-      // if (this.editMode) {
-      //   config = this.$_.assign(config, { id: this.gateway.id })
-      //   gatewayService.update(config, gatewayData)
-      //     .then((res) => {
-      //       GatewayEventBus.$emit('reload-gateways')
-      //     })
-      // } else {
-      //   gatewayService.create(config, gatewayData)
-      //     .then((res) => {
-      //       GatewayEventBus.$emit('reload-gateways')
-      //     })
-      // }
+      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let alertsRuleData = this.$refs.sections.getAlertRulesData()
+      if (this.editMode) {
+        // config = this.$_.assign(config, { id: this.gateway.id })
+        alertRulesService.update(config, alertsRuleData)
+          .then((res) => {
+            AlertRulesEventBus.$emit('reload-alertsRule')
+          })
+      } else {
+        alertRulesService.create(config, alertsRuleData)
+          .then((res) => {
+            AlertRulesEventBus.$emit('reload-alertsRule')
+          })
+      }
     },
     onCancel () {
       this.selectedSectionIndex = 1

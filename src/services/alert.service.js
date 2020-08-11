@@ -1,17 +1,8 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/alert-rules'
+const resource = '/alert'
 
-const alertRulesService = {
-  create: async function (config, payload) {
-    try {
-      const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
-
-      return response.data
-    } catch (error) {
-      return error.data
-    }
-  },
+const alertService = {
   read: async function (config, params) {
     try {
       const response = await ApiService.get('/orgs/' + config.orgId + resource, { params })
@@ -50,4 +41,4 @@ const alertRulesService = {
   }
 }
 
-export default alertRulesService
+export default alertService
