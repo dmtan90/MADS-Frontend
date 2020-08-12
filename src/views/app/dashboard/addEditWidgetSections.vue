@@ -324,8 +324,8 @@ export default {
     updateWidgetInstance () {
       let params = {
         label: this.widgetData.label,
-        visual_prop: this.visualProp,
-        series: this.dataSeries
+        visual_properties: this.visualProp,
+        series_data: this.dataSeries
       }
 
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
