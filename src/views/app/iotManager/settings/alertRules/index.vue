@@ -15,12 +15,14 @@
         <template v-slot:alertAction="props">
             <span v-for="(data, index) in props.rowData.recepient_ids" :key="index">{{data.email}}</span>
         </template>
-        <template v-slot:actions="props">
+        <template v-slot:status="props">
             <span>
-                <b-form-group label="Activity Tracking">
-                    <toggle-button :value="true" :labels="{checked: 'on', unchecked: 'off'}" @change="changeSwitch"/>
+                <b-form-group>
+                    <toggle-button :value="props.rowData.status === 'enable' ? true: false" @change="handleStatus($event, props.rowData)"/>
                 </b-form-group>
             </span>
+        </template>
+        <template v-slot:actions="props">
             <span class="edit-alert-rules" @click="editAlertRules(props.rowData)">Edit</span>
         </template>
         </vuetable>
@@ -35,6 +37,7 @@ import { Vuetable } from 'vuetable-2'
 import addEditAlertRules from './addEditAlertRules'
 import alertRulesService from '@/services/alertRules.service'
 import AlertRulesEventBus from './alertRulesEventBus'
+
 
 export default {
   components: {
@@ -71,10 +74,32 @@ export default {
       this.$refs.addEditAlertRules.edit(data)
     },
     dateFormat (currentTime) {
-      return this.$moment(currentTime).format('ddd, DD MMM | H:mm')
+      return this.$moment(currentTime).format('ddd, DD MMM')
+    //    | H:mm
     },
-    changeSwitch (e) {
-      debugger
+    handleStatus (e, data) {
+      const config = {
+        orgId: this.currentUser.org.id,
+        id: data.id
+      }
+
+      let payload = {
+        project_id: data.project_id
+      }
+
+      if (e.value) {
+        payload = this.$_.assign(payload, { status: 'enable' })
+        alertRulesService.update(config, payload)
+          .then((res) => {
+            AlertRulesEventBus.$emit('reload-alertsRule')
+          })
+      } else {
+        payload = this.$_.assign(payload, { status: 'disable' })
+        alertRulesService.update(config, payload)
+          .then((res) => {
+            AlertRulesEventBus.$emit('reload-alertsRule')
+          })
+      }
     }
   },
   computed: {
@@ -86,6 +111,9 @@ export default {
     AlertRulesEventBus.$on('reload-alertsRule', () => {
       this.loadAlertRules()
     })
+  },
+  beforeDestroy () {
+    AlertRulesEventBus.$off()
   }
 }
 </script>

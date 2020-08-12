@@ -20,7 +20,7 @@
         settings
       </div>
       <div v-if="appVuexState.currentSection === 'help'" class="h-100">
-        help
+        <help :appName="'Alerts Reminder'"></help>
       </div>
     </template>
   </app-window>
@@ -30,12 +30,15 @@
 import appWindow from './../appWindow'
 import alerts from './alerts'
 import inbox from './inbox'
+import help from '../shared/help'
+// import alertEventBus from './alertEventBus'
 
 export default {
   components: {
     appWindow,
     alerts,
-    inbox
+    inbox,
+    help
   },
   data () {
     return {

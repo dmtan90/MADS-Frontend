@@ -7,7 +7,7 @@
           <b-form-input v-model="alertRule.rule_name" type="text" id="rule-name"></b-form-input>
         </b-form-group>
         <b-form-group label="Rule Severity" label-for="rule-severity">
-          <multiselect v-model="selectedSeverity" :options="severity" @select="onSelectSeverity" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
+          <multiselect v-model="selectedSeverity" :options="severity" @select="onSelectSeverity" :select-label="''" :selected-label="''" :deselect-label="''" label="label" track-by="label"></multiselect>
         </b-form-group>
         <b-form-group label="Project" label-for="project">
           <multiselect v-model="selectedProject" :options="projects" @select="onSelectProject" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
@@ -31,7 +31,7 @@
           <multiselect v-model="selectedPolicy" :options="policies" @select="onSelectPolicy" :select-label="''" :selected-label="''" :deselect-label="''" label="policy_name" track-by="policy_name"></multiselect>
         </b-form-group>
         <template v-if="ruleParameters.length > 0">
-          <b-form-group v-for="(ruleParameter, index) in ruleParameters" :key="index" :label="ruleParameter.key" :label-for="ruleParameter.key">
+          <b-form-group v-for="(ruleParameter, index) in ruleParameters" :key="index" :label="ruleParameter.key === 'lower_limit'? 'Lower Limit' : 'Upper Limit'" :label-for="ruleParameter.key">
             <b-form-input v-model="policyParameter[ruleParameter.key]" type="text" :id="ruleParameter.key"></b-form-input>
           </b-form-group>
         </template>
@@ -51,11 +51,7 @@
         </b-tab>
         <b-tab title="Recipients">
           <b-form-group label="Email Recipients" label-for="rule-name">
-            <multiselect v-model="emailRecipents" :options="users" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Select Recipients" :preselect-first="true" label="email" track-by="id">
-              <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
-            </multiselect>
-            <!-- <br /> -->
-            <!-- <code>{{emailRecipents}}</code> -->
+            <multiselect v-model="emailRecipents" :options="users" :multiple="true" :custom-label="getUserName" :close-on-select="false"  placeholder="Select Recipients" label="email" track-by="id"></multiselect>
           </b-form-group>
         </b-tab>
       </b-tabs>
@@ -98,7 +94,13 @@ export default {
     return {
       selectedSeverity: null,
       selectedProject: null,
-      severity: ['warning', 'low', 'high', 'severe'],
+      // severity: ['warning', 'low', 'high', 'severe'],
+      severity: [
+        { id: 0, name: 'warning', label: '0 (Warning)' },
+        { id: 1, name: 'low', label: '1 (Low)' },
+        { id: 2, name: 'high', label: '2 (High)' },
+        { id: 3, name: 'severe', label: '3 (Severe)' }
+      ],
       projects: [],
       policies: [],
       policyType: ['user', 'project'],
@@ -133,6 +135,8 @@ export default {
       projectService.read(config, { page_number: 1, page_size: 10 })
         .then((response) => {
           this.projects = response.projects
+          let projects = response ? response.projects : []
+          this.selectedProject = this.$_.filter(projects, (project) => project.id === this.alertRule.project_id)[0]
         })
     },
     loadPolicy (projectId) {
@@ -140,10 +144,13 @@ export default {
       policiesService.read(config)
         .then((response) => {
           this.policies = response.policies
+          let policies = response ? response.policies : []
+          this.selectedPolicy = this.$_.filter(policies, (policy) => policy.policy_module === this.alertRule.policy_name)[0]
+          this.ruleParameters = this.selectedPolicy ? this.selectedPolicy.rule_parameters : []
         })
     },
     onSelectSeverity (severity) {
-      this.alertRule.severity = severity
+      this.alertRule.severity = severity.name
     },
     onSelectProject (project) {
       this.loadPolicy(project.id)
@@ -183,7 +190,13 @@ export default {
       return this.alertRule
     },
     getSelectedEntity () {
-      return [{ id: this.selectedParentEntityId, type: 'Asset' }]
+      console.log("this",this)
+      // debugger
+      return [{ id: this.alertRule.entity_parameters.uuid, type: 'SensorParameter' }]
+    },
+    getUserName (user) {
+      return user.first_name + ' ' + (user.last_name || '')
+      console.log("user")
     }
   },
   computed: {
@@ -207,12 +220,19 @@ export default {
         severity: this.alertRulesData.severity,
         status: this.alertRulesData.status,
         rule_name: this.alertRulesData.rule_name,
-        project_id: this.alertRulesData.project_id
+        project_id: this.alertRulesData.project_id,
+        entity_id: this.alertRulesData.entity_id
       }
-      // this.selectedProject = this.$_.filter(this.projects, (project) => project.id === this.alertRulesData.project_id)[0]
-      // this.selectedSeverity =
-      // let project = this.$_.filter(this.projects, (project) => project.id === this.alertRulesData.project_id)[0]
-      // console.log("project",project)
+      this.selectedSeverity = this.$_.filter(this.severity, (severity) => severity.id === this.alertRulesData.severity)[0]
+      this.selectedPolicyType = this.alertRulesData.policy_type[0] || ''
+
+      if (this.alertRulesData.project_id) {
+        this.loadPolicy(this.alertRulesData.project_id)
+      }
+
+      this.isAnyNodeSelected = true
+
+      this.selectedMedia = this.alertRulesData.communication_medium || []
     } else {
       this.alertRule = {
         app: 'iot_manager',

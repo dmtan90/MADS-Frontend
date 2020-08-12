@@ -1,22 +1,62 @@
 <template>
-  <div>
-     
+  <div class="iot-manager app-home">
+    <div class="home-card">
+      <span>Welcome to</span>
+      <h2>Alert</h2>
+      <p>
+        Lorem ipsum dolorsit amet, consecteturadipiscingelit, seddo eiusmodtemporincididuntutlaboreet dolore magna aliqua.
+      </p>
+      <div class="nav-sections">
+        <div class="left-section">
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+        </div>
+        <div class="right-section">
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+          <span>
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            Lorem ipsum dolor sit
+          </span>
+        </div>
+      </div>
+      <div class="learn-more-btn">
+        <b-button>Learn More</b-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
-  components: {
-    
-  },
-  data () {
-    return {
-    }
-  },
-  computed: {
-    ...mapGetters(['currentUser'])
-  },
 }
 </script>
+
+<style lang="scss" scoped>
+  .iot-manager {
+    padding: 30px;
+    p {
+      margin-top: 20px;
+      font-size: 12px;
+    }
+    &.app-home {
+      background: url("../../../../assets/img/alerts.jpg");
+    }
+  }
+</style>

@@ -16,8 +16,8 @@ export default [
     title: 'Alert Action'
   },
   {
-    name: 'details',
-    title: 'Details'
+    name: '__slot:status',
+    title: 'Status'
   },
   {
     name: '__slot:actions',

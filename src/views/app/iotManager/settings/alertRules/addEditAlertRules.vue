@@ -72,10 +72,10 @@ export default {
       this.selectedSectionIndex++
     },
     saveAlertRules () {
-      let config = { orgId: this.currentUser.org.id, projectId: 1 }
+      let config = { orgId: this.currentUser.org.id }
       let alertsRuleData = this.$refs.sections.getAlertRulesData()
       if (this.editMode) {
-        // config = this.$_.assign(config, { id: this.gateway.id })
+        config = this.$_.assign(config, { id: this.alertRule.id })
         alertRulesService.update(config, alertsRuleData)
           .then((res) => {
             AlertRulesEventBus.$emit('reload-alertsRule')
