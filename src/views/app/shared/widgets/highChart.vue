@@ -73,8 +73,10 @@ export default {
             useGPUTranslations: true
           },
           plotOptions: {
-            series: {
-              turboThreshold: 1000000
+            line: {
+              marker: {
+                enabled: false
+              }
             }
           }
         }
