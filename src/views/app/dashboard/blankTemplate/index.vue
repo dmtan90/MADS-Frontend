@@ -102,6 +102,7 @@
                         :visualProperties="getVisualProperties(item)"
                         :series="getSeries(item)"
                         :widgetId="getWidgetId(item)"
+                        :category="widgetObject[item.i].widget_category[0]"
                         :page="'dashboard'"
                         :colWidth="colWidth"
                         :colHeight="colHeight"
