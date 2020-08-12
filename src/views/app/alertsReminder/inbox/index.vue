@@ -68,7 +68,7 @@ export default {
       }
 
       let payload = {
-        status: status
+        status: event
       }
 
       alertService.update(config, payload)
