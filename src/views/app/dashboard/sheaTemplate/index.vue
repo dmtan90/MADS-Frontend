@@ -78,7 +78,7 @@ export default {
       width: 180px;
       background-color: #1E3664;
       position: relative;
-      padding-top: 30px;
+      padding-top: 40px;
       height: 100%;
       ul {
         list-style: none;
@@ -139,7 +139,7 @@ export default {
       overflow: auto;
       .content {
         width: 100%;
-        height: calc(100% - 50px);
+        height: calc(100% - 60px);
         padding: 20px;
         margin-top: 50px;
         overflow: auto;
