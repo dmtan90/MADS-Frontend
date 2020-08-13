@@ -1,16 +1,16 @@
 <template>
   <div class="">
-    <h3>{{editMode ? 'Edit' : 'Add'}} Alerts Rule </h3>
+    <h3>{{editMode ? 'Edit' : 'Add'}} Alert Rule </h3>
     <section v-if="selectedSectionIndex === 1" class="details">
       <b-form>
         <b-form-group label="Rule Name" label-for="rule-name">
-          <b-form-input v-model="alertRule.rule_name" type="text" id="rule-name"></b-form-input>
+          <b-form-input v-model="alertRule.rule_name" type="text" id="rule-name" placeholder="Rule Name"></b-form-input>
         </b-form-group>
         <b-form-group label="Rule Severity" label-for="rule-severity">
-          <multiselect v-model="selectedSeverity" :options="severity" @select="onSelectSeverity" :select-label="''" :selected-label="''" :deselect-label="''" label="label" track-by="label"></multiselect>
+          <multiselect v-model="selectedSeverity" :options="severity" @select="onSelectSeverity" :select-label="''" :selected-label="''" :deselect-label="''" label="label" track-by="label" placeholder="Rule Severity"></multiselect>
         </b-form-group>
         <b-form-group label="Project" label-for="project">
-          <multiselect v-model="selectedProject" :options="projects" @select="onSelectProject" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name"></multiselect>
+          <multiselect v-model="selectedProject" :options="projects" @select="onSelectProject" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="name" placeholder="Project"></multiselect>
         </b-form-group>
       </b-form>
     </section>
@@ -19,16 +19,22 @@
         <b-tab title="Data" >
           <div class="select-asset">
             <div class="vue-tree-container">
-              <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :hiddenEntities="[]" :selectableEntities="['SensorParameter']" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree>
+              <mads-tree ref="tree"
+                :treeView="'file'"
+                :treeOptions="treeOptions"
+                :selectedNodes="getSelectedEntity()"
+                :hiddenEntities="[]"
+                :selectableEntities="['SensorParameter']"
+                :isAnyNodeSelected="isAnyNodeSelected"
+                :type="'organization'"
+                @on-node-select="onSelectEntity">
+              </mads-tree>
             </div>
           </div>
         </b-tab>
         <b-tab title="Policy">
-        <b-form-group label="Policy Type" label-for="policy-type">
-          <multiselect v-model="selectedPolicyType" :options="policyType" @select="onSelectPolicyType" :select-label="''" :selected-label="''" :deselect-label="''"></multiselect>
-        </b-form-group>
-         <b-form-group label="Conditions" label-for="policy">
-          <multiselect v-model="selectedPolicy" :options="policies" @select="onSelectPolicy" :select-label="''" :selected-label="''" :deselect-label="''" label="policy_name" track-by="policy_name"></multiselect>
+         <b-form-group label="Policy" label-for="policy">
+          <multiselect v-model="selectedPolicy" :options="policies" @select="onSelectPolicy" :select-label="''" :selected-label="''" :deselect-label="''" label="policy_name" track-by="policy_name" placeholder="Policy"></multiselect>
         </b-form-group>
         <template v-if="ruleParameters.length > 0">
           <b-form-group v-for="(ruleParameter, index) in ruleParameters" :key="index" :label="ruleParameter.key === 'lower_limit'? 'Lower Limit' : 'Upper Limit'" :label-for="ruleParameter.key">
@@ -64,7 +70,7 @@ import { mapGetters } from 'vuex'
 import madsTree from './../../../shared/madsTree/index'
 import userService from '@/services/user.service'
 import projectService from '@/services/project.service'
-import policiesService from '@/services/policies.service'
+import policyService from '@/services/policy.service'
 
 export default {
   components: {
@@ -94,18 +100,14 @@ export default {
     return {
       selectedSeverity: null,
       selectedProject: null,
-      // severity: ['warning', 'low', 'high', 'severe'],
       severity: [
-        { id: 0, name: 'warning', label: '0 (Warning)' },
-        { id: 1, name: 'low', label: '1 (Low)' },
-        { id: 2, name: 'high', label: '2 (High)' },
-        { id: 3, name: 'severe', label: '3 (Severe)' }
+        { id: 1, name: 'Low', label: '1 (Low)' },
+        { id: 2, name: 'Medium', label: '2 (Medium)' },
+        { id: 3, name: 'High', label: '3 (High)' }
       ],
       projects: [],
       policies: [],
-      policyType: ['user', 'project'],
       selectedPolicy: null,
-      selectedPolicyType: null,
       alertRule: {},
       orgData: null,
       treeData: null,
@@ -139,31 +141,22 @@ export default {
           this.selectedProject = this.$_.filter(projects, (project) => project.id === this.alertRule.project_id)[0]
         })
     },
-    loadPolicy (projectId) {
-      let config = { orgId: this.currentUser.org.id, projectId: projectId }
-      policiesService.read(config)
+    loadPolicies () {
+      let config = { orgId: this.currentUser.org.id }
+      policyService.read(config)
         .then((response) => {
           this.policies = response.policies
-          let policies = response ? response.policies : []
-          this.selectedPolicy = this.$_.filter(policies, (policy) => policy.policy_module === this.alertRule.policy_name)[0]
-          this.ruleParameters = this.selectedPolicy ? this.selectedPolicy.rule_parameters : []
         })
     },
     onSelectSeverity (severity) {
       this.alertRule.severity = severity.name
     },
     onSelectProject (project) {
-      this.loadPolicy(project.id)
       this.alertRule.project_id = project.id
     },
     onSelectPolicy (policy) {
       this.ruleParameters = policy ? policy.rule_parameters : []
       this.alertRule.policy_name = policy.policy_module
-    },
-    onSelectPolicyType (policyType) {
-      let typeArr = []
-      typeArr.push(policyType)
-      this.alertRule.policy_type = typeArr
     },
     onSelectCaretaker (caretaker) {
     },
@@ -190,13 +183,10 @@ export default {
       return this.alertRule
     },
     getSelectedEntity () {
-      console.log("this",this)
-      // debugger
       return [{ id: this.alertRule.entity_parameters.uuid, type: 'SensorParameter' }]
     },
     getUserName (user) {
       return user.first_name + ' ' + (user.last_name || '')
-      console.log("user")
     }
   },
   computed: {
@@ -205,30 +195,12 @@ export default {
   mounted () {
     this.loadProjects()
     this.loadUsers()
+    this.loadPolicies()
+
     if (this.alertRulesData) {
-      this.alertRule = {
-        app: this.alertRulesData.app,
-        communication_medium: this.alertRulesData.communication_medium,
-        creator_id: this.alertRulesData.creator_id,
-        entity: this.alertRulesData.entity,
-        policy_name: this.alertRulesData.policy_name,
-        entity_parameters: this.alertRulesData.entity_parameters,
-        rule_parameters: this.alertRulesData.rule_parameters,
-        recepient_ids: this.alertRulesData.recepient_ids,
-        assignee_ids: this.alertRulesData.assignee_ids,
-        policy_type: this.alertRulesData.policy_type,
-        severity: this.alertRulesData.severity,
-        status: this.alertRulesData.status,
-        rule_name: this.alertRulesData.rule_name,
-        project_id: this.alertRulesData.project_id,
-        entity_id: this.alertRulesData.entity_id
-      }
+      this.alertRule = this.alertRulesData
       this.selectedSeverity = this.$_.filter(this.severity, (severity) => severity.id === this.alertRulesData.severity)[0]
       this.selectedPolicyType = this.alertRulesData.policy_type[0] || ''
-
-      if (this.alertRulesData.project_id) {
-        this.loadPolicy(this.alertRulesData.project_id)
-      }
 
       this.isAnyNodeSelected = true
 
@@ -252,34 +224,6 @@ export default {
         project_id: ''
       }
     }
-    // this.loadUsers()
-    // if(this.gatewayData){
-    //   this.gateway = {
-    //     name: this.gatewayData.name || '',
-    //     description: this.gatewayData.description || '',
-    //     channel: this.gatewayData.channel || '',
-    //     parent_type: this.gatewayData.parent_type,
-    //     parent_id: this.gatewayData.parent_id
-    //   }
-    //   this.selectedGatewayType = this.gatewayData.channel || ''
-
-    //   if (this.gatewayData.parent_type === 'Asset') {
-    //     this.isAnyNodeSelected = true
-    //   }
-
-    //   if (this.gateway.parent_type === 'Asset') {
-    //     this.selectedParentEntityId = this.gatewayData.parent_id
-    //   }
-    // }else{
-    //   this.gateway = {
-    //     name: '',
-    //     description:  '',
-    //     channel: '',
-    //     parent_type: '',
-    //     parent_id: null,
-    //     access_token: this.genrateString()
-    //   }
-    // }
   }
 }
 </script>

@@ -1,25 +1,31 @@
 <template>
-  <div >
-      <vuetable
-        ref="vuetable"
-        :api-mode="false"
-        :fields="fields"
-        :data="data"
+  <div class="alerts-inbox-wrap">
+    <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{alerts.length}} alerts</h2>
+    <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="alerts">
+      <template v-slot:alertTime="props">
+        <span>{{ dateFormat(props.rowData.created_at) }}</span>
+      </template>
+      <template v-slot:alertAction="props">
+        <span
+          v-for="(data, index) in props.rowData.recepient_ids" :key="index">{{ data.email }}</span
         >
-          <template v-slot:alertTime="props">
-              <span>{{ dateFormat(props.rowData.created_at) }}</span>
-          </template>
-          <template v-slot:alertAction="props">
-              <span v-for="(data, index) in props.rowData.recepient_ids" :key="index">{{data.email}}</span>
-          </template>
-          <template v-slot:status="props">
-              <span>
-                <b-form-group>
-                  <multiselect v-model="props.rowData.status" :options="statusTypes" @select="onSelectStatus($event, props.rowData.id)" :select-label="''" :selected-label="''" :deselect-label="''" :custom-label="nameWithLang"></multiselect>
-                </b-form-group>
-              </span>
-          </template>
-        </vuetable>
+      </template>
+      <template v-slot:status="props">
+        <span>
+          <b-form-group>
+            <multiselect
+              v-model="props.rowData.status"
+              :options="statusTypes"
+              @select="onSelectStatus($event, props.rowData.id)"
+              :select-label="''"
+              :selected-label="''"
+              :deselect-label="''"
+              :custom-label="renderStatus"
+            ></multiselect>
+          </b-form-group>
+        </span>
+      </template>
+    </vuetable>
   </div>
 </template>
 
@@ -37,7 +43,7 @@ export default {
   data () {
     return {
       fields: fields,
-      data: [],
+      alerts: [],
       statusTypes: ['un_resolved', 'resolved']
     }
   },
@@ -53,10 +59,9 @@ export default {
         page_number: 1
       }
 
-      alertService.read(config, params)
-        .then((res) => {
-          this.data = res.alerts
-        })
+      alertService.read(config, params).then((res) => {
+        this.alerts = res.alerts
+      })
     },
     dateFormat (currentTime) {
       return this.$moment(currentTime).format('H:mm:ss')
@@ -71,12 +76,11 @@ export default {
         status: event
       }
 
-      alertService.update(config, payload)
-        .then((res) => {
-          AlertEventBus.$emit('reload-alert')
-        })
+      alertService.update(config, payload).then((res) => {
+        AlertEventBus.$emit('reload-alert')
+      })
     },
-    nameWithLang (value) {
+    renderStatus (value) {
       return value === 'resolved' ? 'Resolved' : 'Un Resolved'
     }
   },
@@ -94,13 +98,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .vuetable tbody tr:last-of-type td{
-   max-width: 100px !important;
- }
-</style>
-
-<style lang="scss">
- .vuetable tbody tr:last-of-type td{
-   max-width: 100px !important;
- }
+  .alerts-inbox-wrap {
+    width: 95%;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    .page-heading {
+      color: #3e4956;
+      margin-bottom: 30px;
+    }
+  }
 </style>

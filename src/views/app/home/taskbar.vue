@@ -7,26 +7,6 @@
         </svg>
       </div>
       <div class="taskbar-center" v-if="!isScreenLocked">
-        <!-- <div class="taskbar-icons app-icon" v-tooltip="'App Store'">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-app-store"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon" v-tooltip="'Settings'">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-settings"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon" v-tooltip="'Support'">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-support"></use>
-          </svg>
-        </div>
-        <div class="taskbar-icons app-icon" v-tooltip="'Voice Assistant'">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-voice-assistant"></use>
-          </svg>
-        </div> -->
         <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Dashboards') !== 'closed'}" @click="openAppWindow('Dashboards')" v-tooltip="'Dashboard'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
@@ -64,14 +44,12 @@
           <div class="active"></div>
         </div>
 
-
-         <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Alerts_Reminder') !== 'closed'}" @click="openAppWindow('Alerts_Reminder')" v-tooltip="'Alerts Reminder'">
+         <div class="taskbar-icons app-icon" :class="{'opened': getAppState('Alerts_Reminder') !== 'closed'}" @click="openAppWindow('Alerts_Reminder')" v-tooltip="'Alerts'">
           <svg class="icon">
             <use xlink:href="/assets/img/mads-app-icons.svg#mads-alerts-reminders"></use>
           </svg>
           <div class="active"></div>
         </div>
-
 
       </div>
       <div class="taskbar-right" :class="{'auto-margin': isScreenLocked}">

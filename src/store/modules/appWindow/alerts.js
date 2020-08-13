@@ -38,7 +38,7 @@ const appSections = [
 
 export default {
   state: {
-    appName: 'Alerts Reminder',
+    appName: 'Alerts',
     appKey: 'Alerts_Reminder',
     appIcon: 'mads-alerts-reminders',
     appSections: appSections,

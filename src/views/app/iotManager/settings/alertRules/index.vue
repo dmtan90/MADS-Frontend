@@ -1,33 +1,42 @@
 <template>
-    <div class="alerts-rule">
-        <div class="header">
-            <button class="btn" @click="addAlertRules()">+ Add Alerts Rule</button>
-        </div>
-        <vuetable
-            ref="vuetable"
-            :api-mode="false"
-            :fields="fields"
-            :data="data"
-        >
-         <template v-slot:date="props">
-            <span>{{ dateFormat(props.rowData.created_at)}}</span>
-        </template>
-        <template v-slot:alertAction="props">
-            <span v-for="(data, index) in props.rowData.recepient_ids" :key="index">{{data.email}}</span>
-        </template>
-        <template v-slot:status="props">
-            <span>
-                <b-form-group>
-                    <toggle-button :value="props.rowData.status === 'enable' ? true: false" @change="handleStatus($event, props.rowData)"/>
-                </b-form-group>
-            </span>
-        </template>
-        <template v-slot:actions="props">
-            <span class="edit-alert-rules" @click="editAlertRules(props.rowData)">Edit</span>
-        </template>
-        </vuetable>
-        <add-edit-alert-rules ref="addEditAlertRules"></add-edit-alert-rules>
+  <div class="alerts-rule">
+    <div class="header">
+      <button class="btn add-rule-btn" @click="addAlertRules()">
+        <span>Add Rule</span>
+        <svg class="icon">
+          <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+        </svg>
+      </button>
     </div>
+    <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="data">
+      <template v-slot:date="props">
+        <span>{{ dateFormat(props.rowData.created_at) }}</span>
+      </template>
+      <template v-slot:alertAction="props">
+        <span
+          v-for="(data, index) in props.rowData.recepient_ids"
+          :key="index"
+          >{{ data.email }}</span
+        >
+      </template>
+      <template v-slot:status="props">
+        <span>
+          <b-form-group>
+            <toggle-button
+              :value="props.rowData.status === 'enable' ? true : false"
+              @change="handleStatus($event, props.rowData)"
+            />
+          </b-form-group>
+        </span>
+      </template>
+      <template v-slot:actions="props">
+        <span class="edit-alert-rules" @click="editAlertRules(props.rowData)"
+          >Edit</span
+        >
+      </template>
+    </vuetable>
+    <add-edit-alert-rules ref="addEditAlertRules"></add-edit-alert-rules>
+  </div>
 </template>
 
 <script>
@@ -37,7 +46,6 @@ import { Vuetable } from 'vuetable-2'
 import addEditAlertRules from './addEditAlertRules'
 import alertRulesService from '@/services/alertRules.service'
 import AlertRulesEventBus from './alertRulesEventBus'
-
 
 export default {
   components: {
@@ -62,10 +70,9 @@ export default {
         page_number: 1
       }
 
-      alertRulesService.read(config, params)
-        .then((res) => {
-          this.data = res.alert_rules
-        })
+      alertRulesService.read(config, params).then((res) => {
+        this.data = res.alert_rules
+      })
     },
     addAlertRules () {
       this.$refs.addEditAlertRules.add()
@@ -75,7 +82,7 @@ export default {
     },
     dateFormat (currentTime) {
       return this.$moment(currentTime).format('ddd, DD MMM')
-    //    | H:mm
+      //    | H:mm
     },
     handleStatus (e, data) {
       const config = {
@@ -89,16 +96,14 @@ export default {
 
       if (e.value) {
         payload = this.$_.assign(payload, { status: 'enable' })
-        alertRulesService.update(config, payload)
-          .then((res) => {
-            AlertRulesEventBus.$emit('reload-alertsRule')
-          })
+        alertRulesService.update(config, payload).then((res) => {
+          AlertRulesEventBus.$emit('reload-alertsRule')
+        })
       } else {
         payload = this.$_.assign(payload, { status: 'disable' })
-        alertRulesService.update(config, payload)
-          .then((res) => {
-            AlertRulesEventBus.$emit('reload-alertsRule')
-          })
+        alertRulesService.update(config, payload).then((res) => {
+          AlertRulesEventBus.$emit('reload-alertsRule')
+        })
       }
     }
   },
@@ -119,18 +124,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .alerts-rule{
-        .header{
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-        }
-        .edit-alert-rules{
-            text-decoration: underline;
-            color: #2aa7ff;
-            cursor: pointer;
-            padding: 0 10px;
-        }
+.alerts-rule {
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    .add-rule-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 10px;
+      width: 115px;
+      height: 40px;
+      span {
+        font-size: 15px;
+      }
+      .icon {
+        width: 21px;
+        height: 21px;
+      }
     }
+  }
+  .edit-alert-rules {
+    text-decoration: underline;
+    color: #2aa7ff;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+}
 </style>

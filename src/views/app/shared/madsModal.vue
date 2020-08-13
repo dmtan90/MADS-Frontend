@@ -142,6 +142,7 @@ export default {
       .next-btn, .save-btn {
         background-color: #4c92c3 !important;
         color: #ffffff !important;
+        min-width: 90px;
       }
     }
   }
