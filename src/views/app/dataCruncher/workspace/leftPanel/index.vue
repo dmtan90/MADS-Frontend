@@ -40,6 +40,7 @@
           :hiddenEntities="[]"
           @on-node-click="onNodeClick"
           @on-node-drag-start="onNodeDragStart"
+          :type="'organization'"
         ></mads-tree>
       </div>
     </div>

@@ -109,7 +109,7 @@ export default {
         text: entity.display_name,
         backgroundColor: entity.category === 'function' ? settings['background-color'] : '#C70039',
         inPorts: entity.inports,
-        outPorts: entity.outports,
+        outPorts: entity.category === 'function' ? entity.outports : [],
         entityType: entity.category
       }
     },

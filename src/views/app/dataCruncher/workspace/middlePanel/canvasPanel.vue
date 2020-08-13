@@ -151,35 +151,35 @@ export default {
         this.rectangleSelect.resize(rectangleSelectWidth, rectangleSelectHeight)
       })
 
-      this.diagramPaper.on('blank:pointerup', (evt, x, y) => {
-        this.rectangleSelectEndX = x
-        this.rectangleSelectEndY = y
+      // this.diagramPaper.on('blank:pointerup', (evt, x, y) => {
+      //   this.rectangleSelectEndX = x
+      //   this.rectangleSelectEndY = y
 
-        this.rectangleSelect.remove()
-        this.rectangleSelectInit = false
+      //   this.rectangleSelect.remove()
+      //   this.rectangleSelectInit = false
 
-        let cells = that.diagramGraph.getCells()
+      //   let cells = that.diagramGraph.getCells()
 
-        this.$_.forEach(cells, (cell) => {
-          let cellView = cell.findView(this.diagramPaper)
+      //   this.$_.forEach(cells, (cell) => {
+      //     let cellView = cell.findView(this.diagramPaper)
 
-          let cellOriginX = cell.position.x
-          let cellOriginY = cell.position.y
+      //     let cellOriginX = cell.position.x
+      //     let cellOriginY = cell.position.y
 
-          let cellEndX = cell.position.x + cell.size.width
-          let cellEndY = cell.position.y + cell.size.height
+      //     let cellEndX = cell.position.x + cell.size.width
+      //     let cellEndY = cell.position.y + cell.size.height
 
-          if ((this.rectangleSelectOriginX <= cellOriginX <= this.rectangleSelectEndX) || (this.rectangleSelectOriginX <= cellEndX <= this.rectangleSelectEndX)) {
-            let id = cellView.id
-            that.selectedCells[id] = cellView
-            cellView.highlight()
-          } else if ((this.rectangleSelectOriginY <= cellOriginY <= this.rectangleSelectEndY) || (this.rectangleSelectOriginY <= cellEndY <= this.rectangleSelectEndY)) {
-            let id = cellView.id
-            that.selectedCells[id] = cellView
-            cellView.highlight()
-          }
-        })
-      })
+      //     if ((this.rectangleSelectOriginX <= cellOriginX <= this.rectangleSelectEndX) || (this.rectangleSelectOriginX <= cellEndX <= this.rectangleSelectEndX)) {
+      //       let id = cellView.id
+      //       that.selectedCells[id] = cellView
+      //       cellView.highlight()
+      //     } else if ((this.rectangleSelectOriginY <= cellOriginY <= this.rectangleSelectEndY) || (this.rectangleSelectOriginY <= cellEndY <= this.rectangleSelectEndY)) {
+      //       let id = cellView.id
+      //       that.selectedCells[id] = cellView
+      //       cellView.highlight()
+      //     }
+      //   })
+      // })
 
       this.diagramGraph.on('add', (cell) => {
         this.anyNewChanges = true
@@ -327,7 +327,7 @@ export default {
             'start_date': startDate,
             'end_date': endDate,
             sensor_id: sensorParameter.parentId,
-            parameter_id: sensorParameter.id,
+            parameter_id: sensorParameter.uuid,
             nodes: inputNodes[cell.id]
           })
         }
