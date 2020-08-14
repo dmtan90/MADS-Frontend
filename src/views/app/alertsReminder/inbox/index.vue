@@ -3,12 +3,13 @@
     <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{alerts.length}} alerts</h2>
     <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="alerts">
       <template v-slot:alertTime="props">
-        <span>{{ dateFormat(props.rowData.created_at) }}</span>
+        <span>{{dateFormat(props.rowData.created_at)}}</span>
+      </template>
+      <template v-slot:appName="props">
+        <span>{{ renderApp(props.rowData.app) }}</span>
       </template>
       <template v-slot:alertAction="props">
-        <span
-          v-for="(data, index) in props.rowData.recepient_ids" :key="index">{{ data.email }}</span
-        >
+        <span>Email ({{props.rowData.recepient_ids && props.rowData.recepient_ids.length}})</span>
       </template>
       <template v-slot:status="props">
         <span>
@@ -49,22 +50,24 @@ export default {
   },
   methods: {
     loadAlerts () {
+      let loader = this.$loading.show()
       const config = {
         orgId: this.currentUser.org.id,
         projectId: 1
       }
 
       const params = {
-        page_size: 4,
+        page_size: 100,
         page_number: 1
       }
 
       alertService.read(config, params).then((res) => {
+        loader.hide()
         this.alerts = res.alerts
       })
     },
     dateFormat (currentTime) {
-      return this.$moment(currentTime).format('H:mm:ss')
+      return this.$moment(currentTime).format('ddd, DD MMM | H:mm:ss')
     },
     onSelectStatus (event, id) {
       const config = {
@@ -81,7 +84,10 @@ export default {
       })
     },
     renderStatus (value) {
-      return value === 'resolved' ? 'Resolved' : 'Un Resolved'
+      return value === 'resolved' ? 'Resolved' : 'Unresolved'
+    },
+    renderApp (app) {
+      return this.$_.lowerCase(app)
     }
   },
   computed: {
@@ -106,6 +112,17 @@ export default {
     .page-heading {
       color: #3e4956;
       margin-bottom: 30px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  .alerts-inbox-wrap {
+    td.app-name {
+      text-transform: capitalize;
+    }
+    .multiselect {
+      width: 180px;
     }
   }
 </style>

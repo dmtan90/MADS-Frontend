@@ -1,6 +1,6 @@
 import ApiService from '@/services/api.service'
 
-const resource = '/policy'
+const resource = '/policies'
 
 const policyService = {
   read: async function (config) {

@@ -12,6 +12,9 @@
       <template v-slot:date="props">
         <span>{{ dateFormat(props.rowData.created_at) }}</span>
       </template>
+      <template v-slot:severity="props">
+        <span>{{ mapSeverity(props.rowData.severity) }}</span>
+      </template>
       <template v-slot:alertAction="props">
         <span
           v-for="(data, index) in props.rowData.recepient_ids"
@@ -47,6 +50,12 @@ import addEditAlertRules from './addEditAlertRules'
 import alertRulesService from '@/services/alertRules.service'
 import AlertRulesEventBus from './alertRulesEventBus'
 
+const severityMapping = {
+  1: 'Low',
+  2: 'Medium',
+  3: 'High'
+}
+
 export default {
   components: {
     Vuetable,
@@ -60,17 +69,20 @@ export default {
   },
   methods: {
     loadAlertRules () {
+      let loader = this.$loading.show()
+
       const config = {
         orgId: this.currentUser.org.id,
         projectId: 1
       }
 
       const params = {
-        page_size: 4,
+        page_size: 100,
         page_number: 1
       }
 
       alertRulesService.read(config, params).then((res) => {
+        loader.hide()
         this.data = res.alert_rules
       })
     },
@@ -82,7 +94,9 @@ export default {
     },
     dateFormat (currentTime) {
       return this.$moment(currentTime).format('ddd, DD MMM')
-      //    | H:mm
+    },
+    mapSeverity (severity) {
+      return severityMapping[severity]
     },
     handleStatus (e, data) {
       const config = {

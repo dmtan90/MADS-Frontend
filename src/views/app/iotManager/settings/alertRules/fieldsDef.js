@@ -8,8 +8,8 @@ export default [
     title: 'Created at'
   },
   {
-    name: 'severity',
-    title: 'Severity (1 to 5)'
+    name: '__slot:severity',
+    title: 'Severity'
   },
   {
     name: '__slot:alertAction',
@@ -21,6 +21,6 @@ export default [
   },
   {
     name: '__slot:actions',
-    title: 'Action'
+    title: 'Actions'
   }
 ]

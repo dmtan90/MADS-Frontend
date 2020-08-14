@@ -130,6 +130,11 @@ export default {
       userService.read(config, { page_size: 10 })
         .then((response) => {
           this.users = response.users
+
+          if (this.editMode) {
+            let recepientIds = this.$_.map(this.alertRule.recepient_ids, (recepient) => recepient.id)
+            this.emailRecipents = this.$_.filter(this.users, (user) => this.$_.includes(recepientIds, user.id))
+          }
         })
     },
     loadProjects () {
@@ -146,6 +151,11 @@ export default {
       policyService.read(config)
         .then((response) => {
           this.policies = response.policies
+
+          if (this.editMode) {
+            this.selectedPolicy = this.$_.find(this.policies, (policy) => policy.policy_module === this.alertRule.policy_name)
+            this.onSelectPolicy(this.selectedPolicy)
+          }
         })
     },
     onSelectSeverity (severity) {
@@ -200,7 +210,7 @@ export default {
     if (this.alertRulesData) {
       this.alertRule = this.alertRulesData
       this.selectedSeverity = this.$_.filter(this.severity, (severity) => severity.id === this.alertRulesData.severity)[0]
-      this.selectedPolicyType = this.alertRulesData.policy_type[0] || ''
+      this.policyParameter = this.alertRule.rule_parameters
 
       this.isAnyNodeSelected = true
 

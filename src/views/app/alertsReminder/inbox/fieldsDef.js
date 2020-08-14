@@ -16,8 +16,9 @@ export default [
     title: 'Alert Action'
   },
   {
-    name: 'app',
-    title: 'App'
+    name: '__slot:appName',
+    title: 'App',
+    dataClass: 'app-name'
   },
   {
     name: '__slot:status',
