@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     createSocket (token) {
-      this.socket = new Socket('ws://localhost:4000/socket', { params: { token: token } })
+      this.socket = new Socket('wss://datakrewtech.com/api/socket', { params: { token: token } })
       this.socket.connect()
     },
     createTaskChannel (taskID) {
@@ -57,10 +57,20 @@ export default {
       this.$_.forEach(task.workflows, (workflow, index) => {
         let workflowOutput = workflow.temp_output[0]
 
-        this.taskData = this.$_.concat(this.taskData, {
-          name: 'Workflow ' + (index + 1),
-          data: [workflowOutput.data.value]
-        })
+        if (this.$_.isArray(workflowOutput.data.value)) {
+          let dataValues = this.$_.map(workflowOutput.data.value, (value) => {
+            return value[1]
+          })
+          this.taskData = this.$_.concat(this.taskData, {
+            name: 'Workflow ' + (index + 1),
+            data: dataValues
+          })
+        } else {
+          this.taskData = this.$_.concat(this.taskData, {
+            name: 'Workflow ' + (index + 1),
+            data: [workflowOutput.data.value]
+          })
+        }
       })
     },
     getSocketToken () {
@@ -77,6 +87,9 @@ export default {
   },
   mounted () {
     this.getSocketToken()
+  },
+  beforeDestroy () {
+    this.socket.disconnect()
   }
 }
 </script>

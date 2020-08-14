@@ -103,7 +103,6 @@ export default {
     background-color: white;
     padding: 0;
     height: 100%;
-    overflow: auto;
     .header {
       display: flex;
       background: #f1f1f1;
@@ -123,6 +122,9 @@ export default {
           border-right: none;
         }
       }
+    }
+    #canvas-options {
+      overflow: auto;
     }
     .tree-section {
       .section-toggle {

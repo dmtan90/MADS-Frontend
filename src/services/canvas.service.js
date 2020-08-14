@@ -39,7 +39,7 @@ const canvasService = {
     })
 
     _.forEach(graphObject, (cell) => {
-      if (cell.type !== 'link' && !this.visitedNodes[cell.id]) {
+      if (cell.entityType === 'input' && !this.visitedNodes[cell.id]) {
         let index = _.size(this.components)
         this.components[index] = []
         this.traverseGraph(cell, index)
