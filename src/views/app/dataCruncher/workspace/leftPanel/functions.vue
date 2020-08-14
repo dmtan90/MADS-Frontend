@@ -1,22 +1,22 @@
 <template>
   <div class="functions-container">
-    <div class="category" v-for="(categoryComponents, category) in components" :key="category">
-      <div class="category-name" @click="toggleCategory(category)">
+    <div class="category" v-for="(component, index) in components" :key="index">
+      <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)" :class="{'function': component.category === 'function'}">
+        {{component.display_name}}
+      </span>
+      <!-- <div class="category-name" @click="toggleCategory(category)">
         <svg class="icon">
           <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
         </svg>
         <span>{{$_.startCase(category)}}</span>
-      </div>
-      <div>
+      </div> -->
+      <!-- <div>
         <div class="category-list" v-for="(component, index) in categoryComponents" :key="index">
-          <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)">
-            <b-form-checkbox v-if="selectable"></b-form-checkbox>
-            {{component.display_name}}
-            </span>
+          
         </div>
-      </div>
+      </div> -->
     </div>
-    <div class="category">
+    <!-- <div class="category">
       <div class="category-name">
         <svg class="icon">
           <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
@@ -30,7 +30,7 @@
             </span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -78,8 +78,27 @@ export default {
 
 <style lang="scss" scoped>
   .functions-container {
+    padding: 20px 10px 20px 20px;
     .category {
       margin-bottom: 10px;
+        .fn-name, .output-name {
+          color: white;
+          padding: 7px 10px 7px 7px;
+          border-radius: 5px;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 90px;
+          height: 35px;
+          font-size: 13px;
+        }
+        .fn-name {
+          background-color: #C70039;
+        }
+        .function {
+          background-color: #ffa07a;
+        }
       .category-name {
         background-color: #e2e2e2;
         padding: 7px;
@@ -96,24 +115,6 @@ export default {
       .category-list {
         padding: 7px 7px 7px 20px;
         margin: 5px 0;
-        .fn-name, .output-name {
-          color: white;
-          padding: 7px 10px 7px 7px;
-          border-radius: 5px;
-          cursor: pointer;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 90px;
-          height: 40px;
-          font-size: 13px;
-        }
-        .fn-name {
-          background-color: #ffa07a;
-        }
-        .output-name {
-          background-color: #C70039;
-        }
       }
     }
   }

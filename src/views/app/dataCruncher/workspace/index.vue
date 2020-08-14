@@ -107,10 +107,10 @@ export default {
       this.draggedEntity = {
         entity: entity,
         text: entity.display_name,
-        backgroundColor: settings['background-color'],
+        backgroundColor: entity.category === 'function' ? settings['background-color'] : '#C70039',
         inPorts: entity.inports,
-        outPorts: entity.outports,
-        entityType: 'function'
+        outPorts: entity.category === 'function' ? entity.outports : [],
+        entityType: entity.category
       }
     },
     onOutputDrag ({ entity, settings }) {
@@ -142,12 +142,12 @@ export default {
       this.openTasks = false
     }
   },
+  computed: {
+    ...mapGetters(['currentUser']),
+  },
   mounted () {
     this.loadTasks()
     this.$refs['selectTaskModal'].$refs['taskModal'].show()
-  },
-  computed: {
-    ...mapGetters(['currentUser'])
   }
 }
 </script>

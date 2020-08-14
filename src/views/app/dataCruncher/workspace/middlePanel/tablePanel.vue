@@ -30,14 +30,36 @@
 import Spreadsheet from 'x-data-spreadsheet'
 
 export default {
+  props: {
+    taskData: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
+  },
   data () {
     return {
+      sheet: null
     }
   },
   methods: {
   },
+  watch: {
+    taskData () {
+      console.log(this.taskData)
+      this.$_.forEach(this.taskData, (data, col) => {
+        this.sheet.cellText(0, col, data.name).reRender()
+        this.$_.forEach(data.data, (rowData, row) => {
+          let rowNo = (row + 1)
+          rowData = this.$_.toString(rowData)
+          this.sheet.cellText(rowNo, col, rowData).reRender()
+        })
+      })
+    }
+  },
   mounted () {
-    new Spreadsheet('#x-spreadsheet-demo')
+    this.sheet = new Spreadsheet('#x-spreadsheet-demo')
   }
 }
 </script>

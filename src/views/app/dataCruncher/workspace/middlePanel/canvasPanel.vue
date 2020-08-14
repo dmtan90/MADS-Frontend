@@ -151,35 +151,35 @@ export default {
         this.rectangleSelect.resize(rectangleSelectWidth, rectangleSelectHeight)
       })
 
-      this.diagramPaper.on('blank:pointerup', (evt, x, y) => {
-        this.rectangleSelectEndX = x
-        this.rectangleSelectEndY = y
+      // this.diagramPaper.on('blank:pointerup', (evt, x, y) => {
+      //   this.rectangleSelectEndX = x
+      //   this.rectangleSelectEndY = y
 
-        this.rectangleSelect.remove()
-        this.rectangleSelectInit = false
+      //   this.rectangleSelect.remove()
+      //   this.rectangleSelectInit = false
 
-        let cells = that.diagramGraph.getCells()
+      //   let cells = that.diagramGraph.getCells()
 
-        this.$_.forEach(cells, (cell) => {
-          let cellView = cell.findView(this.diagramPaper)
+      //   this.$_.forEach(cells, (cell) => {
+      //     let cellView = cell.findView(this.diagramPaper)
 
-          let cellOriginX = cell.position.x
-          let cellOriginY = cell.position.y
+      //     let cellOriginX = cell.position.x
+      //     let cellOriginY = cell.position.y
 
-          let cellEndX = cell.position.x + cell.size.width
-          let cellEndY = cell.position.y + cell.size.height
+      //     let cellEndX = cell.position.x + cell.size.width
+      //     let cellEndY = cell.position.y + cell.size.height
 
-          if ((this.rectangleSelectOriginX <= cellOriginX <= this.rectangleSelectEndX) || (this.rectangleSelectOriginX <= cellEndX <= this.rectangleSelectEndX)) {
-            let id = cellView.id
-            that.selectedCells[id] = cellView
-            cellView.highlight()
-          } else if ((this.rectangleSelectOriginY <= cellOriginY <= this.rectangleSelectEndY) || (this.rectangleSelectOriginY <= cellEndY <= this.rectangleSelectEndY)) {
-            let id = cellView.id
-            that.selectedCells[id] = cellView
-            cellView.highlight()
-          }
-        })
-      })
+      //     if ((this.rectangleSelectOriginX <= cellOriginX <= this.rectangleSelectEndX) || (this.rectangleSelectOriginX <= cellEndX <= this.rectangleSelectEndX)) {
+      //       let id = cellView.id
+      //       that.selectedCells[id] = cellView
+      //       cellView.highlight()
+      //     } else if ((this.rectangleSelectOriginY <= cellOriginY <= this.rectangleSelectEndY) || (this.rectangleSelectOriginY <= cellEndY <= this.rectangleSelectEndY)) {
+      //       let id = cellView.id
+      //       that.selectedCells[id] = cellView
+      //       cellView.highlight()
+      //     }
+      //   })
+      // })
 
       this.diagramGraph.on('add', (cell) => {
         this.anyNewChanges = true
@@ -272,6 +272,15 @@ export default {
 
       return graphObject
     },
+    getWorkflowObject (workflow) {
+      let workflowObject = {}
+
+      this.$_.forEach(workflow, (cell) => {
+        workflowObject[cell.id] = cell
+      })
+
+      return workflowObject
+    },
     getInputNodes () {
       let inputNodes = {}
 
@@ -293,7 +302,7 @@ export default {
             inputNodes[linkSourceId] = this.$_.concat(inputNodes[linkSourceId], {
               'id': linkTarget.id,
               'module': linkTarget.entity.module,
-              'i_port': linkTarget.entity.inports[0]
+              'inports': linkTarget.entity.inports[0]
             })
           }
         }
@@ -301,22 +310,24 @@ export default {
 
       return inputNodes
     },
-    getWorkFlowInputs (graphObject) {
-      let inputNodes = this.getInputNodes(graphObject)
+    getWorkFlowInputs (workflowObject) {
+      let todayDate = this.$moment()
+      let endDate = todayDate.format('YYYY-MM-DD')
+      let startDate = todayDate.subtract(1, 'months').format('YYYY-MM-DD')
+
+      let inputNodes = this.getInputNodes()
       let inputs = []
 
-      this.$_.forEach(graphObject, (cell) => {
+      this.$_.forEach(workflowObject, (cell) => {
         if (cell.entityType === 'input') {
-          let sensor = cell.entity
-          let sensorType = sensor.sensor_type
-          let parameterId = sensorType.parameters[0].id
+          let sensorParameter = cell.entity
 
           inputs = this.$_.concat(inputs, {
             id: cell.id,
-            'start_date': '2020-06-15',
-            'end_date': '2020-06-16',
-            sensor_id: 7,
-            parameter_id: parameterId,
+            'start_date': startDate,
+            'end_date': endDate,
+            sensor_id: sensorParameter.parentId,
+            parameter_id: sensorParameter.uuid,
             nodes: inputNodes[cell.id]
           })
         }
@@ -324,44 +335,47 @@ export default {
 
       return inputs
     },
-    getVertices (graphObject) {
+    getVertices (workflowObject) {
       let vertices = []
 
-      this.$_.forEach(graphObject, (cell) => {
+      this.$_.forEach(workflowObject, (cell) => {
         if (cell.type !== 'link' && cell.entityType !== 'input') {
           vertices = this.$_.concat(vertices, {
             'id': cell.id,
             'module': cell.entity.module,
             'type': cell.entityType,
-            'o_ports': cell.entity.outports[0]
+            'inports': cell.entity.inports,
+            'outports': cell.entity.outports
           })
         }
       })
 
       return vertices
     },
-    getEdgeList (graphObject) {
+    getEdgeList (workflowObject) {
       let edges = []
 
-      this.$_.forEach(graphObject, (cell) => {
+      this.$_.forEach(workflowObject, (cell) => {
         if (cell.type === 'link') {
           let linkSourceId = cell.source.id
           let linkTargetId = cell.target.id
-          let linkSource = graphObject[linkSourceId]
-          let linkTarget = graphObject[linkTargetId]
+          let linkSource = workflowObject[linkSourceId]
+          let linkTarget = workflowObject[linkTargetId]
 
           if (linkSource.entityType !== 'input') {
             edges = this.$_.concat(edges, {
               'source_node': {
                 'id': linkSource.id,
                 'module': linkSource.entity.module,
-                'o_ports': linkSource.entity.outports[0],
+                'inports': linkSource.entity.inports[0],
+                'outports': linkSource.entity.outports[0],
                 'type': linkSource.entityType
               },
               'target_node': {
                 'id': linkTarget.id,
                 'module': linkTarget.entity.module,
-                'o_ports': linkTarget.entity.outports[0],
+                'inports': linkTarget.entity.inports[0],
+                'outports': linkTarget.entity.outports[0],
                 'type': linkTarget.entityType
               }
             })
@@ -375,13 +389,12 @@ export default {
       let loader = this.$loading.show()
 
       let graph = this.diagramGraph.toJSON()
-      let graphObject = this.getGraphObject(graph)
-      let workflowGraphs = canvasService.findGraphConnectedComponents(graphObject)
+      this.graphObject = this.getGraphObject(graph)
+      let workflowGraphs = canvasService.findGraphConnectedComponents(this.graphObject)
       let workflows = []
 
       this.$_.forEach(workflowGraphs, (workflow) => {
-        let workflowObject = this.getGraphObject(workflow)
-
+        let workflowObject = this.getWorkflowObject(workflow)
         let inputs = this.getWorkFlowInputs(workflowObject)
         let vertices = this.getVertices(workflowObject)
         let edges = this.getEdgeList(workflowObject)
@@ -401,12 +414,15 @@ export default {
         description: 'Demo Task Description',
         workflows: workflows
       }
+
       let config = { orgId: this.currentUser.org.id, userId: this.currentUser.id }
       taskService.create(config, payload)
         .then((response) => {
           loader.hide()
           this.$toast.success('Task Registered Successfully')
           this.taskId = response.id
+
+          this.$emit('task-created', this.taskId)
         })
     },
     deployTask () {

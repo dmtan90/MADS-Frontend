@@ -25,6 +25,8 @@ export default {
     appVuexState () {
       return this.$store.state.appWindow['Data_Cruncher']
     }
+  },
+  mounted () {
   }
 }
 </script>
