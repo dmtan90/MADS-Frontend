@@ -55,6 +55,10 @@ export default {
     SharedBus.$on('open-mads-modal', (modalRef) => {
       this.$refs[modalRef] && this.$refs[modalRef].show()
     })
+  },
+  beforeDestroy () {
+    EntityManagerBus.$off()
+    SharedBus.$off()
   }
 }
 </script>

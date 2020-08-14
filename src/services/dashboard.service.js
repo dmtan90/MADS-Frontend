@@ -57,9 +57,45 @@ const sensorService = {
       return error.data
     }
   },
+  updateWidgetInstance: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   deleteWidgetInstance: async function (config) {
     try {
       const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  createCommandWidget: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets', payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  updateCommandWidget: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  deleteCommandWidget: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id)
 
       return response.data
     } catch (error) {

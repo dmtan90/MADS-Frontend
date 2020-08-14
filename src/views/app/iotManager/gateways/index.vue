@@ -78,6 +78,9 @@ export default {
     GatewayEventBus.$on('reload-gateways', () => {
       this.loadGateways()
     })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>

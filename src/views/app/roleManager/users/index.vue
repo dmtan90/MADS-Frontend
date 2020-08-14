@@ -122,6 +122,9 @@ export default {
       this.loadInvitations()
       this.selectedTab = 'invites'
     })
+  },
+  beforeDestroy () {
+    UserEventBus.$off()
   }
 }
 </script>

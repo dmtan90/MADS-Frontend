@@ -9,10 +9,16 @@
 
 import Highcharts from "highcharts"
 import Exporting from "highcharts/modules/exporting"
+import StockInit from 'highcharts/modules/stock'
+import Boost from 'highcharts/modules/boost'
+
+Exporting(Highcharts)
+StockInit(Highcharts)
+Boost(Highcharts)
 
 export default {
   props: {
-    visualSettings: {
+    visualProperties: {
       type: Object,
       required: true
     },
@@ -23,6 +29,10 @@ export default {
     widgetId: {
       type: String,
       required: true
+    },
+    category: {
+      type: String,
+      default: 'highchart'
     },
     page: {
       type: String,
@@ -53,16 +63,30 @@ export default {
   methods: {
     generateWidget() {
       let widgetOptions = _.merge(
-        this.visualSettings,
+        this.visualProperties,
         {
           series: this.series,
           caption: {
             text: ''
+          },
+          boost: {
+            useGPUTranslations: true
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
           }
         }
       )
 
-      this.widget = Highcharts.chart(this.widgetId, widgetOptions)
+      if (this.category === 'stock_chart') {
+        this.widget = Highcharts.stockChart(this.widgetId, widgetOptions)
+      } else {
+        this.widget = Highcharts.chart(this.widgetId, widgetOptions)
+      }
     },
     renderWidget() {
       this.generateWidget()
@@ -89,7 +113,6 @@ export default {
     }
   },
   mounted() {
-    Exporting(Highcharts)
     this.renderWidget()
   },
 }

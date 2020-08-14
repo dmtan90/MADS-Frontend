@@ -70,6 +70,9 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser', 'openedApps', 'visualSettings', 'dataSettings', 'userSettingsId'])
+  },
+  beforeDestroy () {
+    EventBus.$off()
   }
 }
 </script>

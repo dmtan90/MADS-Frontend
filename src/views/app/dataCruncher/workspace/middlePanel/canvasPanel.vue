@@ -34,7 +34,7 @@
           </svg>
         </div>
         <div class="icon-container">
-          <svg class="icon" @click="deleteSelectedCells()">
+          <svg class="icon dustbin" @click="deleteSelectedCells()">
             <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
           </svg>
         </div>
@@ -514,6 +514,13 @@ export default {
           height: 20px;
           margin: 0 5px;
           cursor: pointer;
+          &.dustbin {
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            border-radius: 15px;
+            background-color: #27AAE1;
+          }
         }
         &.active {
           background-color: #ffa07a;

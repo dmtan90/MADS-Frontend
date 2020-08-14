@@ -108,6 +108,9 @@ export default {
   },
   mounted () {
     EventBus.$on('open-app-window', (app) => { this.openAppWindow(app) })
+  },
+  beforeDestroy () {
+    EventBus.$off()
   }
 }
 </script>

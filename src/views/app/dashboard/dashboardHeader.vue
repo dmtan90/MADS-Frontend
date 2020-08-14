@@ -96,15 +96,17 @@ export default {
 
 <style lang="scss" scoped>
   .dashboard-header {
-    height: 50px;
-    background-color: #dadada;
+    height: 60px;
+    background-color: white;
+    border-bottom: 1px solid #c8cbce;
     display: flex;
     align-items: center;
-    position: absolute;
+    // position: absolute;
     width: 100%;
     .dashboard-name {
       font-size: 18px;
       padding-left: 10px;
+      text-transform: capitalize;
     }
     .dashboard-name-input {
       width: 300px;

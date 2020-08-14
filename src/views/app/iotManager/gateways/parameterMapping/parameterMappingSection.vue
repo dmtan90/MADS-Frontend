@@ -511,11 +511,11 @@ export default {
       position: absolute;
       top: 10px;
       right: 10px;
+      cursor: pointer;
       width: 40px;
       height: 40px;
-      cursor: pointer;
-      background-color: #4c92c3;
-      fill: white;
+      background-color: #9BCCE5;
+      border-radius: 20px;
       padding: 8px;
     }
   }

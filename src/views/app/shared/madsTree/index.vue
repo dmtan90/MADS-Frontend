@@ -199,6 +199,9 @@ export default {
     TreeEventBus.$on('reload-entities', () => {
       this.loadProjectEntities()
     })
+  },
+  beforeDestroy () {
+    TreeEventBus.$off()
   }
 }
 </script>

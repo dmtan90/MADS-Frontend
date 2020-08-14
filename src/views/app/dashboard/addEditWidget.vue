@@ -69,7 +69,11 @@ export default {
       this.selectedSectionIndex = 1
     },
     saveWidget () {
-      this.$refs.sections.saveWidgetInstance()
+      if (this.editMode) {
+        this.$refs.sections.updateWidgetInstance()
+      } else {
+        this.$refs.sections.saveWidgetInstance()
+      }
     }
   }
 }

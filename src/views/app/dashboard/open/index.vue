@@ -119,6 +119,7 @@ export default {
   },
   beforeDestroy () {
     this.showAppSidebar('Dashboards')
+    DashboardEventBus.$off()
   }
 }
 </script>

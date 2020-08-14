@@ -21,8 +21,9 @@
               <li :class="{'active': selectedClassification === 'timeseries'}" @click="selectClassfication('timeseries')">Timeseries</li>
               <li :class="{'active': selectedClassification === 'latest'}" @click="selectClassfication('latest')">Latest</li>
               <li :class="{'active': selectedClassification === 'standard'}" @click="selectClassfication('standard')">Standard</li>
+              <li :class="{'active': selectedClassification === 'command'}" @click="selectClassfication('command')">Control</li>
             </ul>
-            <b-row v-if="widgetsLoaded">
+            <b-row v-if="widgetsLoaded && (selectedClassification !== 'command')">
               <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in widgetClassifcation[selectedClassification]" :key="index">
                 <div class="widget-container" @click="setSelectedWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
                   <div class="widget-image">
@@ -34,13 +35,25 @@
                 </div>
               </b-colxx>
             </b-row>
+            <b-row v-else>
+              <b-colxx lg="4" md="4" sm="6" xs="12" xxs="12" class="widget" v-for="(widget, index) in commandWidgets" :key="index">
+                <div class="widget-container" @click="setCommandWidget(widget)" :class="{'active': selectedWidget && selectedWidget.id === widget.id}">
+                  <div class="widget-image">
+                    <img :src="widget.image_url" alt="">
+                  </div>
+                  <div class="widget-info">
+                    <h3>{{widget.name}}</h3>
+                  </div>
+                </div>
+              </b-colxx>
+            </b-row>
           </div>
         </div>
       </div>
     </section>
     <section v-show="selectedSectionIndex === 2" class="select-data">
       <div class="data-type-section">
-        <div class="vue-tree-container">
+        <div class="vue-tree-container" v-if="selectedClassification !== 'command'">
           <mads-tree
             ref="tree"
             :treeView="'file'"
@@ -51,31 +64,42 @@
             :type="'organization'"
           ></mads-tree>
         </div>
+        <div v-else class="gateways-wrap">
+          <span>Select Gateway</span>
+          <b-form-radio-group v-model="gatewayId">
+            <b-form-radio :value="gateway.id" v-for="(gateway, index) in gateways" :key="index">{{ gateway.name }}</b-form-radio>
+          </b-form-radio-group>
+        </div>
       </div>
     </section>
     <section v-if="selectedSectionIndex === 3" class="settings">
-      <div class="widget-category settings-category">
-        <span class="category" :class="{'active': selectedSettingsType === 'visualSettings'}" @click="setSettingsType('visualSettings')">Visual Settings</span>
-        <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')">Data Settings</span>
-      </div>
-      <div v-if="selectedSettingsType === 'visualSettings'">
-        <div class="visual-settings">
-            <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate"></settings>
-          </div>
-      </div>
-      <div v-if="selectedSettingsType === 'dataSettings'">
-        <div class="visual-settings">
-            <div v-for="(serie, seriesIndex) in selectedDataSeries" :key="seriesIndex" class="settings-wrap">
-              <div class="header setting-header">{{serie.name}}</div>
-              <div class="setting" v-for="(setting, index) in dataSettings[1].properties" :key="index">
-                <div v-if="setting.key !== 'multiple'">
-                  <span class="setting-key">{{setting.key}}</span>
-                  <b-form-input v-if="seriesProp[seriesIndex]" :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="seriesProp[seriesIndex][setting.key]"></b-form-input>
-                  <b-form-input v-else :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="dataSeries[seriesIndex][setting.key]"></b-form-input>
+      <div v-if="selectedClassification !== 'command'">
+        <div class="widget-category settings-category">
+          <span class="category" :class="{'active': selectedSettingsType === 'visualSettings'}" @click="setSettingsType('visualSettings')">Visual Settings</span>
+          <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')">Data Settings</span>
+        </div>
+        <div v-if="selectedSettingsType === 'visualSettings'">
+          <div class="visual-settings">
+              <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate"></settings>
+            </div>
+        </div>
+        <div v-if="selectedSettingsType === 'dataSettings'">
+          <div class="visual-settings">
+              <div v-for="(serie, seriesIndex) in selectedDataSeries" :key="seriesIndex" class="settings-wrap">
+                <div class="header setting-header">{{serie.name}}</div>
+                <div class="setting" v-for="(setting, index) in dataSettings[1].properties" :key="index">
+                  <div v-if="setting.key !== 'multiple'">
+                    <span class="setting-key">{{setting.key}}</span>
+                    <b-form-input v-if="seriesProp[seriesIndex]" :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="seriesProp[seriesIndex][setting.key]"></b-form-input>
+                    <b-form-input v-else :type="dataTypeMap[setting.data_type]" class="setting-input" :class="setting.data_type" v-model="dataSeries[seriesIndex][setting.key]"></b-form-input>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+        </div>
+      </div>
+      <div v-else>
+        Predefined Settings
       </div>
     </section>
   </div>
@@ -85,6 +109,7 @@
 import { mapGetters } from 'vuex'
 import madsTree from './../shared/madsTree/index'
 import widgetService from '@/services/widget.service'
+import orgService from '@/services/organization.service'
 import settings from './settings'
 import dashboardService from '@/services/dashboard.service'
 import dasbhoardEventBus from './dashboardBus'
@@ -120,6 +145,9 @@ export default {
       widgetDetail: null,
       widgetClassifcation: {},
       widgetList: [],
+      commandWidgets: [],
+      gateways: [],
+      gatewayId: null,
       dataSeries: [],
       selectedSettingsType: 'visualSettings',
       selectedDataSeries: [],
@@ -157,7 +185,14 @@ export default {
       this.selectedWidget = widget
       this.loadSelectedWidget(widget.id)
     },
+    setCommandWidget (widget) {
+      this.selectedWidget = widget
+    },
     setDataSeries () {
+      if (this.selectedClassification === 'command') {
+        return
+      }
+
       this.selectedDataSeries = this.$refs.tree.getSelectedNodes()
 
       this.$_.forEach(this.selectedDataSeries, (selectedData) => {
@@ -216,6 +251,20 @@ export default {
           this.widgetsLoaded = true
         })
     },
+    loadCommandWidgets () {
+      orgService
+        .readCommandWidgets({ orgId: this.currentUser.org.id })
+        .then(response => {
+          this.commandWidgets = response.command_widget_types
+        })
+    },
+    loadGateways () {
+      orgService
+        .readGateways({ orgId: this.currentUser.org.id })
+        .then(response => {
+          this.gateways = response.gateways
+        })
+    },
     findDashboardYOffset () {
       let yOffset = 0
       let widgetLayots = this.selectedDashboard.widget_layouts
@@ -232,15 +281,16 @@ export default {
         return yOffset
       }
     },
-    updateDashbaord (widgetInstance) {
+    updateDashbaord (widgetInstance, isCommandWidget = false) {
       let yOffset = this.findDashboardYOffset()
       let widgetLayots = this.selectedDashboard.widget_layouts
 
       widgetLayots[widgetInstance.id] = {
-        w: 4,
-        h: 4,
+        w: isCommandWidget ? 4 : 4,
+        h: isCommandWidget ? 9 : 4,
         x: 0,
-        y: yOffset
+        y: yOffset,
+        type: isCommandWidget ? 'command_widget' : 'highcharts'
       }
 
       let params = { widget_layouts: widgetLayots }
@@ -252,19 +302,53 @@ export default {
         })
     },
     saveWidgetInstance () {
-      let uniqueKey = this.getUniqueKey()
+      if (this.selectedClassification === 'command') {
+        this.createCommandWidget()
+      } else {
+        let uniqueKey = this.getUniqueKey()
 
+        let params = {
+          label: 'Label' + uniqueKey,
+          visual_properties: this.visualProp,
+          widget_settings: {},
+          series_data: this.dataSeries
+        }
+
+        let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
+        dashboardService.createWidgetInstance(config, params)
+          .then((response) => {
+            this.updateDashbaord(response)
+          })
+      }
+    },
+    updateWidgetInstance () {
       let params = {
-        label: 'Label' + uniqueKey,
-        visual_prop: this.visualProp,
-        settings: {},
-        series: this.dataSeries
+        label: this.widgetData.label,
+        visual_properties: this.visualProp,
+        series_data: this.dataSeries
       }
 
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
-      dashboardService.createWidgetInstance(config, params)
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
+      dashboardService.updateWidgetInstance(config, params)
         .then((response) => {
-          this.updateDashbaord(response)
+          dasbhoardEventBus.$emit('widget-added')
+        })
+    },
+    createCommandWidget () {
+      let widgetParameters = this.selectedWidget.widget_parameters
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id }
+
+      let params = {
+        dashboard_id: this.selectedDashboard.id,
+        gateway_id: this.gatewayId,
+        label: 'LED Control Panel',
+        data_settings: widgetParameters.data_settings,
+        visual_settings: widgetParameters.visual_settings,
+        module: this.selectedWidget.module
+      }
+      dashboardService.createCommandWidget(config, params)
+        .then((response) => {
+          this.updateDashbaord(response, true)
         })
     },
     onVisualSettingsUpdate (value, key) {
@@ -276,6 +360,8 @@ export default {
   },
   mounted () {
     this.loadWidgets()
+    this.loadCommandWidgets()
+    this.loadGateways()
 
     if (this.widgetData) {
       this.loadSelectedWidget(this.widgetData.widget_id)
@@ -479,6 +565,16 @@ export default {
           transform: rotate(0deg);
         }
       }
+    }
+  }
+  .gateways-wrap {
+    > span {
+      font-size: 15px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .custom-control-inline {
+      display: flex;
     }
   }
 </style>

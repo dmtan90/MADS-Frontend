@@ -8,7 +8,7 @@
         </div>
       </b-colxx>
       <b-colxx xxs="7" class="widget-content">
-        <widget :visualSettings="visualSettings" :series="series" :type="widgetType" :widgetId="'widget-' + '1234'"></widget>
+        <widget :visualProperties="visualProperties" :series="series" :type="widgetType" :category="widgetCategory" :widgetId="'widget-' + '1234'"></widget>
         <div class="button-group" v-if="userWidget">
           <button class="btn download-btn" v-if="checkIfWidgetAlreadyDownloaded" @click="openWidget()">Open</button>
         </div>
@@ -82,7 +82,8 @@ export default {
       widget: {},
       userWidgets: [],
       series: [],
-      visualSettings: {},
+      visualProperties: {},
+      widgetCategory: '',
       widgetType: '',
       widgetOptions: ['Line', 'Area', 'Column & Bar', 'Pie', 'Gauge', 'Stock', 'CandleStick', 'Intraday', 'Depth', 'Column', 'Categorized', 'Distribution', 'Map Bubble', 'Subtasks', 'Interactive Gantt']
     }
@@ -99,8 +100,9 @@ export default {
         .readId(this.selectedWidget)
         .then(response => {
           this.widget = response
+          this.widgetCategory = this.widget.category[0]
           this.widgetType = this.widget.category[1]
-          this.visualSettings = this.widget.visual_prop
+          this.visualProperties = this.widget.visual_prop
           this.series = this.widget.default_values.data_settings_values.series
         })
     },

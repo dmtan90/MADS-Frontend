@@ -73,6 +73,9 @@ export default {
     ProjectEventBus.$on('reload-projects', () => {
       this.loadProjects()
     })
+  },
+  beforeDestroy () {
+    ProjectEventBus.$off()
   }
 }
 </script>

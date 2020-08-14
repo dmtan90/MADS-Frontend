@@ -254,9 +254,11 @@ export default {
           .icon {
             cursor: pointer;
             &.pencil {
-              width: 15px;
-              height: 15px;
-              fill: #4c92c3;
+              width: 26px;
+              height: 26px;
+              background-color: #9BCCE5;
+              border-radius: 13px;
+              padding: 4px;
             }
             &.tick {
               width: 24px;

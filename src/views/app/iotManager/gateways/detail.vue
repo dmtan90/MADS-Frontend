@@ -54,12 +54,10 @@
           <div class="credentails-box">
             <div class="header">Credentails</div>
             <div class="body-box">
-              <div class="edit-btn">
-                <button @click="editCredentials(credentials)">
-                  <svg class="icon">
-                    <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
-                  </svg>
-                </button>
+              <div class="edit-wrap">
+                <svg class="icon" @click="editCredentials(credentials)">
+                  <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                </svg>
               </div>
               <div class="items-row">
                 <div class="item-main">
@@ -115,12 +113,10 @@
           <div class="security-box">
             <div class="header">Security</div>
             <div class="body-box">
-              <div class="edit-btn">
-                <button @click="editSecurity(security)">
-                  <svg class="icon">
-                    <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
-                  </svg>
-                </button>
+              <div class="edit-wrap">
+                <svg class="icon" @click="editSecurity(security)">
+                  <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                </svg>
               </div>
               <div class="items-row">
                 <div class="item-main">
@@ -136,12 +132,10 @@
           <div class="security-box">
             <div class="header">Timestamp</div>
             <div class="body-box">
-              <div class="edit-btn">
-                <button @click="editTimestamp()">
-                  <svg class="icon">
-                    <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
-                  </svg>
-                </button>
+              <div class="edit-wrap">
+                <svg class="icon" @click="editTimestamp()">
+                  <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
+                </svg>
               </div>
               <div class="items-row">
                 <div class="item-main">
@@ -365,6 +359,9 @@ export default {
     GatewayEventBus.$on('reload-gateway', () => {
       this.loadGatewayData()
     })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>
@@ -419,20 +416,17 @@ export default {
       width: 100%;
       padding: 10px;
       position: relative;
-      .edit-btn{
+      .edit-wrap {
         position: absolute;
         bottom: 10px;
         right: 10px;
-        button{
-          // background-color:transparent !important;
-          // border: 0 !important;
-          border-radius: 50% !important;
-          width: 70px;
-          height: 65px;
-          svg{
-            width: 30px;
-            height: 30px;
-          }
+        cursor: pointer;
+        .icon {
+          width: 40px;
+          height: 40px;
+          background-color: #9BCCE5;
+          border-radius: 20px;
+          padding: 8px;
         }
       }
       .items-row{
@@ -468,20 +462,17 @@ export default {
       width: 100%;
       padding: 10px 10px 50px 10px;
       position: relative;
-      .edit-btn{
+      .edit-wrap {
         position: absolute;
         bottom: 10px;
         right: 10px;
-        button{
-          // background-color:transparent !important;
-          // border: 0 !important;
-          border-radius: 50% !important;
-          width: 70px;
-          height: 65px;
-          svg{
-            width: 30px;
-            height: 30px;
-          }
+        cursor: pointer;
+        .icon {
+          width: 40px;
+          height: 40px;
+          background-color: #9BCCE5;
+          border-radius: 20px;
+          padding: 8px;
         }
       }
       .items-row{

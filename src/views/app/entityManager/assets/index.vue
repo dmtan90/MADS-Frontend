@@ -67,6 +67,7 @@ export default {
   },
   beforeDestroy () {
     this.selectProject(null)
+    AssetEventBus.$off()
   }
 }
 </script>
