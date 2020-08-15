@@ -3,14 +3,13 @@ import ApiService from '@/services/api.service'
 const resource = '/policies'
 
 const policyService = {
-  read: async function (params) {
+  read: async function (config) {
     try {
-      const response = await ApiService.get(resource, { params })
+      const response = await ApiService.get('/orgs/' + config.orgId + resource)
 
       return response.data
     } catch (error) {
-      if (error.errors.error.message === 'Unauthorized') {
-      }
+      return error.data
     }
   }
 }

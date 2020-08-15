@@ -10,6 +10,9 @@
         <project-list v-if="entityManagerCurrentPage === 'index'" :source="'iotManager'"></project-list>
         <gateways v-else></gateways>
       </div>
+      <div v-if="appVuexState.currentSection === 'settings'" class="h-100">
+        <settings></settings>
+      </div>
       <help :appName="'IOT Manager'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
@@ -21,6 +24,7 @@ import appWindow from './../appWindow'
 import iotManager from './iotManager'
 import gateways from './gateways'
 import help from './../shared/help'
+import settings from './settings'
 import projectList from './../roleManager/projects/index'
 
 export default {
@@ -29,6 +33,7 @@ export default {
     iotManager,
     gateways,
     help,
+    settings,
     projectList
   },
   data () {
