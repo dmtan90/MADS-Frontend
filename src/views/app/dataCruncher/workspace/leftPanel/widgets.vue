@@ -150,6 +150,8 @@ export default {
 
 <style lang="scss" scoped>
   .widgets-container {
+    height: calc(100% - 40px);
+    overflow: auto;
     .category {
       margin-bottom: 10px;
       .category-name {

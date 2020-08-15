@@ -44,12 +44,8 @@
         ></mads-tree>
       </div>
     </div>
-    <div v-if="leftPanelSection === 'functions'">
-      <functions @set-dragged-function="onFunctionDragStart" @set-dragged-output="onOutputDragStart"></functions>
-    </div>
-    <div v-if="leftPanelSection === 'widgets'">
-      <widgets @set-dragged-entity-text="onFunctionDragStart"></widgets>
-    </div>
+    <functions v-if="leftPanelSection === 'functions'" @set-dragged-function="onFunctionDragStart" @set-dragged-output="onOutputDragStart"></functions>
+    <widgets v-if="leftPanelSection === 'widgets'" @set-dragged-entity-text="onFunctionDragStart"></widgets>
   </div>
 </template>
 
@@ -124,6 +120,7 @@ export default {
       }
     }
     #canvas-options {
+      height: calc(100% - 40px);
       overflow: auto;
     }
     .tree-section {

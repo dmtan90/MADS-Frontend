@@ -79,6 +79,8 @@ export default {
 <style lang="scss" scoped>
   .functions-container {
     padding: 20px 10px 20px 20px;
+    height: calc(100% - 40px);
+    overflow: auto;
     .category {
       margin-bottom: 10px;
         .fn-name, .output-name {
