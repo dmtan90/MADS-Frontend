@@ -17,9 +17,8 @@
         </div>
         <div class="img-wrap" @click="selectDashboard(dashboard)">
           <img :src="dashboard.imageUrl" alt="" v-if="dashboard.imageUrl">
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-app-icons.svg#mads-dashboard"></use>
-          </svg>
+          <img src="/assets/img/historian.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Historian)'">
+          <img src="/assets/img/overview.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Overview)'">
         </div>
       </div>
     </div>

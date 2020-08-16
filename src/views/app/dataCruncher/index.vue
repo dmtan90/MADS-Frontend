@@ -3,6 +3,10 @@
     <template v-slot:content>
       <data-cruncher v-if="appVuexState.currentSection === 'dataCruncher'"></data-cruncher>
       <workspace v-if="appVuexState.currentSection === 'workspace'"></workspace>
+      <settings v-if="appVuexState.currentSection === 'settings'"></settings>
+      <data-lake v-if="appVuexState.currentSection === 'dataLake'"></data-lake>
+      <exported-widgets v-if="appVuexState.currentSection === 'exportedWidgets'"></exported-widgets>
+      <functions v-if="appVuexState.currentSection === 'functions'"></functions>
       <help :appName="'Data Cruncher'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
@@ -12,13 +16,21 @@
 import appWindow from './../appWindow'
 import dataCruncher from './dataCruncher'
 import workspace from './workspace/index'
+import dataLake from './dataLake'
+import exportedWidgets from './exportedWidgets'
+import functions from './functions'
 import help from './../shared/help'
+import settings from './settings'
 
 export default {
   components: {
     appWindow,
     dataCruncher,
     workspace,
+    dataLake,
+    exportedWidgets,
+    functions,
+    settings,
     help
   },
   computed: {

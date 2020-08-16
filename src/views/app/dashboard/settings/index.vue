@@ -1,0 +1,68 @@
+<template>
+  <div class="settings-wrap">
+    <h2>Settings</h2>
+    <div class="settings-tab">
+      <b-tabs pills card>
+        <b-tab title="General" active>
+        </b-tab>
+        <b-tab title="New">
+        </b-tab>
+        <b-tab title="Open">
+        </b-tab>
+        <b-tab title="Recent">
+        </b-tab>
+        <b-tab title="Share">
+        </b-tab>
+        <b-tab title=" Alert Rules">
+        </b-tab>
+        <b-tab title="Notifications">
+        </b-tab>
+      </b-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {}
+  },
+  methods: {
+  }
+}
+</script>
+
+<style lang="scss">
+  .settings-wrap {
+    padding: 40px;
+    .settings-tab {
+      margin-top: 30px;
+    }
+    .tabs {
+      .nav-item {
+        .nav-link {
+          border-radius: 0;
+          min-width: 130px;
+          border: 1px solid #cccccc;
+          border-right: 0;
+          text-align: center;
+          font-size: 15px;
+          background-color: #f2f2f2;
+          &.active {
+            background-color: #ffffff;
+            color: #000000;
+          }
+        }
+        &:last-child {
+          border-right: 1px solid #cccccc;
+        }
+      }
+      .card-header {
+        padding-left: 0;
+        .card-header-pills {
+          margin: 0;
+        }
+      }
+    }
+  }
+</style>

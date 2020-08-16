@@ -4,9 +4,8 @@
       <role-manager v-if="appVuexState.currentSection === 'roleManager'"></role-manager>
       <users v-if="appVuexState.currentSection === 'users'"></users>
       <projects v-if="appVuexState.currentSection === 'projects'"></projects>
-      <div v-if="appVuexState.currentSection === 'settings'">
-        <span>Settings</span>
-      </div>
+      <settings v-if="appVuexState.currentSection === 'settings'"></settings>
+      <activity v-if="appVuexState.currentSection === 'activity'"></activity>
       <help :appName="'Role Manager'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
@@ -17,6 +16,8 @@ import appWindow from './../appWindow'
 import roleManager from './roleManager'
 import users from './users/index'
 import projects from './projects/index'
+import activity from './activity'
+import settings from './settings'
 import help from './../shared/help'
 
 export default {
@@ -25,6 +26,8 @@ export default {
     roleManager,
     users,
     projects,
+    activity,
+    settings,
     help
   },
   computed: {

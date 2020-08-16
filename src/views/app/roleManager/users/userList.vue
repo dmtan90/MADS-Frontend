@@ -9,9 +9,9 @@
       <template v-slot:checkbox>
         <b-form-checkbox></b-form-checkbox>
       </template>
-      <template v-slot:apps="props">
+      <template v-slot:apps>
         <span>
-          {{props.rowData.apps.length}}
+          7
         </span>
       </template>
       <template v-slot:actions="props">

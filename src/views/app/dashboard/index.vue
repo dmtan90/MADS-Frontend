@@ -6,6 +6,7 @@
       <open-section v-if="appVuexState.currentSection === 'open'"></open-section>
       <recent-section v-if="appVuexState.currentSection === 'recent'"></recent-section>
       <share-section v-if="appVuexState.currentSection === 'share'"></share-section>
+      <settings-section v-if="appVuexState.currentSection === 'settings'"></settings-section>
       <help :appName="'Dashboard'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
   </app-window>
@@ -18,6 +19,7 @@ import newSection from './new/index.vue'
 import openSection from './open/index.vue'
 import recentSection from './recent/index.vue'
 import shareSection from './share/index.vue'
+import settingsSection from './settings/index.vue'
 import help from './../shared/help'
 
 export default {
@@ -28,6 +30,7 @@ export default {
     openSection,
     recentSection,
     shareSection,
+    settingsSection,
     help
   },
   data () {

@@ -5,6 +5,9 @@
         <iot-manager></iot-manager>
       </div>
       <div v-if="appVuexState.currentSection === 'topology'" class="h-100">
+        <topology></topology>
+      </div>
+      <div v-if="appVuexState.currentSection === 'topology'" class="h-100">
       </div>
       <div v-if="appVuexState.currentSection === 'gateways'" class="h-100">
         <project-list v-if="entityManagerCurrentPage === 'index'" :source="'iotManager'"></project-list>
@@ -22,6 +25,7 @@
 import { mapGetters } from 'vuex'
 import appWindow from './../appWindow'
 import iotManager from './iotManager'
+import topology from './topology'
 import gateways from './gateways'
 import help from './../shared/help'
 import settings from './settings'
@@ -31,6 +35,7 @@ export default {
   components: {
     appWindow,
     iotManager,
+    topology,
     gateways,
     help,
     settings,

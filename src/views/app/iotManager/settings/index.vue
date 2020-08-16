@@ -1,26 +1,22 @@
 <template>
-  <div class="settings">
+  <div class="settings-wrap">
     <h2>Settings</h2>
-    <div>
     <div class="settings-tab">
       <b-tabs pills card>
-        <b-tab title="Topology" >
-          
+        <b-tab title="General">
+        </b-tab>
+        <b-tab title="Topology">
         </b-tab>
         <b-tab title="Gateways">
-         
         </b-tab>
         <b-tab title=" Alert Rules" active>
           <alert-rules></alert-rules>
         </b-tab>
         <b-tab title="Notifications">
-          
         </b-tab>
       </b-tabs>
     </div>
-</div>
   </div>
-
 </template>
 
 <script>
@@ -29,7 +25,7 @@ import alertRules from './alertRules'
 
 export default {
   components: {
-    alertRules,
+    alertRules
   },
   data () {
     return {
