@@ -15,6 +15,11 @@ const appSections = [
     iconId: 'data-lake'
   },
   {
+    key: 'tasks',
+    name: 'Tasks',
+    iconId: 'tasks'
+  },
+  {
     key: 'functions',
     name: 'Functions',
     iconId: 'functions'

@@ -5,6 +5,7 @@
       <workspace v-if="appVuexState.currentSection === 'workspace'"></workspace>
       <settings v-if="appVuexState.currentSection === 'settings'"></settings>
       <data-lake v-if="appVuexState.currentSection === 'dataLake'"></data-lake>
+      <tasks v-if="appVuexState.currentSection === 'tasks'"></tasks>
       <exported-widgets v-if="appVuexState.currentSection === 'exportedWidgets'"></exported-widgets>
       <functions v-if="appVuexState.currentSection === 'functions'"></functions>
       <help :appName="'Data Cruncher'" v-if="appVuexState.currentSection === 'help'"></help>
@@ -17,6 +18,7 @@ import appWindow from './../appWindow'
 import dataCruncher from './dataCruncher'
 import workspace from './workspace/index'
 import dataLake from './dataLake'
+import tasks from './tasks'
 import exportedWidgets from './exportedWidgets'
 import functions from './functions'
 import help from './../shared/help'
@@ -28,6 +30,7 @@ export default {
     dataCruncher,
     workspace,
     dataLake,
+    tasks,
     exportedWidgets,
     functions,
     settings,

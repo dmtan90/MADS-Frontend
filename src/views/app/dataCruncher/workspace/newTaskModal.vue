@@ -5,7 +5,7 @@
         <svg class="icon task-icon">
           <use xlink:href="/assets/img/mads-common-icons.svg#task"></use>
         </svg>
-        <span>File Name:</span>
+        <span>Task Name:</span>
         <b-input class="name-input" v-model="task.name"></b-input>
         <!-- <span>.task</span> -->
       </div>
