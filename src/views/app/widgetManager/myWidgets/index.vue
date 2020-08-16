@@ -4,11 +4,14 @@
       <div class="header">
         <div class="content">
           <div class="txt">
-            Graphic resource for everyone
+            Search widgets for your IoT projects
           </div>
           <b-form>
             <b-form-group>
-              <b-form-input type="text" placeholder="Search your apps, web"/>
+              <b-form-input type="text" placeholder="Search widgets"/>
+              <svg class="icon" @click="searchWidget()">
+                <use xlink:href="/assets/img/mads-common-icons.svg#search"></use>
+              </svg>
             </b-form-group>
           </b-form>
           <div class="btn-group">
@@ -114,7 +117,6 @@ export default {
           padding-left: 20px;
           padding-right: 20px;
           &::placeholder {
-            text-align: center;
             font-size: 15px;
           }
         }
