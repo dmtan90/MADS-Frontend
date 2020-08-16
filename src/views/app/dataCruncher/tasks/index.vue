@@ -9,12 +9,12 @@
       </template>
       <template v-slot:createdAt="props">
         <span>
-          {{getUserName(props.rowData.user)}}
+          {{dateFormat(props.rowData.created_at)}}
         </span>
       </template>
       <template v-slot:createdBy="props">
         <span>
-          {{dateFormat(props.rowData.created_at)}}
+          {{getUserName(props.rowData.user)}}
         </span>
       </template>
       <template v-slot:type="props">
