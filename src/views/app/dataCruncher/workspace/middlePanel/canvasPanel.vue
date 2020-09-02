@@ -223,7 +223,7 @@ export default {
           text: {
             text: elementText,
             fontSize: '13',
-            fill: '#fff'
+            fill: '#000000'
           },
           rect: {
             fill: this.draggedEntity.backgroundColor,
