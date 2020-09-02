@@ -1,9 +1,11 @@
 <template>
   <div class="functions-container">
-    <div class="category" v-for="(component, index) in components" :key="index">
-      <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)" :class="component.category">
-        {{component.display_name}}
-      </span>
+    <div class="category-group" v-for="(componentList, category) in components" :key="category">
+      <div class="category" v-for="(component, index) in componentList" :key="index">
+        <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)" :class="component.category">
+          {{component.display_name}}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +31,9 @@ export default {
       let config = { orgId: this.currentUser.org.id }
       componentService.read(config)
         .then((response) => {
-          this.components = this.$_.concat(response.components, dummyFunctions)
+          let components = this.$_.concat(response.components, dummyFunctions)
+          this.components = this.$_.groupBy(components, (component) => component.category)
+          console.log(this.components)
         })
     },
     toggleCategory (category) {
@@ -61,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
   .functions-container {
-    padding: 20px 10px 20px 20px;
+    padding: 10px 10px 20px 20px;
     height: calc(100% - 40px);
     overflow: auto;
     .category {
@@ -120,6 +124,10 @@ export default {
         padding: 7px 7px 7px 20px;
         margin: 5px 0;
       }
+    }
+    .category-group {
+      border-bottom: 1px solid #e2e2e2;
+      margin-top: 10px;
     }
   }
 </style>
