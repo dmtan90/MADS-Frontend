@@ -54,7 +54,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard', 'setPanel']),
     loadDashboards () {
       let config = { orgId: this.currentUser.org.id }
 
@@ -89,8 +89,10 @@ export default {
       let config = { orgId: this.currentUser.org.id, id: id }
 
       dashboardService.readId(config)
-        .then((response) => {
-          this.setDashboard(response)
+        .then((dashboard) => {
+          this.setDashboard(dashboard)
+          this.setPanel(dashboard.panels[0])
+          DashboardEventBus.$emit('reload-dashboard-panel')
           loader.hide()
         })
     },

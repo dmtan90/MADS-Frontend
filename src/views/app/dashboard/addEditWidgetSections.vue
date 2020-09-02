@@ -267,7 +267,7 @@ export default {
     },
     findDashboardYOffset () {
       let yOffset = 0
-      let widgetLayots = this.selectedDashboard.widget_layouts
+      let widgetLayots = this.selectedPanel.widget_layouts
 
       if (this.$_.size(widgetLayots)) {
         this.$_.forEach(widgetLayots, (layoutSetting, _) => {
@@ -281,9 +281,9 @@ export default {
         return yOffset
       }
     },
-    updateDashbaord (widgetInstance, isCommandWidget = false) {
+    updateDashboardPanel (widgetInstance, isCommandWidget = false) {
       let yOffset = this.findDashboardYOffset()
-      let widgetLayots = this.selectedDashboard.widget_layouts
+      let widgetLayots = this.selectedPanel.widget_layouts || {}
 
       widgetLayots[widgetInstance.id] = {
         w: isCommandWidget ? 4 : 4,
@@ -294,11 +294,11 @@ export default {
       }
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.update(config, params)
+      dashboardService.updateDashboardPanel(config, params)
         .then((response) => {
-          dasbhoardEventBus.$emit('widget-added')
+          dasbhoardEventBus.$emit('reload-dashboard-panel')
         })
     },
     saveWidgetInstance () {
@@ -314,10 +314,10 @@ export default {
           series_data: this.dataSeries
         }
 
-        let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id }
+        let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id }
         dashboardService.createWidgetInstance(config, params)
           .then((response) => {
-            this.updateDashbaord(response)
+            this.updateDashboardPanel(response)
           })
       }
     },
@@ -328,15 +328,15 @@ export default {
         series_data: this.dataSeries
       }
 
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
       dashboardService.updateWidgetInstance(config, params)
         .then((response) => {
-          dasbhoardEventBus.$emit('widget-added')
+          dasbhoardEventBus.$emit('reload-dashboard')
         })
     },
     createCommandWidget () {
       let widgetParameters = this.selectedWidget.widget_parameters
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id }
 
       let params = {
         dashboard_id: this.selectedDashboard.id,
@@ -356,7 +356,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedProject', 'selectedDashboard'])
+    ...mapGetters(['currentUser', 'selectedProject', 'selectedDashboard', 'selectedPanel'])
   },
   mounted () {
     this.loadWidgets()
