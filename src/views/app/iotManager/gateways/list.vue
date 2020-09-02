@@ -48,7 +48,6 @@ import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
 import madsPagination from '../../shared/madsPagination'
 
-
 export default {
   props: {
     // gateways: {
