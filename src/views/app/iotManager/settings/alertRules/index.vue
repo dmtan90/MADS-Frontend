@@ -38,6 +38,7 @@
         >
       </template>
     </vuetable>
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
     <add-edit-alert-rules ref="addEditAlertRules"></add-edit-alert-rules>
   </div>
 </template>
@@ -49,6 +50,7 @@ import { Vuetable } from 'vuetable-2'
 import addEditAlertRules from './addEditAlertRules'
 import alertRulesService from '@/services/alertRules.service'
 import AlertRulesEventBus from './alertRulesEventBus'
+import madsPagination from '../../../shared/madsPagination'
 
 const severityMapping = {
   1: 'Low',
@@ -59,12 +61,16 @@ const severityMapping = {
 export default {
   components: {
     Vuetable,
-    addEditAlertRules
+    addEditAlertRules,
+    madsPagination
   },
   data () {
     return {
       data: [],
-      fields: fields
+      fields: fields,
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null
     }
   },
   methods: {
@@ -77,13 +83,14 @@ export default {
       }
 
       const params = {
-        page_size: 100,
-        page_number: 1
+        page_size: this.perPage,
+        page_number: this.currentPage
       }
 
       alertRulesService.read(config, params).then((res) => {
         loader.hide()
         this.data = res.alert_rules
+        this.totalRows = res.total_entries
       })
     },
     addAlertRules () {
@@ -119,6 +126,10 @@ export default {
           AlertRulesEventBus.$emit('reload-alertsRule')
         })
       }
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.loadAlertRules()
     }
   },
   computed: {

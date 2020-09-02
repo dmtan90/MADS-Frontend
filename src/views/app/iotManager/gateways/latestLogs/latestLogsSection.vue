@@ -48,6 +48,7 @@ export default {
       gatewayService.latestLogsRead(config, params)
         .then((res) => {
           this.data = res.data_dumps
+          this.totalRows = res.total_entries
         })
     },
     onPaginationChange (e) {
