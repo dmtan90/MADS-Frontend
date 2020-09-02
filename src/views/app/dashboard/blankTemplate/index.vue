@@ -2,7 +2,7 @@
   <div class="theme-container">
     <sidebar ref="sidebar" @select-panel="loadDashboardPanel" @go-back="onGoBack"></sidebar>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard="onSaveDashboard"></dashboard-header>
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel"></dashboard-header>
       <div class="widgets-wrap">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
@@ -135,7 +135,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setDashboard']),
+    ...mapActions(['setDashboard', 'setPanel']),
     onGoBack () {
       this.$emit('show-all')
     },
@@ -165,6 +165,7 @@ export default {
       dashboardService
         .loadDashboardPanel(config)
         .then((panel) => {
+          this.setPanel(panel)
           let widgets = panel.widgets
 
           this.$_.forEach(widgets, (widget) => {
@@ -198,7 +199,9 @@ export default {
           loader.hide()
         })
     },
-    onSaveDashboard (name) {
+    onSaveDashboardPanel (name) {
+      let loader = this.$loading.show()
+
       this.isEditMode = false
       let widgetLayots = {}
 
@@ -207,26 +210,25 @@ export default {
       })
 
       let params = {
-        name: name,
         widget_layouts: widgetLayots
       }
-      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.update(config, params)
+      dashboardService.updateDashboardPanel(config, params)
         .then((response) => {
-          this.reloadSelectedDasbhoard()
+          loader.hide()
         })
     },
-    updateDashbaord (item) {
-      let widgetLayots = this.selectedDashboard.widget_layouts
+    updateDashboardPanel (item) {
+      let widgetLayots = this.selectedPanel.widget_layouts
       delete widgetLayots[item.i]
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.update(config, params)
+      dashboardService.updateDashboardPanel(config, params)
         .then((response) => {
-          this.reloadSelectedDasbhoard()
+          this.loadDashboardPanel(this.selectedPanel)
         })
     },
     reloadSelectedDasbhoard () {
@@ -248,7 +250,7 @@ export default {
       dashboardService.deleteWidgetInstance(config)
         .then((response) => {
           loader.hide()
-          this.updateDashbaord(item)
+          this.updateDashboardPanel(item)
         })
     },
     editWidget (item) {
@@ -295,7 +297,7 @@ export default {
       dashboardService.updateCommandWidget(config)
         .then((response) => {
           loader.hide()
-          this.updateDashbaord(item)
+          this.updateDashboardPanel(item)
         })
     }
   },

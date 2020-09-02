@@ -86,7 +86,7 @@ const dashboardService = {
   },
   updateWidgetInstance: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
 
       return response.data
     } catch (error) {
@@ -95,7 +95,7 @@ const dashboardService = {
   },
   deleteWidgetInstance: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
 
       return response.data
     } catch (error) {
@@ -104,7 +104,7 @@ const dashboardService = {
   },
   createCommandWidget: async function (config, payload) {
     try {
-      const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.dashboardId + '/command_widgets', payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets', payload)
 
       return response.data
     } catch (error) {
@@ -113,7 +113,7 @@ const dashboardService = {
   },
   updateCommandWidget: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.dashboardId + '/command_widgets/' + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets/' + config.id, payload)
 
       return response.data
     } catch (error) {
@@ -122,7 +122,7 @@ const dashboardService = {
   },
   deleteCommandWidget: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.dashboardId + '/command_widgets/' + config.id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets/' + config.id)
 
       return response.data
     } catch (error) {

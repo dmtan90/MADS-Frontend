@@ -331,7 +331,7 @@ export default {
       let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
       dashboardService.updateWidgetInstance(config, params)
         .then((response) => {
-          dasbhoardEventBus.$emit('reload-dashboard')
+          dasbhoardEventBus.$emit('reload-dashboard-panel')
         })
     },
     createCommandWidget () {
@@ -348,7 +348,7 @@ export default {
       }
       dashboardService.createCommandWidget(config, params)
         .then((response) => {
-          this.updateDashbaord(response, true)
+          this.updateDashboardPanel(response, true)
         })
     },
     onVisualSettingsUpdate (value, key) {

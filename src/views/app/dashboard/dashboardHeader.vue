@@ -81,7 +81,7 @@ export default {
       this.$emit('on-change-mode', mode.key)
     },
     saveDashboard () {
-      this.$emit('save-dashboard', this.dashboardName)
+      this.$emit('save-dashboard-panel', this.dashboardName)
       this.selectedMode = this.modes[0]
     }
   },

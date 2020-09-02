@@ -65,10 +65,13 @@ export default {
       this.$refs.addEditDashboard.edit(dashboard)
     },
     deleteDashboard (dashboard) {
+      let loader = this.$loading.show()
+
       let config = { orgId: this.currentUser.org.id, id: dashboard.id }
       dashboardService.delete(config)
         .then((response) => {
           DashboardEventBus.$emit('reload-dashboards')
+          loader.hide()
         })
     },
     getBackgroundUrl (url) {
