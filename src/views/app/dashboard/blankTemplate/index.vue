@@ -1,29 +1,9 @@
 <template>
   <div class="theme-container">
-    <div class="sidebar">
-      <ul>
-        <li :class="{'active': selectedTab === 'home'}" @click="selectedTab = 'home'">
-          Home
-        </li>
-      </ul>
-      <div class="action-btn-group">
-        <b-button class="new-tab-btn sidebar-btn">
-          <span>New Tab</span>
-          <svg class="icon plus">
-            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
-          </svg>
-        </b-button>
-        <b-button class="back-btn sidebar-btn" @click="goBack()">
-          <svg class="icon back">
-            <use xlink:href="/assets/img/mads-common-icons.svg#back"></use>
-          </svg>
-          <span>Back</span>
-        </b-button>
-      </div>
-    </div>
+    <sidebar ref="sidebar" @select-panel="loadDashboardPanel" @go-back="onGoBack"></sidebar>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard="onSaveDashboard"></dashboard-header>
-      <div class="widgets-wrap">
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel"></dashboard-header>
+      <div class="widgets-wrap" :style="{'background-color': getDashboardBackgroundColor()}">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
                 :layout="dummyLayout"
@@ -127,6 +107,7 @@ import VueGridLayout from 'vue-grid-layout'
 import dasbhoardEventBus from './../dashboardBus'
 import dashboardService from '@/services/dashboard.service'
 import editWidget from './../addEditWidget'
+import sidebar from './sidebar'
 
 export default {
   components: {
@@ -134,14 +115,13 @@ export default {
     widget,
     editWidget,
     GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem
+    GridItem: VueGridLayout.GridItem,
+    sidebar
   },
   data () {
     return {
-      widgets: [],
       widgetObject: {},
       commandWidgetObject: {},
-      selectedTab: 'home',
       series: [],
       isEditMode: false,
       layout: [],
@@ -155,8 +135,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setDashboard']),
-    goBack () {
+    ...mapActions(['setDashboard', 'setPanel']),
+    onGoBack () {
       this.$emit('show-all')
     },
     onChangeMode (mode) {
@@ -178,7 +158,53 @@ export default {
     getWidgetId (item) {
       return this.widgetObject[item.i].uuid
     },
-    onSaveDashboard (name) {
+    getDashboardBackgroundColor () {
+      return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+    },
+    loadDashboardPanel (panel) {
+      let loader = this.$loading.show()
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: panel.id }
+
+      dashboardService
+        .loadDashboardPanel(config)
+        .then((panel) => {
+          this.setPanel(panel)
+          let widgets = panel.widgets
+
+          this.$_.forEach(widgets, (widget) => {
+            this.widgetObject[widget.id] = widget
+          })
+
+          let commandWidgets = panel.command_widgets
+
+          this.$_.forEach(commandWidgets, (widget) => {
+            this.$_.forEach(widget.data_settings, (setting) => {
+              if (setting.html_type === 'color') {
+                if (setting.value) {
+                  setting.value = this.rgbToHex(setting.value[0], setting.value[1], setting.value[2])
+                } else {
+                  setting.value = '#000000'
+                }
+              }
+              if (setting.html_tag === 'select') {
+                setting.value = setting.value || setting.default
+              }
+            })
+            this.commandWidgetObject[widget.id] = widget
+          })
+
+          let widgetLayots = panel.widget_layouts || {}
+
+          this.layout = this.$_.map(widgetLayots, (setting, id) => {
+            return this.$_.merge(setting, { i: id })
+          })
+
+          loader.hide()
+        })
+    },
+    onSaveDashboardPanel (name) {
+      let loader = this.$loading.show()
+
       this.isEditMode = false
       let widgetLayots = {}
 
@@ -187,36 +213,33 @@ export default {
       })
 
       let params = {
-        name: name,
         widget_layouts: widgetLayots
       }
-      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.update(config, params)
+      dashboardService.updateDashboardPanel(config, params)
         .then((response) => {
-          this.reloadSelectedDasbhoard()
+          loader.hide()
         })
     },
-    updateDashbaord (item) {
-      let widgetLayots = this.selectedDashboard.widget_layouts
+    updateDashboardPanel (item) {
+      let widgetLayots = this.selectedPanel.widget_layouts
       delete widgetLayots[item.i]
 
       let params = { widget_layouts: widgetLayots }
-      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.update(config, params)
+      dashboardService.updateDashboardPanel(config, params)
         .then((response) => {
-          this.reloadSelectedDasbhoard()
+          this.loadDashboardPanel(this.selectedPanel)
         })
     },
     reloadSelectedDasbhoard () {
-      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.readId(config)
         .then((response) => {
           this.setDashboard(response)
-          loader.hide()
         })
     },
     deleteWidget (item) {
@@ -225,12 +248,12 @@ export default {
       let widgetInstanceId = this.widgetObject[item.i].id
       let widgetId = this.widgetObject[item.i].widget_id
 
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, widgetId, id: widgetInstanceId }
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId, id: widgetInstanceId }
 
       dashboardService.deleteWidgetInstance(config)
         .then((response) => {
           loader.hide()
-          this.updateDashbaord(item)
+          this.updateDashboardPanel(item)
         })
     },
     editWidget (item) {
@@ -249,7 +272,7 @@ export default {
     updateCommandWidget (widget) {
       let loader = this.$loading.show()
 
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widget.id }
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, id: widget.id }
 
       let dataSettings = this.$_.merge({}, widget.data_settings)
 
@@ -272,50 +295,17 @@ export default {
 
       let loader = this.$loading.show()
 
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: widgetId }
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, id: widgetId }
 
       dashboardService.updateCommandWidget(config)
         .then((response) => {
           loader.hide()
-          this.updateDashbaord(item)
+          this.updateDashboardPanel(item)
         })
-    }
-  },
-  watch: {
-    selectedDashboard (dashboard) {
-      this.widgets = dashboard.widgets
-
-      this.$_.forEach(this.widgets, (widget) => {
-        this.widgetObject[widget.id] = widget
-      })
-
-      let commandWidgets = dashboard.command_widgets
-
-      this.$_.forEach(commandWidgets, (widget) => {
-        this.$_.forEach(widget.data_settings, (setting) => {
-          if (setting.html_type === 'color') {
-            if (setting.value) {
-              setting.value = this.rgbToHex(setting.value[0], setting.value[1], setting.value[2])
-            } else {
-              setting.value = '#000000'
-            }
-          }
-          if (setting.html_tag === 'select') {
-            setting.value = setting.value || setting.default
-          }
-        })
-        this.commandWidgetObject[widget.id] = widget
-      })
-
-      let widgetLayots = this.$_.clone(this.selectedDashboard.widget_layouts)
-
-      this.layout = this.$_.map(widgetLayots, (setting, id) => {
-        return this.$_.merge(setting, { i: id })
-      })
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'selectedDashboard'])
+    ...mapGetters(['currentUser', 'selectedDashboard', 'selectedPanel'])
   },
   mounted () {
     setTimeout(() => {
@@ -324,8 +314,12 @@ export default {
       this.showLayout = true
     }, 100)
 
-    dasbhoardEventBus.$on('widget-added', () => {
+    dasbhoardEventBus.$on('reload-dashboard', () => {
       this.reloadSelectedDasbhoard()
+    })
+
+    dasbhoardEventBus.$on('reload-dashboard-panel', () => {
+      this.loadDashboardPanel(this.selectedPanel)
     })
   },
   beforeDestroy () {
@@ -338,66 +332,6 @@ export default {
   .theme-container {
     display: flex;
     height: 100%;
-    .sidebar {
-      width: 180px;
-      background-color: #1E3664;
-      position: relative;
-      padding-top: 40px;
-      height: 100%;
-      ul {
-        list-style: none;
-        padding: 0 1px 0 2px;
-        margin-top: 20px;
-        li {
-          height: 40px;
-          margin: 20px -1px;
-          display: flex;
-          align-items: center;
-          padding-left: 40px;
-          color: white;
-          font-size: 16px;
-          cursor: pointer;
-          &.active {
-            background-color: #f2f2f2;
-            color: #000000;
-            border-top-left-radius: 21px;
-            border-bottom-left-radius: 21px;
-          }
-        }
-      }
-      .action-btn-group {
-        display: flex;
-        align-items: center;
-        position: absolute;
-        bottom: 10px;
-        justify-content: space-around;
-        width: 100%;
-        flex-direction: column;
-        .sidebar-btn {
-          height: 40px;
-          line-height: 1;
-          border-radius: 20px !important;
-          display: flex;
-          align-items: center;
-          font-size: 16px;
-          margin: 0;
-          padding: 0;
-          justify-content: center;
-          width: 75%;
-          margin: 10px 0;
-          .icon {
-            width: 23px;
-            height: 23px;
-            &.back {
-              margin-right: 5px;
-            }
-            &.plus {
-              margin-left: 5px;
-            }
-          }
-        }
-      }
-    }
     .content-wrap {
       width: calc(100% - 180px);
       overflow: auto;
@@ -408,7 +342,7 @@ export default {
         height: calc(100% - 60px);
         padding: 10px;
         overflow: auto;
-        background-color: #f2f2f2;
+        // background-color: #f2f2f2;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;

@@ -11,7 +11,7 @@ export const localeOptions = [
   { id: 'es', name: 'Español' }
 ]
 
-// export const apiUrl = 'http://390305a96f3c.ngrok.io'
+// export const apiUrl = 'http://localhost:4000'
 export const apiUrl = 'https://datakrewtech.com/api/'
 
 export const colors = [

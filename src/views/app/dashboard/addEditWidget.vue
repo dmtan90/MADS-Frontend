@@ -1,5 +1,5 @@
 <template>
-<mads-modal
+  <mads-modal
     ref="madsModal"
     :modalID="'add-widget-modal'"
     :modalRef="'addWidgetModal'"
