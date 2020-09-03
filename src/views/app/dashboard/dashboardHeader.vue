@@ -4,7 +4,6 @@
     <div class="right-section">
       <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
       <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Share</b-button>
       <b-button class="round-btn" v-if="selectedMode.key === 'view'">Export</b-button>
       <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
       <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
@@ -23,9 +22,9 @@
       <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">
         <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
       </svg>
-      <svg class="icon" v-if="selectedMode.key === 'view'">
+      <!-- <svg class="icon" v-if="selectedMode.key === 'view'">
         <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
-      </svg>
+      </svg> -->
     </div>
 
     <add-widget ref="addWidget"></add-widget>

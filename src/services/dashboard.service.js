@@ -75,10 +75,9 @@ const dashboardService = {
       return error.data
     }
   },
-  deleteDashboardPanel: async function (config, params) {
-    let ids = JSON.stringify(params.ids)
+  deleteDashboardPanel: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels?ids=' + ids)
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels/' + config.id)
 
       return response.data
     } catch (error) {
