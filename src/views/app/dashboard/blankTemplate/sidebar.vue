@@ -1,7 +1,7 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" :style="{'background-color': getSidebarBackgroundColor()}">
     <ul>
-      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" @click="selectPanel(panel)">
+      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" :style="{'background-color': (selectedPanel.id === panel.id) && getPanelActiveColor()}" @click="selectPanel(panel)">
         {{panel.name}}
       </li>
     </ul>
@@ -51,6 +51,12 @@ export default {
     getDashboardPanels () {
       let panels = this.selectedDashboard ? this.selectedDashboard.panels || [] : []
       return panels
+    },
+    getSidebarBackgroundColor () {
+      return this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
+    },
+    getPanelActiveColor () {
+      return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
     }
   },
   computed: {
@@ -62,7 +68,6 @@ export default {
 <style lang="scss" scoped>
   .sidebar {
     width: 180px;
-    background-color: #1E3664;
     position: relative;
     padding-top: 40px;
     height: 100%;
@@ -80,7 +85,7 @@ export default {
         font-size: 16px;
         cursor: pointer;
         &.active {
-          background-color: #f2f2f2;
+          // background-color: #f2f2f2;
           color: #000000;
           border-top-left-radius: 21px;
           border-bottom-left-radius: 21px;

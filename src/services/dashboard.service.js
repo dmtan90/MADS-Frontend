@@ -75,6 +75,16 @@ const dashboardService = {
       return error.data
     }
   },
+  deleteDashboardPanel: async function (config, params) {
+    let ids = JSON.stringify(params.ids)
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels?ids=' + ids)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   createWidgetInstance: async function (config, payload) {
     try {
       const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances', payload)

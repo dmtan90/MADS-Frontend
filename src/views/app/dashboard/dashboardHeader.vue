@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-header">
-    <span v-if="selectedMode.key === 'view'" class="dashboard-name">{{selectedDashboard.name}}</span>
-    <b-input class="dashboard-name-input" v-model="dashboardName" v-if="selectedMode.key === 'edit'"></b-input>
+    <span class="dashboard-name">{{selectedDashboard.name}}</span>
     <div class="right-section">
       <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
       <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
@@ -21,7 +20,7 @@
           <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
         </svg>
       </b-button>
-      <svg class="icon" v-if="selectedMode.key === 'view'">
+      <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">
         <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
       </svg>
       <svg class="icon" v-if="selectedMode.key === 'view'">
@@ -30,16 +29,19 @@
     </div>
 
     <add-widget ref="addWidget"></add-widget>
+    <dashboard-settings ref="dashboardSettings"></dashboard-settings>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import addWidget from './addEditWidget'
+import dashboardSettings from './dashboardSettings/editSettings'
 
 export default {
   components: {
-    addWidget
+    addWidget,
+    dashboardSettings
   },
   data () {
     return {
@@ -83,6 +85,9 @@ export default {
     saveDashboard () {
       this.$emit('save-dashboard-panel', this.dashboardName)
       this.selectedMode = this.modes[0]
+    },
+    openSettings () {
+      this.$refs.dashboardSettings.edit()
     }
   },
   mounted () {

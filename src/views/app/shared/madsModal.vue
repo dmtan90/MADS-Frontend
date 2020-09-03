@@ -13,7 +13,7 @@
       </div>
       <div class="right-panel col col-9">
         <slot name="right-panel"></slot>
-        <div class="footer">
+        <div class="footer" v-if="!selectedSection.hideFooter">
           <b-button @click="onCancel()">Cancel</b-button>
           <b-button @click="nextSection()" v-if="!editMode && selectedSectionIndex < modalSections.length" class="next-btn">Next</b-button>
           <b-button @click="onSave()" v-if="editMode || selectedSectionIndex === modalSections.length" class="save-btn">Save</b-button>
@@ -40,6 +40,12 @@ export default {
     modalSections: {
       type: Array,
       required: true
+    },
+    selectedSection: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
     selectedSectionIndex: {
       type: Number,

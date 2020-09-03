@@ -3,7 +3,7 @@
     <sidebar ref="sidebar" @select-panel="loadDashboardPanel" @go-back="onGoBack"></sidebar>
     <div class="content-wrap">
       <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel"></dashboard-header>
-      <div class="widgets-wrap">
+      <div class="widgets-wrap" :style="{'background-color': getDashboardBackgroundColor()}">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
                 :layout="dummyLayout"
@@ -157,6 +157,9 @@ export default {
     },
     getWidgetId (item) {
       return this.widgetObject[item.i].uuid
+    },
+    getDashboardBackgroundColor () {
+      return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
     },
     loadDashboardPanel (panel) {
       let loader = this.$loading.show()
@@ -339,7 +342,7 @@ export default {
         height: calc(100% - 60px);
         padding: 10px;
         overflow: auto;
-        background-color: #f2f2f2;
+        // background-color: #f2f2f2;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;
