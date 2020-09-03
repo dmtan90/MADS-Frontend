@@ -3,12 +3,12 @@
     <h2 class="page-heading">Assets of {{this.selectedProject.name}}</h2>
     <div>
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'assets'}" @click="selectedTab = 'assets'">Assets ({{assets.length}})</li>
-        <li :class="{'active': selectedTab === 'assetTypes'}" @click="selectedTab = 'assetTypes'">Asset Types ({{assetTypes.length}})</li>
+        <li :class="{'active': selectedTab === 'assets'}" @click="selectedTab = 'assets'">Assets ({{totalRows}})</li>
+        <li :class="{'active': selectedTab === 'assetTypes'}" @click="selectedTab = 'assetTypes'">Asset Types ({{assetTypeTotalRows}})</li>
       </ul>
     </div>
-    <asset-list v-if="selectedTab === 'assets'" :assets="assets"></asset-list>
-    <asset-type-list v-if="selectedTab === 'assetTypes'" :assetTypes="assetTypes"></asset-type-list>
+    <asset-list v-if="selectedTab === 'assets'" :assets="assets" @asset-pagination="assetPaginationChange" :totalRows="totalRows"></asset-list>
+    <asset-type-list v-if="selectedTab === 'assetTypes'" :assetTypes="assetTypes" @asset-type-pagination="assetTypePaginationChange" :totalRows="assetTypeTotalRows"></asset-type-list>
   </div>
 </template>
 
@@ -29,24 +29,45 @@ export default {
     return {
       selectedTab: 'assets',
       assets: [],
-      assetTypes: []
+      assetTypes: [],
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null,
+      assetTypeCurrentPage: 1,
+      assetTypePerPage: 5,
+      assetTypeTotalRows: null
     }
   },
   methods: {
     ...mapActions(['selectProject']),
     loadAssets () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      assetService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.perPage,
+        page_number: this.currentPage
+      }
+      assetService.read(config, params)
         .then((response) => {
           this.assets = response.assets
+          this.totalRows = response.total_entries
         })
+    },
+    assetPaginationChange (paginationData) {
+      this.currentPage = paginationData
+    },
+    assetTypePaginationChange (paginationData) {
+      this.assetTypeCurrentPage = paginationData
     },
     loadAssetTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-
-      assetTypeService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.assetTypePerPage,
+        page_number: this.assetTypeCurrentPage
+      }
+      assetTypeService.read(config, params)
         .then((response) => {
           this.assetTypes = response.asset_types
+          this.assetTypeTotalRows = response.total_entries
         })
     }
   },
