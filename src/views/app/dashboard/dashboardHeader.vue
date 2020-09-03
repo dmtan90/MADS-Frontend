@@ -5,7 +5,7 @@
       <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
       <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
       <b-button class="round-btn" v-if="selectedMode.key === 'view'">Share</b-button>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Export</b-button>
+      <b-button class="round-btn" v-if="selectedMode.key === 'view'" @click="exportDashboard()">Export</b-button>
       <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
       <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
         <span>New Widget</span>
@@ -30,6 +30,7 @@
 
     <add-widget ref="addWidget"></add-widget>
     <dashboard-settings ref="dashboardSettings"></dashboard-settings>
+    <export-dashboard ref="exportDashboard"></export-dashboard>
   </div>
 </template>
 
@@ -37,11 +38,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import addWidget from './addEditWidget'
 import dashboardSettings from './dashboardSettings/editSettings'
+import exportDashboard from './exportDashboardModal'
 
 export default {
   components: {
     addWidget,
-    dashboardSettings
+    dashboardSettings,
+    exportDashboard
   },
   data () {
     return {
@@ -88,6 +91,9 @@ export default {
     },
     openSettings () {
       this.$refs.dashboardSettings.edit()
+    },
+    exportDashboard () {
+      this.$refs.exportDashboard.open()
     }
   },
   mounted () {

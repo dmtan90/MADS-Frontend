@@ -48,6 +48,15 @@ const dashboardService = {
       return error.data
     }
   },
+  export: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + '/export/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   createDashboardPanel: async function (config, payload) {
     try {
       const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels', payload)
