@@ -1,7 +1,10 @@
 <template>
   <div class="sidebar" :style="{'background-color': getSidebarBackgroundColor()}">
+    <div class="client-info">
+      <img :src="getClientLogo()" alt="" class="logo">
+    </div>
     <ul>
-      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" :style="{'background-color': (selectedPanel.id === panel.id) && getPanelActiveColor()}" @click="selectPanel(panel)">
+      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" :style="{'background-color': getPanelBackgroundColor(panel)}" @click="selectPanel(panel)">
         {{panel.name}}
       </li>
     </ul>
@@ -55,8 +58,15 @@ export default {
     getSidebarBackgroundColor () {
       return this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
     },
-    getPanelActiveColor () {
-      return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+    getPanelBackgroundColor (panel) {
+      if (panel.id === this.selectedPanel.id) {
+        return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+      } else {
+        return this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
+      }
+    },
+    getClientLogo () {
+      return this.selectedDashboard.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT1lRN5ckqJeNqVqrbBvC7ThG8dUc7lmUCFxw&usqp=CAU'
     }
   },
   computed: {
@@ -69,8 +79,18 @@ export default {
   .sidebar {
     width: 180px;
     position: relative;
-    padding-top: 40px;
     height: 100%;
+    .client-info {
+      padding: 10px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ffffff;
+      height: 59px;
+      .logo {
+        width: 100%;
+        height: 40px;
+        object-fit: contain;
+      }
+    }
     ul {
       list-style: none;
       padding: 0 1px 0 2px;

@@ -132,14 +132,18 @@ export default {
       this.editedPanel = panel.id
     },
     deletePanel (panel) {
-      let params = { ids: [panel.id] }
+      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: panel.id }
 
-      dashboardService.deleteDashboardPanel(config, params)
+      dashboardService.deleteDashboardPanel(config)
         .then((response) => {
+          dasbhoardEventBus.$emit('reload-dashboard')
+          loader.hide()
         })
     },
     updatePanel (panel) {
+      let loader = this.$loading.show()
+
       let params = { name: panel.name }
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: panel.id }
 
@@ -147,11 +151,17 @@ export default {
         .then((response) => {
           this.editedPanel = null
           dasbhoardEventBus.$emit('reload-dashboard')
+          loader.hide()
         })
     }
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedDashboard'])
+  },
+  watch: {
+    selectedDashboard () {
+      this.panels = this.selectedDashboard.panels
+    }
   },
   mounted () {
     this.panels = this.selectedDashboard.panels
