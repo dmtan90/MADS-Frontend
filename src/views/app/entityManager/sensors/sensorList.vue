@@ -29,6 +29,9 @@
           <span class="delete-sensor" @click="deleteSensor(props.rowData)">Delete</span>
         </template>
       </vuetable>
+
+      <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     </div>
 
     <!-- Modal Section -->
@@ -44,21 +47,28 @@ import Vuetable from 'vuetable-2'
 import addEditSensor from './addEditSensor'
 import sensorService from '@/services/sensor.service'
 import SensorEventBus from './sensorEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   components: {
     Vuetable,
-    addEditSensor
+    addEditSensor,
+    madsPagination
   },
   props: {
     sensors: {
       type: Array
+    },
+    totalRows: {
+      type: Number
     }
   },
   data () {
     return {
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -74,6 +84,11 @@ export default {
         .then((response) => {
           SensorEventBus.$emit('reload-sensors')
         })
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('sensor-pagination', e)
+      SensorEventBus.$emit('reload-sensors')
     }
   },
   computed: {
