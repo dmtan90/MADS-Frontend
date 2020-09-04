@@ -107,9 +107,9 @@ export default {
       this.draggedEntity = {
         entity: entity,
         text: entity.display_name,
-        backgroundColor: entity.category === 'function' ? settings['background-color'] : '#C70039',
+        backgroundColor: settings['background-color'],
         inPorts: entity.inports,
-        outPorts: entity.category === 'function' ? entity.outports : [],
+        outPorts: entity.category === 'output' ? [] : entity.outports,
         entityType: entity.category
       }
     },

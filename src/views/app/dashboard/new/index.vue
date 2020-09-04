@@ -111,7 +111,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard', 'selectTheme']),
+    ...mapActions(['hideAppSidebar', 'showAppSidebar', 'setDashboard', 'setPanel', 'selectTheme']),
     getBackgroundUrl (url) {
       return 'url(' + url + ')'
     },
@@ -124,8 +124,9 @@ export default {
       let config = { orgId: this.currentUser.org.id }
 
       dashboardService.create(config, params)
-        .then((response) => {
-          this.setDashboard(response)
+        .then((dashboard) => {
+          this.setDashboard(dashboard)
+          this.setPanel(dashboard.panels[0])
           this.hideAppSidebar('Dashboards')
           this.showAllThemes = false
         })

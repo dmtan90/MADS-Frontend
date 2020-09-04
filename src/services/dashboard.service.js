@@ -2,7 +2,7 @@ import ApiService from '@/services/api.service'
 
 const resource = '/dashboards'
 
-const sensorService = {
+const dashboardService = {
   create: async function (config, payload) {
     try {
       const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
@@ -48,9 +48,45 @@ const sensorService = {
       return error.data
     }
   },
+  createDashboardPanel: async function (config, payload) {
+    try {
+      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels', payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  updateDashboardPanel: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels/' + config.id, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  loadDashboardPanel: async function (config) {
+    try {
+      const response = await ApiService.get('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
+  deleteDashboardPanel: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/panels/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   createWidgetInstance: async function (config, payload) {
     try {
-      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances', payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances', payload)
 
       return response.data
     } catch (error) {
@@ -59,7 +95,7 @@ const sensorService = {
   },
   updateWidgetInstance: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id, payload)
 
       return response.data
     } catch (error) {
@@ -68,7 +104,7 @@ const sensorService = {
   },
   deleteWidgetInstance: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id)
 
       return response.data
     } catch (error) {
@@ -77,7 +113,7 @@ const sensorService = {
   },
   createCommandWidget: async function (config, payload) {
     try {
-      const response = await ApiService.post('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets', payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets', payload)
 
       return response.data
     } catch (error) {
@@ -86,7 +122,7 @@ const sensorService = {
   },
   updateCommandWidget: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets/' + config.id, payload)
 
       return response.data
     } catch (error) {
@@ -95,7 +131,7 @@ const sensorService = {
   },
   deleteCommandWidget: async function (config) {
     try {
-      const response = await ApiService.delete('/orgs/' + config.orgId + resource + '/' + config.dashboardId + '/command_widgets/' + config.id)
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/command_widgets/' + config.id)
 
       return response.data
     } catch (error) {
@@ -104,4 +140,4 @@ const sensorService = {
   }
 }
 
-export default sensorService
+export default dashboardService

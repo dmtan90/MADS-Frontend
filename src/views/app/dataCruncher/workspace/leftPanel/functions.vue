@@ -1,42 +1,19 @@
 <template>
   <div class="functions-container">
-    <div class="category" v-for="(component, index) in components" :key="index">
-      <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)" :class="{'function': component.category === 'function'}">
-        {{component.display_name}}
-      </span>
-      <!-- <div class="category-name" @click="toggleCategory(category)">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-        </svg>
-        <span>{{$_.startCase(category)}}</span>
-      </div> -->
-      <!-- <div>
-        <div class="category-list" v-for="(component, index) in categoryComponents" :key="index">
-          
-        </div>
-      </div> -->
+    <div class="category-group" v-for="(componentList, category) in components" :key="category">
+      <div class="category" v-for="(component, index) in componentList" :key="index">
+        <span class="fn-name" draggable="true" @dragstart="dragStart(component, $event)" :class="component.category">
+          {{component.display_name}}
+        </span>
+      </div>
     </div>
-    <!-- <div class="category">
-      <div class="category-name">
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-        </svg>
-        <span>Ouput</span>
-      </div>
-      <div>
-        <div class="category-list">
-          <span class="output-name" draggable="true" @dragstart="dragOutput()">
-              Print
-            </span>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import componentService from '@/services/component.service'
+import dummyFunctions from './dummyFunctions'
 
 export default {
   props: {
@@ -54,14 +31,24 @@ export default {
       let config = { orgId: this.currentUser.org.id }
       componentService.read(config)
         .then((response) => {
-          this.components = response.components
+          let components = this.$_.concat(response.components, dummyFunctions)
+          this.components = this.$_.groupBy(components, (component) => component.category)
+          console.log(this.components)
         })
     },
     toggleCategory (category) {
       this.$set(category, 'expanded', !category.expanded)
     },
     dragStart (catFn, event) {
-      this.$emit('set-dragged-function', { entity: catFn, settings: { 'background-color': '#ffa07a' } })
+      let backgroundColor = ''
+      if (catFn.category === 'function') {
+        backgroundColor = '#ffa07a'
+      } else if (catFn.category === 'output') {
+        backgroundColor = '#ff034b'
+      } else {
+        backgroundColor = catFn.backgroundColor
+      }
+      this.$emit('set-dragged-function', { entity: catFn, settings: { 'background-color': backgroundColor } })
     },
     dragOutput () {
       this.$emit('set-dragged-output', { entity: { 'module': 'Print', 'inports': ['output'], 'outports': ['print'], 'name': 'Print' }, settings: { 'background-color': '#C70039' } })
@@ -78,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
   .functions-container {
-    padding: 20px 10px 20px 20px;
+    padding: 10px 10px 20px 20px;
     height: calc(100% - 40px);
     overflow: auto;
     .category {
@@ -94,12 +81,31 @@ export default {
           min-width: 90px;
           height: 35px;
           font-size: 13px;
+          color: #000000;
         }
-        .fn-name {
-          background-color: #C70039;
+        .output {
+          background-color: #ff034b;
         }
         .function {
           background-color: #ffa07a;
+        }
+        .filter_function {
+          background-color: #C5E0B4;
+        }
+        .loop_function {
+          background-color: #BAD5ED;
+        }
+        .arima {
+          background-color: #C9B0DB;
+        }
+        .send_function {
+          background-color: #FF9E9E;
+        }
+        .condition_function {
+          background-color: #FEECB2;
+        }
+        .do_nothing_function {
+          background-color: #A5A5A5;
         }
       .category-name {
         background-color: #e2e2e2;
@@ -118,6 +124,10 @@ export default {
         padding: 7px 7px 7px 20px;
         margin: 5px 0;
       }
+    }
+    .category-group {
+      border-bottom: 1px solid #e2e2e2;
+      margin-top: 10px;
     }
   }
 </style>
