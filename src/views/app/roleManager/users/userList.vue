@@ -65,6 +65,9 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser'])
+  },
+  beforeDestroy () {
+    UserEventBus.$off()
   }
 }
 </script>
