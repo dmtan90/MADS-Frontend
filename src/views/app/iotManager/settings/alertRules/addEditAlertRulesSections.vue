@@ -69,12 +69,12 @@
             </template>
             <template v-if="media === 'sms'">
               <b-form-group label="Phone Number" label-for="mobile-number" :key="index">
-                <b-form-input v-model="alertRule.rule_name" type="text" id="mobile-number" placeholder="Enter Mobile Number"></b-form-input>
+                <b-form-input v-model="alertRule.phone_number" type="text" id="mobile-number" placeholder="Enter Mobile Number"></b-form-input>
               </b-form-group>
             </template>
             <template v-if="media === 'in-app'">
               <b-form-group label="Whatsapp Number" label-for="whatsapp-number" :key="index">
-                <b-form-input v-model="alertRule.rule_name" type="text" id="whatsapp-number" placeholder="Enter Whatsapp Number"></b-form-input>
+                <b-form-input v-model="alertRule.whatsapp_number" type="text" id="whatsapp-number" placeholder="Enter Whatsapp Number"></b-form-input>
               </b-form-group>
             </template>
           </template>

@@ -1,6 +1,12 @@
 <template>
   <div class="alerts-inbox-wrap">
     <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{alerts.length}} alerts</h2>
+    <div class="filters-box">
+      <multiselect v-model="filterAlertRule" :options="filterAlertRuleArr" placeholder="Alert Rule"></multiselect>
+      <multiselect v-model="filterAlertAction" :options="filterAlertActionArr" placeholder="Alert Action"></multiselect>
+      <multiselect v-model="filterApp" :options="filterAppArr" placeholder="App"></multiselect>
+      <multiselect v-model="filterStatus" :options="statusTypes" placeholder="Status"></multiselect>
+    </div>
     <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="alerts">
       <template v-slot:alertTime="props">
         <span>{{dateFormat(props.rowData.created_at)}}</span>
@@ -45,7 +51,15 @@ export default {
     return {
       fields: fields,
       alerts: [],
-      statusTypes: ['un_resolved', 'resolved']
+      statusTypes: ['un_resolved', 'resolved'],
+      filterAlertRule: null,
+      filterAlertRuleArr: ['jkkkk', 'jkkkk', 'jkkkk', 'jkkkk', 'jkkkk', 'jkkkk', 'jkkkk'],
+      filterAlertTime: null,
+      filterAlertAction: null,
+      filterAlertActionArr: ['e-mail', 'sms', 'whatsapp'],
+      filterApp: null,
+      filterAppArr: ['iot_manager', 'iot_manager'],
+      filterStatus: null
     }
   },
   methods: {
@@ -112,6 +126,13 @@ export default {
     .page-heading {
       color: #3e4956;
       margin-bottom: 30px;
+    }
+    .filters-box{
+      display: flex;
+      justify-content: space-around;
+      padding: 20px 0px;
+      background-color: #f8f8f8;
+      border: 1px solid #e6e6e6;
     }
   }
 </style>
