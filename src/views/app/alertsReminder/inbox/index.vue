@@ -112,6 +112,9 @@ export default {
     AlertEventBus.$on('reload-alert', () => {
       this.loadAlerts()
     })
+  },
+  beforeDestroy () {
+    AlertEventBus.$off()
   }
 }
 </script>

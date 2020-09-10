@@ -85,6 +85,9 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject'])
+  },
+  beforeDestroy () {
+    AssetEventBus.$off()
   }
 }
 </script>

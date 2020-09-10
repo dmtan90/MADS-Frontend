@@ -24,18 +24,6 @@ export default {
     onChange: Function,
     currentPage: Number,
     totalRows: Number
-  },
-  methods: {
-
-  },
-  computed: {
-
-  },
-  mounted () {
-
-  },
-  beforeDestroy () {
-
   }
 }
 </script>
