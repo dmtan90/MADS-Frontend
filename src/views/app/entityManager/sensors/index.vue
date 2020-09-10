@@ -3,12 +3,12 @@
     <h2 class="page-heading">Sensors of {{this.selectedProject.name}}</h2>
     <div>
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors ({{sensors.length}})</li>
-        <li :class="{'active': selectedTab === 'sensorTypes'}" @click="selectedTab = 'sensorTypes'">Sensor Types ({{sensorTypes.length}})</li>
+        <li :class="{'active': selectedTab === 'sensors'}" @click="selectedTab = 'sensors'">Sensors ({{totalRows}})</li>
+        <li :class="{'active': selectedTab === 'sensorTypes'}" @click="selectedTab = 'sensorTypes'">Sensor Types ({{sensorTypeTotalRows}})</li>
       </ul>
     </div>
-    <sensor-list v-if="selectedTab === 'sensors'" :sensors="sensors"></sensor-list>
-    <sensor-type-list v-if="selectedTab === 'sensorTypes'" :sensorTypes="sensorTypes"></sensor-type-list>
+    <sensor-list v-if="selectedTab === 'sensors'" :sensors="sensors" @sensor-pagination="sensorPaginationChange" :totalRows="totalRows"></sensor-list>
+    <sensor-type-list v-if="selectedTab === 'sensorTypes'" :sensorTypes="sensorTypes" @sensor-type-pagination="sensorTypePaginationChange" :totalRows="sensorTypeTotalRows"></sensor-type-list>
   </div>
 </template>
 
@@ -29,24 +29,46 @@ export default {
     return {
       selectedTab: 'sensors',
       sensors: [],
-      sensorTypes: []
+      sensorTypes: [],
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null,
+      sensorTypeCurrentPage: 1,
+      sensorTypePerPage: 5,
+      sensorTypeTotalRows: null
     }
   },
   methods: {
     ...mapActions(['selectProject']),
     loadSensors () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      sensorService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.perPage,
+        page_number: this.currentPage
+      }
+      sensorService.read(config, params)
         .then((response) => {
           this.sensors = response.sensors
+          this.totalRows = response.total_entries
         })
     },
     loadSensorTypes () {
       let config = { orgId: this.currentUser.org.id, projectId: this.selectedProject.id }
-      sensorTypeService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.sensorTypePerPage,
+        page_number: this.sensorTypeCurrentPage
+      }
+      sensorTypeService.read(config, params)
         .then((response) => {
           this.sensorTypes = response.sensors_type
+          this.sensorTypeTotalRows = response.total_entries
         })
+    },
+    sensorPaginationChange (paginationData) {
+      this.currentPage = paginationData
+    },
+    sensorTypePaginationChange (paginationData) {
+      this.sensorTypeCurrentPage = paginationData
     }
   },
   computed: {
