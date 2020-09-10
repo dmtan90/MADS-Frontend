@@ -45,6 +45,11 @@
       </b-tabs>
     </section>
     <section v-if="selectedSectionIndex === 3" class="position">
+      <b-form-group label="Rate Limit Name" label-for="rate-limit-name">
+        <multiselect v-model="rateLimit" :options="rateLimitArr" placeholder="Select Rate Limit"></multiselect>
+      </b-form-group>
+    </section>
+    <section v-if="selectedSectionIndex === 4" class="position">
       <b-tabs pills card>
         <b-tab title="Media" >
           <b-form-group label="Media">
@@ -56,9 +61,23 @@
           </b-form-group>
         </b-tab>
         <b-tab title="Recipients">
-          <b-form-group label="Email Recipients" label-for="rule-name">
-            <multiselect v-model="emailRecipents" :options="users" :multiple="true" :custom-label="getUserName" :close-on-select="false"  placeholder="Select Recipients" label="email" track-by="id"></multiselect>
-          </b-form-group>
+          <template v-for="(media, index) in selectedMedia">
+            <template v-if="media === 'e-mail'">
+              <b-form-group label="Email Recipients" label-for="rule-name" :key="index">
+                <multiselect v-model="emailRecipents" :options="users" :multiple="true" :custom-label="getUserName" :close-on-select="false"  placeholder="Select Recipients" label="email" track-by="id"></multiselect>
+              </b-form-group>
+            </template>
+            <template v-if="media === 'sms'">
+              <b-form-group label="Phone Number" label-for="mobile-number" :key="index">
+                <b-form-input v-model="alertRule.rule_name" type="text" id="mobile-number" placeholder="Enter Mobile Number"></b-form-input>
+              </b-form-group>
+            </template>
+            <template v-if="media === 'in-app'">
+              <b-form-group label="Whatsapp Number" label-for="whatsapp-number" :key="index">
+                <b-form-input v-model="alertRule.rule_name" type="text" id="whatsapp-number" placeholder="Enter Whatsapp Number"></b-form-input>
+              </b-form-group>
+            </template>
+          </template>
         </b-tab>
       </b-tabs>
     </section>
@@ -121,7 +140,9 @@ export default {
       emailRecipents: null,
       users: [],
       ruleParameters: [],
-      policyParameter: {}
+      policyParameter: {},
+      rateLimit: null,
+      rateLimitArr: ['5 minutes', '10 minutes', '60 minutes', '3 hours', '12 hours', '24 hours', '48 hours']
     }
   },
   methods: {

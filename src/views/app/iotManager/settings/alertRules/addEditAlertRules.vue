@@ -48,6 +48,9 @@ export default {
         name: 'Conditions'
       }, {
         index: 3,
+        name: 'Grouping'
+      }, {
+        index: 4,
         name: 'Actions'
       }],
       selectedSectionIndex: 1,
