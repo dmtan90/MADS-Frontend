@@ -38,6 +38,9 @@
           <span class="delete-project" @click="unArchiveProject(props.rowData)">Unarchive</span>
         </template>
       </vuetable>
+
+      <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     </div>
 
     <!-- Modal Section -->
@@ -52,6 +55,7 @@ import Vuetable from 'vuetable-2'
 import addEditProject from './addEditProject'
 import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   props: {
@@ -68,12 +72,15 @@ export default {
   },
   components: {
     Vuetable,
-    addEditProject
+    addEditProject,
+    madsPagination
   },
   data () {
     return {
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -111,8 +118,14 @@ export default {
       }
       projectService.update(config, payload)
         .then((res) => {
+          ProjectEventBus.$emit('reload-archived')
           ProjectEventBus.$emit('reload-projects')
         })
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('archived-pagination', e)
+      ProjectEventBus.$emit('reload-archived')
     }
   },
   computed: {

@@ -29,6 +29,9 @@
           <span class="delete-asset" @click="deleteAsset(props.rowData)">Delete</span>
         </template>
       </vuetable>
+
+      <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     </div>
 
     <!-- Modal Section -->
@@ -43,17 +46,21 @@ import Vuetable from 'vuetable-2'
 import addEditAsset from './addEditAsset'
 import assetService from '@/services/asset.service'
 import AssetEventBus from './assetEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
-  props: ['assets'],
+  props: ['assets', 'totalRows'],
   components: {
     Vuetable,
-    addEditAsset
+    addEditAsset,
+    madsPagination
   },
   data () {
     return {
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -69,10 +76,18 @@ export default {
         .then((response) => {
           AssetEventBus.$emit('reload-assets')
         })
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('asset-pagination', e)
+      AssetEventBus.$emit('reload-assets')
     }
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject'])
+  },
+  beforeDestroy () {
+    AssetEventBus.$off()
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="tasks-inbox-wrap">
-    <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{tasks.length}} tasks</h2>
+    <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{totalRows}} tasks</h2>
     <vuetable ref="vuetable" :api-mode="false" :fields="fields" :data="tasks">
       <template v-slot:status>
         <span>
@@ -23,6 +23,9 @@
         </span>
       </template>
     </vuetable>
+
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
   </div>
 </template>
 
@@ -31,16 +34,21 @@ import { mapGetters } from 'vuex'
 import { Vuetable } from 'vuetable-2'
 import fields from './fieldsDef'
 import taskService from '@/services/task.service'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    madsPagination
   },
   data () {
     return {
       fields: fields,
       tasks: [],
-      statusTypes: ['un_resolved', 'resolved']
+      statusTypes: ['un_resolved', 'resolved'],
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null
     }
   },
   methods: {
@@ -52,13 +60,14 @@ export default {
       }
 
       const params = {
-        page_size: 100,
-        page_number: 1
+        page_size: this.perPage,
+        page_number: this.currentPage
       }
 
       taskService.read(config, params).then((res) => {
         loader.hide()
         this.tasks = res.tasks
+        this.totalRows = res.total_entries
       })
     },
     dateFormat (date) {
@@ -66,6 +75,10 @@ export default {
     },
     getUserName (user) {
       return user.first_name + ' ' + (user.last_name || '')
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.loadTasks()
     }
   },
   computed: {

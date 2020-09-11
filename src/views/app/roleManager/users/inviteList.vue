@@ -17,6 +17,9 @@
         <span class="reinvite" @click="reInviteUser(props.rowData)">Re-Invite</span>
       </template>
    </vuetable>
+
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     <add-edit-user ref="addEditUser" :roles="roles"></add-edit-user>
     <!-- <invite-user-modal ref="reInviteUserModal" :roles="roles" :reinvite="true" :invitation="selectedInvitation"></invite-user-modal> -->
   </div>
@@ -29,17 +32,21 @@ import invitationDef from './invitationFieldDefs'
 import invitationService from '@/services/invitation.service'
 import EventBus from '../eventBus'
 import addEditUser from './addEditUser'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
-  props: ['invitations', 'roles'],
+  props: ['invitations', 'roles', 'totalRows'],
   components: {
     Vuetable,
-    addEditUser
+    addEditUser,
+    madsPagination
   },
   data () {
     return {
       fields: invitationDef,
-      selectedInvitation: null
+      selectedInvitation: null,
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -53,6 +60,11 @@ export default {
     },
     reInviteUser (invitation) {
       this.$refs.addEditUser.edit(invitation)
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('invitation-pagination', e)
+      EventBus.$emit('reload-invite-list')
     }
   },
   computed: {

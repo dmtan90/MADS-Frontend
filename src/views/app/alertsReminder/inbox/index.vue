@@ -33,6 +33,9 @@
         </span>
       </template>
     </vuetable>
+
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
   </div>
 </template>
 
@@ -42,10 +45,12 @@ import { Vuetable } from 'vuetable-2'
 import fields from './fieldsDef'
 import alertService from '@/services/alert.service'
 import AlertEventBus from '../alertEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   components: {
-    Vuetable
+    Vuetable,
+    madsPagination
   },
   data () {
     return {
@@ -59,7 +64,10 @@ export default {
       filterAlertActionArr: ['e-mail', 'sms', 'whatsapp'],
       filterApp: null,
       filterAppArr: ['iot_manager', 'iot_manager'],
-      filterStatus: null
+      filterStatus: null,
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null
     }
   },
   methods: {
@@ -71,14 +79,19 @@ export default {
       }
 
       const params = {
-        page_size: 100,
-        page_number: 1
+        page_size: this.perPage,
+        page_number: this.currentPage
       }
 
       alertService.read(config, params).then((res) => {
         loader.hide()
         this.alerts = res.alerts
+        this.totalRows = res.total_entries
       })
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      AlertEventBus.$emit('reload-alert')
     },
     dateFormat (currentTime) {
       return this.$moment(currentTime).format('ddd, DD MMM | H:mm:ss')
@@ -113,6 +126,9 @@ export default {
     AlertEventBus.$on('reload-alert', () => {
       this.loadAlerts()
     })
+  },
+  beforeDestroy () {
+    AlertEventBus.$off()
   }
 }
 </script>

@@ -20,6 +20,8 @@
       </template>
     </vuetable>
 
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     <add-edit-user ref="addEditUser" :roles="roles"></add-edit-user>
   </div>
 </template>
@@ -28,17 +30,22 @@
 import Vuetable from 'vuetable-2'
 import userFields from './userFieldDefs'
 import addEditUser from './addEditUser'
+import UserEventBus from './../eventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
-  props: ['users', 'roles'],
+  props: ['users', 'roles', 'totalRows'],
   components: {
     Vuetable,
-    addEditUser
+    addEditUser,
+    madsPagination
   },
   data () {
     return {
       fields: userFields,
-      selectedUser: null
+      selectedUser: null,
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -51,8 +58,13 @@ export default {
     editUser (user) {
       this.$refs.addEditUser.edit(user)
     },
-    deleteUser (project){
+    deleteUser (project) {
 
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('user-pagination', e)
+      UserEventBus.$emit('reload-user-list')
     }
   }
 }
