@@ -16,8 +16,8 @@
       </div>
     </div>
     <div v-if="viewType === 'list'">
-      <project-list :projects="active" v-if="selectedTab === 'active'" :source="source"></project-list>
-      <archived-list :projects="archived" v-if="selectedTab === 'archived'" :source="source"></archived-list>
+      <project-list :projects="active" v-if="selectedTab === 'active'" :source="source" @project-pagination="projectPaginationChange" :totalRows="totalRows"></project-list>
+      <archived-list :projects="archived" v-if="selectedTab === 'archived'" :source="source" @archived-pagination="archivedPaginationChange" :totalRows="archivedTotalRows"></archived-list>
     </div>
     <project-grid :projects="active" v-if="viewType === 'grid'" :source="source"></project-grid>
   </div>
@@ -48,20 +48,51 @@ export default {
       viewType: this.source ? 'grid' : 'list',
       archived: [],
       active: [],
-      selectedTab: 'active'
+      selectedTab: 'active',
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null,
+      archivedCurrentPage: 1,
+      archivedPerPage: 5,
+      archivedTotalRows: null
     }
   },
   methods: {
     loadProjects () {
       let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id }
-      projectService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.perPage,
+        page_number: this.currentPage
+      }
+      projectService.read(config, params)
         .then((response) => {
           this.projects = response.projects
           this.active = response.projects.filter((project) => project.archived === false)
-          this.archived = response.projects.filter((project) => project.archived === true)
+          this.totalRows = response.total_entries
           loader.hide()
         })
+    },
+    loadArchived () {
+      let loader = this.$loading.show()
+      let config = { orgId: this.currentUser.org.id }
+      const params = {
+        page_size: this.archivedPerPage,
+        page_number: this.archivedCurrentPage
+      }
+      projectService.read(config, params)
+        .then((response) => {
+          this.projects = response.projects
+          this.archived = response.projects.filter((project) => project.archived === true)
+          this.archivedTotalRows = response.total_entries
+          loader.hide()
+        })
+    },
+    projectPaginationChange (paginationData) {
+      this.currentPage = paginationData
+    },
+    archivedPaginationChange (paginationData) {
+      this.archivedCurrentPage = paginationData
     }
   },
   computed: {
@@ -69,9 +100,13 @@ export default {
   },
   mounted () {
     this.loadProjects()
+    this.loadArchived()
 
     ProjectEventBus.$on('reload-projects', () => {
       this.loadProjects()
+    })
+    ProjectEventBus.$on('reload-archived', () => {
+      this.loadArchived()
     })
   },
   beforeDestroy () {
