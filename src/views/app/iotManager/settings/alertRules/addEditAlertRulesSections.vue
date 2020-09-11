@@ -142,7 +142,7 @@ export default {
       ruleParameters: [],
       policyParameter: {},
       rateLimit: null,
-      rateLimitArr: ['5 minutes', '10 minutes', '60 minutes', '3 hours', '12 hours', '24 hours', '48 hours']
+      rateLimitArr: ['5 minutes', '10 minutes', '60 minutes', '3 hours', '12 hours', '24 hours', '1 week', '30 days']
     }
   },
   methods: {
