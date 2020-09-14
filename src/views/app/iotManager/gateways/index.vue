@@ -1,10 +1,10 @@
 <template>
   <div class="gateways">
     <template v-if="showListing">
-      <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{gateways.length}} gateways</h2>
+      <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{totalEntry}} gateways</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
-          <li class="active">Active ({{gateways.length}})</li>
+          <li class="active">Active ({{totalEntry}})</li>
           <!-- <li class="" v-if="!source">Archived (0)</li> -->
         </ul>
         <!-- <div class="gateway-view">
@@ -16,7 +16,7 @@
           </svg>
         </div> -->
       </div>
-      <gateway-list :gateways="gateways" @show-detail="onShowDetail" v-if="viewType === 'list' && showListing"></gateway-list>
+      <gateway-list @show-detail="onShowDetail" @gateway-entry="gatewayTotalEntry" v-if="viewType === 'list' && showListing"></gateway-list>
     </template>
     <template v-if="showDetail">
       <detail></detail>
@@ -27,60 +27,38 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import gatewayService from '@/services/gateway.service'
 import gatewayList from './list'
-// import gatewayGrid from './gatewayGrid'
-import GatewayEventBus from './gatewayEventBus'
 import detail from './detail'
 
 export default {
   components: {
     gatewayList,
-    // gatewayGrid,
     detail
   },
   data () {
     return {
-      gateways: [],
+      // gateways: [],
       // viewType: this.source ? 'grid' : 'list',
       viewType: 'list',
       showListing: true,
-      showDetail: false
+      showDetail: false,
+      totalEntry: null
     }
   },
   methods: {
-    loadGateways () {
-      const config = {
-        orgId: this.currentUser.org.id,
-        projectId: this.selectedProject.id
-      }
-
-      const params = {
-        page_size: 100,
-        page_number: 1
-      }
-      gatewayService.read(config, params)
-        .then((res) => {
-          this.gateways = res.gateways
-        })
-    },
     onShowDetail (detail) {
       this.showListing = false
       this.showDetail = true
+    },
+    gatewayTotalEntry (total) {
+      this.totalEntry = total
     }
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject'])
   },
   mounted () {
-    this.loadGateways()
 
-    GatewayEventBus.$on('reload-gateways', () => {
-      this.loadGateways()
-    })
-  },
-  beforeDestroy () {
-    GatewayEventBus.$off()
   }
 }
 </script>

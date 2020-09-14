@@ -19,6 +19,9 @@
           <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
         </svg>
       </b-button>
+        <svg class="icon" v-if="selectedMode.key === 'view'" @click="openRealtimeHistoricalSettings()">
+        <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
+      </svg>
       <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">
         <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
       </svg>
@@ -30,6 +33,7 @@
     <add-widget ref="addWidget"></add-widget>
     <dashboard-settings ref="dashboardSettings"></dashboard-settings>
     <export-dashboard ref="exportDashboard"></export-dashboard>
+    <realtime-historical-settings ref="realTimeHistoricalSettings"></realtime-historical-settings>
   </div>
 </template>
 
@@ -38,12 +42,14 @@ import { mapActions, mapGetters } from 'vuex'
 import addWidget from './addEditWidget'
 import dashboardSettings from './dashboardSettings/editSettings'
 import exportDashboard from './exportDashboardModal'
+import realtimeHistoricalSettings from './dashboardSettings/realTimeHistoricalSettings'
 
 export default {
   components: {
     addWidget,
     dashboardSettings,
-    exportDashboard
+    exportDashboard,
+    realtimeHistoricalSettings
   },
   data () {
     return {
@@ -93,6 +99,9 @@ export default {
     },
     exportDashboard () {
       this.$refs.exportDashboard.open()
+    },
+    openRealtimeHistoricalSettings () {
+      this.$refs.realTimeHistoricalSettings.open()
     }
   },
   mounted () {

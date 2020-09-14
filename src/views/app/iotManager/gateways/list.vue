@@ -13,7 +13,7 @@
           ref="vuetable"
           :api-mode="false"
           :fields="fields"
-          :data="gateways"
+          :data="gatewaysArr"
         >
         <template v-slot:checkbox>
           <b-form-checkbox></b-form-checkbox>
@@ -32,6 +32,8 @@
       </vuetable>
     </div>
 
+    <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     <!-- Modal Section -->
     <add-edit-gateway ref="addEditGateway"></add-edit-gateway>
   </div>
@@ -44,15 +46,16 @@ import Vuetable from 'vuetable-2'
 import addEditGateway from './addEditGateway'
 import gatewayService from '@/services/gateway.service'
 import GatewayEventBus from './gatewayEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   props: {
-    gateways: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
+    // gateways: {
+    //   type: Array,
+    //   default: () => {
+    //     return []
+    //   }
+    // },
     source: {
       type: String,
       default: null
@@ -60,19 +63,45 @@ export default {
   },
   components: {
     Vuetable,
-    addEditGateway
+    addEditGateway,
+    madsPagination
   },
   data () {
     return {
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null,
+      gatewaysArr: []
     }
   },
   methods: {
     ...mapActions(['selectGateway']),
+    loadGateways () {
+      const config = {
+        orgId: this.currentUser.org.id,
+        projectId: this.selectedProject.id
+      }
+
+      const params = {
+        page_size: this.perPage,
+        page_number: this.currentPage
+      }
+      gatewayService.read(config, params)
+        .then((res) => {
+          this.gatewaysArr = res.gateways
+          this.totalRows = res.total_entries
+          this.$emit('gateway-entry', res.total_entries)
+        })
+    },
     showGateway (detail) {
       this.selectGateway(detail)
       this.$emit('show-detail', detail)
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.loadGateways()
     },
     addGateway (gateway) {
       this.$refs.addEditGateway.add()
@@ -103,6 +132,16 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject'])
+  },
+  mounted () {
+    this.loadGateways()
+
+    GatewayEventBus.$on('reload-gateways', () => {
+      this.loadGateways()
+    })
+  },
+  beforeDestroy () {
+    GatewayEventBus.$off()
   }
 }
 </script>
