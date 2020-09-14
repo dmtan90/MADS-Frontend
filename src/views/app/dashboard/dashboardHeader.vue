@@ -19,7 +19,7 @@
           <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
         </svg>
       </b-button>
-        <svg class="icon" v-if="selectedMode.key === 'view'" @click="openRealtimeHistoricalSettings()">
+      <svg class="icon" v-if="selectedMode.key === 'view'" @click="openRealtimeHistoricalSettings()">
         <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
       </svg>
       <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">

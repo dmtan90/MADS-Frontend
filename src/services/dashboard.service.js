@@ -84,6 +84,16 @@ const dashboardService = {
       return error.data
     }
   },
+  readWidgetInstance: async function (config, payload) {
+    let queryParams = `aggregate_func=${payload.aggregate_func}&from_date=${payload.from_date}&to_date=${payload.to_date}&group_interval=${payload.group_interval}&group_interval_type=${payload.group_interval_type}&type=${payload.type}&last=${payload.last}`
+    try {
+      const response = await ApiService.get('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances/' + config.id + `?${queryParams}`, payload)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   createWidgetInstance: async function (config, payload) {
     try {
       const response = await ApiService.post('/orgs/' + config.orgId + '/panels' + '/' + config.panelId + '/widgets/' + config.widgetId + '/widget_instances', payload)

@@ -53,6 +53,9 @@ export default {
     rows: {
       type: Number,
       default: 0
+    },
+    widgetKey: {
+      type: String
     }
   },
   data() {
@@ -96,7 +99,7 @@ export default {
     },
     resizeWidget() {
       let width = this.colWidth * this.cols + (20 * (this.cols - 1))
-      let height = this.colHeight * this.rows + (20 * (this.rows - 1))
+      let height = this.colHeight * this.rows + (20 * (this.rows - 1)) - 28
 
       this.widget.setSize(width, height)
     }
