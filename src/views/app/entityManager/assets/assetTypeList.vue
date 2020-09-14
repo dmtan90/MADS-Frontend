@@ -29,6 +29,9 @@
           <span>{{props.rowData.parameters.length}}</span>
         </template>
       </vuetable>
+
+      <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
+
     </div>
 
     <!-- Modal Section -->
@@ -43,17 +46,21 @@ import Vuetable from 'vuetable-2'
 import addEditAssetType from './addEditAssetType'
 import assetTypeService from '@/services/assetType.service'
 import AssetEventBus from './assetEventBus'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
-  props: ['assetTypes'],
+  props: ['assetTypes', 'totalRows'],
   components: {
     Vuetable,
-    addEditAssetType
+    addEditAssetType,
+    madsPagination
   },
   data () {
     return {
       fields: fieldsDef,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5
     }
   },
   methods: {
@@ -69,6 +76,11 @@ export default {
         .then((response) => {
           AssetEventBus.$emit('reload-asset-types')
         })
+    },
+    onPaginationChange (e) {
+      this.currentPage = e
+      this.$emit('asset-type-pagination', e)
+      AssetEventBus.$emit('reload-asset-types')
     }
   },
   computed: {

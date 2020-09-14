@@ -3,8 +3,8 @@
     <h2 class="page-heading">Users</h2>
     <div>
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS ({{users.length}})</li>
-        <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES ({{invitations.length}})</li>
+        <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS ({{totalRows}})</li>
+        <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES ({{invitationTotalRows}})</li>
       </ul>
     </div>
     <div class="table-options" v-if="selectedTab === 'users'">
@@ -20,8 +20,8 @@
         <b-button v-b-modal.add-edit-user-modal>Invite user</b-button>
       </div>
     </div>
-    <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles"></user-list>
-    <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles"></invite-list>
+    <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles" @user-pagination="userPaginationChange" :totalRows="totalRows"></user-list>
+    <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles" @invitation-pagination="invitationPaginationChange" :totalRows="invitationTotalRows"></invite-list>
 
     <!-- Modal Section -->
     <!-- <invite-user-modal :roles="roles"></invite-user-modal> -->
@@ -50,13 +50,23 @@ export default {
       displayedUsers: [],
       selectedTab: 'users',
       selectedRole: null,
-      searchText: ''
+      searchText: '',
+      currentPage: 1,
+      perPage: 5,
+      totalRows: null,
+      invitationCurrentPage: 1,
+      invitationPerPage: 5,
+      invitationTotalRows: null
     }
   },
   methods: {
     loadUsers () {
       let config = { orgId: this.currentUser.org.id }
-      userService.read(config, { page_size: 100 })
+      const params = {
+        page_size: this.perPage,
+        page_number: this.currentPage
+      }
+      userService.read(config, params)
         .then((response) => {
           let users = response.users
           this.users = this.$_.map((users), (user) => {
@@ -71,7 +81,14 @@ export default {
             }
           })
           this.displayedUsers = this.users
+          this.totalRows = response.total_entries
         })
+    },
+    userPaginationChange (paginationData) {
+      this.currentPage = paginationData
+    },
+    invitationPaginationChange (paginationData) {
+      this.invitationCurrentPage = paginationData
     },
     loadRoles () {
       roleService.read({ page_number: 1, page_size: 100 })
@@ -103,9 +120,14 @@ export default {
     },
     loadInvitations () {
       let config = { orgId: this.currentUser.org.id }
-      invitationService.read(config, { page_number: 1, page_size: 100 })
+      const params = {
+        page_size: this.invitationPerPage,
+        page_number: this.invitationCurrentPage
+      }
+      invitationService.read(config, params)
         .then((response) => {
           this.invitations = response.invitations
+          this.invitationTotalRows = response.total_entries
         })
     }
   },
@@ -116,6 +138,13 @@ export default {
     this.loadUsers()
     this.loadRoles()
     this.loadInvitations()
+
+    UserEventBus.$on('reload-user-list', () => {
+      this.loadUsers()
+    })
+    UserEventBus.$on('reload-invite-list', () => {
+      this.loadInvitations()
+    })
 
     UserEventBus.$on('reload-users', () => {
       this.loadUsers()
