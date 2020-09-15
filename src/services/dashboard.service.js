@@ -78,6 +78,25 @@ const dashboardService = {
 
       return response.data
     } catch (error) {
+      if (error.request.status === 401) {
+        return { unauthorized: true }
+      } else {
+        return error.data
+      }
+    }
+  },
+  fetchExportedDashboardPanels: async function (config, params) {
+    const requestData = {
+      method: 'get',
+      url: `/details/${config.uuid}/panels/${config.id}`,
+      headers: { Authorization: `Bearer ${params.token}` }
+    }
+
+    try {
+      const response = await ApiService.customRequest(requestData)
+
+      return response.data
+    } catch (error) {
       return error.data
     }
   },

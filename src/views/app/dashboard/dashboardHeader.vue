@@ -1,38 +1,38 @@
 <template>
   <div class="dashboard-header">
-    <span class="dashboard-name">{{selectedDashboard.name}}</span>
+    <span class="dashboard-name">{{selectedDashboard && selectedDashboard.name}}</span>
     <div class="right-section">
-      <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
-      <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'" @click="exportDashboard()">Export</b-button>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
-      <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
-        <span>New Widget</span>
-        <svg class="icon plus">
-          <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
-        </svg>
-      </b-button>
-      <b-button class="round-btn" v-if="selectedMode.key === 'edit'">Import</b-button>
-      <b-button class="round-btn save-btn" v-if="selectedMode.key === 'edit'" @click="saveDashboard()">
-        <span>Save</span>
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
-        </svg>
-      </b-button>
+      <span v-if="!viewMode" style="display: inline-flex">
+        <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
+        <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
+        <b-button class="round-btn" v-if="selectedMode.key === 'view'" @click="exportDashboard()">Export</b-button>
+        <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
+        <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
+          <span>New Widget</span>
+          <svg class="icon plus">
+            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+          </svg>
+        </b-button>
+        <b-button class="round-btn save-btn" v-if="selectedMode.key === 'edit'" @click="saveDashboard()">
+          <span>Save</span>
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+          </svg>
+        </b-button>
+      </span>
+      <span>
         <svg class="icon" v-if="selectedMode.key === 'view'" @click="openRealtimeHistoricalSettings()">
-        <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
-      </svg>
-      <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">
-        <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
-      </svg>
-      <!-- <svg class="icon" v-if="selectedMode.key === 'view'">
-        <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
-      </svg> -->
+          <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
+        </svg>
+        <svg class="icon" v-if="selectedMode.key === 'view' && !viewMode" @click="openSettings()">
+          <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
+        </svg>
+      </span>
     </div>
 
-    <add-widget ref="addWidget"></add-widget>
-    <dashboard-settings ref="dashboardSettings"></dashboard-settings>
-    <export-dashboard ref="exportDashboard"></export-dashboard>
+    <add-widget ref="addWidget" v-if="!viewMode"></add-widget>
+    <dashboard-settings ref="dashboardSettings" v-if="!viewMode"></dashboard-settings>
+    <export-dashboard ref="exportDashboard" v-if="!viewMode"></export-dashboard>
     <realtime-historical-settings ref="realTimeHistoricalSettings"></realtime-historical-settings>
   </div>
 </template>
@@ -50,6 +50,11 @@ export default {
     dashboardSettings,
     exportDashboard,
     realtimeHistoricalSettings
+  },
+  props: {
+    viewMode: {
+      default: false
+    }
   },
   data () {
     return {
@@ -87,7 +92,7 @@ export default {
       this.selectTheme(dashboard)
     },
     onSelectMode (mode) {
-      this.dashboardName = this.selectedDashboard.name
+      this.dashboardName = this.selectedDashboard ? this.selectedDashboard.name : ''
       this.$emit('on-change-mode', mode.key)
     },
     saveDashboard () {

@@ -4,7 +4,8 @@
       <b>This is a private dashboard. Please Enter password to access.</b>
       <b-form>
         <b-form-group label="">
-          <b-input type="password" v-model="password" placeholder="Password"></b-input>
+          <b-input type="password" v-model="password" placeholder="Password" class="passowrd-input"></b-input>
+          <div class="password-error" v-if="passwordError">Please enter correct password</div>
         </b-form-group>
       </b-form>
       <div class="footer">
@@ -17,6 +18,11 @@
 <script>
 
 export default {
+  props: {
+    passwordError: {
+      default: false
+    }
+  },
   data () {
     return {
       password: ''
@@ -31,6 +37,7 @@ export default {
     },
     onEnter () {
       this.$emit('on-password-enter', this.password)
+      // this.$refs.enterPassword.hide()
     }
   }
 }
@@ -41,6 +48,10 @@ export default {
     padding: 20px;
     form {
       margin-top: 30px;
+      .password-error {
+        color: #ff0033;
+        padding: 10px 0;
+      }
     }
     .footer {
       text-align: right;

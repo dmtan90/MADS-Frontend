@@ -1,8 +1,8 @@
 <template>
   <div class="theme-container">
-    <sidebar ref="sidebar" @select-panel="loadDashboardPanel" @go-back="onGoBack"></sidebar>
+    <sidebar ref="sidebar" @select-panel="onSelectDashboardPanel" @go-back="onGoBack" :viewMode="viewMode"></sidebar>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel"></dashboard-header>
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel" :viewMode="viewMode"></dashboard-header>
       <div class="widgets-wrap" :style="{'background-color': getDashboardBackgroundColor()}">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
@@ -118,6 +118,11 @@ export default {
     GridItem: VueGridLayout.GridItem,
     sidebar
   },
+  props: {
+    viewMode: {
+      default: false
+    }
+  },
   data () {
     return {
       widgetObject: {},
@@ -159,7 +164,14 @@ export default {
       return this.widgetObject[item.i].uuid
     },
     getDashboardBackgroundColor () {
-      return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+      return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+    },
+    onSelectDashboardPanel (panel) {
+      if (this.viewMode) {
+        this.loadExportedDashboardPanel(panel)
+      } else {
+        this.loadDashboardPanel(panel)
+      }
     },
     loadDashboardPanel (panel) {
       let loader = this.$loading.show()
@@ -167,6 +179,51 @@ export default {
 
       dashboardService
         .loadDashboardPanel(config)
+        .then((panel) => {
+          this.setPanel(panel)
+          let widgets = panel.widgets
+
+          this.$_.forEach(widgets, (widget) => {
+            this.widgetObject[widget.id] = widget
+          })
+
+          let commandWidgets = panel.command_widgets
+
+          this.$_.forEach(commandWidgets, (widget) => {
+            this.$_.forEach(widget.data_settings, (setting) => {
+              if (setting.html_type === 'color') {
+                if (setting.value) {
+                  setting.value = this.rgbToHex(setting.value[0], setting.value[1], setting.value[2])
+                } else {
+                  setting.value = '#000000'
+                }
+              }
+              if (setting.html_tag === 'select') {
+                setting.value = setting.value || setting.default
+              }
+            })
+            this.commandWidgetObject[widget.id] = widget
+          })
+
+          let widgetLayots = panel.widget_layouts || {}
+
+          this.layout = this.$_.map(widgetLayots, (setting, id) => {
+            return this.$_.merge(setting, { i: id })
+          })
+
+          loader.hide()
+        })
+    },
+    loadExportedDashboardPanel (panel) {
+      let loader = this.$loading.show()
+
+      let dashboardToken = localStorage.getItem('dashboard_token')
+      let dashboardUUID = localStorage.getItem('dashboard_uuid')
+
+      let config = this.$_.merge({}, { uuid: dashboardUUID, id: panel.id })
+      let params = { token: dashboardToken }
+
+      dashboardService.fetchExportedDashboardPanels(config, params)
         .then((panel) => {
           this.setPanel(panel)
           let widgets = panel.widgets
@@ -302,17 +359,22 @@ export default {
           loader.hide()
           this.updateDashboardPanel(item)
         })
+    },
+    findGridItemWidth () {
+      this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
+      document.getElementById('dummy-layout').remove()
+      this.showLayout = true
     }
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedDashboard', 'selectedPanel'])
   },
   mounted () {
-    setTimeout(() => {
-      this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
-      document.getElementById('dummy-layout').remove()
-      this.showLayout = true
-    }, 100)
+    if (!this.viewMode) {
+      setTimeout(() => {
+        this.findGridItemWidth()
+      }, 100)
+    }
 
     dasbhoardEventBus.$on('reload-dashboard', () => {
       this.reloadSelectedDasbhoard()
