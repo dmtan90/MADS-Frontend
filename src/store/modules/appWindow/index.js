@@ -7,6 +7,7 @@ import Entity_Manager from './entityManager'
 import Dashboards from './dashboad'
 import IoT_Manager from './iotManager'
 import Alerts_Reminder from './alerts'
+import dataInsights from './dataInsights'
 
 export default {
   state: {
@@ -66,6 +67,7 @@ export default {
     Entity_Manager,
     Dashboards,
     IoT_Manager,
-    Alerts_Reminder
+    Alerts_Reminder,
+    dataInsights
   }
 }
