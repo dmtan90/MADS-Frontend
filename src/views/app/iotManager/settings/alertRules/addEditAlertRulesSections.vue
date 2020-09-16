@@ -69,8 +69,20 @@
             </template>
             <template v-if="media === 'sms'">
               <b-form-group label="Phone Number" label-for="mobile-number" :key="index">
-                <b-form-input v-model="alertRule.phone_number" type="text" id="mobile-number" placeholder="Enter Mobile Number"></b-form-input>
+                <template>
+                  <multiselect v-model="phoneRecipents" :options="users" :multiple="true" :custom-label="getUserName" :close-on-select="false"  placeholder="Select Recipients" label="email" track-by="id"></multiselect>
+                </template>
+                <template v-for="(phoneField, i) in phoneArr">
+                  <div :key="i">{{phoneArr[i]}}</div>
+                  <!-- <b-form-input v-model="phoneArr[i]" type="text" placeholder="Enter Mobile Number" :key="i"></b-form-input> -->
+                </template>
               </b-form-group>
+              <b-button class="add-other" @click="addOtherPhone()" :key="index">
+                <svg class="icon">
+                  <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+                </svg>
+                <span class="text">Add Other Phone Number</span>
+              </b-button>
             </template>
             <template v-if="media === 'in-app'">
               <b-form-group label="Whatsapp Number" label-for="whatsapp-number" :key="index">
@@ -138,11 +150,13 @@ export default {
       selectedParentEntityId: null,
       selectedMedia: [],
       emailRecipents: null,
+      phoneRecipents: null,
       users: [],
       ruleParameters: [],
       policyParameter: {},
       rateLimit: null,
-      rateLimitArr: ['5 minutes', '10 minutes', '60 minutes', '3 hours', '12 hours', '24 hours', '1 week', '30 days']
+      rateLimitArr: ['5 minutes', '10 minutes', '60 minutes', '3 hours', '12 hours', '24 hours', '1 week', '30 days'],
+      phoneArr: []
     }
   },
   methods: {
@@ -218,6 +232,14 @@ export default {
     },
     getUserName (user) {
       return user.first_name + ' ' + (user.last_name || '')
+    },
+    addOtherPhone () {
+      debugger
+      if (this.phoneArr.length > 0) {
+        this.phoneArr[this.phoneArr.length + 1] = ''
+      } else {
+        this.phoneArr[this.phoneArr.length] = ''
+      }
     }
   },
   computed: {
@@ -306,6 +328,22 @@ export default {
       }
     }
   }
+
+  .add-other {
+      display: flex;
+      align-items: center;
+      padding: 0;
+      border: none;
+      .icon {
+        width: 24px;
+        height: 24px;
+        fill: #60C977;
+      }
+      .text {
+        font-size: 15px;
+        padding-left: 5px;
+      }
+    }
 </style>
 
 <style lang="scss">
