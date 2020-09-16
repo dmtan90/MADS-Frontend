@@ -38,6 +38,16 @@ const routes = [
     import(/* webpackChunkName: "resetPassword" */ '@/views/user/SetPassword')
   },
   {
+    path: '/set-password/:inviteToken',
+    component: () =>
+    import(/* webpackChunkName: "resetPassword" */ '@/views/user/SetPassword')
+  },
+  {
+    path: '/dashboards/:uuid',
+    component: () =>
+    import(/* webpackChunkName: "loadDashboard" */ '@/views/app/dashboard/exportedDashboard')
+  },
+  {
     path: '*',
     component: () => import(/* webpackChunkName: "error" */ '@/views/Error')
   }
