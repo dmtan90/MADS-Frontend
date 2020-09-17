@@ -8,7 +8,7 @@
         <div> Builders section </div>
       </div>
       <div v-if="appVuexState.currentSection === 'settings'" class="h-100">
-        <div> Settings </div>
+        <settings></settings>
       </div>
       <help :appName="'Data Insights'" v-if="appVuexState.currentSection === 'help'"></help>
     </template>
@@ -19,12 +19,14 @@
 import appWindow from './../appWindow'
 import help from './../shared/help'
 import dataInsights from './dataInsights'
+import settings from './settings'
 
 export default {
   components: {
     appWindow,
     help,
-    dataInsights
+    dataInsights,
+    settings
   },
   data () {
     return {
