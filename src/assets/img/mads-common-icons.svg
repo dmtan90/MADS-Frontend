@@ -39,7 +39,7 @@
       <path d="M8 0h24v4H8zm0 8h24v4H8zm0 8h24v4H8zm0 8h24v4H8z"></path>
     </g>
   </symbol>
-  <symbol viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" id="dustbin">
+  <symbol viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" id="dustbin">
     <path d="M2.5 5h15M6.667 5V3.333a1.667 1.667 0 0 1 1.666-1.666h3.334a1.667 1.667 0 0 1 1.666 1.666V5m2.5 0v11.667a1.667 1.667 0 0 1-1.666 1.666H5.833a1.667 1.667 0 0 1-1.666-1.666V5h11.666zm-7.5 4.167v5m3.334-5v5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
       stroke-linejoin="round"></path>
   </symbol>

@@ -1,9 +1,7 @@
 <template>
   <app-window :appName="'dataInsights'">
     <template v-slot:content>
-      <div v-if="appVuexState.currentSection === 'builders'" class="h-100">
-        <div> Builders section </div>
-      </div>
+      <builders v-if="appVuexState.currentSection === 'builders'" class="h-100"></builders>
       <div v-if="appVuexState.currentSection === 'settings'" class="h-100">
         <div> Settings </div>
       </div>
@@ -13,10 +11,12 @@
 
 <script>
 import appWindow from './../appWindow'
+import builders from './builders'
 
 export default {
   components: {
-    appWindow
+    appWindow,
+    builders
   },
   data () {
     return {
