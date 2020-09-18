@@ -1,5 +1,10 @@
 const appSections = [
   {
+    key: 'home',
+    name: 'Home',
+    iconId: 'apps'
+  },
+  {
     key: 'builders',
     name: 'Builders',
     iconId: 'projects'
@@ -8,6 +13,11 @@ const appSections = [
     key: 'settings',
     name: 'Settings',
     iconId: 'settings'
+  },
+  {
+    key: 'help',
+    name: 'Help',
+    iconId: 'help'
   }
 ]
 
@@ -18,7 +28,7 @@ export default {
     appIcon: 'mads-data-insights',
     appSections: appSections,
     appSectionsIconFile: 'mads-alerts-icons.svg',
-    currentSection: 'builders',
+    currentSection: 'home',
     appState: 'closed',
     sidebarHidden: false,
     appZindex: 0
