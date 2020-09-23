@@ -53,6 +53,7 @@
 <script>
 import criteriaForm from './criteriaForm'
 import fieldsSection from './fieldsSection'
+import entityData from './entitiesData'
 
 export default {
   components: {
@@ -62,7 +63,7 @@ export default {
   data () {
     return {
       isDelete: false,
-      entities: [],
+      entities: entityData,
       entityId: null,
       selectedEntity: null,
       selectedEntityIndex: null
