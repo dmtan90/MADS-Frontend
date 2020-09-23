@@ -2,53 +2,154 @@
   <div class="view-detail-wrap h-100">
     <div class="left-section">
       <ul>
-        <li>Date</li>
         <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>AlarmPropagationAsset</span>
+          <div>Date</div>
         </li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>Building</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>TbServiceQueue</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>apartment</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>building</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>default</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>energyMeter</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>heatMeter</span></li>
-        <li>
-          <svg class="icon">
-            <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
-          </svg>
-          <span>thermostat</span></li>
+        <li :class="{'selected': selectedEntity === 'alarmAsset'}">
+          <div @click="selectedEntity = 'alarmAsset'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>AlarmPropagationAsset</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'alarmAsset'">
+            <li>AlarmPropagationAsset</li>
+            <li>Owner</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'Building'}">
+          <div @click="selectedEntity = 'Building'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>Building</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'Building'">
+            <li>Building</li>
+            <li>Building Label</li>
+            <li>Owner</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'tbServiceQueue'}">
+          <div @click="selectedEntity = 'tbServiceQueue'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>TbServiceQueue</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'tbServiceQueue'">
+            <li>Owner</li>
+            <li>TbServiceQueue</li>
+            <li>failedMsgs</li>
+            <li>successfulMsgs</li>
+            <li>timeoutMsgs</li>
+            <li>tmpFailed</li>
+            <li>tmpTimeout</li>
+            <li>totalMsgs</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'apartment'}">
+          <div @click="selectedEntity = 'apartment'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>apartment</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'apartment'">
+            <li>Owner</li>
+            <li>apartment</li>
+            <li>apartment Label</li>
+            <li>area</li>
+            <li>floor</li>
+            <li>name</li>
+            <li>roomNumber</li>
+            <li>state</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'building'}">
+          <div @click="selectedEntity = 'building'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>building</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'building'">
+            <li>Owner</li>
+            <li>building</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'default'}">
+          <div @click="selectedEntity = 'default'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>default</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'default'">
+            <li>Owner</li>
+            <li>default</li>
+            <li>active</li>
+            <li>inactivityAlarmTime</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'energyMeter'}">
+          <div @click="selectedEntity = 'energyMeter'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>energyMeter</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'energyMeter'">
+            <li>Owner</li>
+            <li>energyMeter</li>
+            <li>active</li>
+            <li>inactivityAlarmTime</li>
+            <li>installDate</li>
+            <li>lastActivityTime</li>
+            <li>serial</li>
+            <li>energyConsAbsolute</li>
+            <li>energyConsumption</li>
+            <li>value</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'heatMeter'}">
+          <div @click="selectedEntity = 'heatMeter'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>heatMeter</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'heatMeter'">
+            <li>Owner</li>
+            <li>heatMeter</li>
+            <li>active</li>
+            <li>inactivityAlarmTime</li>
+            <li>installDate</li>
+            <li>lastActivityTime</li>
+            <li>serial</li>
+            <li>heatConsumption</li>
+          </ul>
+        </li>
+        <li :class="{'selected': selectedEntity === 'thermostat'}">
+          <div @click="selectedEntity = 'thermostat'">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#arrow-down"></use>
+            </svg>
+            <span>thermostat</span>
+          </div>
+          <ul class="sub-list" v-if="selectedEntity === 'thermostat'">
+            <li>Owner</li>
+            <li>thermostat</li>
+            <li>active</li>
+            <li>alarmHumidity</li>
+            <li>alarmTemperature</li>
+            <li>inactivityAlarmTime</li>
+            <li>latitude</li>
+            <li>longitude</li>
+            <li>thresholdHumidity</li>
+            <li>thresholdTemperature</li>
+          </ul>
+        </li>
       </ul>
     </div>
     <div class="right-section">
@@ -117,7 +218,8 @@ export default {
       rangeList: ['Today', 'Yesterday', 'Last 3 days', 'This Week', 'Prev Week', 'This Month', 'Prev Month', 'Last 3 Months', 'Custom'],
       groupByList: ['week', 'day', 'hour', 'minute'],
       selectedRange: null,
-      selectedGroupBy: null
+      selectedGroupBy: null,
+      selectedEntity: null
     }
   },
   methods: {
@@ -196,10 +298,13 @@ export default {
         list-style: none;
         padding-left: 0;
         li {
-          height: 35px;
-          display: flex;
-          align-items: center;
-          font-size: 15px;
+          font-size: 16px;
+          cursor: pointer;
+          div {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+          }
           .icon {
             width: 14px;
             height: 14px;
@@ -207,8 +312,21 @@ export default {
           }
           span {
             font-weight: bold;
-            font-size: 15px;
             padding-left: 10px;
+          }
+          .sub-list {
+            padding-left: 30px;
+            li {
+              display: flex;
+              align-items: center;
+              height: 30px;
+              font-size: 14px;
+            }
+          }
+          &.selected {
+            .icon {
+              transform: none;
+            }
           }
         }
       }
