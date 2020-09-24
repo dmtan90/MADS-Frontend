@@ -35,7 +35,7 @@
       </div>
       <div class="footer">
         <b-button @click="onCancel()">Cancel</b-button>
-        <b-button class="save-btn">Save</b-button>
+        <b-button @click="onSave()" class="save-btn">Save</b-button>
       </div>
     </div>
   </b-modal>
@@ -45,8 +45,15 @@
 import { mapGetters } from 'vuex'
 import groupingData from './groupingData'
 import dashboardService from '@/services/dashboard.service'
+import dasbhoardEventBus from './../dashboardBus'
 
 export default {
+  props: {
+    entityType: {
+      type: String,
+      default: 'panel'
+    }
+  },
   data () {
     return {
       selectedTab: 'realtime',
@@ -61,35 +68,70 @@ export default {
     }
   },
   methods: {
-    open () {
+    open (params = {}) {
+      let filterMetadata = {}
+      if (this.entityType === 'widget' && !this.$_.isEmpty(params)) {
+        filterMetadata = params
+      } else {
+        filterMetadata = this.selectedPanel.filter_metadata
+      }
+
+      let lastKey = filterMetadata.last
+      let intervalKey = filterMetadata.group_interval + '_' + filterMetadata.group_interval_type
+
+      if (filterMetadata.type === 'realtime') {
+        this.selectedRealtimeGrouping = this.$_.find(this.realtimeGroupingData, (grouping) => { return grouping.key === lastKey })
+        this.selectedRealtimeInterval = this.$_.find(this.selectedRealtimeGrouping.groupingIntervals, (interval) => { return interval.key === intervalKey })
+      } else {
+        this.selectedHistoricalGrouping = this.$_.find(this.historicalGroupingData, (grouping) => { return grouping.key === lastKey })
+        this.selectedHistoricalInterval = this.$_.find(this.selectedHistoricalGrouping.groupingIntervals, (interval) => { return interval.key === intervalKey })
+      }
+
+      this.selectedTab = filterMetadata.type
+
       this.$refs.realTimeHistoricalModal.show()
     },
     onCancel () {
       this.$refs.realTimeHistoricalModal.hide()
     },
-    onSave () {
-      this.$refs.realTimeHistoricalModal.hide()
+    savePanelSettings (params) {
       let loader = this.$loading.show()
 
+      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
+
+      dashboardService.updateDashboardPanel(config, params)
+        .then((response) => {
+          loader.hide()
+          dasbhoardEventBus.$emit('reload-dashboard-panel')
+        })
+    },
+    onSave () {
+      this.$refs.realTimeHistoricalModal.hide()
+
+      let selectedGrouping = (this.selectedTab === 'realtime') ? this.selectedRealtimeGrouping : this.selectedHistoricalGrouping
+      let selectedInterval = (this.selectedTab === 'realtime') ? this.selectedRealtimeInterval : this.selectedHistoricalInterval
+
       let todayDate = this.$moment()
-      let endDate = todayDate.format('YYYY-MM-DD')
-      let startDate = todayDate.subtract(1, this.selectedGrouping.type).format('YYYY-MM-DD')
+      let endDate = todayDate.format('x')
+      let startDate = todayDate.subtract(selectedGrouping.value, selectedGrouping.type).format('x')
 
       let params = {
         filter_metadata: {
           aggregate_func: this.selectedAggFunction,
           from_date: startDate,
           to_date: endDate,
-          group_interval: (this.selectedInterval.type).slice(0, -1),
-          type: this.selectedTab
+          group_interval: selectedInterval.value,
+          group_interval_type: (selectedInterval.type).slice(0, -1),
+          type: this.selectedTab,
+          last: selectedGrouping.key
         }
       }
-      let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: this.selectedPanel.id }
 
-      dashboardService.updateDashboardPanel(config, params)
-        .then((response) => {
-          loader.hide()
-        })
+      if (this.entityType === 'panel') {
+        this.savePanelSettings(params)
+      } else {
+        this.$emit('set-realtime-historical-settings', params.filter_metadata)
+      }
     },
     selectTab (tab) {
       this.selectedTab = tab
@@ -102,11 +144,11 @@ export default {
     },
     initData () {
       this.realtimeGroupingData = this.$_.take(groupingData, 13)
-      this.selectedRealtimeGrouping = this.realtimeGroupingData[0]
+      this.selectedRealtimeGrouping = this.realtimeGroupingData[12]
       this.selectedRealtimeInterval = this.selectedRealtimeGrouping.groupingIntervals[0]
 
       this.historicalGroupingData = groupingData
-      this.selectedHistoricalGrouping = this.historicalGroupingData[0]
+      this.selectedHistoricalGrouping = this.historicalGroupingData[18]
       this.selectedHistoricalInterval = this.selectedHistoricalGrouping.groupingIntervals[0]
 
       this.selectedAggFunction = this.aggregationFunctions[2]
