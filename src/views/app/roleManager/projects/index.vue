@@ -1,9 +1,9 @@
 <template>
   <div class="projects">
-    <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{projects.length}} projects</h2>
+    <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{totalRows}} projects</h2>
     <div class="view-header" v-if="!source">
       <ul class="nav nav-tabs">
-        <li :class="{'active': selectedTab === 'active'}" @click="selectedTab = 'active'">Active ({{active.length}})</li>
+        <li :class="{'active': selectedTab === 'active'}" @click="selectedTab = 'active'">Active ({{totalRows}})</li>
         <li :class="{'active': selectedTab === 'archived'}" @click="selectedTab = 'archived'">Archived ({{archived.length}})</li>
       </ul>
       <div class="project-view" v-if="source">
