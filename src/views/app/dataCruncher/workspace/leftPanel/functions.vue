@@ -33,7 +33,6 @@ export default {
         .then((response) => {
           let components = this.$_.concat(response.components, dummyFunctions)
           this.components = this.$_.groupBy(components, (component) => component.category)
-          console.log(this.components)
         })
     },
     toggleCategory (category) {

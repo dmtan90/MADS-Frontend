@@ -76,7 +76,7 @@
       <div v-if="selectedClassification !== 'command'">
         <div class="widget-category settings-category">
           <span class="category" :class="{'active': selectedSettingsType === 'visualSettings'}" @click="setSettingsType('visualSettings')">Visual Settings</span>
-          <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')">Data Settings</span>
+          <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')" v-if="isDataSettingsVisible">Data Settings</span>
         </div>
         <div v-if="selectedSettingsType === 'visualSettings'">
           <div class="visual-settings">
@@ -162,7 +162,8 @@ export default {
       },
       dataTypeMap: dataTypeMap,
       selectedNodes: [],
-      widgetsLoaded: false
+      widgetsLoaded: false,
+      isDataSettingsVisible: true
     }
   },
   methods: {
@@ -183,13 +184,21 @@ export default {
     },
     setSelectedWidget (widget) {
       this.selectedWidget = widget
+      let widgetCategory = this.selectedWidget.category[1]
+      if (this.$_.includes(['static_card', 'image_card'], widgetCategory)) {
+        this.$emit('hide-section', 1)
+        this.isDataSettingsVisible = false
+      } else {
+        this.$emit('show-section', 1)
+        this.isDataSettingsVisible = true
+      }
       this.loadSelectedWidget(widget.id)
     },
     setCommandWidget (widget) {
       this.selectedWidget = widget
     },
     setDataSeries () {
-      if (this.selectedClassification === 'command') {
+      if (this.selectedClassification === 'command' || !this.isDataSettingsVisible) {
         return
       }
 
@@ -285,12 +294,35 @@ export default {
       let yOffset = this.findDashboardYOffset()
       let widgetLayots = this.selectedPanel.widget_layouts || {}
 
+      let type = ''
+      let height = 0
+
+      if (isCommandWidget) {
+        type = 'command_widget'
+        height = 9
+      } else {
+        if (this.$_.includes(['static_card', 'image_card', 'dynamic_card'], this.selectedWidget.category[1])) {
+          type = this.selectedWidget.category[1]
+
+          if (this.selectedWidget.category[1] === 'static_card') {
+            height = 2
+          } else if (this.selectedWidget.category[1] === 'image_card') {
+            height = 5
+          } else if (this.selectedWidget.category[1] === 'dynamic_card') {
+            height = 2
+          }
+        } else {
+          type = 'highcharts'
+          height = 4
+        }
+      }
+
       widgetLayots[widgetInstance.id] = {
-        w: isCommandWidget ? 4 : 4,
-        h: isCommandWidget ? 9 : 4,
+        w: 4,
+        h: height,
         x: 0,
         y: yOffset,
-        type: isCommandWidget ? 'command_widget' : 'highcharts'
+        type: type
       }
 
       let params = { widget_layouts: widgetLayots }
