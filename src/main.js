@@ -31,6 +31,7 @@ import HighchartsVue from 'highcharts-vue'
 import VueCarousel from 'vue-carousel'
 import VueToast from 'vue-toast-notification'
 import Loading from 'vue-loading-overlay'
+import VueClipboard from 'vue-clipboard2'
 
 // import 'vue-tree-halower/dist/halower-tree.min.css' // you can customize the style of the tree
 // import VTree from 'vue-tree-halower'
@@ -70,6 +71,7 @@ Vue.use(Loading, {
   color: '#ffffff',
   backgroundColor: '#000000'
 })
+Vue.use(VueClipboard)
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })

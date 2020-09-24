@@ -30,7 +30,10 @@
 import Vuetable from 'vuetable-2'
 import userFields from './userFieldDefs'
 import addEditUser from './addEditUser'
+import userService from '@/services/user.service'
+import { mapGetters } from 'vuex'
 import UserEventBus from './../eventBus'
+// import UserEventBus from './../eventBus'
 import madsPagination from '../../shared/madsPagination'
 
 export default {
@@ -58,14 +61,25 @@ export default {
     editUser (user) {
       this.$refs.addEditUser.edit(user)
     },
-    deleteUser (project) {
+    deleteUser (user) {
+      let config = { orgId: this.currentUser.org.id, userId: user.id }
 
+      userService.delete(config)
+        .then((res) => {
+          UserEventBus.$emit('reload-user-list')
+        })
     },
     onPaginationChange (e) {
       this.currentPage = e
       this.$emit('user-pagination', e)
       UserEventBus.$emit('reload-user-list')
     }
+  },
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
+  beforeDestroy () {
+    UserEventBus.$off()
   }
 }
 </script>

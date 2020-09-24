@@ -24,15 +24,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import userService from '@/services/user.service'
 import appsList from './../../shared/modalAppsList'
-import madsTree from './../../shared/madsTree/index'
-import UserEventBus from './userEventBus'
 
 export default {
   components: {
-    appsList,
-    madsTree
+    appsList
   },
   props: {
     roles: {
@@ -58,17 +54,17 @@ export default {
       selectedAssets: [],
       selectedApps: [],
       isAnyNodeSelected: false,
-      userInvite:{},
+      userInvite: {},
       treeOptions: {
         selectable: true
-      },
+      }
     }
   },
   methods: {
     onSelectEntity (event, entity) {
-      if (event && entity.type === "Asset") {
+      if (event && entity.type === 'Asset') {
         let asset = {
-          id : entity.id
+          id: entity.id
         }
         this.userInvite.assets.push(asset)
       } else {
@@ -82,51 +78,51 @@ export default {
     },
     getUserData () {
       return {
-          invitation:this.userInvite
-        }
+        invitation: this.userInvite
+      }
     },
     getSelectedEntity () {
-      let assets = this.userInvite.assets.map((asset)=>{
+      let assets = this.userInvite.assets.map((asset) => {
         return {
           id: asset.id,
           type: 'Asset'
         }
       })
-      return assets;
+      return assets
     },
-    selectApps(apps){
-      apps = this.$_.filter(apps, (value, key) => { return value });
-      let selectAppValues = this.$_.keys(apps);
-      let selectApp = this.$_.map(selectAppValues, (app)=>{
+    selectApps (apps) {
+      apps = this.$_.filter(apps, (value, key) => { return value })
+      let selectAppValues = this.$_.keys(apps)
+      let selectApp = this.$_.map(selectAppValues, (app) => {
         return {
           id: app
         }
       })
 
-      this.userInvite.apps = selectApp;
+      this.userInvite.apps = selectApp
     }
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   mounted () {
-    if(this.userData){
+    if (this.userData) {
       this.userInvite = {
         email: this.userData.email || '',
         role_id: this.userData.role.id || '',
-        inviter_id: this.userData.inviter ? this.userData.inviter.id : ''  || '',
+        inviter_id: this.userData.inviter ? this.userData.inviter.id : '' || '',
         assets: this.userData.assets || [],
         apps: this.userData.apps || []
       }
 
       this.selectedRole = this.userData.originialRole ? this.userData.originialRole : this.userData.role
-    }else{
+    } else {
       this.userInvite = {
         email: '',
         role_id: '',
         inviter_id: this.currentUser.id,
         assets: [],
-        apps:[]
+        apps: []
       }
     }
   }
