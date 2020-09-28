@@ -34,6 +34,7 @@
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                  <div class="header">
                     <div class="actions" :class="{'single': item.type === 'command_widget'}" v-if="isEditMode">
                       <svg class="icon pencil" v-if="(item.type !== 'command_widget')" @click="editWidget(item)">
                         <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
@@ -42,60 +43,37 @@
                         <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
                       </svg>
                     </div>
-                    <div v-if="item.type === 'command_widget'" class="command-widget-wrap">
-                      <h2>{{commandWidgetObject[item.i].label}}</h2>
-                      <div v-for="(setting, key) in getCommandDataSettings(item)" :key="key" class="command-widget">
-                        <div v-if="setting.html_type === 'range'" class="range-wrap setting-wrap">
-                          <div class="label-wrap">
-                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
-                            <div>
-                              <span class="text">Value:</span>
-                              <span class="value">{{ setting.value }}</span>
-                            </div>
-                          </div>
-                          <b-form-input v-model="setting.value" type="range" :min="setting.min" :max="setting.max" step="0.5"></b-form-input>
-                        </div>
-                        <div v-if="setting.html_type === 'color'" class="setting-wrap">
-                          <div class="label-wrap">
-                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
-                          </div>
-                          <div class="color-wrap">
-                            <span>{{ setting.value || '#000000'}}</span>
-                            <b-form-input v-model="setting.value" type="color"></b-form-input>
-                          </div>
-                        </div>
-                        <div v-if="setting.html_tag === 'select'" class="select-wrap">
-                          <div class="label-wrap">
-                            <h2>{{ $_.replace(key, '_', ' ') }}</h2>
-                          </div>
-                          <b-form-radio-group v-model="setting.value">
-                            <b-form-radio :value="value" v-for="(value, key) in setting.source" :key="key">{{ key }}</b-form-radio>
-                          </b-form-radio-group>
-                        </div>
-                      </div>
-                      <div class="btn-wrap">
-                        <b-button class="btn" @click="updateCommandWidget(commandWidgetObject[item.i])">Apply</b-button>
-                      </div>
+                    <div class="actions single" v-if="item.type === 'highcharts' && !isEditMode">
+                      <svg class="icon clock" @click="openRealtimeHistoricalSettings(item.i)">
+                        <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
+                      </svg>
                     </div>
-                    <div v-else>
-                      <widget
-                        :visualProperties="getVisualProperties(item)"
-                        :series="getSeries(item)"
-                        :widgetId="getWidgetId(item)"
-                        :category="widgetObject[item.i].widget_category[0]"
-                        :page="'dashboard'"
-                        :colWidth="colWidth"
-                        :colHeight="colHeight"
-                        :cols="item.w"
-                        :rows="item.h">
-                      </widget>
-                    </div>
+                  </div>
+                  <command-widget v-if="item.type === 'command_widget'" :commandWidgetObject="commandWidgetObject" :item="item"></command-widget>
+                  <div v-if="item.type === 'highcharts'">
+                    <widget
+                      :visualProperties="getVisualProperties(item)"
+                      :series="getSeries(item)"
+                      :widgetId="getWidgetId(item)"
+                      :category="widgetObject[item.i].widget_category[0]"
+                      :page="'dashboard'"
+                      :colWidth="colWidth"
+                      :colHeight="colHeight"
+                      :cols="item.w"
+                      :rows="item.h"
+                      :widgetKey="widgetObject[item.i].key">
+                    </widget>
+                  </div>
+                  <static-card-widget v-if="item.type === 'static_card'" :widget="widgetObject[item.i]"></static-card-widget>
+                  <image-card-widget v-if="item.type === 'image_card'" :widget="widgetObject[item.i]"></image-card-widget>
+                  <dynamic-card-widget v-if="item.type === 'dynamic_card'" :widget="widgetObject[item.i]"></dynamic-card-widget>
                 </grid-item>
             </grid-layout>
         </div>
       </div>
     </div>
     <edit-widget ref="editWidget"></edit-widget>
+    <realtime-historical-settings ref="widgetRealTimeHistoricalSettings" :entityType="'widget'" @set-realtime-historical-settings="setRealtimeHistoricalSettings"></realtime-historical-settings>
   </div>
 </template>
 
@@ -108,6 +86,11 @@ import dasbhoardEventBus from './../dashboardBus'
 import dashboardService from '@/services/dashboard.service'
 import editWidget from './../addEditWidget'
 import sidebar from './sidebar'
+import realtimeHistoricalSettings from './../dashboardSettings/realTimeHistoricalSettings'
+import commandWidget from './commandWidget'
+import staticCardWidget from './staticCardWidget'
+import imageCardWidget from './imageCardWidget'
+import dynamicCardWidget from './dynamicCardWidget'
 
 export default {
   components: {
@@ -116,7 +99,12 @@ export default {
     editWidget,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
-    sidebar
+    sidebar,
+    realtimeHistoricalSettings,
+    commandWidget,
+    staticCardWidget,
+    imageCardWidget,
+    dynamicCardWidget
   },
   props: {
     viewMode: {
@@ -136,11 +124,22 @@ export default {
       commandWidgetLayout: [{ 'x': 0, 'y': 0, 'w': 6, 'h': 6, 'i': '0' }],
       colWidth: 75,
       colHeight: 50,
-      showLayout: false
+      showLayout: false,
+      realTimeHistoricalSettings: {},
+      realTimeHistoricalSelectedWidget: null
     }
   },
   methods: {
     ...mapActions(['setDashboard', 'setPanel']),
+    getUniqueKey () {
+      let result = ''
+      let characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
+      let charactersLength = characters.length
+      for (var i = 0; i < 20; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength))
+      }
+      return result
+    },
     onGoBack () {
       this.$emit('show-all')
     },
@@ -150,9 +149,6 @@ export default {
       } else {
         this.isEditMode = false
       }
-    },
-    getCommandDataSettings (item) {
-      return this.commandWidgetObject[item.i].data_settings
     },
     getVisualProperties (item) {
       return this.widgetObject[item.i].visual_properties
@@ -184,7 +180,7 @@ export default {
           let widgets = panel.widgets
 
           this.$_.forEach(widgets, (widget) => {
-            this.widgetObject[widget.id] = widget
+            this.widgetObject[widget.id] = this.$_.merge({}, widget, { key: this.getUniqueKey() })
           })
 
           let commandWidgets = panel.command_widgets
@@ -326,27 +322,6 @@ export default {
     rgbToHex (r, g, b) {
       return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
     },
-    updateCommandWidget (widget) {
-      let loader = this.$loading.show()
-
-      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, id: widget.id }
-
-      let dataSettings = this.$_.merge({}, widget.data_settings)
-
-      this.$_.forEach(dataSettings, (setting) => {
-        if (setting.html_type === 'color') {
-          setting.value = this.hexToRgb(setting.value)
-        }
-      })
-
-      let params = {
-        data_settings: dataSettings
-      }
-      dashboardService.updateCommandWidget(config, params)
-        .then((response) => {
-          loader.hide()
-        })
-    },
     deleteCommandWidget (item) {
       let widgetId = this.commandWidgetObject[item.i].id
 
@@ -359,6 +334,26 @@ export default {
           loader.hide()
           this.updateDashboardPanel(item)
         })
+    },
+    openRealtimeHistoricalSettings (widgetId) {
+      this.realTimeHistoricalSelectedWidget = widgetId
+      this.$refs.widgetRealTimeHistoricalSettings.open(this.realTimeHistoricalSettings[this.realTimeHistoricalSelectedWidget])
+    },
+    setRealtimeHistoricalSettings (params) {
+      let widgetObject = this.widgetObject[this.realTimeHistoricalSelectedWidget]
+      this.realTimeHistoricalSettings[this.realTimeHistoricalSelectedWidget] = params
+
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: widgetObject.widget_id, id: widgetObject.id }
+
+      dashboardService.readWidgetInstance(config, params)
+        .then((widgetInstance) => {
+          this.widgetObject[widgetInstance.id] = this.$_.merge({}, widgetInstance, { key: this.getUniqueKey() })
+          let layout = this.layout
+          this.layout = []
+          this.layout = layout
+        })
+
+      this.realTimeHistoricalSelectedWidget = null
     },
     findGridItemWidth () {
       this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
@@ -409,123 +404,42 @@ export default {
           .vue-grid-item {
             background-color: white;
             box-shadow: 0 1px 4px 0 rgba(21,27,38,.08);
-            .actions {
-              position: absolute;
-              width: 90px;
-              height: 40px;
-              right: 6px;
-              top: 6px;
-              z-index: 99;
-              display: flex;
-              align-items: center;
-              justify-content: space-evenly;
+            .header {
+              height: 28px;
               background-color: white;
-              .icon {
-                fill: white;
-                width: 40px;
-                height: 40px;
-                padding: 10px;
-                border-radius: 20px;
-                cursor: pointer;
-                &:last-child {
-                  border-right: none;
-                }
-                &.pencil {
-                  background-color: #9BCCE5;
-                }
-                &.dustbin {
-                  background-color: #27AAE1;
-                }
-              }
-              &.single {
-                width: 40px;
-              }
-            }
-            .command-widget-wrap {
-              padding: 20px;
-              overflow: auto;
-              height: 100%;
-              > h2 {
-                margin-bottom: 40px;
-                font-size: 18px;
-                font-weight: bold;
-                color: #000000;
-              }
-              .command-widget {
-                margin-bottom: 22px;
-                .setting-wrap {
-                  display: flex;
-                  align-items: center;
-                  .label-wrap {
-                    width: 100px;
-                    h2 {
-                      font-size: 16px;
-                      color: #000000;
-                      margin-bottom: 0;
-                      text-transform: capitalize;
-                    }
-                    .text {
-                      color: #6D6E71;
-                      font-size: 13px;
-                      padding-top: 4px;
-                      display: inline-block;
-                    }
-                    .value {
-                      color: #4292D4;
-                      font-size: 13px;
-                      font-weight: bold;
-                    }
+              position: relative;
+              .actions {
+                position: absolute;
+                width: 65px;
+                height: 28px;
+                right: 6px;
+                top: 6px;
+                z-index: 99;
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                .icon {
+                  fill: white;
+                  width: 28px;
+                  height: 28px;
+                  padding: 5px;
+                  border-radius: 20px;
+                  cursor: pointer;
+                  &:last-child {
+                    border-right: none;
                   }
-                  input {
-                    width: calc(100% - 100px);
+                  &.pencil {
+                    background-color: #9BCCE5;
+                  }
+                  &.dustbin {
+                    background-color: #27AAE1;
+                  }
+                  &.clock {
+                    background-color: #4A505C;
                   }
                 }
-                .color-wrap {
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-evenly;
-                  background-color: #F3F7FB;
-                  width: 120px;
-                  height: 45px;
-                  border-radius: 4px;
-                  span {
-                    display: inline-block;
-                    color: #303033;
-                    width: 60px;
-                    text-transform: uppercase;
-                  }
-                  input {
-                    border: none;
-                    width: 35px;
-                    height: 38px;
-                    cursor: pointer;
-                    padding: 0;
-                    background-color: #F3F7FB !important;
-                  }
-                }
-                .select-wrap {
-                  .label-wrap {
-                    margin-bottom: 10px;
-                  }
-                  h2 {
-                    font-size: 16px;
-                    color: #000000;
-                    margin-bottom: 0;
-                    text-transform: capitalize;
-                  }
-                }
-              }
-              .btn-wrap {
-                .btn {
-                  background-color: #27AAE1 !important;
-                  color: white !important;
-                  border: 1px solid #27AAE1 !important;
-                  font-size: 13px;
-                  height: 45px;
-                  padding: 0 10px;
-                  width: 180px;
-                  text-transform: uppercase;
-                  margin-top: 20px;
+                &.single {
+                  width: 40px;
                 }
               }
             }

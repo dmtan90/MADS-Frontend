@@ -11,7 +11,7 @@
     @on-cancel="onCancel()"
     @on-save="saveWidget()">
     <template v-slot:right-panel>
-      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :widgetData="widget"></sections>
+      <sections ref="sections" :selectedSectionIndex="selectedSectionIndex" :editMode="editMode" :widgetData="widget" @hide-section="hideSection" @show-section="showSection"></sections>
     </template>
   </mads-modal>
 </template>
@@ -61,9 +61,21 @@ export default {
     },
     nextSection () {
       this.selectedSectionIndex++
-      if (this.selectedSectionIndex === 3) {
-        this.$refs.sections.setDataSeries()
+      if (this.modalSections[this.selectedSectionIndex - 1].hidden) {
+        this.nextSection()
+      } else {
+        if (this.selectedSectionIndex === 3) {
+          this.$refs.sections.setDataSeries()
+        }
       }
+    },
+    hideSection (index) {
+      let section = this.$_.merge(this.modalSections[index], { hidden: true })
+      this.$set(this.modalSections, index, section)
+    },
+    showSection (index) {
+      let section = this.$_.merge(this.modalSections[index], { hidden: false })
+      this.$set(this.modalSections, index, section)
     },
     onCancel () {
       this.selectedSectionIndex = 1

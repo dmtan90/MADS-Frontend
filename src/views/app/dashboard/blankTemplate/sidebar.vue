@@ -4,7 +4,7 @@
       <img :src="getClientLogo()" alt="" class="logo">
     </div>
     <ul>
-      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" :style="{'background-color': getPanelBackgroundColor(panel)}" @click="selectPanel(panel)">
+      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': (selectedPanel && selectedPanel.id === panel.id)}" :style="{'background-color': getPanelBackgroundColor(panel)}" @click="selectPanel(panel)">
         {{panel.name}}
       </li>
     </ul>
@@ -64,7 +64,7 @@ export default {
       return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
     },
     getPanelBackgroundColor (panel) {
-      if (panel.id === this.selectedPanel.id) {
+      if (this.selectedPanel && (panel.id === this.selectedPanel.id)) {
         return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['background_color'] : '#ffffff'
       } else {
         return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['sidebar_color'] : '#000000'

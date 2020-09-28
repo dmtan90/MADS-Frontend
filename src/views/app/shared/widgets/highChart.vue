@@ -5,10 +5,9 @@
 </template>
 
 <script>
-/* eslint-disable */
 
-import Highcharts from "highcharts"
-import Exporting from "highcharts/modules/exporting"
+import Highcharts from 'highcharts'
+import Exporting from 'highcharts/modules/exporting'
 import StockInit from 'highcharts/modules/stock'
 import Boost from 'highcharts/modules/boost'
 
@@ -53,16 +52,19 @@ export default {
     rows: {
       type: Number,
       default: 0
+    },
+    widgetKey: {
+      type: String
     }
   },
-  data() {
+  data () {
     return {
       widget: null
     }
   },
   methods: {
-    generateWidget() {
-      let widgetOptions = _.merge(
+    generateWidget () {
+      let widgetOptions = this.$_.merge(
         this.visualProperties,
         {
           series: this.series,
@@ -88,33 +90,33 @@ export default {
         this.widget = Highcharts.chart(this.widgetId, widgetOptions)
       }
     },
-    renderWidget() {
+    renderWidget () {
       this.generateWidget()
       if (this.page === 'dashboard') {
         this.resizeWidget()
       }
     },
-    resizeWidget() {
+    resizeWidget () {
       let width = this.colWidth * this.cols + (20 * (this.cols - 1))
-      let height = this.colHeight * this.rows + (20 * (this.rows - 1))
+      let height = this.colHeight * this.rows + (20 * (this.rows - 1)) - 28
 
       this.widget.setSize(width, height)
     }
   },
   watch: {
-    series(value) {
+    series (value) {
       this.renderWidget()
     },
-    rows() {
+    rows () {
       this.resizeWidget()
     },
-    cols() {
+    cols () {
       this.resizeWidget()
     }
   },
-  mounted() {
+  mounted () {
     this.renderWidget()
-  },
+  }
 }
 </script>
 
