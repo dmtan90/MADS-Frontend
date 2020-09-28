@@ -5482,28 +5482,79 @@ input:-webkit-autofill {
       font-size: 16px;
     }
     .t2{
-      font-size: 40px;
-      margin-top: 10px;
+      font-size: 55px;
+      margin-top: -2px;
+      font-weight: 900;
+      line-height: 66px;
     }
     .t3{
       font-size: 20px;
-      margin-top: 15px;
+      margin-top: 4px;
+      font-weight: 700;
+      line-height: 24px;
+      ul{
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        li{
+          font-size: 20px;
+          margin-top: 4px;
+          font-weight: 700;
+          line-height: 24px;
+          align-items: center;
+          display: flex;
+          span{
+            background: rgba(255, 255, 255, 0.4);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+          }
+        }
+      }
     }
     .t4{
       font-size: 20px;
-      margin-top: 20px;
+      margin-top: 22px;
+      font-weight: 700;
+      line-height: 24px;
+    }
+    .circle{
+
     }
   }
 
   .form-side {
     width: 40%;
-    padding: 80px;
+    padding: 70px 70px 0px 60px;
+    .footer-box{
+      width: 100%;
+      margin: 50px 0px 40px 0px;
+      ul{
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        li{
+          font-size: 14px;
+          color: #000;
+          font-weight: 400;
+        }
+      }
+    }
     .heading-text{
       font-size: 35px;
       margin: 78px 0px 8px 0px;
       color: #000000;
       font-weight: 900;
       font-family: 'Lato', sans-serif;
+    }
+    form{
+      padding-right: 70px;
     }
     .input-box{
       margin-top: 22px;
@@ -5535,6 +5586,24 @@ input:-webkit-autofill {
         font-size: 16px;
         font-family: 'Lato', sans-serif;
         height: 45px;
+      }
+    }
+    .checkbox-box{
+      margin: 14px 0px 23px 0px;
+      .custom-control-label{
+        font-size: 14px;
+        color: #000;
+        font-family: 'Lato', sans-serif;
+
+      }
+    }
+    .forgot-text{
+      margin-top: 11px;
+      font-size: 14px;
+      color: #6D6E71;
+      font-family: 'Lato', sans-serif;
+      a{
+        color: #5ed096 !important;
       }
     }
   }

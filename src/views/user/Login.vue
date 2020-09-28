@@ -10,21 +10,30 @@
               <div class="text-box">
                 <p class="text t1">Welcome to</p>
                 <p class="text t2">MADS!</p>
-                <p class="text t3">Monitor Automate Diagnose Secure</p>
-                <p class="text t4">Please use your credentials to login.<br>If you are not a member, please
-                <router-link tag="a" to="/user/register" class="white">register</router-link>.</p>
+                <p class="text t3">
+                  <ul>
+                    <li>Monitor</li>
+                    <li><span></span></li>
+                    <li>Automate</li>
+                    <li><span></span></li>
+                    <li>Diagnose</li>
+                    <li><span></span></li>
+                    <li>Secure</li>
+                  </ul>
+                </p>
+                <p class="text t4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
               </div>
           </div>
           <div class="form-side">
             <router-link tag="a" to="/"><span class="logo-single"/></router-link>
-            <div class="heading-text">{{ $t('user.login')}}</div>
+            <div class="heading-text">Sign In to MADS!</div>
             <b-form @submit.prevent="formSubmit">
               <div class="input-box">
-                <label>{{ $t('user.email') }}</label>
+                <label>Email address</label>
                 <input type="email" class="form-control" v-model="email">
               </div>
               <div class="input-box">
-                <label>{{ $t('user.password') }}</label>
+                <label>Password</label>
                 <!-- <div class="input">
                   <div class="icon"></div>
                   <input type="password" class="form-control" v-model="password">
@@ -42,11 +51,36 @@
               <div class="button-box">
                 <b-button type="submit">{{ $t('buttons.login')}}</b-button>
               </div>
+              <div class="checkbox-box">
+                <b-form-checkbox
+                  id="checkbox-1"
+                  v-model="status"
+                  name="checkbox-1"
+                  value="accepted"
+                  unchecked-value="not_accepted"
+                >
+                  Remember me on this device
+                </b-form-checkbox>
+              </div>
+              <div class="forgot-text">
+                Forgot your password? <router-link tag="a" to="/user/forgot-password">Reset your password</router-link>
+              </div>
+              <div class="forgot-text">
+                Not a member yet? <router-link tag="a" to="/user/register">Register here</router-link>
+              </div>
+              
               <!-- <div class="d-flex justify-content-between align-items-center">
                   <router-link tag="a" to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
                   <b-button type="submit" variant="primary" size="lg" class="btn-shadow btn-login">{{ $t('buttons.login')}}</b-button>
               </div> -->
           </b-form>
+          <div class="footer-box">
+            <ul>
+              <li>© 2020, DataKrew, All Rights Reserved</li>
+              <li>Privacy & Terms</li>
+              <li>Contact Us</li>
+            </ul>
+          </div>
         </div>
       </b-card>
     </b-colxx>
