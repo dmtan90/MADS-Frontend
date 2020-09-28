@@ -1,29 +1,51 @@
 <template>
-  <b-row class="h-100">
-    <b-colxx xxs="12" md=10  class="mx-auto my-auto">
+  <b-row class="main-height">
+    <b-colxx xxs="12" md=12  class="mx-auto auth-main">
       <b-card class="auth-card" no-body>
           <div class="position-relative image-side ">
-            <p class=" text-white h2">{{ $t('pages.magic-is-in-the-details') }}</p>
+            <!-- <p class=" text-white h2">{{ $t('pages.magic-is-in-the-details') }}</p>
               <p class="white mb-0">Please use your credentials to login.<br>If you are not a member, please
                 <router-link tag="a" to="/user/register" class="white">register</router-link>.
-              </p>
+              </p> -->
+              <div class="text-box">
+                <p class="text t1">Welcome to</p>
+                <p class="text t2">MADS!</p>
+                <p class="text t3">Monitor Automate Diagnose Secure</p>
+                <p class="text t4">Please use your credentials to login.<br>If you are not a member, please
+                <router-link tag="a" to="/user/register" class="white">register</router-link>.</p>
+              </div>
           </div>
           <div class="form-side">
             <router-link tag="a" to="/"><span class="logo-single"/></router-link>
-            <h6 class="mb-4">{{ $t('user.login')}}</h6>
+            <div class="heading-text">{{ $t('user.login')}}</div>
             <b-form @submit.prevent="formSubmit">
-              <label class="form-group has-float-label mb-4">
+              <div class="input-box">
+                <label>{{ $t('user.email') }}</label>
+                <input type="email" class="form-control" v-model="email">
+              </div>
+              <div class="input-box">
+                <label>{{ $t('user.password') }}</label>
+                <!-- <div class="input">
+                  <div class="icon"></div>
+                  <input type="password" class="form-control" v-model="password">
+                </div> -->
+                  <input type="password" class="form-control" v-model="password">
+              </div>
+              <!-- <label class="form-group">
                 <input type="email" class="form-control" v-model="email">
                 <span>{{ $t('user.email') }}</span>
               </label>
               <label class="form-group has-float-label mb-4">
                 <input type="password" class="form-control" v-model="password">
                 <span>{{ $t('user.password') }}</span>
-              </label>
-              <div class="d-flex justify-content-between align-items-center">
+              </label> -->
+              <div class="button-box">
+                <b-button type="submit">{{ $t('buttons.login')}}</b-button>
+              </div>
+              <!-- <div class="d-flex justify-content-between align-items-center">
                   <router-link tag="a" to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
                   <b-button type="submit" variant="primary" size="lg" class="btn-shadow btn-login">{{ $t('buttons.login')}}</b-button>
-              </div>
+              </div> -->
           </b-form>
         </div>
       </b-card>
@@ -68,4 +90,3 @@ export default {
     }
   }
 </style>
-
