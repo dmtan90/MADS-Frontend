@@ -34,7 +34,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .app-content {
-      background-color: white;
+      background-color: #fbfeff;
       display: inline-block;
       height: calc(100% - 45px);
       width: calc(100% - 100px);
