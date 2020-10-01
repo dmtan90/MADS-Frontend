@@ -74,7 +74,7 @@
               </svg>
             </span>
           </div>
-          
+
         </template>
       </vuetable>
 
