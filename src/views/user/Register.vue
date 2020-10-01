@@ -30,15 +30,36 @@
             <b-form @submit.prevent="formSubmit">
               <div class="input-box">
                 <label>Full Name</label>
-                <input type="text" class="form-control" v-model="fullname">
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-name"></use>
+                    </svg>
+                  </div>
+                  <input type="text" class="form-control" v-model="fullname" placeholder="Enter your Full Name">
+                </div>
               </div>
               <div class="input-box">
                 <label>Email Address</label>
-                <input type="email" class="form-control" v-model="email">
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-mail"></use>
+                    </svg>
+                  </div>
+                  <input type="email" class="form-control" v-model="email" placeholder="Enter your Email address">
+                </div>
               </div>
               <div class="input-box">
                 <label>Password</label>
-                <input type="password" class="form-control" v-model="password">
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-password"></use>
+                    </svg>
+                  </div>
+                  <input type="password" class="form-control" v-model="password" placeholder="Enter your Password">
+                </div>
               </div>
               <div class="button-box">
                 <b-button type="submit">Sign Up</b-button>

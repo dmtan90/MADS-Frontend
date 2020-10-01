@@ -26,7 +26,14 @@
             <b-form @submit.prevent="formSubmit">
               <div class="input-box">
                 <label>Email address</label>
-                <input type="email" class="form-control" v-model="email">
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-mail"></use>
+                    </svg>
+                  </div>
+                  <input type="email" class="form-control" v-model="email" placeholder="Enter your Email address">
+                </div>
               </div>
               <div class="button-box">
                 <b-button type="submit">Reset Password</b-button>
