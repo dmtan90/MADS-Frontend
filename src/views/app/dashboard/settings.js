@@ -8,10 +8,27 @@ const dataTypeMap = {
 }
 
 const renderObject = (createElement, context, setting, parentKey, isHeader = false) => {
+  const { listeners } = context
+  const inputHandler = listeners['on-file-upload']
+
   let settingsTemplate = _.map((setting.properties), (property) => {
     let key = parentKey + '.' + property.key
     return renderSetting(createElement, context, property, key)
   })
+
+  if (setting.key === 'icon') {
+    let fileUploadElement = createElement('b-form-file', {
+      class: {
+        'setting-input': true,
+        [setting.data_type]: true
+      },
+      on: {
+        input: e => inputHandler && inputHandler(e, parentKey + '.text')
+      }
+    })
+
+    settingsTemplate.unshift(fileUploadElement)
+  }
 
   return createElement('div', {
     class: {

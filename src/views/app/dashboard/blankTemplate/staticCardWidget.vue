@@ -1,7 +1,7 @@
 <template>
   <div class="static-card-wrap">
     <h2>{{getTitle().text}}</h2>
-    <span>
+    <span class="description">
       {{getDescription().text}}
     </span>
   </div>
@@ -34,9 +34,10 @@ export default {
   .static-card-wrap {
     height: calc(100% - 28px);
     padding: 0 10px 10px;
-    span {
-      overflow: scroll;
+    .description {
       display: block;
+      height: 95px;
+      overflow: auto;
     }
   }
 </style>
