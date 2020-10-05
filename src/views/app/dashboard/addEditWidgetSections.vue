@@ -355,10 +355,14 @@ export default {
       }
     },
     updateWidgetInstance () {
+      let seriesData = this.$_.map(this.dataSeries, (serie, index) => {
+        return this.$_.merge({}, serie, { name: this.seriesProp[index].name, color: this.seriesProp[index].color })
+      })
+
       let params = {
         label: this.widgetData.label,
         visual_properties: this.visualProp,
-        series_data: this.dataSeries
+        series_data: seriesData
       }
 
       let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
