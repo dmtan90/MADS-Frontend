@@ -306,7 +306,7 @@ export default {
           type = this.selectedWidget.category[1]
 
           if (this.selectedWidget.category[1] === 'static_card') {
-            height = 2
+            height = 3
           } else if (this.selectedWidget.category[1] === 'image_card') {
             height = 5
           } else if (this.selectedWidget.category[1] === 'dynamic_card') {

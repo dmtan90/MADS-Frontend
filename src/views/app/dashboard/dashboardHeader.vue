@@ -27,9 +27,9 @@
         <svg class="icon" v-if="selectedMode.key === 'view' && !viewMode" @click="openSettings()">
           <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
         </svg>
-        <!-- <svg class="icon" v-if="selectedMode.key === 'view'">
-          <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
-        </svg> -->
+        <svg class="icon" v-if="selectedMode.key === 'view'" @click="captureDashboard()">
+          <use xlink:href="/assets/img/mads-common-icons.svg#screenshot"></use>
+        </svg>
       </span>
     </div>
 
@@ -110,6 +110,9 @@ export default {
     },
     openRealtimeHistoricalSettings () {
       this.$refs.realTimeHistoricalSettings.open()
+    },
+    captureDashboard () {
+      this.$emit('capture-dashboard')
     }
   },
   mounted () {

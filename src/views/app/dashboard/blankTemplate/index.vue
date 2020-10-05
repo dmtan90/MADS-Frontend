@@ -1,8 +1,8 @@
 <template>
-  <div class="theme-container">
+  <div class="theme-container" id="screenshot-wrap">
     <sidebar ref="sidebar" @select-panel="onSelectDashboardPanel" @go-back="onGoBack" :viewMode="viewMode"></sidebar>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel" :viewMode="viewMode"></dashboard-header>
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel" @capture-dashboard="captureDashboard" :viewMode="viewMode"></dashboard-header>
       <div class="widgets-wrap" :style="{'background-color': getDashboardBackgroundColor()}">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
@@ -92,6 +92,8 @@ import commandWidget from './commandWidget'
 import staticCardWidget from './staticCardWidget'
 import imageCardWidget from './imageCardWidget'
 import dynamicCardWidget from './dynamicCardWidget'
+import html2canvas from 'html2canvas'
+import { saveAs } from 'file-saver'
 
 export default {
   components: {
@@ -417,6 +419,17 @@ export default {
             this.layout = layout
           }
         })
+    },
+    captureDashboard () {
+      let element = document.getElementById('screenshot-wrap')
+
+      html2canvas(element).then(function (canvas) {
+        // Export canvas as a blob
+        canvas.toBlob(function (blob) {
+        // Generate file download
+          saveAs(blob, 'blank_template.png')
+        })
+      })
     }
   },
   computed: {
