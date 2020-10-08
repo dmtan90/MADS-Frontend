@@ -7,18 +7,25 @@
     </div> -->
     <div class="grid dashboards-grid row">
       <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index">
-        <div class="header">
-          <span class="name">{{dashboard.name}}</span>
-          <div class="actions" v-if="!dashboard.dummy">
-            <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
-              <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
-            </svg>
-          </div>
-        </div>
         <div class="img-wrap" @click="selectDashboard(dashboard)">
           <img :src="dashboard.imageUrl" alt="" v-if="dashboard.imageUrl">
           <img src="/assets/img/historian.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Historian)'">
           <img src="/assets/img/overview.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Overview)'">
+          <div class="overlay">
+             <div class="actions" v-if="!dashboard.dummy">
+              <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
+                <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="header">
+          <span class="name">{{dashboard.name}}</span>
+          <!-- <div class="actions" v-if="!dashboard.dummy">
+            <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
+              <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
+            </svg>
+          </div> -->
         </div>
       </div>
     </div>
@@ -130,9 +137,7 @@ export default {
     .grid-item {
       display: flex;
       flex-direction: column;
-      height: 310px;
       padding: 0;
-      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.14902);
       justify-content: space-between;
       flex: 0 0 30%;
       width: 30%;
@@ -143,13 +148,16 @@ export default {
         height: 40px;
         display: flex;
         align-items: center;
-        padding: 10px;
-        background: #4c92c3;
+        padding: 15px 0px;
+        background: transparent;
         color: white;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
         .name {
+          font-weight: bold;
           font-size: 16px;
+          line-height: 19px;
+          color: #44545B;
         }
         .actions {
           height: 30px;
@@ -170,15 +178,54 @@ export default {
         }
       }
       .img-wrap {
-        height: 270px;
+        height: 258px;
         background-color: #fff;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.14902);
+        border-radius: 10px;
+        position: relative;
+        &:hover{
+          .overlay{
+            opacity: 1;
+          }
+        }
         img {
           width: 100%;
           height: 100%;
+          border-radius: 10px;
+        }
+        .overlay{
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 100%;
+          width: 100%;
+          opacity: 0;
+          transition: .5s ease;
+          background-color: rgba(0,0,0,0.7);
+          border-radius: 10px;
+          .actions {
+            height: 100%;
+            display: flex;
+            // align-items: center;
+            justify-content: flex-end;
+            .icon {
+              width: 25px;
+              height: 25px;
+              cursor: pointer;
+              margin: 15px;
+              &:hover{
+                path{
+                  stroke: #000;
+                }
+              }
+            }
+          }
         }
       }
       .info-wrap {

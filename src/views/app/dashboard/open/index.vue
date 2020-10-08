@@ -128,6 +128,7 @@ export default {
 
 <style lang="scss" scoped>
   .dashboards {
+    background-color: transparent !important;
     .page-heading {
       color: #3e4956;
       margin-bottom: 20px;

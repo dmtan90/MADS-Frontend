@@ -47,6 +47,7 @@ Table of Contents
 
 /* 00.Variables and Imports */
 @import url("https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap");
 
 $main-menu-item-height: 110px;
 $main-menu-width: 120px;
@@ -89,6 +90,8 @@ $info-color: #3195a5;
 $success-color: #3e884f;
 $warning-color: #b69329;
 $error-color: #c43d4b;
+
+$logo-path: '/assets/img/mads-logo.svg';
 
 /* 01.Base */
 html {
@@ -302,12 +305,12 @@ hr {
 }
 
 .logo-single {
-  width: 110px;
-  height: 35px;
-  background: url($logoPath) no-repeat;
+  width: 60px;
+  height: 50px;
+  background: url($logo-path) no-repeat;
   background-position: center center;
   display: inline-block;
-  margin-bottom: 60px;
+  margin-bottom: 0px;
 }
 
 .list-item-heading {
@@ -5438,26 +5441,188 @@ input:-webkit-autofill {
   }
 }
 
+.main-height{
+  height: 100vh !important;
+  margin: 0px !important;
+}
+.auth-main{
+  padding: 0px !important;
+}
+
 /* 31.Authorization */
 .auth-card {
   display: flex;
   flex-direction: row;
+  height: 100%;
   @include depth(1);
 
   .image-side {
-    width: 40%;
-    background: url("/assets/img/login-balloon.jpg") no-repeat center top;
+    width: 60%;
+    // background: url("/assets/img/login-balloon.jpg") no-repeat center top;
+    background-color: #3576AB;
     background-size: cover;
-    padding: 80px 40px;
+    padding: 20% 0% 0% 10%;
 
     .h3 {
       line-height: 0.8rem;
     }
+
+    .text-box{
+      width: 60%;
+    }
+
+    .text{
+      color: #fff;
+      margin-bottom: 0px;
+      // font-family: 'Lato';
+      font-family: 'Lato', sans-serif;
+    }
+
+    .t1{
+      font-size: 16px;
+    }
+    .t2{
+      font-size: 55px;
+      margin-top: -2px;
+      font-weight: 900;
+      line-height: 66px;
+    }
+    .t3{
+      font-size: 20px;
+      margin-top: 4px;
+      font-weight: 700;
+      line-height: 24px;
+      ul{
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        li{
+          font-size: 20px;
+          margin-top: 4px;
+          font-weight: 700;
+          line-height: 24px;
+          align-items: center;
+          display: flex;
+          span{
+            background: rgba(255, 255, 255, 0.4);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+    .t4{
+      font-size: 20px;
+      margin-top: 22px;
+      font-weight: 700;
+      line-height: 24px;
+    }
+    .circle{
+
+    }
   }
 
   .form-side {
-    width: 60%;
-    padding: 80px;
+    width: 40%;
+    padding: 70px 70px 0px 60px;
+    .footer-box{
+      width: 100%;
+      margin: 50px 0px 40px 0px;
+      ul{
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        li{
+          font-size: 14px;
+          color: #000;
+          font-weight: 400;
+        }
+      }
+    }
+    .heading-text{
+      font-size: 35px;
+      margin: 78px 0px 8px 0px;
+      color: #000000;
+      font-weight: 900;
+      font-family: 'Lato', sans-serif;
+    }
+    form{
+      padding-right: 70px;
+    }
+    .input-box{
+      margin-top: 22px;
+      label{
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 7px;
+      }
+      .box{
+        background: #F5FBFF;
+        border: 1px solid #DFEAF4;
+        border-radius: 5px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        .icon-box{
+          padding: 0px 15px; 
+          display: flex;
+          .icon{
+            width: 20px;
+            height: 16px;
+          }
+        }
+        input{
+          color: #C4C4C4;
+          font-size: 14px;
+          background: transparent;
+          border: 0px;
+          box-sizing: border-box;
+          height: 45px;
+          font-family: 'Lato', sans-serif;
+        }
+      }
+      
+    }
+    .button-box{
+      width: 100%;
+      button{
+        width: 100%;
+        background: linear-gradient(180deg, #7CCC91 0%, #40B4C1 131.11%);
+        border-radius: 5px; 
+        margin-top: 29px;
+        color: #fff !important;
+        font-weight: 900;
+        font-size: 16px;
+        font-family: 'Lato', sans-serif;
+        height: 45px;
+      }
+    }
+    .checkbox-box{
+      margin: 14px 0px 23px 0px;
+      .custom-control-label{
+        font-size: 14px;
+        color: #000;
+        font-family: 'Lato', sans-serif;
+
+      }
+    }
+    .forgot-text{
+      margin-top: 11px;
+      font-size: 14px;
+      color: #6D6E71;
+      font-family: 'Lato', sans-serif;
+      a{
+        color: #5ed096 !important;
+      }
+    }
   }
 
   @include respond-below(md) {
