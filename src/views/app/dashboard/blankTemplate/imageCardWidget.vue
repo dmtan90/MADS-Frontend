@@ -1,7 +1,6 @@
 <template>
   <div class="image-card-wrap">
-    <div class="image-wrap">
-      <span>Image cap</span>
+    <div class="image-wrap" :style="{background: getImageUrl()}">
     </div>
     <h2>{{getTitle().text}}</h2>
   </div>
@@ -22,6 +21,10 @@ export default {
   methods: {
     getTitle () {
       return this.widget.visual_properties.title
+    },
+    getImageUrl () {
+      let url = this.widget.visual_properties.icon.text
+      return 'url(' + url + ')'
     }
   }
 }
@@ -34,12 +37,8 @@ export default {
     .image-wrap {
       background-color: #777777;
       height: 180px;
-      color: white;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
+      background-size: cover !important;
     }
     span {
       overflow: scroll;

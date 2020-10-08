@@ -101,6 +101,9 @@ export default {
       let height = this.colHeight * this.rows + (20 * (this.rows - 1)) - 28
 
       this.widget.setSize(width, height)
+    },
+    addDataPoint (point) {
+      this.widget.series[0].addPoint(point, true, true)
     }
   },
   watch: {

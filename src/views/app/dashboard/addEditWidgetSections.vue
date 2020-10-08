@@ -80,7 +80,7 @@
         </div>
         <div v-if="selectedSettingsType === 'visualSettings'">
           <div class="visual-settings">
-              <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate"></settings>
+              <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate" @on-file-upload="onFileUpload"></settings>
             </div>
         </div>
         <div v-if="selectedSettingsType === 'dataSettings'">
@@ -112,6 +112,7 @@ import widgetService from '@/services/widget.service'
 import orgService from '@/services/organization.service'
 import settings from './settings'
 import dashboardService from '@/services/dashboard.service'
+import imageService from '@/services/image.service'
 import dasbhoardEventBus from './dashboardBus'
 
 const dataTypeMap = {
@@ -305,11 +306,11 @@ export default {
           type = this.selectedWidget.category[1]
 
           if (this.selectedWidget.category[1] === 'static_card') {
-            height = 2
+            height = 3
           } else if (this.selectedWidget.category[1] === 'image_card') {
             height = 5
           } else if (this.selectedWidget.category[1] === 'dynamic_card') {
-            height = 2
+            height = 6
           }
         } else {
           type = 'highcharts'
@@ -354,10 +355,14 @@ export default {
       }
     },
     updateWidgetInstance () {
+      let seriesData = this.$_.map(this.dataSeries, (serie, index) => {
+        return this.$_.merge({}, serie, { name: this.seriesProp[index].name, color: this.seriesProp[index].color })
+      })
+
       let params = {
         label: this.widgetData.label,
         visual_properties: this.visualProp,
-        series_data: this.dataSeries
+        series_data: seriesData
       }
 
       let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
@@ -385,6 +390,15 @@ export default {
     },
     onVisualSettingsUpdate (value, key) {
       this.$_.set(this.visualProp, key, value)
+    },
+    onFileUpload (file, key) {
+      let formData = new FormData()
+      formData.append('image', file, file.name)
+
+      imageService.create(formData)
+        .then((res) => {
+          this.$_.set(this.visualProp, key, res.url)
+        })
     }
   },
   computed: {

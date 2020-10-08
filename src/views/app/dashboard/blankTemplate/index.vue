@@ -1,8 +1,8 @@
 <template>
-  <div class="theme-container">
+  <div class="theme-container" id="screenshot-wrap">
     <sidebar ref="sidebar" @select-panel="onSelectDashboardPanel" @go-back="onGoBack" :viewMode="viewMode"></sidebar>
     <div class="content-wrap">
-      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel" :viewMode="viewMode"></dashboard-header>
+      <dashboard-header @on-change-mode="onChangeMode" @save-dashboard-panel="onSaveDashboardPanel" @capture-dashboard="captureDashboard" :viewMode="viewMode"></dashboard-header>
       <div class="widgets-wrap" :style="{'background-color': getDashboardBackgroundColor()}">
         <div class="layout-container" v-if="!showLayout" id="dummy-layout" style="visibility: hidden">
           <grid-layout
@@ -52,6 +52,7 @@
                   <command-widget v-if="item.type === 'command_widget'" :commandWidgetObject="commandWidgetObject" :item="item"></command-widget>
                   <div v-if="item.type === 'highcharts'">
                     <widget
+                      :ref="'higchartWidget' + widgetObject[item.i].id"
                       :visualProperties="getVisualProperties(item)"
                       :series="getSeries(item)"
                       :widgetId="getWidgetId(item)"
@@ -91,6 +92,8 @@ import commandWidget from './commandWidget'
 import staticCardWidget from './staticCardWidget'
 import imageCardWidget from './imageCardWidget'
 import dynamicCardWidget from './dynamicCardWidget'
+import html2canvas from 'html2canvas'
+import { saveAs } from 'file-saver'
 
 export default {
   components: {
@@ -126,7 +129,8 @@ export default {
       colHeight: 50,
       showLayout: false,
       realTimeHistoricalSettings: {},
-      realTimeHistoricalSelectedWidget: null
+      realTimeHistoricalSelectedWidget: null,
+      realtimeIntervals: {}
     }
   },
   methods: {
@@ -173,15 +177,29 @@ export default {
       let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, dashboardId: this.selectedDashboard.id, id: panel.id }
 
+      this.$_.forEach(this.realtimeIntervals, (interval) => {
+        clearInterval(interval)
+      })
+
       dashboardService
         .loadDashboardPanel(config)
         .then((panel) => {
           this.setPanel(panel)
           let widgets = panel.widgets
 
+          let isRealtimePanel = panel.filter_metadata.type === 'realtime'
+
           this.$_.forEach(widgets, (widget) => {
             this.widgetObject[widget.id] = this.$_.merge({}, widget, { key: this.getUniqueKey() })
           })
+
+          if (isRealtimePanel) {
+            this.$_.forEach(widgets, (widget) => {
+              if (this.$_.includes(['chart', 'stock_chart'], widget.widget_category[0])) {
+                this.setRealtimeHistoricalSettings(panel.filter_metadata, widget.id)
+              }
+            })
+          }
 
           let commandWidgets = panel.command_widgets
 
@@ -301,6 +319,10 @@ export default {
       let widgetInstanceId = this.widgetObject[item.i].id
       let widgetId = this.widgetObject[item.i].widget_id
 
+      if (this.realtimeIntervals[widgetId]) {
+        clearInterval(this.realtimeIntervals[widgetId])
+      }
+
       let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId, id: widgetInstanceId }
 
       dashboardService.deleteWidgetInstance(config)
@@ -339,26 +361,75 @@ export default {
       this.realTimeHistoricalSelectedWidget = widgetId
       this.$refs.widgetRealTimeHistoricalSettings.open(this.realTimeHistoricalSettings[this.realTimeHistoricalSelectedWidget])
     },
-    setRealtimeHistoricalSettings (params) {
-      let widgetObject = this.widgetObject[this.realTimeHistoricalSelectedWidget]
-      this.realTimeHistoricalSettings[this.realTimeHistoricalSelectedWidget] = params
-
-      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: widgetObject.widget_id, id: widgetObject.id }
-
-      dashboardService.readWidgetInstance(config, params)
-        .then((widgetInstance) => {
-          this.widgetObject[widgetInstance.id] = this.$_.merge({}, widgetInstance, { key: this.getUniqueKey() })
-          let layout = this.layout
-          this.layout = []
-          this.layout = layout
-        })
-
+    setRealtimeHistoricalSettings (params, selectedWidget = null) {
+      let widgetId = selectedWidget || this.realTimeHistoricalSelectedWidget
+      let widgetObject = this.widgetObject[widgetId]
+      this.realTimeHistoricalSettings[widgetId] = params
       this.realTimeHistoricalSelectedWidget = null
+
+      if (this.realtimeIntervals[widgetId]) {
+        clearInterval(this.realtimeIntervals[widgetId])
+      }
+
+      let isRealtimePanel = params.type === 'realtime'
+
+      let realtimeDuration = 0
+
+      if (isRealtimePanel) {
+        if (params.group_interval_type === 'second') {
+          realtimeDuration = params.group_interval * 1000
+        } else if (params.group_interval_type === 'minute') {
+          realtimeDuration = params.group_interval * 60 * 1000
+        }
+      }
+
+      if (!selectedWidget) {
+        this.loadWidgetInstanceData(widgetObject, params)
+      }
+
+      if (isRealtimePanel) {
+        this.realtimeIntervals[widgetId] = setInterval(() => {
+          let fromDate = this.$moment(parseInt(params.to_date)).add(1, 'milliseconds')
+          let toDate = this.$moment(parseInt(params.to_date)).add(realtimeDuration, 'milliseconds')
+          params = this.$_.merge({}, params, { from_date: fromDate.format('x'), to_date: toDate.format('x') })
+          this.loadWidgetInstanceData(widgetObject, params, true)
+        }, realtimeDuration)
+      }
     },
     findGridItemWidth () {
       this.colWidth = this.$refs.dummyGridItem[0].$el.offsetWidth
       document.getElementById('dummy-layout').remove()
       this.showLayout = true
+    },
+    loadWidgetInstanceData (widgetObject, params, realtime = false) {
+      let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: widgetObject.widget_id, id: widgetObject.id }
+
+      dashboardService.readWidgetInstance(config, params)
+        .then((widgetInstance) => {
+          if (realtime) {
+            let dataPoint = widgetInstance.series[0].data[0]
+            let widgetInstanceRef = 'higchartWidget' + widgetInstance.id
+            if (dataPoint) {
+              this.$refs[widgetInstanceRef][0].addDataPoint(dataPoint)
+            }
+          } else {
+            this.widgetObject[widgetInstance.id] = this.$_.merge({}, widgetInstance, { key: this.getUniqueKey() })
+            let layout = this.layout
+            this.layout = []
+            this.layout = layout
+          }
+        })
+    },
+    captureDashboard () {
+      let element = document.getElementById('screenshot-wrap')
+
+      html2canvas(element).then(function (canvas) {
+        // Export canvas as a blob
+        canvas.toBlob(function (blob) {
+        // Generate file download
+          saveAs(blob, 'blank_template.png')
+        })
+      })
     }
   },
   computed: {
@@ -381,6 +452,9 @@ export default {
   },
   beforeDestroy () {
     dasbhoardEventBus.$off()
+    this.$_.forEach(this.realtimeIntervals, (interval) => {
+      clearInterval(interval)
+    })
   }
 }
 </script>
