@@ -29,7 +29,7 @@
         <template v-slot:managers="props">
           <div class="managers-box" v-if="props.rowData.leads.length>0">
             <div class="img-box">
-              <span>{{renderFirstLetter(renderUserFullName(props.rowData.leads))}}</span>
+              <img :src="require(`@/assets/img/avatars/${randomSelector(avatars)}.jpg`)" :alt="randomSelector(avatars)" />
             </div>
             <div class="text-box">
               <div class="name">{{renderUserFullName(props.rowData.leads)}}</div>
@@ -39,7 +39,7 @@
         </template>
         <template v-slot:members="props">
           <div class="members-box">
-            <div class="member-box" v-for="(user, i) in getUserNames(props.rowData.users)" :key="i">
+            <div class="member-box" :style="{backgroundColor: randomSelector(colors)}" v-for="(user, i) in getUserNames(props.rowData.users)" :key="i">
                 <span>{{renderFirstLetter(user)}}</span>
             </div>
           </div>
@@ -122,7 +122,15 @@ export default {
       fields: fieldsDef,
       searchText: '',
       currentPage: 1,
-      perPage: 5
+      perPage: 5,
+      colors: [
+        '#2BCC8E',
+        '#27AAE1',
+        '#FF9D26'
+      ],
+      avatars: [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+      ]
     }
   },
   methods: {
@@ -191,6 +199,12 @@ export default {
       this.currentPage = e
       this.$emit('project-pagination', e)
       ProjectEventBus.$emit('reload-projects')
+    },
+    randomSelector (arr) {
+      const randomItem = this.$_.sample(arr)
+      return randomItem
+      // const random = Math.floor(Math.random() * arr.length)
+      // return arr[random]
     }
   },
   computed: {
@@ -294,16 +308,16 @@ export default {
               height: 45px;
               width: 45px;
               border-radius: 50%;
-              background-color: #FF9D26;
+              // background-color: #FF9D26;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-right: 6px;
-              span{
-                font-weight: bold;
-                font-size: 14px;
-                line-height: 17px;
-                color: #fff;
+              position: relative;
+              img{
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
               }
             }
             .text-box{
@@ -327,7 +341,7 @@ export default {
               height: 35px;
               width: 35px;
               border-radius: 50%;
-              background-color: #FF9D26;
+              // background-color: #FF9D26;
               display: flex;
               align-items: center;
               justify-content: center;
