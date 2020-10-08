@@ -332,7 +332,7 @@
   input, button:not(.btn-login):not(.btn-register):not(.VueCarousel-dot):not(.custom-btn) {
     background-color: #ffffff;
     color: #333;
-    border-color: #e4e9ef;
+    // border-color: #e4e9ef;
     border-radius: 4px;
   }
   input, textarea, .multiselect > .multiselect__tags {
