@@ -28,6 +28,17 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .pagination{
+    justify-content: flex-end;
+    .page-item{
+      &.active{
+        .page-link{
+          background: transparent;
+          border: 1px solid #4cb6bb !important;
+          color: #4cb6bb !important;
+        }
+      }
+    }
+  }
 </style>

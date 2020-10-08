@@ -207,17 +207,23 @@ export default {
           width: 100%;
           opacity: 0;
           transition: .5s ease;
-          background-color: #3e42449c;
+          background-color: rgba(0,0,0,0.7);
           border-radius: 10px;
           .actions {
             height: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            // align-items: center;
+            justify-content: flex-end;
             .icon {
-              width: 30px;
-              height: 30px;
+              width: 25px;
+              height: 25px;
               cursor: pointer;
+              margin: 15px;
+              &:hover{
+                path{
+                  stroke: #000;
+                }
+              }
             }
           }
         }
