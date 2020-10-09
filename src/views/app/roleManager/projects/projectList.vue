@@ -246,7 +246,6 @@ export default {
       border-radius: 8px;
       border:0;
     }
-
     .project-name {
       cursor: pointer;
     }

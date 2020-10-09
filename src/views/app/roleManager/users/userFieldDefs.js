@@ -5,8 +5,9 @@ export default [
     dataClass: ''
   },
   {
-    name: 'user',
-    sortField: 'user'
+    name: '__slot:user',
+    sortField: 'user',
+    title: 'User'
   },
   {
     name: 'role',

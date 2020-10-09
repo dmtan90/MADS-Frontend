@@ -1,14 +1,31 @@
 <template>
   <div class="users">
     <h2 class="page-heading">Users</h2>
-    <div>
+    <div class="view-header">
       <ul class="nav nav-tabs">
         <li :class="{'active': selectedTab === 'users'}" @click="selectedTab = 'users'">USERS ({{totalRows}})</li>
         <li :class="{'active': selectedTab === 'invites'}" @click="selectedTab = 'invites'">INVITES ({{invitationTotalRows}})</li>
       </ul>
+      <div class="right-box" v-if="selectedTab === 'users'">
+        <div class="search-box">
+          <div class="search-icon">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#search"></use>
+            </svg>
+          </div>
+          <b-form-input v-model="searchText" @change="searchUsers()" placeholder="Search users"></b-form-input>
+        </div>
+        <div class="role-filter">
+          <!-- <label for="dropdown-left">Role</label> -->
+          <multiselect v-model="selectedRole" :options="roles" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Select role" label="name" track-by="id">
+          </multiselect>
+        </div>
+        <div class="add-project">
+          <b-button class="add-button" v-b-modal.add-edit-user-modal>Invite user</b-button>
+        </div>
+      </div>
     </div>
-    <div class="table-options" v-if="selectedTab === 'users'">
-      <div class="search-box">
+      <!-- <div class="search-box">
         <b-form-input v-model="searchText" @change="searchUsers()" placeholder="Search users"></b-form-input>
       </div>
       <div class="role-filter">
@@ -18,8 +35,8 @@
       </div>
       <div class="invite-user">
         <b-button v-b-modal.add-edit-user-modal>Invite user</b-button>
-      </div>
-    </div>
+      </div> -->
+
     <user-list v-if="selectedTab === 'users'" :users="displayedUsers" :roles="roles" @user-pagination="userPaginationChange" :totalRows="totalRows"></user-list>
     <invite-list v-if="selectedTab === 'invites'" :invitations="invitations" :roles="roles" @invitation-pagination="invitationPaginationChange" :totalRows="invitationTotalRows"></invite-list>
 
@@ -159,31 +176,106 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../../../assets/css/sass/_buttons.scss';
+
   .users {
     .page-heading {
       color: #3e4956;
       margin-bottom: 20px;
     }
-    .nav {
-      display: inline-flex;
-      font-size: 13px;
-      li {
-        color: #79899d;
-        min-width: 90px;
-        height: 30px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      li.active {
-        color: #2aa7ff;
-        box-shadow: inset 0 -2px 0 #2aa7ff;
-      }
+    .view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+    .right-box{
+        width: 78%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .search-box{
+          width: 55%;
+          border: 1px solid #EEF1F2;
+          box-sizing: border-box;
+          border-radius: 5px;
+          height: 55px;
+          display: flex;
+          background-color: #fff;
+          input{
+            border: 0px;
+            height: 100%;
+            font-size: 14px;
+            line-height: 17px;
+            color: #A7A9AC;
+          }
+          .search-icon{
+            width: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .icon{
+              width: 16px;
+              height: 16px;
+            }
+          }
+        }
+        .role-filter{
+          // height: 55px;
+          .multiselect{
+            // height: 55px;
+            .multiselect__select{
+              height: 55px;
+            }
+            .multiselect__tags{
+              height: 55px;
+              padding: 18px 40px 0 8px !important;
+            }
+          }
+        }
+      }
+      .nav {
+        display: inline-flex;
+        font-size: 13px;
+        border: 0 !important;
+        li {
+          color: #79899d;
+          min-width: 90px;
+          height: 34px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          font-weight: bold;
+          font-size: 14px;
+          line-height: 17px;
+          margin-right: 18px;
+        }
+        li.active {
+          color: #3576AB;
+          border-bottom: 3px solid #3576AB;
+          // box-shadow: inset 0 -2px 0 #3576AB;
+        }
+      }
+    // .nav {
+    //   display: inline-flex;
+    //   font-size: 13px;
+    //   li {
+    //     color: #79899d;
+    //     min-width: 90px;
+    //     height: 30px;
+    //     cursor: pointer;
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //   }
+    //   li.active {
+    //     color: #2aa7ff;
+    //     box-shadow: inset 0 -2px 0 #2aa7ff;
+    //   }
+    // }
     width: 95%;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent;
     padding: 20px;
     .table-options {
       display: flex;

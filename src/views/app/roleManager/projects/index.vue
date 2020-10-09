@@ -243,7 +243,7 @@ export default {
     }
     width: 95%;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent;
     padding: 20px;
   }
 </style>
