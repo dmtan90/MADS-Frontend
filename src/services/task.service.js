@@ -20,6 +20,15 @@ const taskService = {
     } catch (error) {
       return error.data
     }
+  },
+  delete: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/users/' + config.userId + resource + '/' + config.id)
+
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 

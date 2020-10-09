@@ -22,6 +22,9 @@
           {{$_.lowerCase(props.rowData.type)}}
         </span>
       </template>
+      <template v-slot:actions="props">
+        <span class="delete-task" @click="deleteTask(props.rowData.id)">Delete</span>
+      </template>
     </vuetable>
 
     <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
@@ -79,6 +82,21 @@ export default {
     onPaginationChange (e) {
       this.currentPage = e
       this.loadTasks()
+    },
+    deleteTask (taskId) {
+      let loader = this.$loading.show()
+
+      const config = {
+        orgId: this.currentUser.org.id,
+        userId: this.currentUser.id,
+        id: taskId
+      }
+
+      taskService.delete(config)
+        .then((res) => {
+          loader.hide()
+          this.loadTasks()
+        })
     }
   },
   computed: {
@@ -99,6 +117,12 @@ export default {
     .page-heading {
       color: #3e4956;
       margin-bottom: 30px;
+    }
+    .delete-task{
+      text-decoration: underline;
+      color: #2aa7ff;
+      cursor: pointer;
+      padding: 0 10px;
     }
   }
 </style>
