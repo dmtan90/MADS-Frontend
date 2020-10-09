@@ -8,6 +8,7 @@ import Dashboards from './dashboad'
 import IoT_Manager from './iotManager'
 import Alerts_Reminder from './alerts'
 import dataInsights from './dataInsights'
+import digitalTwin from './digitalTwin'
 
 export default {
   state: {
@@ -68,6 +69,7 @@ export default {
     Dashboards,
     IoT_Manager,
     Alerts_Reminder,
-    dataInsights
+    dataInsights,
+    digitalTwin
   }
 }

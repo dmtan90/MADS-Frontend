@@ -24,6 +24,9 @@
     <div class="app-container" :class="{'maximized': getAppState('dataInsights') === 'maximize'}" :style="{'z-index': getAppZIndex('dataInsights')}">
       <data-insights v-if="getAppState('dataInsights') !== 'closed'"></data-insights>
     </div>
+    <div class="app-container" :class="{'maximized': getAppState('digitalTwin') === 'maximize'}" :style="{'z-index': getAppZIndex('digitalTwin')}">
+      <digital-twin v-if="getAppState('digitalTwin') !== 'closed'"></digital-twin>
+    </div>
     <div class="mads-desktop" @contextmenu="$easycm($event,$root)">
       <easy-cm :list="getContextMenuOptions()" @ecmcb="desktopContextMenuEvent" :underline="false" :arrow="true"></easy-cm>
     </div>
@@ -41,6 +44,7 @@ import dashboard from './../dashboard'
 import iotManager from './../iotManager'
 import alertsReminder from './../alertsReminder'
 import dataInsights from './../dataInsights'
+import digitalTwin from './../digitalTwin'
 
 export default {
   components: {
@@ -51,7 +55,8 @@ export default {
     dashboard,
     iotManager,
     alertsReminder,
-    dataInsights
+    dataInsights,
+    digitalTwin
   },
   data () {
     return {
