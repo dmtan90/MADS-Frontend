@@ -18,6 +18,11 @@
             <b-form-input v-model="dashboardData.settings.sidebar_color" type="color"></b-form-input>
           </div>
         </b-form-group>
+        <b-form-group label="Dashboard Thumbnail">
+          <input type="file" @change="uploadThumbnail" />
+          <div v-if="dashboardData.settings.thumbnail_url" class="thumbnail-preview" :style="{background: getThumbnailUrl()}">
+          </div>
+        </b-form-group>
       </b-form>
     </section>
     <section v-if="selectedSectionIndex === 2">
@@ -69,6 +74,7 @@ import { mapGetters } from 'vuex'
 import fields from './panelFieldsDef'
 import Vuetable from 'vuetable-2'
 import dashboardService from '@/services/dashboard.service'
+import imageService from '@/services/image.service'
 import dasbhoardEventBus from './../dashboardBus'
 
 export default {
@@ -84,7 +90,8 @@ export default {
         settings: {
           background_color: '#ffffff',
           client_name: '',
-          sidebar_color: '#000000'
+          sidebar_color: '#000000',
+          thumbnail_url: ''
         }
       },
       panels: [],
@@ -106,13 +113,30 @@ export default {
     uploadLogo (file) {
       this.selectedLogo = file.target.files[0]
     },
+    uploadThumbnail (file) {
+      let formData = new FormData()
+      let thumbnail = file.target.files[0]
+
+      formData.append('image', thumbnail, thumbnail.name)
+      formData.append('path', 'dashboard')
+
+      imageService.create(formData)
+        .then((res) => {
+          let settings = this.$_.merge({}, this.dashboardData.settings, { thumbnail_url: res.url })
+          this.dashboardData = this.$_.merge({}, this.dashboardData, { settings: settings })
+        })
+    },
+    getThumbnailUrl () {
+      return "url('" + this.dashboardData.settings.thumbnail_url + "')"
+    },
     getVisualSettings () {
       return {
         name: this.dashboardData.name,
         settings: {
           background_color: this.dashboardData.settings['background_color'],
           client_name: this.dashboardData.settings['client_name'],
-          sidebar_color: this.dashboardData.settings['sidebar_color']
+          sidebar_color: this.dashboardData.settings['sidebar_color'],
+          thumbnail_url: this.dashboardData.settings['thumbnail_url']
         }
       }
     },
@@ -125,6 +149,7 @@ export default {
       formData.append('settings[background_color]', this.dashboardData.settings['background_color'])
       formData.append('settings[client_name]', this.dashboardData.settings['client_name'])
       formData.append('settings[sidebar_color]', this.dashboardData.settings['sidebar_color'])
+      formData.append('settings[thumbnail_url]', this.dashboardData.settings['thumbnail_url'])
 
       return formData
     },
@@ -170,7 +195,8 @@ export default {
       settings: {
         background_color: this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#FFFFFF',
         client_name: this.selectedDashboard.settings ? this.selectedDashboard.settings['client_name'] || '' : '',
-        sidebar_color: this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
+        sidebar_color: this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000',
+        thumbnail_url: this.selectedDashboard.settings ? this.selectedDashboard.settings['thumbnail_url'] : ''
       }
     })
   }
@@ -200,6 +226,14 @@ export default {
       padding: 0;
       background-color: #F3F7FB !important;
     }
+  }
+  .thumbnail-preview {
+    background-size: cover !important;
+    background-position: center !important;
+    width: 120px;
+    height: 120px;
+    margin-top: 20px;
+    border-radius: 4px;
   }
   .panels-table {
     .icon {

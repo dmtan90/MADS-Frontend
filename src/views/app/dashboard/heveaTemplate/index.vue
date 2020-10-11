@@ -66,7 +66,7 @@ export default {
     display: flex;
     height: 100%;
     .sidebar {
-      width: 180px;
+      width: 150px;
       position: relative;
       height: 100%;
       .sidebar-background {
@@ -143,7 +143,7 @@ export default {
       }
     }
     .content-wrap {
-      width: calc(100% - 180px);
+      width: calc(100% - 150px);
       overflow: auto;
       .content {
         width: 100%;

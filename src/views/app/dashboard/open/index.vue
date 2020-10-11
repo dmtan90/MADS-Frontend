@@ -66,26 +66,31 @@ export default {
             {
               name: 'Shea',
               key: 'shea',
-              imageUrl: '/assets/img/shea.png',
-              dummy: true
+              dummy: true,
+              settings: {
+                thumbnail_url: '/assets/img/shea.png'
+              }
             },
             {
               name: 'Hevea',
               key: 'hevea',
-              imageUrl: '/assets/img/hevea.png',
-              dummy: true
+              dummy: true,
+              settings: {
+                thumbnail_url: '/assets/img/hevea.png'
+              }
             },
             {
               name: 'Smart Agriculture',
               key: 'smart_agriculture',
-              imageUrl: '/assets/img/smart_agriculture.png',
-              dummy: true
+              dummy: true,
+              settings: {
+                thumbnail_url: '/assets/img/smart_agriculture.png'
+              }
             }
           ])
         })
     },
     loadDashboard (id) {
-      let loader = this.$loading.show()
       let config = { orgId: this.currentUser.org.id, id: id }
 
       dashboardService.readId(config)
@@ -93,7 +98,6 @@ export default {
           this.setDashboard(dashboard)
           this.setPanel(dashboard.panels[0])
           DashboardEventBus.$emit('reload-dashboard-panel')
-          loader.hide()
         })
     },
     onSelectDashboard (dashboard) {
@@ -116,6 +120,7 @@ export default {
     this.loadDashboards()
 
     DashboardEventBus.$on('reload-dashboards', () => {
+      this.dashboards = []
       this.loadDashboards()
     })
   },

@@ -194,6 +194,7 @@ export default {
         text-align: left;
         display: flex;
         align-items: center;
+        margin-left: 7px;
         &.new-btn {
           display: flex;
           align-items: center;

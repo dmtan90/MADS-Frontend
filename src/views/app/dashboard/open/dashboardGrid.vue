@@ -7,13 +7,10 @@
     </div> -->
     <div class="grid dashboards-grid row">
       <div class="col-md-4 grid-item" v-for="(dashboard, index) in dashboards" :key="index">
-        <div class="img-wrap" @click="selectDashboard(dashboard)">
-          <img :src="dashboard.imageUrl" alt="" v-if="dashboard.imageUrl">
-          <img src="/assets/img/historian.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Historian)'">
-          <img src="/assets/img/overview.png" alt="" v-if="dashboard.name === 'Smart IoT Pole Demo (Overview)'">
+        <div class="item-wrap" @click="selectDashboard(dashboard)" :style="{background: getThumbnailUrl(dashboard)}">
           <div class="overlay">
              <div class="actions" v-if="!dashboard.dummy">
-              <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
+              <svg class="icon dustbin" @click.stop="deleteDashboard(dashboard)">
                 <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
               </svg>
             </div>
@@ -21,11 +18,6 @@
         </div>
         <div class="header">
           <span class="name">{{dashboard.name}}</span>
-          <!-- <div class="actions" v-if="!dashboard.dummy">
-            <svg class="icon dustbin" @click="deleteDashboard(dashboard)">
-              <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
-            </svg>
-          </div> -->
         </div>
       </div>
     </div>
@@ -81,8 +73,12 @@ export default {
           loader.hide()
         })
     },
-    getBackgroundUrl (url) {
-      return 'url(' + url + ')'
+    getThumbnailUrl (dashboard) {
+      if (dashboard.settings && dashboard.settings.thumbnail_url) {
+        return "url('" + dashboard.settings.thumbnail_url + "')"
+      } else {
+        return "url('')"
+      }
     },
     selectDashboard (dashboard) {
       this.setDashboard(dashboard)
@@ -177,7 +173,7 @@ export default {
           }
         }
       }
-      .img-wrap {
+      .item-wrap {
         height: 258px;
         background-color: #fff;
         cursor: pointer;
@@ -185,11 +181,14 @@ export default {
         align-items: center;
         justify-content: center;
         box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.14902);
-        border-radius: 10px;
+        border-radius: 4px;
         position: relative;
+        background-size: cover !important;
+        background-position: left !important;
+
         &:hover{
           .overlay{
-            opacity: 1;
+            opacity: .8;
           }
         }
         img {
@@ -212,15 +211,17 @@ export default {
           .actions {
             height: 100%;
             display: flex;
-            // align-items: center;
             justify-content: flex-end;
             .icon {
               width: 25px;
               height: 25px;
               cursor: pointer;
               margin: 15px;
-              &:hover{
-                path{
+              padding: 4px;
+              border-radius: 4px;
+              &:hover {
+                background-color: #3576AB;
+                path {
                   stroke: #000;
                 }
               }

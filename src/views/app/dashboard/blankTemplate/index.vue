@@ -30,7 +30,7 @@
                 :is-resizable="isEditMode"
                 :is-mirrored="false"
                 :vertical-compact="true"
-                :margin="[20, 20]"
+                :margin="[10, 18]"
                 :use-css-transforms="true"
             >
                 <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :key="item.i">
@@ -464,16 +464,15 @@ export default {
     display: flex;
     height: 100%;
     .content-wrap {
-      width: calc(100% - 180px);
+      width: calc(100% - 150px);
       overflow: auto;
       background-color: #ffffff;
       position: relative;
       .widgets-wrap {
         width: 100%;
         height: calc(100% - 60px);
-        padding: 10px;
+        padding: 0 5px 20px;
         overflow: auto;
-        // background-color: #f2f2f2;
         .vue-grid-layout {
           .vue-grid-item {
             background-color: white;
