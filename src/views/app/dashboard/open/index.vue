@@ -1,7 +1,7 @@
 <template>
   <div class="h-100">
     <div class="dashboards" v-if="showAllDashboards">
-      <h2 class="page-heading">Hello Sumanta, you have {{dashboards.length}} Dashboards</h2>
+      <h2 class="page-heading">Hello {{currentUser.first_name}}, you have {{dashboards.length}} Dashboards</h2>
       <div class="view-header">
         <ul class="nav nav-tabs">
           <li class="active">Active ({{dashboards.length}})</li>
