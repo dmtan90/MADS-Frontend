@@ -394,6 +394,7 @@ export default {
     onFileUpload (file, key) {
       let formData = new FormData()
       formData.append('image', file, file.name)
+      formData.append('path', 'dashboard')
 
       imageService.create(formData)
         .then((res) => {

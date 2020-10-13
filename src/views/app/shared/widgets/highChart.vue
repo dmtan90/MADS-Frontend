@@ -10,10 +10,12 @@ import Highcharts from 'highcharts'
 import Exporting from 'highcharts/modules/exporting'
 import StockInit from 'highcharts/modules/stock'
 import Boost from 'highcharts/modules/boost'
+import ExportData from 'highcharts/modules/export-data'
 
 Exporting(Highcharts)
 StockInit(Highcharts)
 Boost(Highcharts)
+ExportData(Highcharts)
 
 export default {
   props: {

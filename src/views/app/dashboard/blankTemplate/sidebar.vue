@@ -82,7 +82,7 @@ export default {
 
 <style lang="scss" scoped>
   .sidebar {
-    width: 180px;
+    width: 150px;
     position: relative;
     height: 100%;
     .client-info {
