@@ -79,6 +79,14 @@ const UserService = {
     } catch (error) {
       return error.data
     }
+  },
+  delete: async function (config) {
+    try {
+      const response = await ApiService.delete('/orgs/' + config.orgId + '/users/' + config.userId)
+      return response.data
+    } catch (error) {
+      return error.data
+    }
   }
 }
 

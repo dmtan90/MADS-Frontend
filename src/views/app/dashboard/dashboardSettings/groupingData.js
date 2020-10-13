@@ -28,7 +28,7 @@ export default [
     ]
   },
   {
-    key: '10_seconds',
+    key: '10_second',
     name: '10 seconds',
     type: 'seconds',
     value: 10,
@@ -42,7 +42,7 @@ export default [
     ]
   },
   {
-    key: '15_seconds',
+    key: '15_second',
     name: '15 seconds',
     type: 'seconds',
     value: 15,
@@ -56,7 +56,7 @@ export default [
     ]
   },
   {
-    key: '30_seconds',
+    key: '30_second',
     name: '30 seconds',
     type: 'seconds',
     value: 30,
@@ -82,7 +82,7 @@ export default [
         value: 1
       },
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
@@ -90,7 +90,7 @@ export default [
     ]
   },
   {
-    key: '2_minutes',
+    key: '2_minute',
     name: '2 minutes',
     type: 'minutes',
     value: 2,
@@ -102,19 +102,19 @@ export default [
         value: 1
       },
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
       },
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
@@ -122,7 +122,7 @@ export default [
     ]
   },
   {
-    key: '5_minutes',
+    key: '5_minute',
     name: '5 minutes',
     type: 'minutes',
     value: 5,
@@ -134,25 +134,25 @@ export default [
         value: 1
       },
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
       },
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -160,7 +160,7 @@ export default [
     ]
   },
   {
-    key: '10_minutes',
+    key: '10_minute',
     name: '10 minutes',
     type: 'minutes',
     value: 10,
@@ -172,25 +172,25 @@ export default [
         value: 1
       },
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
       },
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -204,7 +204,7 @@ export default [
     ]
   },
   {
-    key: '15_minutes',
+    key: '15_minute',
     name: '15 minutes',
     type: 'minutes',
     value: 15,
@@ -216,25 +216,25 @@ export default [
         value: 1
       },
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
       },
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -254,31 +254,31 @@ export default [
     ]
   },
   {
-    key: '30_minutes',
+    key: '30_minute',
     name: '30 minutes',
     type: 'minutes',
     value: 30,
     groupingIntervals: [
       {
-        key: '5_seconds',
+        key: '5_second',
         name: '5 seconds',
         type: 'seconds',
         value: 5
       },
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -290,7 +290,7 @@ export default [
         value: 1
       },
       {
-        key: '2_minutes',
+        key: '2_minute',
         name: '2 minutes',
         type: 'minutes',
         value: 2
@@ -304,19 +304,19 @@ export default [
     value: 1,
     groupingIntervals: [
       {
-        key: '10_seconds',
+        key: '10_second',
         name: '10 seconds',
         type: 'seconds',
         value: 10
       },
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -328,13 +328,13 @@ export default [
         value: 1
       },
       {
-        key: '2_minutes',
+        key: '2_minute',
         name: '2 minutes',
         type: 'minutes',
         value: 2
       },
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
@@ -348,13 +348,13 @@ export default [
     value: 2,
     groupingIntervals: [
       {
-        key: '15_seconds',
+        key: '15_second',
         name: '15 seconds',
         type: 'seconds',
         value: 15
       },
       {
-        key: '30_seconds',
+        key: '30_second',
         name: '30 seconds',
         type: 'seconds',
         value: 30
@@ -366,25 +366,25 @@ export default [
         value: 1
       },
       {
-        key: '2_minutes',
+        key: '2_minute',
         name: '2 minutes',
         type: 'minutes',
         value: 2
       },
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
       },
       {
-        key: '10_minutes',
+        key: '10_minute',
         name: '10 minutes',
         type: 'minutes',
         value: 10
       },
       {
-        key: '15_minutes',
+        key: '15_minute',
         name: '15 minutes',
         type: 'minutes',
         value: 15
@@ -404,31 +404,31 @@ export default [
         value: 1
       },
       {
-        key: '2_minutes',
+        key: '2_minute',
         name: '2 minutes',
         type: 'minutes',
         value: 2
       },
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
       },
       {
-        key: '10_minutes',
+        key: '10_minute',
         name: '10 minutes',
         type: 'minutes',
         value: 10
       },
       {
-        key: '15_minutes',
+        key: '15_minute',
         name: '15 minutes',
         type: 'minutes',
         value: 15
       },
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30
@@ -442,25 +442,25 @@ export default [
     value: 10,
     groupingIntervals: [
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
       },
       {
-        key: '10_minutes',
+        key: '10_minute',
         name: '10 minutes',
         type: 'minutes',
         value: 10
       },
       {
-        key: '15_minutes',
+        key: '15_minute',
         name: '15 minutes',
         type: 'minutes',
         value: 15
       },
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30
@@ -480,25 +480,25 @@ export default [
     value: 12,
     groupingIntervals: [
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
       },
       {
-        key: '10_minutes',
+        key: '10_minute',
         name: '10 minutes',
         type: 'minutes',
         value: 10
       },
       {
-        key: '15_minutes',
+        key: '15_minute',
         name: '15 minutes',
         type: 'minutes',
         value: 15
       },
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30
@@ -518,25 +518,25 @@ export default [
     value: 1,
     groupingIntervals: [
       {
-        key: '5_minutes',
+        key: '5_minute',
         name: '5 minutes',
         type: 'minutes',
         value: 5
       },
       {
-        key: '10_minutes',
+        key: '10_minute',
         name: '10 minutes',
         type: 'minutes',
         value: 10
       },
       {
-        key: '15_minutes',
+        key: '15_minute',
         name: '15 minutes',
         type: 'minutes',
         value: 15
       },
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30
@@ -562,7 +562,7 @@ export default [
     value: 7,
     groupingIntervals: [
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30
@@ -612,7 +612,7 @@ export default [
     value: 30,
     groupingIntervals: [
       {
-        key: '30_minutes',
+        key: '30_minute',
         name: '30 minutes',
         type: 'minutes',
         value: 30

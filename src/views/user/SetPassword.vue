@@ -1,35 +1,84 @@
 <template>
-  <b-row class="h-100">
-    <b-colxx xxs="12" md=10  class="mx-auto my-auto">
+<b-row class="main-height">
+    <b-colxx xxs="12" md=12  class="mx-auto auth-main">
       <b-card class="auth-card" no-body>
           <div class="position-relative image-side ">
-            <p class=" text-white h2">{{ $t('pages.magic-is-in-the-details') }}</p>
-              <p class="white mb-0">Please set password</p>
+              <div class="text-box">
+                <p class="text t1">Welcome to</p>
+                <p class="text t2">MADS!</p>
+                <p class="text t3">
+                  <ul>
+                    <li>Monitor</li>
+                    <li><span></span></li>
+                    <li>Automate</li>
+                    <li><span></span></li>
+                    <li>Diagnose</li>
+                    <li><span></span></li>
+                    <li>Secure</li>
+                  </ul>
+                </p>
+                <p class="text t4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              </div>
           </div>
           <div class="form-side">
             <router-link tag="a" to="/"><span class="logo-single"/></router-link>
-            <h6 class="mb-4">{{ $t('user.register')}}</h6>
+            <div class="heading-text">Set Password to MADS!</div>
             <b-form @submit.prevent="formSubmit">
-               <label class="form-group has-float-label mb-4">
-                <input type="text" class="form-control" v-model="firstName">
-                <span>First Name</span>
-              </label>
-              <label class="form-group has-float-label mb-4">
-                <input type="text" class="form-control" v-model="lastName">
-                <span>Last Name</span>
-              </label>
-              <label class="form-group has-float-label mb-4">
-                <input type="password" class="form-control" v-model="password">
-                <span>{{ $t('user.password') }}</span>
-              </label>
-              <label class="form-group has-float-label mb-4">
-                <input type="password" class="form-control" v-model="passwordConfirmation">
-                <span>Password Confirmation</span>
-              </label>
-              <div class="d-flex justify-content-end align-items-center">
-                <b-button type="submit" variant="primary" size="lg" class="btn-shadow btn-register">{{ $t('buttons.register')}}</b-button>
+              <div class="input-box">
+                <label>First Name</label>
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-name"></use>
+                    </svg>
+                  </div>
+                  <input type="text" class="form-control" v-model="firstName" placeholder="Enter your First Name">
+                </div>
+              </div>
+              <div class="input-box">
+                <label>Last Name</label>
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-name"></use>
+                    </svg>
+                  </div>
+                  <input type="text" class="form-control" v-model="lastName" placeholder="Enter your Last Name">
+                </div>
+              </div>
+              <div class="input-box">
+                <label>Password</label>
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-password"></use>
+                    </svg>
+                  </div>
+                  <input type="password" class="form-control" v-model="password" placeholder="Enter your Password">
+                </div>
+              </div>
+              <div class="input-box">
+                <label>Password Confirmation</label>
+                <div class="box">
+                  <div class="icon-box">
+                    <svg class="icon">
+                      <use xlink:href="/assets/img/mads-common-icons.svg#auth-password"></use>
+                    </svg>
+                  </div>
+                  <input type="password" class="form-control" v-model="passwordConfirmation" placeholder="Enter your Confirm Password">
+                </div>
+              </div>
+              <div class="button-box">
+                <b-button type="submit">Register</b-button>
               </div>
           </b-form>
+          <div class="footer-box">
+            <ul>
+              <li>© 2020, DataKrew, All Rights Reserved</li>
+              <li>Privacy & Terms</li>
+              <li>Contact Us</li>
+            </ul>
+          </div>
         </div>
       </b-card>
     </b-colxx>

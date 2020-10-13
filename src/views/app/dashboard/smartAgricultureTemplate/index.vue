@@ -63,7 +63,7 @@ export default {
     display: flex;
     height: 100%;
     .sidebar {
-      width: 180px;
+      width: 150px;
       background-color: #1E3664;
       position: relative;
       padding-top: 40px;
@@ -123,7 +123,7 @@ export default {
       }
     }
     .content-wrap {
-      width: calc(100% - 180px);
+      width: calc(100% - 150px);
       overflow: auto;
       position: relative;
       .content {

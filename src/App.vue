@@ -330,10 +330,9 @@
     }
   }
   input, button:not(.btn-login):not(.btn-register):not(.VueCarousel-dot):not(.custom-btn) {
-    background-color: #ffffff !important;
-    color: #333 !important;
-    border-color: #e4e9ef !important;
-    border-radius: 4px !important;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 4px;
   }
   input, textarea, .multiselect > .multiselect__tags {
     border-radius: 4px !important;

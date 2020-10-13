@@ -4,10 +4,10 @@
       <div class="left-panel col col-3">
         <ul class="sections">
           <li v-for="section in modalSections"
-          :key="section.index" @click="selectSection(section)"
-          class="item"
-          :class="{'active': section.index === selectedSectionIndex, 'visible': canSelectSection(section.index)}">
-            <span v-html="section.name"></span>
+            :key="section.index" @click="selectSection(section)"
+            class="item"
+            :class="{'active': section.index === selectedSectionIndex, 'visible': canSelectSection(section.index), 'd-none': section.hidden}">
+              <span v-html="section.name"></span>
           </li>
         </ul>
       </div>

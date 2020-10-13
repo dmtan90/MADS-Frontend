@@ -25,6 +25,10 @@ export default [
   {
     name: '__slot:status',
     title: 'Status'
+  },
+  {
+    name: '__slot:actions',
+    title: 'Actions'
   }
   // {
   //   name: 'created_at',

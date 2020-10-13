@@ -1,37 +1,51 @@
 <template>
   <div class="dashboard-header">
-    <span class="dashboard-name">{{selectedDashboard.name}}</span>
+    <span class="dashboard-name">{{selectedDashboard && selectedDashboard.name}}</span>
     <div class="right-section">
-      <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
-      <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Export</b-button>
-      <b-button class="round-btn" v-if="selectedMode.key === 'view'">Download</b-button>
-      <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
-        <span>New Widget</span>
-        <svg class="icon plus">
-          <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
-        </svg>
-      </b-button>
-      <b-button class="round-btn" v-if="selectedMode.key === 'edit'">Import</b-button>
-      <b-button class="round-btn save-btn" v-if="selectedMode.key === 'edit'" @click="saveDashboard()">
-        <span>Save</span>
-        <svg class="icon">
-          <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
-        </svg>
-      </b-button>
+      <span v-if="!viewMode" style="display: inline-flex">
+        <multiselect class="select-dashboard" v-if="selectedMode.key === 'view'" :options="options" @select="onselectTheme" :select-label="''" :selected-label="''" :deselect-label="''" placeholder="Dashboard Explorer" label="name" track-by="key" :allow-empty="false"></multiselect>
+        <multiselect class="select-mode" v-model="selectedMode" @select="onSelectMode" :options="modes" :select-label="''" :selected-label="''" :deselect-label="''" label="name" track-by="key" :allow-empty="false"></multiselect>
+        <b-button class="round-btn export-btn" v-if="selectedMode.key === 'view'" @click="exportDashboard()">
+          Export
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#export"></use>
+          </svg>
+        </b-button>
+        <b-button class="round-btn download-btn" v-if="selectedMode.key === 'view'">
+          Download
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#download-circle"></use>
+          </svg>
+         </b-button>
+        <b-button class="round-btn new-btn" v-if="selectedMode.key === 'edit'" @click="addWidget()">
+          <span>New Widget</span>
+          <svg class="icon plus">
+            <use xlink:href="/assets/img/mads-common-icons.svg#plus"></use>
+          </svg>
+        </b-button>
+        <b-button class="round-btn save-btn" v-if="selectedMode.key === 'edit'" @click="saveDashboard()">
+          <span>Save</span>
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-common-icons.svg#save"></use>
+          </svg>
+        </b-button>
+      </span>
+      <span>
         <svg class="icon" v-if="selectedMode.key === 'view'" @click="openRealtimeHistoricalSettings()">
-        <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
-      </svg>
-      <svg class="icon" v-if="selectedMode.key === 'view'" @click="openSettings()">
-        <use xlink:href="/assets/img/mads-common-icons.svg#settings"></use>
-      </svg>
-      <!-- <svg class="icon" v-if="selectedMode.key === 'view'">
-        <use xlink:href="/assets/img/mads-common-icons.svg#open-menu"></use>
-      </svg> -->
+          <use xlink:href="/assets/img/mads-common-icons.svg#clock"></use>
+        </svg>
+        <svg class="icon" v-if="selectedMode.key === 'view' && !viewMode" @click="openSettings()">
+          <use xlink:href="/assets/img/mads-common-icons.svg#settings-solid"></use>
+        </svg>
+        <svg class="icon" v-if="selectedMode.key === 'view'" @click="captureDashboard()">
+          <use xlink:href="/assets/img/mads-common-icons.svg#screenshot"></use>
+        </svg>
+      </span>
     </div>
 
-    <add-widget ref="addWidget"></add-widget>
-    <dashboard-settings ref="dashboardSettings"></dashboard-settings>
+    <add-widget ref="addWidget" v-if="!viewMode"></add-widget>
+    <dashboard-settings ref="dashboardSettings" v-if="!viewMode"></dashboard-settings>
+    <export-dashboard ref="exportDashboard" v-if="!viewMode"></export-dashboard>
     <realtime-historical-settings ref="realTimeHistoricalSettings"></realtime-historical-settings>
   </div>
 </template>
@@ -40,13 +54,20 @@
 import { mapActions, mapGetters } from 'vuex'
 import addWidget from './addEditWidget'
 import dashboardSettings from './dashboardSettings/editSettings'
+import exportDashboard from './exportDashboardModal'
 import realtimeHistoricalSettings from './dashboardSettings/realTimeHistoricalSettings'
 
 export default {
   components: {
     addWidget,
     dashboardSettings,
+    exportDashboard,
     realtimeHistoricalSettings
+  },
+  props: {
+    viewMode: {
+      default: false
+    }
   },
   data () {
     return {
@@ -84,7 +105,7 @@ export default {
       this.selectTheme(dashboard)
     },
     onSelectMode (mode) {
-      this.dashboardName = this.selectedDashboard.name
+      this.dashboardName = this.selectedDashboard ? this.selectedDashboard.name : ''
       this.$emit('on-change-mode', mode.key)
     },
     saveDashboard () {
@@ -94,8 +115,14 @@ export default {
     openSettings () {
       this.$refs.dashboardSettings.edit()
     },
+    exportDashboard () {
+      this.$refs.exportDashboard.open()
+    },
     openRealtimeHistoricalSettings () {
       this.$refs.realTimeHistoricalSettings.open()
+    },
+    captureDashboard () {
+      this.$emit('capture-dashboard')
     }
   },
   mounted () {
@@ -110,16 +137,19 @@ export default {
 <style lang="scss" scoped>
   .dashboard-header {
     height: 60px;
-    background-color: white;
+    background-color: #F3F6F7;
     border-bottom: 1px solid #c8cbce;
     display: flex;
     align-items: center;
     // position: absolute;
     width: 100%;
     .dashboard-name {
-      font-size: 18px;
       padding-left: 10px;
       text-transform: capitalize;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 22px;
+      color: #3576AB;
     }
     .dashboard-name-input {
       width: 300px;
@@ -130,18 +160,40 @@ export default {
       display: flex;
       align-items: center;
       .select-dashboard {
-        width: 180px;
+        width: 190px;
       }
       .select-mode {
-        width: 150px;
+        width: 190px;
+      }
+      .export-btn{
+        border: 1.5px solid #3576AB !important;
+        color: #3576AB !important;
+        padding: 9px 11px !important;
+        width: 104px !important;
+        background-color: transparent !important;
+        margin: 0px 7px;
+        .icon{
+            width: 24px;
+            height: 24px;
+            margin-left: 16px;
+        }   
+      }
+      .download-btn{
+        background: #3576AB !important;
+        border: 1.5px solid #3576AB !important;
+        width: 124px !important;
+        color: #FFFFFF !important;
       }
       .round-btn {
+        border-radius: 3px !important;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 17px;
+        padding: 9px 11px;
         height: 40px;
-        border-radius: 20px !important;
-        min-width: 90px;
-        border-color: #000000 !important;
-        line-height: 1;
-        font-size: 15px;
+        text-align: left;
+        display: flex;
+        align-items: center;
         margin-left: 7px;
         &.new-btn {
           display: flex;
@@ -178,16 +230,19 @@ export default {
       margin-left: 7px;
       cursor: pointer;
       .multiselect__tags {
-        border-radius: 20px !important;
-        border-color: #000000 !important;
-        color: #333333;
+          background: #FFFFFF;
+          border-radius: 3px !important;
+          border: 0px;
+          font-size: 14px;
+          line-height: 17px;
+          color: #C4C4C4 !important;
       }
       .multiselect__single {
         font-size: 15px;
       }
-      .multiselect__placeholder {
-        color: #333333;
-      }
+      // .multiselect__placeholder {
+      //   color: #333333;
+      // }
     }
   }
 </style>

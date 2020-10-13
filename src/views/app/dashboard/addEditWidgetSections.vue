@@ -76,11 +76,11 @@
       <div v-if="selectedClassification !== 'command'">
         <div class="widget-category settings-category">
           <span class="category" :class="{'active': selectedSettingsType === 'visualSettings'}" @click="setSettingsType('visualSettings')">Visual Settings</span>
-          <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')">Data Settings</span>
+          <span class="category" :class="{'active': selectedSettingsType === 'dataSettings'}" @click="setSettingsType('dataSettings')" v-if="isDataSettingsVisible">Data Settings</span>
         </div>
         <div v-if="selectedSettingsType === 'visualSettings'">
           <div class="visual-settings">
-              <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate"></settings>
+              <settings :settings="visualSettings" :visualProp="visualProp" @on-setting-upate="onVisualSettingsUpdate" @on-file-upload="onFileUpload"></settings>
             </div>
         </div>
         <div v-if="selectedSettingsType === 'dataSettings'">
@@ -112,6 +112,7 @@ import widgetService from '@/services/widget.service'
 import orgService from '@/services/organization.service'
 import settings from './settings'
 import dashboardService from '@/services/dashboard.service'
+import imageService from '@/services/image.service'
 import dasbhoardEventBus from './dashboardBus'
 
 const dataTypeMap = {
@@ -162,7 +163,8 @@ export default {
       },
       dataTypeMap: dataTypeMap,
       selectedNodes: [],
-      widgetsLoaded: false
+      widgetsLoaded: false,
+      isDataSettingsVisible: true
     }
   },
   methods: {
@@ -183,13 +185,21 @@ export default {
     },
     setSelectedWidget (widget) {
       this.selectedWidget = widget
+      let widgetCategory = this.selectedWidget.category[1]
+      if (this.$_.includes(['static_card', 'image_card'], widgetCategory)) {
+        this.$emit('hide-section', 1)
+        this.isDataSettingsVisible = false
+      } else {
+        this.$emit('show-section', 1)
+        this.isDataSettingsVisible = true
+      }
       this.loadSelectedWidget(widget.id)
     },
     setCommandWidget (widget) {
       this.selectedWidget = widget
     },
     setDataSeries () {
-      if (this.selectedClassification === 'command') {
+      if (this.selectedClassification === 'command' || !this.isDataSettingsVisible) {
         return
       }
 
@@ -285,12 +295,35 @@ export default {
       let yOffset = this.findDashboardYOffset()
       let widgetLayots = this.selectedPanel.widget_layouts || {}
 
+      let type = ''
+      let height = 0
+
+      if (isCommandWidget) {
+        type = 'command_widget'
+        height = 9
+      } else {
+        if (this.$_.includes(['static_card', 'image_card', 'dynamic_card'], this.selectedWidget.category[1])) {
+          type = this.selectedWidget.category[1]
+
+          if (this.selectedWidget.category[1] === 'static_card') {
+            height = 3
+          } else if (this.selectedWidget.category[1] === 'image_card') {
+            height = 5
+          } else if (this.selectedWidget.category[1] === 'dynamic_card') {
+            height = 6
+          }
+        } else {
+          type = 'highcharts'
+          height = 4
+        }
+      }
+
       widgetLayots[widgetInstance.id] = {
-        w: isCommandWidget ? 4 : 4,
-        h: isCommandWidget ? 9 : 4,
+        w: 4,
+        h: height,
         x: 0,
         y: yOffset,
-        type: isCommandWidget ? 'command_widget' : 'highcharts'
+        type: type
       }
 
       let params = { widget_layouts: widgetLayots }
@@ -322,10 +355,14 @@ export default {
       }
     },
     updateWidgetInstance () {
+      let seriesData = this.$_.map(this.dataSeries, (serie, index) => {
+        return this.$_.merge({}, serie, { name: this.seriesProp[index].name, color: this.seriesProp[index].color })
+      })
+
       let params = {
         label: this.widgetData.label,
         visual_properties: this.visualProp,
-        series_data: this.dataSeries
+        series_data: seriesData
       }
 
       let config = { orgId: this.currentUser.org.id, panelId: this.selectedPanel.id, widgetId: this.selectedWidget.id, id: this.widgetData.id }
@@ -353,6 +390,16 @@ export default {
     },
     onVisualSettingsUpdate (value, key) {
       this.$_.set(this.visualProp, key, value)
+    },
+    onFileUpload (file, key) {
+      let formData = new FormData()
+      formData.append('image', file, file.name)
+      formData.append('path', 'dashboard')
+
+      imageService.create(formData)
+        .then((res) => {
+          this.$_.set(this.visualProp, key, res.url)
+        })
     }
   },
   computed: {

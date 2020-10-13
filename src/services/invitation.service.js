@@ -4,7 +4,7 @@ const resource = '/invitations'
 const invitationService = {
   create: async function (config, payload) {
     try {
-      const response = await ApiService.post('/orgs/' + config.orgId  + resource, payload)
+      const response = await ApiService.post('/orgs/' + config.orgId + resource, payload)
 
       return response.data
     } catch (error) {
@@ -22,7 +22,7 @@ const invitationService = {
   },
   update: async function (config, payload) {
     try {
-      const response = await ApiService.put('/orgs/' + config.orgId + resource + "/" + config.id, payload)
+      const response = await ApiService.put('/orgs/' + config.orgId + resource + '/' + config.id, payload)
 
       return response.data
     } catch (error) {

@@ -76,6 +76,7 @@ export default {
       dashboardService.update(config, params)
         .then((response) => {
           dasbhoardEventBus.$emit('reload-dashboard')
+          dasbhoardEventBus.$emit('reload-dashboards')
           loader.hide()
         })
     }

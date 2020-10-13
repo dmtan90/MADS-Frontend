@@ -4,11 +4,11 @@
       <img :src="getClientLogo()" alt="" class="logo">
     </div>
     <ul>
-      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': selectedPanel.id === panel.id}" :style="{'background-color': getPanelBackgroundColor(panel)}" @click="selectPanel(panel)">
+      <li v-for="panel in getDashboardPanels()" :key="panel.id" :class="{'active': (selectedPanel && selectedPanel.id === panel.id)}" :style="{'background-color': getPanelBackgroundColor(panel)}" @click="selectPanel(panel)">
         {{panel.name}}
       </li>
     </ul>
-    <div class="action-btn-group">
+    <div class="action-btn-group" v-if="!viewMode">
       <b-button class="new-tab-btn sidebar-btn" @click="addNewTab()">
         <span>New Tab</span>
         <svg class="icon plus">
@@ -23,7 +23,7 @@
       </b-button>
     </div>
 
-    <new-tab-modal ref="newTabModal" @panel-created="selectPanel"></new-tab-modal>
+    <new-tab-modal ref="newTabModal" @panel-created="selectPanel" v-if="!viewMode"></new-tab-modal>
   </div>
 </template>
 
@@ -34,6 +34,11 @@ import newTabModal from './newTabModal'
 export default {
   components: {
     newTabModal
+  },
+  props: {
+    viewMode: {
+      default: false
+    }
   },
   data () {
     return {
@@ -56,17 +61,17 @@ export default {
       return panels
     },
     getSidebarBackgroundColor () {
-      return this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
+      return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
     },
     getPanelBackgroundColor (panel) {
-      if (panel.id === this.selectedPanel.id) {
-        return this.selectedDashboard.settings ? this.selectedDashboard.settings['background_color'] : '#ffffff'
+      if (this.selectedPanel && (panel.id === this.selectedPanel.id)) {
+        return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['background_color'] : '#ffffff'
       } else {
-        return this.selectedDashboard.settings ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
+        return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['sidebar_color'] : '#000000'
       }
     },
     getClientLogo () {
-      return this.selectedDashboard.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT1lRN5ckqJeNqVqrbBvC7ThG8dUc7lmUCFxw&usqp=CAU'
+      return (this.selectedDashboard && this.selectedDashboard.avatar) ? this.selectedDashboard.avatar : 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT1lRN5ckqJeNqVqrbBvC7ThG8dUc7lmUCFxw&usqp=CAU'
     }
   },
   computed: {
@@ -77,7 +82,7 @@ export default {
 
 <style lang="scss" scoped>
   .sidebar {
-    width: 180px;
+    width: 150px;
     position: relative;
     height: 100%;
     .client-info {

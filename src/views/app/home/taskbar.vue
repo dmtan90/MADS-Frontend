@@ -51,6 +51,20 @@
           <div class="active"></div>
         </div>
 
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('dataInsights') !== 'closed'}" @click="openAppWindow('dataInsights')" v-tooltip="'Data Insights'">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-data-insights"></use>
+          </svg>
+          <div class="active"></div>
+        </div>
+
+        <div class="taskbar-icons app-icon" :class="{'opened': getAppState('digitalTwin') !== 'closed'}" @click="openAppWindow('digitalTwin')" v-tooltip="'Digital Twin'">
+          <svg class="icon">
+            <use xlink:href="/assets/img/mads-app-icons.svg#mads-digital-twin"></use>
+          </svg>
+          <div class="active"></div>
+        </div>
+
       </div>
       <div class="taskbar-right" :class="{'auto-margin': isScreenLocked}">
         <div class="options">
