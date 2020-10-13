@@ -186,13 +186,14 @@ export default {
       return users
     },
     archiveProject (project) {
+      // debugger
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
         archived: true
       }
       projectService.update(config, payload)
         .then((res) => {
-          ProjectEventBus.$emit('reload-projects')
+          ProjectEventBus.$emit('reload-archived')
         })
     },
     onPaginationChange (e) {

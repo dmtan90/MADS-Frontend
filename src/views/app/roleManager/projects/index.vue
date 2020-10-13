@@ -33,6 +33,8 @@
       <archived-list :projects="archived" v-if="selectedTab === 'archived'" :source="source" @archived-pagination="archivedPaginationChange" :totalRows="archivedTotalRows"></archived-list>
     </div>
     <project-grid :projects="active" v-if="viewType === 'grid'" :source="source"></project-grid>
+
+    <mads-pagination v-if="viewType === 'grid'" :perPage="perPage" :onChange="projectPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
   </div>
 </template>
 
@@ -43,12 +45,14 @@ import projectList from './projectList'
 import projectGrid from './projectGrid'
 import ProjectEventBus from './projectEventBus'
 import archivedList from './archivedList'
+import madsPagination from '../../shared/madsPagination'
 
 export default {
   components: {
     projectList,
     projectGrid,
-    archivedList
+    archivedList,
+    madsPagination
   },
   props: {
     source: {
@@ -104,6 +108,7 @@ export default {
     },
     projectPaginationChange (paginationData) {
       this.currentPage = paginationData
+      this.loadProjects()
     },
     archivedPaginationChange (paginationData) {
       this.archivedCurrentPage = paginationData
