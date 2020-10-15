@@ -52,7 +52,7 @@ import roleService from '@/services/role.service'
 import invitationService from '@/services/invitation.service'
 import userList from './userList'
 import inviteList from './inviteList'
-import UserEventBus from './../eventBus'
+import EventBus from './../eventBus'
 
 export default {
   components: {
@@ -94,7 +94,8 @@ export default {
               originialRole: user.role,
               role: user.role.name,
               assets: [],
-              apps: []
+              apps: [],
+              otherInfo: user
             }
           })
           this.displayedUsers = this.users
@@ -156,21 +157,21 @@ export default {
     this.loadRoles()
     this.loadInvitations()
 
-    UserEventBus.$on('reload-user-list', () => {
+    EventBus.$on('reload-user-list', () => {
       this.loadUsers()
     })
-    UserEventBus.$on('reload-invite-list', () => {
+    EventBus.$on('reload-invite-list', () => {
       this.loadInvitations()
     })
 
-    UserEventBus.$on('reload-users', () => {
+    EventBus.$on('reload-users', () => {
       this.loadUsers()
       this.loadInvitations()
       this.selectedTab = 'invites'
     })
   },
   beforeDestroy () {
-    UserEventBus.$off()
+    EventBus.$off()
   }
 }
 </script>

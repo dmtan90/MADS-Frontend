@@ -285,6 +285,8 @@ export default {
     .right-panel {
       padding-bottom: 100px;
       .horizontal-form {
+        display: flex;
+        align-items: center;
         fieldset {
           display: inline-block;
         }

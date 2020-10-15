@@ -37,12 +37,17 @@
                 <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
               </svg>
             </span>
+            <span class="icon-box" @click="viewUser(props.rowData)">
+              <svg class="icon">
+                <use xlink:href="/assets/img/mads-common-icons.svg#view"></use>
+              </svg>
+            </span>
           </div>
       </template>
     </vuetable>
 
     <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
-
+    <view-delete-user ref="viewDeleteUser" :isDelete="isDelete"></view-delete-user>
     <add-edit-user ref="addEditUser" :roles="roles"></add-edit-user>
   </div>
 </template>
@@ -51,18 +56,18 @@
 import Vuetable from 'vuetable-2'
 import userFields from './userFieldDefs'
 import addEditUser from './addEditUser'
-import userService from '@/services/user.service'
 import { mapGetters } from 'vuex'
-import UserEventBus from './../eventBus'
-// import UserEventBus from './../eventBus'
+import EventBus from './../eventBus'
 import madsPagination from '../../shared/madsPagination'
+import viewDeleteUser from './viewDeleteUser'
 
 export default {
   props: ['users', 'roles', 'totalRows'],
   components: {
     Vuetable,
     addEditUser,
-    madsPagination
+    madsPagination,
+    viewDeleteUser
   },
   data () {
     return {
@@ -72,7 +77,8 @@ export default {
       perPage: 5,
       avatars: [
         '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
-      ]
+      ],
+      isDelete: false
     }
   },
   methods: {
@@ -86,17 +92,16 @@ export default {
       this.$refs.addEditUser.edit(user)
     },
     deleteUser (user) {
-      let config = { orgId: this.currentUser.org.id, userId: user.id }
-
-      userService.delete(config)
-        .then((res) => {
-          UserEventBus.$emit('reload-user-list')
-        })
+      this.isDelete = true
+      this.$refs.viewDeleteUser.delete(user)
+    },
+    viewUser (user) {
+      this.$refs.viewDeleteUser.view(user)
     },
     onPaginationChange (e) {
       this.currentPage = e
       this.$emit('user-pagination', e)
-      UserEventBus.$emit('reload-user-list')
+      EventBus.$emit('reload-user-list')
     },
     randomSelector (arr) {
       const randomItem = this.$_.sample(arr)
@@ -107,7 +112,7 @@ export default {
     ...mapGetters(['currentUser'])
   },
   beforeDestroy () {
-    UserEventBus.$off()
+    EventBus.$off()
   }
 }
 </script>
