@@ -157,6 +157,11 @@ export default {
     font-weight: bold;
     width: 100%;
 }
+.delete-box{
+    font-size: 20px;
+    margin-top: 40px;
+    font-weight: bold;
+}
 .main-panel{
     width: 100%;
 }

@@ -128,6 +128,7 @@ export default {
       this.loadProjects()
     })
     ProjectEventBus.$on('reload-archived', () => {
+      this.selectedTab = 'archived'
       this.loadArchived()
     })
   },

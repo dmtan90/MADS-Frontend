@@ -53,36 +53,42 @@
         </template>
         <template v-slot:actions="props" v-if="!source">
           <div class="action-box">
-            <span class="icon-box" @click="editProject(props.rowData)">
+            <span class="icon-box" id="p-edit" @click="editProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#edit"></use>
               </svg>
             </span>
-            <span class="icon-box" @click="deleteProject(props.rowData)">
+            <span class="icon-box" id="p-delete" @click="deleteProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
               </svg>
             </span>
-            <span class="icon-box" @click="archiveProject(props.rowData)">
+            <span class="icon-box" id="p-archive" @click="archiveProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#archive"></use>
               </svg>
             </span>
-            <span class="icon-box">
-              <svg class="icon">
+            <span class="icon-box" id="p-view" @click="viewProject(props.rowData)">
+             <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#view"></use>
               </svg>
             </span>
+            <b-tooltip target="p-edit" title="Edit"></b-tooltip>
+            <b-tooltip target="p-delete" title="Delete"></b-tooltip>
+            <b-tooltip target="p-archive" title="Archive"></b-tooltip>
+            <b-tooltip target="p-view" title="View"></b-tooltip>
           </div>
 
         </template>
       </vuetable>
-
+      <delete-project-modal ref="deleteProject"></delete-project-modal>
+      <archive-modal ref="archiveProject"></archive-modal>
       <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
 
     </div>
 
     <!-- Modal Section -->
+    <view-project ref="viewProject"></view-project>
     <add-edit-project ref="addEditProject"></add-edit-project>
   </div>
 </template>
@@ -92,9 +98,11 @@ import { mapGetters, mapActions } from 'vuex'
 import fieldsDef from './projectFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditProject from './addEditProject'
-import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
 import madsPagination from '../../shared/madsPagination'
+import viewProject from './viewProject'
+import archiveModal from './archiveModal'
+import deleteProjectModal from './deleteProjectModal'
 
 export default {
   props: {
@@ -115,7 +123,10 @@ export default {
   components: {
     Vuetable,
     addEditProject,
-    madsPagination
+    madsPagination,
+    viewProject,
+    archiveModal,
+    deleteProjectModal
   },
   data () {
     return {
@@ -143,10 +154,10 @@ export default {
     },
     deleteProject (project) {
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
-      projectService.delete(config)
-        .then((response) => {
-          ProjectEventBus.$emit('reload-projects')
-        })
+      this.$refs.deleteProject.delete(config)
+    },
+    viewProject (project) {
+      this.$refs.viewProject.view(project)
     },
     onSelectProject (project) {
       this.selectProject(project)
@@ -186,15 +197,11 @@ export default {
       return users
     },
     archiveProject (project) {
-      // debugger
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
       let payload = {
         archived: true
       }
-      projectService.update(config, payload)
-        .then((res) => {
-          ProjectEventBus.$emit('reload-archived')
-        })
+      this.$refs.archiveProject.archive(config, payload)
     },
     onPaginationChange (e) {
       this.currentPage = e
