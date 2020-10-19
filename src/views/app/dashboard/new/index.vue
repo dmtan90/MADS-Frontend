@@ -1,7 +1,7 @@
 <template>
   <div class="new-section h-100">
     <div class="themes-section" v-if="showAllThemes">
-      <b-row>
+      <!-- <b-row> -->
         <!-- <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card">
           <div class="theme-container" @click="selectTheme({})">
             <div class="theme-image"></div>
@@ -10,7 +10,18 @@
             </div>
           </div>
         </b-colxx> -->
-        <b-colxx lg="3" md="3" sm="4" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
+        <div class="grid dashboards-grid row">
+          <div class="col-md-4 grid-item" v-for="(theme, index) in dashboardThemes" :key="index">
+            <div class="item-wrap" @click="openNewDashboardModal(theme)" :style="{background: getBackgroundUrl(theme.imageUrl)}">
+              <div class="overlay">
+              </div>
+            </div>
+            <div class="header">
+              <span class="name">{{theme.name}}</span>
+            </div>
+          </div>
+        </div>
+        <!-- <b-colxx lg="3" md="3" sm="3" xs="12" xxs="12" class="theme-card" v-for="(theme, index) in dashboardThemes" :key="index">
           <div class="theme-container" @click="openNewDashboardModal(theme)">
             <div class="theme-image" :style="{background: getBackgroundUrl(theme.imageUrl)}">
             </div>
@@ -20,8 +31,8 @@
               </h3>
             </div>
           </div>
-        </b-colxx>
-      </b-row>
+        </b-colxx> -->
+      <!-- </b-row> -->
     </div>
     <div class="detail-section h-100" v-else>
       <blank-template v-if="selectedTheme.key === 'blank'" @show-all="onShowAllThemes()"></blank-template>
@@ -181,6 +192,136 @@ export default {
     }
     .theme-card {
       margin: 20px 0;
+    }
+  }
+  .grid.dashboards-grid {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 40px;
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      justify-content: space-between;
+      flex: 0 0 30%;
+      width: 30%;
+      border-radius: 4px;
+      margin-bottom: 30px;
+      margin-right: 30px;
+      .header {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 15px 0px;
+        background: transparent;
+        color: white;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        .name {
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 19px;
+          color: #44545B;
+        }
+        .actions {
+          height: 30px;
+          margin: 0 0 0 auto;
+          display: flex;
+          .icon {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+            cursor: pointer;
+            background: white;
+            border-radius: 4px;
+            padding: 5px;
+            &.dustbin {
+              background-color: #4c92c3;
+            }
+          }
+        }
+      }
+      .item-wrap {
+        height: 258px;
+        background-color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.14902);
+        border-radius: 4px;
+        position: relative;
+        background-size: cover !important;
+        background-position: left !important;
+
+        &:hover{
+          .overlay{
+            opacity: .8;
+          }
+        }
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 10px;
+        }
+        .overlay{
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 100%;
+          width: 100%;
+          opacity: 0;
+          transition: .5s ease;
+          background-color: rgba(0,0,0,0.7);
+          border-radius: 10px;
+          .actions {
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            .icon {
+              width: 25px;
+              height: 25px;
+              cursor: pointer;
+              margin: 15px;
+              padding: 4px;
+              border-radius: 4px;
+              &:hover {
+                background-color: #3576AB;
+                path {
+                  stroke: #000;
+                }
+              }
+            }
+          }
+        }
+      }
+      .info-wrap {
+        height: 90px;
+        padding: 20px;
+        .info {
+          display: flex;
+          font-size: 14px;
+          .title {
+            width: 60px;
+            font-weight: 700;
+              &::after {
+              content: ':';
+            }
+          }
+          .value {
+            padding-left: 15px;
+            &.location {
+              text-decoration: underline;
+              color: #2aa7ff;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
     }
   }
 </style>
