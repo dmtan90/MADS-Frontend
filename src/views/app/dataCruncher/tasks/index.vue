@@ -23,7 +23,13 @@
         </span>
       </template>
       <template v-slot:actions="props">
-        <span class="delete-task" @click="deleteTask(props.rowData.id)">Delete</span>
+        <div class="action-box">
+          <span class="icon-box"  @click="deleteTask(props.rowData.id)">
+            <svg class="icon">
+              <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
+            </svg>
+          </span>
+        </div>
       </template>
     </vuetable>
 
@@ -112,7 +118,7 @@ export default {
   .tasks-inbox-wrap {
     width: 95%;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent;
     padding: 20px;
     .page-heading {
       color: #3e4956;
@@ -123,6 +129,17 @@ export default {
       color: #2aa7ff;
       cursor: pointer;
       padding: 0 10px;
+    }
+    .action-box {
+      display: flex;
+      .icon-box{
+        margin-right: 13px;
+        cursor: pointer;
+        .icon{
+          width: 18px;
+          height: 18px;
+        }
+      }
     }
   }
 </style>

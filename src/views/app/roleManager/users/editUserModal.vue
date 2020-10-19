@@ -50,7 +50,7 @@ import userService from '@/services/user.service'
 import treeService from '@/services/tree.service'
 import madsTree from '../../shared/madsTree/madsTree'
 import appsList from '../../shared/modalAppsList'
-import EventBus from '../eventBus'
+import EventBus from './../eventBus'
 
 export default {
   props: ['roles', 'user'],

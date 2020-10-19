@@ -29,7 +29,7 @@
         <template v-slot:managers="props">
           <div class="managers-box" v-if="props.rowData.leads.length>0">
             <div class="img-box">
-              <span>{{renderFirstLetter(renderUserFullName(props.rowData.leads))}}</span>
+              <img :src="require(`@/assets/img/avatars/${randomSelector(avatars)}.jpg`)" :alt="randomSelector(avatars)" />
             </div>
             <div class="text-box">
               <div class="name">{{renderUserFullName(props.rowData.leads)}}</div>
@@ -39,7 +39,7 @@
         </template>
         <template v-slot:members="props">
           <div class="members-box">
-            <div class="member-box" v-for="(user, i) in getUserNames(props.rowData.users)" :key="i">
+            <div class="member-box" :style="{backgroundColor: randomSelector(colors)}" v-for="(user, i) in getUserNames(props.rowData.users)" :key="i">
                 <span>{{renderFirstLetter(user)}}</span>
             </div>
           </div>
@@ -53,36 +53,42 @@
         </template>
         <template v-slot:actions="props" v-if="!source">
           <div class="action-box">
-            <span class="icon-box" @click="editProject(props.rowData)">
+            <span class="icon-box" id="p-edit" @click="editProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#edit"></use>
               </svg>
             </span>
-            <span class="icon-box" @click="deleteProject(props.rowData)">
+            <span class="icon-box" id="p-delete" @click="deleteProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
               </svg>
             </span>
-            <span class="icon-box" @click="archiveProject(props.rowData)">
+            <span class="icon-box" id="p-archive" @click="archiveProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#archive"></use>
               </svg>
             </span>
-            <span class="icon-box">
-              <svg class="icon">
+            <span class="icon-box" id="p-view" @click="viewProject(props.rowData)">
+             <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#view"></use>
               </svg>
             </span>
+            <b-tooltip target="p-edit" title="Edit"></b-tooltip>
+            <b-tooltip target="p-delete" title="Delete"></b-tooltip>
+            <b-tooltip target="p-archive" title="Archive"></b-tooltip>
+            <b-tooltip target="p-view" title="View"></b-tooltip>
           </div>
 
         </template>
       </vuetable>
-
+      <delete-project-modal ref="deleteProject"></delete-project-modal>
+      <archive-modal ref="archiveProject"></archive-modal>
       <mads-pagination :perPage="perPage" :onChange="onPaginationChange" :currentPage="currentPage" :totalRows="totalRows"></mads-pagination>
 
     </div>
 
     <!-- Modal Section -->
+    <view-project ref="viewProject"></view-project>
     <add-edit-project ref="addEditProject"></add-edit-project>
   </div>
 </template>
@@ -92,9 +98,11 @@ import { mapGetters, mapActions } from 'vuex'
 import fieldsDef from './projectFieldsDef'
 import Vuetable from 'vuetable-2'
 import addEditProject from './addEditProject'
-import projectService from '@/services/project.service'
 import ProjectEventBus from './projectEventBus'
 import madsPagination from '../../shared/madsPagination'
+import viewProject from './viewProject'
+import archiveModal from './archiveModal'
+import deleteProjectModal from './deleteProjectModal'
 
 export default {
   props: {
@@ -115,14 +123,25 @@ export default {
   components: {
     Vuetable,
     addEditProject,
-    madsPagination
+    madsPagination,
+    viewProject,
+    archiveModal,
+    deleteProjectModal
   },
   data () {
     return {
       fields: fieldsDef,
       searchText: '',
       currentPage: 1,
-      perPage: 5
+      perPage: 5,
+      colors: [
+        '#2BCC8E',
+        '#27AAE1',
+        '#FF9D26'
+      ],
+      avatars: [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+      ]
     }
   },
   methods: {
@@ -135,10 +154,10 @@ export default {
     },
     deleteProject (project) {
       let config = { orgId: this.currentUser.org.id, projectId: 1, id: project.id }
-      projectService.delete(config)
-        .then((response) => {
-          ProjectEventBus.$emit('reload-projects')
-        })
+      this.$refs.deleteProject.delete(config)
+    },
+    viewProject (project) {
+      this.$refs.viewProject.view(project)
     },
     onSelectProject (project) {
       this.selectProject(project)
@@ -182,15 +201,18 @@ export default {
       let payload = {
         archived: true
       }
-      projectService.update(config, payload)
-        .then((res) => {
-          ProjectEventBus.$emit('reload-projects')
-        })
+      this.$refs.archiveProject.archive(config, payload)
     },
     onPaginationChange (e) {
       this.currentPage = e
       this.$emit('project-pagination', e)
       ProjectEventBus.$emit('reload-projects')
+    },
+    randomSelector (arr) {
+      const randomItem = this.$_.sample(arr)
+      return randomItem
+      // const random = Math.floor(Math.random() * arr.length)
+      // return arr[random]
     }
   },
   computed: {
@@ -232,7 +254,6 @@ export default {
       border-radius: 8px;
       border:0;
     }
-
     .project-name {
       cursor: pointer;
     }
@@ -294,16 +315,16 @@ export default {
               height: 45px;
               width: 45px;
               border-radius: 50%;
-              background-color: #FF9D26;
+              // background-color: #FF9D26;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-right: 6px;
-              span{
-                font-weight: bold;
-                font-size: 14px;
-                line-height: 17px;
-                color: #fff;
+              position: relative;
+              img{
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
               }
             }
             .text-box{
@@ -327,7 +348,7 @@ export default {
               height: 35px;
               width: 35px;
               border-radius: 50%;
-              background-color: #FF9D26;
+              // background-color: #FF9D26;
               display: flex;
               align-items: center;
               justify-content: center;

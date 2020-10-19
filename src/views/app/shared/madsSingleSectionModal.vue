@@ -3,8 +3,10 @@
     <div class="row">
         <slot name="body-panel"></slot>
         <div class="footer">
-            <b-button @click="onCancel()">Cancel</b-button>
-            <b-button @click="onSave()" class="save-btn">Save</b-button>
+            <b-button v-if="!deleteMode" @click="onCancel()">Cancel</b-button>
+            <b-button v-if="viewMode" @click="onSave()" class="save-btn">Save</b-button>
+            <b-button v-if="deleteMode" @click="onCancel()">No</b-button>
+            <b-button v-if="deleteMode" @click="onDelete()" class="save-btn">Yes</b-button>
         </div>
     </div>
   </b-modal>
@@ -27,6 +29,14 @@ export default {
     editMode: {
       type: Boolean,
       default: false
+    },
+    viewMode: {
+      type: Boolean,
+      default: true
+    },
+    deleteMode: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -42,6 +52,10 @@ export default {
     },
     onSave () {
       this.$emit('on-save')
+      this.$refs[this.modalRef].hide()
+    },
+    onDelete () {
+      this.$emit('on-delete')
       this.$refs[this.modalRef].hide()
     }
   },
@@ -66,15 +80,14 @@ export default {
 <style lang="scss" scoped>
   .row {
     margin: 0;
-    min-height: 450px;
+    // min-height: 450px;
     flex-wrap: wrap;
     padding: 20px;
   }
 .footer {
-    position: absolute;
+    width: 100%;
     text-align: right;
-    right: 20px;
-    bottom: 20px;
+    margin-top: 30px;
     .next-btn, .save-btn {
     background-color: #4c92c3 !important;
     color: #ffffff !important;

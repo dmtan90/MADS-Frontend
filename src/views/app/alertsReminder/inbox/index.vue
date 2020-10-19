@@ -123,7 +123,7 @@ export default {
   .alerts-inbox-wrap {
     width: 95%;
     margin: 0 auto;
-    background-color: white;
+    background-color: transparent;
     padding: 20px;
     .page-heading {
       color: #3e4956;
