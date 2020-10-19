@@ -138,3 +138,29 @@ export const centerTextPlugin = {
     }
   }
 }
+
+export const randomSelector = (arr) => {
+  const randomItem = this.$_.sample(arr)
+  return randomItem
+}
+
+export const renderUserFullName = (users) => {
+  users = this.$_.map(users, (user) => {
+    return user.first_name + ' ' + user.last_name
+  })
+  return this.$_.join(users, ', ')
+}
+
+export const renderFirstLetter = (str) => {
+  if (str) {
+    let matches = str.match(/\b(\w)/g)
+    return matches.join('')
+  }
+}
+
+export const renderUserEmail = (users) => {
+  users = this.$_.map(users, (user) => {
+    return user.email
+  })
+  return this.$_.join(users, ', ')
+}

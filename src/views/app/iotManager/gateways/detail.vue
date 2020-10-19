@@ -165,7 +165,9 @@
             </b-form>
           </div>
         </b-tab>
-
+        <b-tab title="Sensors">
+          <sensors-tab></sensors-tab>
+        </b-tab>
       </b-tabs>
     </div>
   </div>
@@ -193,6 +195,7 @@ import GatewayEventBus from './gatewayEventBus'
 import parameterMappingSection from './parameterMapping/parameterMappingSection'
 import latestLogsSection from './latestLogs/latestLogsSection'
 import vueJsonEditor from 'vue-json-editor'
+import sensorsTab from './sensors'
 
 export default {
   components: {
@@ -204,7 +207,8 @@ export default {
     timestampMapping,
     parameterMappingSection,
     latestLogsSection,
-    vueJsonEditor
+    vueJsonEditor,
+    sensorsTab
   },
   data () {
     return {

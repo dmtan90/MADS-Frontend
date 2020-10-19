@@ -48,7 +48,7 @@ import { mapGetters } from 'vuex'
 import invitationService from '@/services/invitation.service'
 import madsTree from './../../shared/madsTree/index'
 import appsList from '../../shared/modalAppsList'
-import EventBus from '../eventBus'
+import EventBus from './../eventBus'
 
 export default {
   props: {
@@ -99,7 +99,7 @@ export default {
           this.selectedRole = null
           this.email = ''
 
-          EventBus.$emit('reload-invites')
+          EventBus.$emit('reload-invite-list')
         })
       this.currentStep = 1
     },

@@ -30,7 +30,7 @@ import Vuetable from 'vuetable-2'
 import { mapGetters } from 'vuex'
 import invitationDef from './invitationFieldDefs'
 import invitationService from '@/services/invitation.service'
-import EventBus from '../eventBus'
+import EventBus from './../eventBus'
 import addEditUser from './addEditUser'
 import madsPagination from '../../shared/madsPagination'
 
@@ -55,7 +55,7 @@ export default {
 
       invitationService.delete(config)
         .then((response) => {
-          EventBus.$emit('reload-users')
+          EventBus.$emit('reload-invite-list')
         })
     },
     reInviteUser (invitation) {

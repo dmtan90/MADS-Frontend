@@ -30,6 +30,14 @@ const gatewayService = {
       return error.data
     }
   },
+  associateSensors: async function (config, payload) {
+    try {
+      const response = await ApiService.put('/orgs/' + config.orgId + '/projects/' + config.projectId + resource + '/' + config.id + '/associate-sensors', payload)
+      return response.data
+    } catch (error) {
+      return error.data
+    }
+  },
   read: async function (config, params) {
     try {
       const response = await ApiService.get('/orgs/' + config.orgId + '/projects/' + config.projectId + resource, { params })

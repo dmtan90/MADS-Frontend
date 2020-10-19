@@ -21,7 +21,7 @@ import { mapGetters } from 'vuex'
 import madsModal from './../../shared/madsModal'
 import sections from './addEditUserSections'
 import invitationService from '@/services/invitation.service'
-import UserEventBus from './../eventBus'
+import EventBus from './../eventBus'
 
 export default {
   props: {
@@ -72,7 +72,7 @@ export default {
 
         invitationService.update(config, payload)
           .then((response) => {
-            UserEventBus.$emit('reload-users')
+            EventBus.$emit('reload-users')
           })
         this.selectedSectionIndex = 1
       } else {
@@ -81,7 +81,7 @@ export default {
 
         invitationService.create(config, payload)
           .then((response) => {
-            UserEventBus.$emit('reload-users')
+            EventBus.$emit('reload-users')
           })
         this.selectedSectionIndex = 1
       }
