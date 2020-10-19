@@ -2,8 +2,7 @@
     <div class="sensor-tab">
         <template v-if="isEdit">
             <div class="edit-tree">
-                <!-- <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree> -->
-            <mads-tree ref="tree"
+              <mads-tree ref="tree"
                 :treeView="'file'"
                 :treeOptions="treeOptions"
                 :selectedNodes="getSelectedEntity()"
@@ -20,8 +19,7 @@
         </template>
         <template v-else>
             <div class="show-tree">
-                <!-- <mads-tree ref="tree" :treeView="'file'" :treeOptions="treeOptions" @on-node-select="onSelectEntity" :selectedNodes="getSelectedEntity()" :isAnyNodeSelected="isAnyNodeSelected"></mads-tree> -->
-            <mads-tree ref="tree"
+              <mads-tree ref="tree"
                 :treeView="'file'"
                 :treeOptions="treeOptions"
                 :selectedNodes="getSelectedEntity()"
@@ -67,13 +65,6 @@ export default {
       if (event) {
         this.sensorIds.push(entity.id)
       }
-      // if (event) {
-      //     this.gateway.parent_id = entity.id
-      //     this.gateway.parent_type = entity.type
-      // } else {
-      //     this.gateway.parent_id = null
-      //     this.gateway.parent_type = ''
-      // }
     },
     getSelectedEntity () {
       return [{ id: null, type: 'Sensor' }]
@@ -98,9 +89,6 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser', 'selectedProject', 'selectedGateway'])
-  },
-  mounted () {
-    // this.initTreeData()
   }
 }
 </script>
