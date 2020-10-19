@@ -47,7 +47,7 @@ const UserService = {
   },
   search: async function (config, payload) {
     try {
-      const response = await ApiService.get('orgs/' + config.orgId +'/users/search?label=' + payload)
+      const response = await ApiService.get('orgs/' + config.orgId + '/users/search?label=' + payload)
       return response.data
     } catch (error) {
       return error.data
