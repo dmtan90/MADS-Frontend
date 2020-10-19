@@ -58,7 +58,18 @@ export default {
     },
     getDashboardPanels () {
       let panels = this.selectedDashboard ? this.selectedDashboard.panels || [] : []
+      let panelOrders = this.getPanelOrders()
+
+      if (panelOrders) {
+        panels = this.$_.sortBy(panels, (panel) => {
+          return panelOrders[panel.id]
+        })
+      }
+
       return panels
+    },
+    getPanelOrders () {
+      return (this.selectedDashboard && this.selectedDashboard.settings.panels_order) || null
     },
     getSidebarBackgroundColor () {
       return (this.selectedDashboard && this.selectedDashboard.settings) ? this.selectedDashboard.settings['sidebar_color'] : '#000000'

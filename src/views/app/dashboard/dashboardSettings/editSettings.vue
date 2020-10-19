@@ -40,8 +40,7 @@ export default {
         name: 'Client'
       }, {
         index: 3,
-        name: 'Tabs',
-        hideFooter: true
+        name: 'Tabs'
       }],
       selectedSection: {},
       selectedSectionIndex: 1
@@ -70,6 +69,9 @@ export default {
       }
       if (this.selectedSectionIndex === 2) {
         params = this.$refs.sections.getClientSettings()
+      }
+      if (this.selectedSectionIndex === 3) {
+        params = this.$refs.sections.getTabSettings()
       }
       let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 

@@ -1,7 +1,7 @@
 <template>
   <b-modal id="export-dashboard" ref="exportDashboard" size="md" hide-footer @hidden="onCancel()">
     <div class="export-dashboard-modal">
-      <h3>Export <b>Dashboard 1</b></h3>
+      <h3>Export <b>{{selectedDashboard.name}}</b></h3>
       <div v-if="selectedDashboard.exported_url">
         <div style="margin-top: 30px">Dashboard is already exported</div>
         <div>Below is the exported dashboard url</div>

@@ -35,35 +35,37 @@
     </section>
     <section v-if="selectedSectionIndex === 3">
       <div class="lists-table panels-table">
-        <vuetable
-            ref="vuetable"
-            :api-mode="false"
-            :fields="fields"
-            :data="panels"
+        <draggable
+          :list="list"
+          class="list-group"
+          ghost-class="ghost"
+          @start="dragging = true"
+          @end="dragging = false"
+        >
+          <div
+            class="list-group-item"
+            v-for="element in list"
+            :key="element.name"
           >
-          <template v-slot:checkbox>
-            <b-form-checkbox></b-form-checkbox>
-          </template>
-          <template v-slot:name="props">
-            <span v-if="editedPanel !== props.rowData.id">{{props.rowData.name}}</span>
-            <b-form-input v-if="editedPanel === props.rowData.id" v-model="props.rowData.name" type="text"></b-form-input>
-          </template>
-          <template v-slot:actions="props">
-            <div v-if="editedPanel !== props.rowData.id">
-              <svg class="icon pencil" @click="editPanel(props.rowData)">
+            <div v-if="editedPanel !== element.id">{{element.name}}</div>
+            <b-form-input v-if="editedPanel === element.id" v-model="element.name" type="text"></b-form-input>
+            <div v-if="editedPanel !== element.id" class="actions">
+              <svg class="icon pencil" @click="editPanel(element)">
                 <use xlink:href="/assets/img/mads-common-icons.svg#pencil"></use>
               </svg>
-              <svg class="icon dustbin" @click="deletePanel(props.rowData)">
+              <svg class="icon dustbin" @click="deletePanel(element)">
                 <use xlink:href="/assets/img/mads-common-icons.svg#dustbin"></use>
               </svg>
             </div>
-            <div v-if="editedPanel === props.rowData.id">
-              <svg class="icon tick" @click="updatePanel(props.rowData)">
+            <div v-if="editedPanel === element.id" class="actions">
+              <svg class="icon tick" @click="updatePanel(element)">
                 <use xlink:href="/assets/img/mads-common-icons.svg#tick"></use>
               </svg>
             </div>
-          </template>
-        </vuetable>
+          </div>
+        </draggable>
+        <span class="drag-info">Drag and change the order in which tabs will be displayed</span>
+        <!-- <b-button @click="saveOrder" class="save-order-btn">Save Order</b-button> -->
       </div>
     </section>
   </div>
@@ -71,20 +73,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import fields from './panelFieldsDef'
-import Vuetable from 'vuetable-2'
 import dashboardService from '@/services/dashboard.service'
 import imageService from '@/services/image.service'
 import dasbhoardEventBus from './../dashboardBus'
+import draggable from 'vuedraggable'
 
 export default {
   components: {
-    Vuetable
+    draggable
   },
   data () {
     return {
       settings: {},
-      fields: fields,
       dashboardData: {
         name: '',
         settings: {
@@ -94,7 +94,7 @@ export default {
           thumbnail_url: ''
         }
       },
-      panels: [],
+      list: [],
       selectedLogo: null,
       editedPanel: null
     }
@@ -129,6 +129,27 @@ export default {
     getThumbnailUrl () {
       return "url('" + this.dashboardData.settings.thumbnail_url + "')"
     },
+    saveOrder () {
+      let loader = this.$loading.show()
+      let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
+      let panelsOrder = {}
+
+      this.$_.forEach(this.list, (item, index) => {
+        panelsOrder[item.id] = index + 1
+      })
+
+      let params = {
+        settings: {
+          panels_order: panelsOrder
+        }
+      }
+
+      dashboardService.update(config, params)
+        .then((response) => {
+          dasbhoardEventBus.$emit('reload-dashboard')
+          loader.hide()
+        })
+    },
     getVisualSettings () {
       return {
         name: this.dashboardData.name,
@@ -152,6 +173,19 @@ export default {
       formData.append('settings[thumbnail_url]', this.dashboardData.settings['thumbnail_url'])
 
       return formData
+    },
+    getTabSettings () {
+      let panelsOrder = {}
+
+      this.$_.forEach(this.list, (item, index) => {
+        panelsOrder[item.id] = index + 1
+      })
+
+      return {
+        settings: {
+          panels_order: panelsOrder
+        }
+      }
     },
     editPanel (panel) {
       this.editedPanel = panel.id
@@ -185,11 +219,11 @@ export default {
   },
   watch: {
     selectedDashboard () {
-      this.panels = this.selectedDashboard.panels
+      this.list = this.selectedDashboard.panels
     }
   },
   mounted () {
-    this.panels = this.selectedDashboard.panels
+    this.list = this.selectedDashboard.panels
     this.dashboardData = this.$_.merge({}, {
       name: this.selectedDashboard.name,
       settings: {
@@ -255,5 +289,22 @@ export default {
         height: 40px;
       }
     }
+  }
+  .list-group-item {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    .actions {
+      margin: 0 0 0 auto;
+    }
+  }
+  .drag-info {
+    padding: 10px 5px;
+    display: inline-block;
+    font-style: italic;
+  }
+  .save-order-btn {
+    margin-top: 20px;
+    float: right;
   }
 </style>

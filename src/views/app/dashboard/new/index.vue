@@ -30,6 +30,7 @@
       <smart-agriculture-template v-if="selectedTheme.key === 'smart_agriculture'"  @show-all="onShowAllThemes()"></smart-agriculture-template>
     </div>
     <new-dashboard-modal ref="newDashboardModal" @create-dashboard="onCreateDashboard"></new-dashboard-modal>
+    <coming-soon-modal ref="comingSoonModal"></coming-soon-modal>
   </div>
 </template>
 
@@ -40,6 +41,7 @@ import sheaTemplate from './../sheaTemplate'
 import heveaTemplate from './../heveaTemplate'
 import smartAgricultureTemplate from './../smartAgricultureTemplate'
 import newDashboardModal from './../newDashboardModal'
+import comingSoonModal from './../comingSoonModal'
 import dashboardService from '@/services/dashboard.service'
 
 export default {
@@ -48,7 +50,8 @@ export default {
     heveaTemplate,
     smartAgricultureTemplate,
     blankTemplate,
-    newDashboardModal
+    newDashboardModal,
+    comingSoonModal
   },
   data () {
     return {
@@ -116,8 +119,12 @@ export default {
       return 'url(' + url + ')'
     },
     openNewDashboardModal (theme) {
-      this.selectTheme(theme)
-      this.$refs['newDashboardModal'].$refs['dashboardModal'].show()
+      if (theme.key === 'blank') {
+        this.selectTheme(theme)
+        this.$refs['newDashboardModal'].$refs['dashboardModal'].show()
+      } else {
+        this.$refs['comingSoonModal'].$refs['comingSoonModal'].show()
+      }
     },
     onCreateDashboard (name) {
       let params = { name: name, settings: {}, widget_layouts: {} }

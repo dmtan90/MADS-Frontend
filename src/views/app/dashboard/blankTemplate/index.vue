@@ -187,7 +187,7 @@ export default {
           this.setPanel(panel)
           let widgets = panel.widgets
 
-          let isRealtimePanel = panel.filter_metadata.type === 'realtime'
+          let isRealtimePanel = panel.filter_metadata && panel.filter_metadata.type === 'realtime'
 
           this.$_.forEach(widgets, (widget) => {
             this.widgetObject[widget.id] = this.$_.merge({}, widget, { key: this.getUniqueKey() })
