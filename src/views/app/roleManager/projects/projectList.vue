@@ -53,30 +53,26 @@
         </template>
         <template v-slot:actions="props" v-if="!source">
           <div class="action-box">
-            <span class="icon-box" id="p-edit" @click="editProject(props.rowData)">
+            <span class="icon-box" v-tooltip="'Edit'" @click="editProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#edit"></use>
               </svg>
             </span>
-            <span class="icon-box" id="p-delete" @click="deleteProject(props.rowData)">
+            <span class="icon-box" v-tooltip="'Delete'" @click="deleteProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
               </svg>
             </span>
-            <span class="icon-box" id="p-archive" @click="archiveProject(props.rowData)">
+            <span class="icon-box" v-tooltip="'Archive'" @click="archiveProject(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#archive"></use>
               </svg>
             </span>
-            <span class="icon-box" id="p-view" @click="viewProject(props.rowData)">
+            <span class="icon-box" v-tooltip="'View'" @click="viewProject(props.rowData)">
              <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#view"></use>
               </svg>
             </span>
-            <b-tooltip target="p-edit" title="Edit"></b-tooltip>
-            <b-tooltip target="p-delete" title="Delete"></b-tooltip>
-            <b-tooltip target="p-archive" title="Archive"></b-tooltip>
-            <b-tooltip target="p-view" title="View"></b-tooltip>
           </div>
 
         </template>

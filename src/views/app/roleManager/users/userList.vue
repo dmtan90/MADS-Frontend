@@ -27,17 +27,17 @@
       </template>
       <template v-slot:actions="props">
         <div class="action-box">
-            <span class="icon-box" v-b-tooltip.hover title="Edit" @click="editUser(props.rowData)">
+            <span class="icon-box" v-tooltip="'Edit'" @click="editUser(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#edit"></use>
               </svg>
             </span>
-            <span class="icon-box" v-b-tooltip.hover title="Delete" @click="deleteUser(props.rowData)">
+            <span class="icon-box" v-tooltip="'Delete'" @click="deleteUser(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#trash"></use>
               </svg>
             </span>
-            <span class="icon-box" v-b-tooltip.hover title="View" @click="viewUser(props.rowData)">
+            <span class="icon-box" v-tooltip="'View'" @click="viewUser(props.rowData)">
               <svg class="icon">
                 <use xlink:href="/assets/img/mads-common-icons.svg#view"></use>
               </svg>
@@ -96,6 +96,7 @@ export default {
       this.$refs.viewDeleteUser.delete(user)
     },
     viewUser (user) {
+      this.isDelete = false
       this.$refs.viewDeleteUser.view(user)
     },
     onPaginationChange (e) {
