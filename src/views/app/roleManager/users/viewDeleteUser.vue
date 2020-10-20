@@ -123,10 +123,9 @@ export default {
   width: 70%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 30px;
   .avatar{
-    margin-right: 40%;
     margin-bottom: 5%;
     img{
       width: 100px;
