@@ -76,6 +76,9 @@ Vue.use(VueClipboard)
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 
+// This is required so highcharts will be able to find moment object
+window.moment = moment
+
 // Set the base URL of the API
 // process.env.VUE_APP_ROOT_API
 ApiService.init(apiUrl)

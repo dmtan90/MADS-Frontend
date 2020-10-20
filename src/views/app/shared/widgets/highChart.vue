@@ -57,6 +57,9 @@ export default {
     },
     widgetKey: {
       type: String
+    },
+    timezone: {
+      type: String
     }
   },
   data () {
@@ -69,6 +72,9 @@ export default {
       let widgetOptions = this.$_.merge(
         this.visualProperties,
         {
+          time: {
+            timezone: this.timezone
+          },
           series: this.series,
           caption: {
             text: ''

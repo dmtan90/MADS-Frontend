@@ -4,7 +4,7 @@
       <b>This is a private dashboard. Please Enter password to access.</b>
       <b-form>
         <b-form-group label="">
-          <b-input type="password" v-model="password" placeholder="Password" class="passowrd-input"></b-input>
+          <b-input v-on:keyup.enter="onEnter" type="password" v-model="password" placeholder="Password" class="passowrd-input"></b-input>
           <div class="password-error" v-if="passwordError">Please enter correct password</div>
         </b-form-group>
       </b-form>

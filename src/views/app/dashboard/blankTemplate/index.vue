@@ -62,7 +62,8 @@
                       :colHeight="colHeight"
                       :cols="item.w"
                       :rows="item.h"
-                      :widgetKey="widgetObject[item.i].key">
+                      :widgetKey="widgetObject[item.i].key"
+                      :timezone="getTimezone()">
                     </widget>
                   </div>
                   <static-card-widget v-if="item.type === 'static_card'" :widget="widgetObject[item.i]"></static-card-widget>
@@ -156,6 +157,9 @@ export default {
     },
     getVisualProperties (item) {
       return this.widgetObject[item.i].visual_properties
+    },
+    getTimezone () {
+      return this.selectedDashboard.settings['timezone'] || this.$moment.tz.guess()
     },
     getSeries (item) {
       return this.widgetObject[item.i].series

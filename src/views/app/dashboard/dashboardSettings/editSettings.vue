@@ -41,6 +41,9 @@ export default {
       }, {
         index: 3,
         name: 'Tabs'
+      }, {
+        index: 4,
+        name: 'Timezone'
       }],
       selectedSection: {},
       selectedSectionIndex: 1
@@ -64,15 +67,22 @@ export default {
     saveSettings () {
       let loader = this.$loading.show()
       let params = {}
-      if (this.selectedSectionIndex === 1) {
-        params = this.$refs.sections.getVisualSettings()
+
+      switch (this.selectedSectionIndex) {
+        case 1:
+          params = this.$refs.sections.getVisualSettings()
+          break
+        case 2:
+          params = this.$refs.sections.getClientSettings()
+          break
+        case 3:
+          params = this.$refs.sections.getTabSettings()
+          break
+        case 4:
+          params = this.$refs.sections.getTimezoneSettings()
+          break
       }
-      if (this.selectedSectionIndex === 2) {
-        params = this.$refs.sections.getClientSettings()
-      }
-      if (this.selectedSectionIndex === 3) {
-        params = this.$refs.sections.getTabSettings()
-      }
+
       let config = { orgId: this.currentUser.org.id, id: this.selectedDashboard.id }
 
       dashboardService.update(config, params)

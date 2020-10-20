@@ -68,6 +68,11 @@
         <!-- <b-button @click="saveOrder" class="save-order-btn">Save Order</b-button> -->
       </div>
     </section>
+    <section v-if="selectedSectionIndex === 4">
+      <b-form-group label="Select Timezone">
+        <multiselect v-model="selectedTimezone" :options="timezones"></multiselect>
+      </b-form-group>
+    </section>
   </div>
 </template>
 
@@ -96,7 +101,9 @@ export default {
       },
       list: [],
       selectedLogo: null,
-      editedPanel: null
+      editedPanel: null,
+      timezones: [],
+      selectedTimezone: null
     }
   },
   props: {
@@ -187,6 +194,13 @@ export default {
         }
       }
     },
+    getTimezoneSettings () {
+      return {
+        settings: {
+          timezone: this.selectedTimezone
+        }
+      }
+    },
     editPanel (panel) {
       this.editedPanel = panel.id
     },
@@ -233,6 +247,8 @@ export default {
         thumbnail_url: this.selectedDashboard.settings ? this.selectedDashboard.settings['thumbnail_url'] : ''
       }
     })
+    this.selectedTimezone = this.selectedDashboard.settings ? this.selectedDashboard.settings['timezone'] : null
+    this.timezones = this.$moment.tz.names()
   }
 }
 </script>
